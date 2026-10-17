@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_ordlx"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_0x5hj"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_6e8t7"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_wg41q"]
+
+[sub_resource type="Resource" id="Resource_ylday"]
+script = ExtResource("1_ordlx")
+parts = Array[StringName]([&"al", &"cu"])
+bases = PackedFloat32Array(20, 11)
+first_levels = PackedInt32Array(1, 4)
+last_levels = PackedInt32Array(5, 5)
+
+[sub_resource type="Resource" id="Resource_s11m1"]
+script = ExtResource("2_0x5hj")
+stat = &"pistol.magazine"
+kind = 0
+value = 2.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_0ffpb"]
+script = ExtResource("2_0x5hj")
+stat = &"pistol.reload_time"
+value = -0.08
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_61psy"]
+script = ExtResource("3_6e8t7")
+node_id = &"attack.pistol"
+
+[resource]
+script = ExtResource("4_wg41q")
+id = &"attack.pistol_handling"
+branch = 1
+display_name = "Pistol Handling"
+description = "+2 magazine and -8% reload time per level."
+max_level = 5
+prerequisites = Array[ExtResource("3_6e8t7")]([SubResource("Resource_61psy")])
+cost_curve = SubResource("Resource_ylday")
+effects = Array[ExtResource("2_0x5hj")]([SubResource("Resource_s11m1"), SubResource("Resource_0ffpb")])
+board_position = Vector2i(1, 2)

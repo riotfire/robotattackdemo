@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotTrait" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_trait.gd" id="1_mkxp1"]
+
+[resource]
+script = ExtResource("1_mkxp1")
+id = &"speedy"
+display_name = "Speedy"
+description = "+25% move speed."
+speed_multiplier = 1.25
+tell = &"speed_fins"

@@ -1,0 +1,376 @@
+class_name Hud
+extends CanvasLayer
+## Graybox HUD (GDD 17.2): silo Structure and Grain, farmer HP and armor, jetpack fuel arc, wave and
+## phase, intermission countdown, weapon and ammo, parts, thieves, the family name card, prompts, toasts
+## and the Harvest Report. Built in code because it is graybox UI; the cardboard-and-felt look comes later.
+## Keeps processing while the tree is paused so it can show game over and handle restart.
+
+@export var director: WaveDirector
+
+var _player: Farmer = null
+
+var _wave_label: Label
+var _phase_label: Label
+var _robots_label: Label
+var _structure_bar: ProgressBar
+var _structure_label: Label
+var _grain_bar: ProgressBar
+var _grain_label: Label
+var _hp_bar: ProgressBar
+var _hp_label: Label
+var _armor_bar: ProgressBar
+var _family_label: Label
+var _name_card: PanelContainer
+var _name_card_title: Label
+var _name_card_detail: Label
+var _name_card_left: float = 0.0
+var _hint_label: Label
+var _weapon_label: Label
+var _parts_label: Label
+var _prompt_label: Label
+var _toast_label: Label
+var _toast_left: float = 0.0
+var _repair_bar: ProgressBar
+var _crosshair: Crosshair
+var _game_over_panel: PanelContainer
+var _game_over_label: Label
+var _help_label: Label
+
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_build()
+	EventBus.hud_message.connect(show_message)
+	EventBus.game_over.connect(_on_game_over)
+	EventBus.player_registered.connect(_on_player_registered)
+	EventBus.family_revealed.connect(_on_family_revealed)
+	for player in GameState.players:
+		_on_player_registered(player)
+
+
+func _on_player_registered(player: Node3D) -> void:
+	if _player == null and player is Farmer:
+		_player = player
+
+
+func show_message(text: String, duration: float = 2.5) -> void:
+	_toast_label.text = text
+	_toast_left = duration
+
+
+func toggle_help() -> void:
+	_help_label.visible = not _help_label.visible
+
+
+func _process(delta: float) -> void:
+	_update_wave()
+	_update_silo()
+	_update_player()
+	_toast_left -= delta
+	_toast_label.visible = _toast_left > 0.0
+	_name_card_left -= delta
+	_name_card.visible = _name_card_left > 0.0
+	_parts_label.text = "Al %d\nCu %d\nAu %d\nPC %d" % [
+		GameState.parts[&"al"], GameState.parts[&"cu"], GameState.parts[&"au"], GameState.parts[&"pc"]]
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not GameState.is_game_over:
+		return
+	var restart := event.is_action_pressed(&"jump") or event.is_action_pressed(&"interact")
+	if event is InputEventKey and (event as InputEventKey).pressed:
+		restart = restart or (event as InputEventKey).physical_keycode in [KEY_R, KEY_ENTER, KEY_KP_ENTER]
+	if restart:
+		get_viewport().set_input_as_handled()
+		get_tree().paused = false
+		get_tree().reload_current_scene()
+
+
+func _update_wave() -> void:
+	var wave := maxi(1, GameState.wave)
+	_wave_label.text = "PHASE %d  ·  WAVE %d" % [GameState.phase_of(wave), GameState.wave_in_phase(wave)]
+	if director == null:
+		return
+	match director.phase:
+		WaveDirector.Phase.INTERMISSION:
+			_phase_label.text = "INTERMISSION  %s" % _clock(director.time_left)
+		WaveDirector.Phase.SIREN:
+			_phase_label.text = "SIREN!  Robots in %s" % _clock(director.time_left)
+		WaveDirector.Phase.SPAWNING:
+			_phase_label.text = "ATTACK  %s" % _clock(director.spawn_window - director.spawn_clock)
+		WaveDirector.Phase.MOP_UP:
+			_phase_label.text = "MOP-UP"
+		WaveDirector.Phase.CLEARED:
+			_phase_label.text = "CLEARED!"
+		WaveDirector.Phase.GAME_OVER:
+			_phase_label.text = "GAME OVER"
+	var to_come := director.robots_to_come()
+	var thieves := get_tree().get_nodes_in_group(Robot.THIEF_GROUP).size()
+	_robots_label.text = "Robots %d%s%s" % [director.live_robot_count(), "  +%d coming" % to_come if to_come > 0 else "",
+			"   THIEVES %d!" % thieves if thieves > 0 else ""]
+	_family_label.text = director.genome.family_name if director.genome != null else ""
+
+
+func _update_silo() -> void:
+	var silo := GameState.silo
+	if silo == null:
+		return
+	_structure_bar.value = silo.structure_fraction() * 100.0
+	_structure_label.text = "STRUCTURE  %d / %d   %s" % [ceili(silo.structure), roundi(silo.max_structure),
+			Silo.DAMAGE_STATES[silo.damage_state()]]
+	_grain_bar.value = silo.grain_fraction() * 100.0
+	var cracks := silo.get_cracks().size()
+	var leak := silo.total_leak_rate()
+	_grain_label.text = "GRAIN  %d bu" % ceili(silo.grain) + ("   leaking %.1f/s  (%d crack%s)" % [leak, cracks, "" if cracks == 1 else "s"] if cracks > 0 else "")
+	var critical := silo.damage_state() == 4
+	_structure_bar.modulate = Color(1.0, 0.6, 0.6) if critical and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else Color.WHITE
+
+
+func _update_player() -> void:
+	if _player == null or not is_instance_valid(_player):
+		_player = null
+		return
+	_hp_bar.value = _player.health.fraction() * 100.0
+	_hp_label.text = "HP  %d / %d%s%s" % [ceili(_player.health.current), roundi(_player.health.max_health),
+			"   ARMOR %d" % ceili(_player.armor) if _player.max_armor > 0.0 else "", "   (GOD MODE)" if GameState.god_mode else ""]
+	_armor_bar.visible = _player.max_armor > 0.0
+	_armor_bar.value = _player.armor / _player.max_armor * 100.0 if _player.max_armor > 0.0 else 0.0
+	_hint_label.text = "1 Wrench  2 Pistol%s   V bonk   R reload   E use   F1 debug" % (
+			"" if _player.is_weapon_available(_player.pistol) else " (buy at the shed)")
+	var weapon := _player.current_weapon
+	if weapon != null:
+		var ammo := weapon.ammo_text()
+		_weapon_label.text = weapon.display_name + ("   " + ammo if ammo != "" else "")
+	_crosshair.fuel = _player.jetpack.fuel_fraction() if GameState.jetpack_unlocked else -1.0
+	_crosshair.queue_redraw()
+
+	var prompt := ""
+	_repair_bar.visible = false
+	if _player.repair_target != null and is_instance_valid(_player.repair_target):
+		var crack := _player.repair_target
+		_repair_bar.value = crack.repair_fraction() * 100.0
+		_repair_bar.visible = true
+		prompt = ("Repairing " if _player.is_repairing else "Hold E / (X) to repair: ") + crack.describe()
+	elif _player.focus_interactable != null:
+		var target := _player.focus_interactable
+		var usable := target.can_interact(_player)
+		prompt = ("E / (X): " if usable else "") + target.prompt_text(_player)
+		if usable and target.hold_time > 0.0:
+			_repair_bar.value = _player.interact_progress * 100.0
+			_repair_bar.visible = true
+	elif _player.can_step_off_ladder():
+		prompt = "SPACE / (A): step onto the catwalk"
+	elif _player.state == Farmer.State.CLIMBING:
+		prompt = "W/S climb   SPACE let go"
+	elif _player.state == Farmer.State.ZIPLINING:
+		prompt = "SPACE: let go of the zipline"
+	_prompt_label.text = prompt
+
+
+func _on_game_over(reason: StringName) -> void:
+	var cause := "The robots"
+	match reason:
+		&"silo":
+			cause = "The silo was destroyed!"
+		&"grain":
+			cause = "The robots got the last of the grain!"
+		&"farmer":
+			cause = "The farmer is down!"
+	var survived := GameState.waves_survived
+	var best := int(SaveManager.records.get("best_wave", 0))
+	var families := 0
+	if director != null:
+		families = director.genome_history.size()
+	_game_over_label.text = "HARVEST REPORT\n\n%s\n\nWaves survived: %d  (Phase %d · Wave %d)%s\nFamilies met: %d\nParts banked: Al %d  Cu %d  Au %d  PC %d\n\nPress R, Enter or Jump to farm again" % [
+		cause, survived, GameState.phase_of(maxi(1, survived)), GameState.wave_in_phase(maxi(1, survived)),
+		"   NEW RECORD!" if survived >= best and survived > 0 else "   (best %d)" % best, families,
+		GameState.parts[&"al"], GameState.parts[&"cu"], GameState.parts[&"au"], GameState.parts[&"pc"]]
+	_game_over_panel.visible = true
+
+
+## The wave's family name card (GDD 10.2, 17.2), shown through the siren.
+func _on_family_revealed(genome: Resource) -> void:
+	var family := genome as RobotGenome
+	if family == null:
+		return
+	_name_card_title.text = family.family_name.to_upper()
+	var traits := family.trait_names()
+	_name_card_detail.text = "Family code %s   ·   %s   ·   %s" % [family.family_code,
+			"Traits: " + ", ".join(traits) if not traits.is_empty() else "No traits",
+			family.personality.capitalize()]
+	_name_card.add_theme_stylebox_override(&"panel", _card_style(family.palette.primary, family.palette.secondary))
+	_name_card_left = 9.0
+
+
+static func _card_style(fill: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(fill.darkened(0.55), 0.92)
+	style.border_color = border.lightened(0.2)
+	style.set_border_width_all(4)
+	style.set_corner_radius_all(14)
+	style.set_content_margin_all(14)
+	return style
+
+
+static func _clock(seconds: float) -> String:
+	var s := maxi(0, ceili(seconds))
+	return "%d:%02d" % [floori(s / 60.0), s % 60]
+
+
+# --- Construction ---------------------------------------------------------------------------------
+
+func _build() -> void:
+	var root := Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(root)
+
+	var top_left := _vbox(root, Control.PRESET_TOP_LEFT, Vector2(24, 20))
+	_wave_label = _label(top_left, 30)
+	_phase_label = _label(top_left, 24, Color(1.0, 0.85, 0.4))
+	_robots_label = _label(top_left, 18)
+	_family_label = _label(top_left, 15, Color(0.85, 0.9, 1.0))
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 14)
+	top_left.add_child(spacer)
+	_label(top_left, 18, Color(0.9, 0.9, 0.9)).text = "SILO"
+	_structure_bar = _bar(top_left, Color(0.85, 0.3, 0.25), 340)
+	_structure_label = _label(top_left, 15)
+	_grain_bar = _bar(top_left, Color(0.95, 0.78, 0.3), 340)
+	_grain_label = _label(top_left, 15)
+
+	var bottom_left := _vbox(root, Control.PRESET_BOTTOM_LEFT, Vector2(24, -24))
+	bottom_left.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_hp_label = _label(bottom_left, 16)
+	_hp_bar = _bar(bottom_left, Color(0.4, 0.85, 0.4), 300)
+	_armor_bar = _bar(bottom_left, Color(0.55, 0.75, 1.0), 300)
+	_armor_bar.visible = false
+
+	var bottom_right := _vbox(root, Control.PRESET_BOTTOM_RIGHT, Vector2(-24, -24))
+	bottom_right.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	bottom_right.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_weapon_label = _label(bottom_right, 24)
+	_weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_hint_label = _label(bottom_right, 13, Color(0.85, 0.85, 0.85))
+	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	var top_right := _vbox(root, Control.PRESET_TOP_RIGHT, Vector2(-24, 20))
+	top_right.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_parts_label = _label(top_right, 18)
+	_parts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	_crosshair = Crosshair.new()
+	_crosshair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(_crosshair)
+	_place(_crosshair, Control.PRESET_CENTER, Rect2(0, 0, 0, 0))
+
+	_repair_bar = _bar(root, Color(1.0, 0.75, 0.25), 160)
+	_place(_repair_bar, Control.PRESET_CENTER, Rect2(-80, 44, 160, 16))
+	_repair_bar.visible = false
+
+	_prompt_label = _label(root, 20, Color(1.0, 0.95, 0.75))
+	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(_prompt_label, Control.PRESET_CENTER_BOTTOM, Rect2(-400, -160, 800, 30))
+
+	_toast_label = _label(root, 30, Color(1.0, 0.9, 0.45))
+	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(_toast_label, Control.PRESET_CENTER_TOP, Rect2(-600, 130, 1200, 40))
+	_toast_label.visible = false
+
+	_name_card = PanelContainer.new()
+	_name_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var card_box := VBoxContainer.new()
+	_name_card.add_child(card_box)
+	_name_card_title = _label(card_box, 30, Color(1.0, 0.95, 0.85))
+	_name_card_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_name_card_detail = _label(card_box, 16, Color(0.9, 0.9, 0.95))
+	_name_card_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_name_card.visible = false
+	root.add_child(_name_card)
+	_place(_name_card, Control.PRESET_CENTER_TOP, Rect2(-380, 185, 760, 90))
+
+	_help_label = _label(root, 16)
+	_help_label.text = DebugCheats.HELP_TEXT
+	_place(_help_label, Control.PRESET_CENTER_RIGHT, Rect2(-460, -150, 440, 300))
+	_help_label.visible = false
+
+	_game_over_panel = PanelContainer.new()
+	_game_over_panel.custom_minimum_size = Vector2(640, 340)
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.18, 0.12, 0.08, 0.92)
+	panel_style.set_corner_radius_all(16)
+	panel_style.set_content_margin_all(24)
+	_game_over_panel.add_theme_stylebox_override(&"panel", panel_style)
+	_game_over_label = _label(_game_over_panel, 22)
+	_game_over_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_game_over_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_game_over_panel.visible = false
+	root.add_child(_game_over_panel)
+	_place(_game_over_panel, Control.PRESET_CENTER, Rect2(-320, -170, 640, 340))
+
+
+## Anchors `control` to a preset point and offsets it by `rect` from that anchor.
+func _place(control: Control, preset: Control.LayoutPreset, rect: Rect2) -> void:
+	control.set_anchors_preset(preset)
+	control.offset_left = rect.position.x
+	control.offset_top = rect.position.y
+	control.offset_right = rect.position.x + rect.size.x
+	control.offset_bottom = rect.position.y + rect.size.y
+
+
+func _vbox(parent: Control, preset: Control.LayoutPreset, nudge: Vector2) -> VBoxContainer:
+	var box := VBoxContainer.new()
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(box)
+	box.set_anchors_and_offsets_preset(preset)
+	box.position += nudge
+	box.add_theme_constant_override(&"separation", 4)
+	return box
+
+
+func _label(parent: Control, font_size: int, color: Color = Color.WHITE) -> Label:
+	var label := Label.new()
+	label.add_theme_font_size_override(&"font_size", font_size)
+	label.add_theme_color_override(&"font_color", color)
+	label.add_theme_color_override(&"font_outline_color", Color(0.1, 0.07, 0.05))
+	label.add_theme_constant_override(&"outline_size", 6)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(label)
+	return label
+
+
+func _bar(parent: Control, color: Color, width: float) -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.custom_minimum_size = Vector2(width, 16)
+	bar.size = bar.custom_minimum_size
+	bar.show_percentage = false
+	bar.max_value = 100.0
+	bar.value = 100.0
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = color
+	fill.set_corner_radius_all(5)
+	var background := StyleBoxFlat.new()
+	background.bg_color = Color(0.0, 0.0, 0.0, 0.5)
+	background.set_corner_radius_all(5)
+	bar.add_theme_stylebox_override(&"fill", fill)
+	bar.add_theme_stylebox_override(&"background", background)
+	parent.add_child(bar)
+	return bar
+
+
+## Crosshair plus the jetpack fuel arc beside it (GDD 17.2). fuel < 0 hides the arc.
+class Crosshair:
+	extends Control
+
+	var fuel: float = -1.0
+
+	func _draw() -> void:
+		draw_circle(Vector2.ZERO, 2.5, Color(1, 1, 1, 0.95))
+		draw_arc(Vector2.ZERO, 11.0, 0.0, TAU, 32, Color(1, 1, 1, 0.55), 1.5, true)
+		if fuel >= 0.0:
+			var start := PI * 0.75
+			draw_arc(Vector2.ZERO, 26.0, start, start + PI * 0.5, 24, Color(0, 0, 0, 0.35), 5.0, true)
+			if fuel > 0.0:
+				var color := Color(0.4, 0.85, 1.0) if fuel > 0.25 else Color(1.0, 0.45, 0.3)
+				draw_arc(Vector2.ZERO, 26.0, start + PI * 0.5 * (1.0 - fuel), start + PI * 0.5, 24, color, 5.0, true)

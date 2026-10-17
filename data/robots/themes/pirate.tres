@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FamilyTheme" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_palette.gd" id="1_e1uy7"]
+[ext_resource type="Resource" path="res://data/robots/palettes/minty.tres" id="2_qtq1r"]
+[ext_resource type="Resource" path="res://data/robots/palettes/teal.tres" id="3_r4f0e"]
+[ext_resource type="Resource" path="res://data/robots/palettes/cherry.tres" id="4_bj5us"]
+[ext_resource type="Script" path="res://scripts/ai/genome/family_theme.gd" id="5_v0e5x"]
+
+[resource]
+script = ExtResource("5_v0e5x")
+id = &"pirate"
+theme_word = "Pirate"
+body_shapes = Array[StringName]([&"barrel", &"egg", &"tin_can", &"lunchbox"])
+heads = Array[StringName]([&"bucket", &"teapot", &"dome", &"mailbox"])
+eye_styles = Array[StringName]([&"monocle", &"cyclops", &"visor"])
+antennas = Array[StringName]([&"lightning_rod", &"propeller", &"dish"])
+patterns = Array[StringName]([&"stripes", &"none", &"checker"])
+melee_arms = Array[StringName]([&"hammer", &"fist"])
+palettes = Array[ExtResource("1_e1uy7")]([ExtResource("2_qtq1r"), ExtResource("3_r4f0e"), ExtResource("4_bj5us")])
+accessories = Array[StringName]([&"bandana", &"tricorn", &"hook"])

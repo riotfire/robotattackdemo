@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_hmwgc"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_mdvf8"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_8fbfy"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_0u35p"]
+
+[sub_resource type="Resource" id="Resource_u1t12"]
+script = ExtResource("1_hmwgc")
+parts = Array[StringName]([&"cu", &"au"])
+bases = PackedFloat32Array(15, 5)
+first_levels = PackedInt32Array(1, 4)
+last_levels = PackedInt32Array(5, 5)
+
+[sub_resource type="Resource" id="Resource_e20qc"]
+script = ExtResource("2_mdvf8")
+stat = &"drops.rare_chance"
+value = 0.06
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_1l41t"]
+script = ExtResource("3_8fbfy")
+node_id = &"farmhand.scrap_magnet"
+level = 2
+
+[resource]
+script = ExtResource("4_0u35p")
+id = &"farmhand.lucky_horseshoe"
+branch = 4
+display_name = "Lucky Horseshoe"
+description = "+6% (relative) Gold and Power Cell drop chance per level."
+max_level = 5
+prerequisites = Array[ExtResource("3_8fbfy")]([SubResource("Resource_1l41t")])
+cost_curve = SubResource("Resource_u1t12")
+effects = Array[ExtResource("2_mdvf8")]([SubResource("Resource_e20qc")])
+board_position = Vector2i(0, 1)

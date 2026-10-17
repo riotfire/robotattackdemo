@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_cq0ip"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_log5w"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_aiqfp"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_pkkld"]
+
+[sub_resource type="Resource" id="Resource_sljgk"]
+script = ExtResource("1_cq0ip")
+parts = Array[StringName]([&"al", &"cu", &"au"])
+bases = PackedFloat32Array(12, 6, 3)
+first_levels = PackedInt32Array(1, 4, 7)
+last_levels = PackedInt32Array(6, 8, 8)
+
+[sub_resource type="Resource" id="Resource_65td3"]
+script = ExtResource("2_log5w")
+stat = &"jetpack.recharge_speed"
+value = 0.15
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_akt5w"]
+script = ExtResource("2_log5w")
+stat = &"jetpack.recharge_delay"
+kind = 0
+per_level = PackedFloat32Array(0, 0, 0, -0.25, -0.25, -0.25, -0.25, -0.25)
+
+[sub_resource type="Resource" id="Resource_oeuak"]
+script = ExtResource("3_aiqfp")
+node_id = &"travel.jetpack"
+
+[resource]
+script = ExtResource("4_pkkld")
+id = &"travel.quick_refill"
+display_name = "Quick Refill"
+description = "+15% recharge speed per level. Level 4 also cuts the recharge delay by 0.25 s."
+max_level = 8
+prerequisites = Array[ExtResource("3_aiqfp")]([SubResource("Resource_oeuak")])
+cost_curve = SubResource("Resource_sljgk")
+effects = Array[ExtResource("2_log5w")]([SubResource("Resource_65td3"), SubResource("Resource_akt5w")])
+board_position = Vector2i(2, 1)

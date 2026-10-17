@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotTrait" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_trait.gd" id="1_ys6xu"]
+
+[resource]
+script = ExtResource("1_ys6xu")
+id = &"gilded"
+display_name = "Gilded"
+description = "x3 Gold drop chance."
+gold_chance_multiplier = 3.0
+tell = &"gold_band"

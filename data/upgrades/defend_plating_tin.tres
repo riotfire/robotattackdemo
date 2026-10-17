@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_4t6yc"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_in65s"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_2o2ec"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_2t4wd"]
+
+[sub_resource type="Resource" id="Resource_5p4c5"]
+script = ExtResource("1_4t6yc")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(40)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_m0n4x"]
+script = ExtResource("2_in65s")
+stat = &"silo.damage_reduction"
+kind = 3
+value = 0.1
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("4_2t4wd")
+id = &"defend.plating_tin"
+branch = 3
+display_name = "Plating: Tin"
+description = "The silo takes 10% less damage."
+cost_curve = SubResource("Resource_5p4c5")
+effects = Array[ExtResource("2_in65s")]([SubResource("Resource_m0n4x")])
+board_position = Vector2i(2, 0)

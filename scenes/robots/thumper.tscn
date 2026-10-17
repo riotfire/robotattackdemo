@@ -1,0 +1,96 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/heavy_robot.gd" id="1_robot"]
+[ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="2_hurtbox"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
+
+[sub_resource type="CapsuleShape3D" id="Shape_body"]
+radius = 0.8
+height = 2.5
+
+[sub_resource type="CapsuleShape3D" id="Shape_body_hurt"]
+radius = 1.0
+height = 2.0
+
+[sub_resource type="SphereShape3D" id="Shape_head_hurt"]
+radius = 0.62
+
+[sub_resource type="SphereShape3D" id="Shape_eye_hurt"]
+radius = 0.34
+
+[sub_resource type="BoxShape3D" id="Shape_vent_hurt"]
+size = Vector3(0.7, 0.6, 0.4)
+
+[node name="Thumper" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 1
+floor_snap_length = 0.3
+script = ExtResource("1_robot")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+shape = SubResource("Shape_body")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Pose" type="Node3D" parent="Model"]
+
+[node name="BodyHurtbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_hurtbox")
+
+[node name="Shape" type="CollisionShape3D" parent="BodyHurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0)
+shape = SubResource("Shape_body_hurt")
+
+[node name="HeadHurtbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_hurtbox")
+
+[node name="Shape" type="CollisionShape3D" parent="HeadHurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.46, 0)
+shape = SubResource("Shape_head_hurt")
+
+[node name="EyeHurtbox" type="Area3D" parent="Model"]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_hurtbox")
+damage_multiplier = 2.0
+is_weak_point = true
+
+[node name="Shape" type="CollisionShape3D" parent="Model/EyeHurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.49, -0.7)
+shape = SubResource("Shape_eye_hurt")
+
+[node name="VentHurtbox" type="Area3D" parent="Model"]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_hurtbox")
+damage_multiplier = 2.0
+is_weak_point = true
+
+[node name="Shape" type="CollisionShape3D" parent="Model/VentHurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.74, 0.95)
+shape = SubResource("Shape_vent_hurt")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 1.68
+target_desired_distance = 0.4
+path_max_distance = 4.0
+avoidance_enabled = true
+height = 2.52
+radius = 1.0
+neighbor_distance = 8.0
+max_neighbors = 8
+time_horizon_agents = 0.6
+max_speed = 8.0
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_health")
+max_health = 400.0

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_1kb1u"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_iprny"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_cm5sq"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_ev4dc"]
+
+[sub_resource type="Resource" id="Resource_0ed6r"]
+script = ExtResource("1_1kb1u")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(12)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(3)
+
+[sub_resource type="Resource" id="Resource_oq0mg"]
+script = ExtResource("2_iprny")
+stat = &"economy.early_bird"
+per_level = PackedFloat32Array(0.25, 0.5, 0.75)
+
+[resource]
+script = ExtResource("4_ev4dc")
+id = &"farmhand.early_bird"
+branch = 4
+display_name = "Early Bird"
+description = "+25 / 50 / 75% Early Bird bonus for ringing the bell early."
+max_level = 3
+cost_curve = SubResource("Resource_0ed6r")
+effects = Array[ExtResource("2_iprny")]([SubResource("Resource_oq0mg")])
+board_position = Vector2i(1, 1)

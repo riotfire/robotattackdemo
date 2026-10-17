@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RobotPalette" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_palette.gd" id="1_56uju"]
+
+[resource]
+script = ExtResource("1_56uju")
+adjective = "Minty"
+primary = Color(0.6, 0.95, 0.85, 1)
+secondary = Color(0.15, 0.2, 0.4, 1)
+trim = Color(0.95, 0.78, 0.3, 1)

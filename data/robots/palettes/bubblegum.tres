@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RobotPalette" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_palette.gd" id="1_2d8we"]
+
+[resource]
+script = ExtResource("1_2d8we")
+adjective = "Bubblegum"
+primary = Color(1, 0.68, 0.9, 1)
+secondary = Color(0.55, 0.3, 0.75, 1)
+trim = Color(0.85, 0.85, 0.9, 1)

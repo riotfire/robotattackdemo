@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_j115t"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_6lh6k"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_ro4f4"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_ffgam"]
+
+[sub_resource type="Resource" id="Resource_vggeh"]
+script = ExtResource("1_j115t")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(12)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(5)
+
+[sub_resource type="Resource" id="Resource_7rygi"]
+script = ExtResource("2_6lh6k")
+stat = &"home.heal_rate"
+value = 0.2
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("4_ffgam")
+id = &"defend.porch_swing"
+branch = 3
+display_name = "Porch Swing"
+description = "+20% Home healing per level."
+max_level = 5
+cost_curve = SubResource("Resource_vggeh")
+effects = Array[ExtResource("2_6lh6k")]([SubResource("Resource_7rygi")])
+board_position = Vector2i(0, 1)

@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://shaders/clay.gdshader" id="1_clay"]
+[ext_resource type="NoiseTexture2D" path="res://shaders/clay_lumps.tres" id="2_lumps"]
+[ext_resource type="NoiseTexture2D" path="res://shaders/clay_thumbprints.tres" id="3_prints"]
+
+[resource]
+shader = ExtResource("1_clay")
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
+shader_parameter/noise_tex = ExtResource("2_lumps")
+shader_parameter/thumbprint_normal = ExtResource("3_prints")
+shader_parameter/lump_strength = 0.012
+shader_parameter/boil_strength = 0.004
+shader_parameter/print_scale = 2.5
+shader_parameter/roughness_value = 0.62
+shader_parameter/sss_strength = 0.25
+shader_parameter/rim_strength = 0.2

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_iubf4"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_52e72"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_6f3je"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_k6p6a"]
+
+[sub_resource type="Resource" id="Resource_ey8r3"]
+script = ExtResource("1_iubf4")
+parts = Array[StringName]([&"al", &"cu"])
+bases = PackedFloat32Array(15, 8)
+first_levels = PackedInt32Array(1, 4)
+last_levels = PackedInt32Array(5, 5)
+
+[sub_resource type="Resource" id="Resource_yu6wh"]
+script = ExtResource("2_52e72")
+stat = &"wrench.swing_rate"
+value = 0.08
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("4_k6p6a")
+id = &"attack.wrench_speed"
+branch = 1
+display_name = "Swing Speed"
+description = "+8% swing speed per level."
+max_level = 5
+cost_curve = SubResource("Resource_ey8r3")
+effects = Array[ExtResource("2_52e72")]([SubResource("Resource_yu6wh")])
+board_position = Vector2i(0, 1)

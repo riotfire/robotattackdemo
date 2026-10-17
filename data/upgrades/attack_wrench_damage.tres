@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_gu6mr"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_h011q"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_ceseb"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_isr8a"]
+
+[sub_resource type="Resource" id="Resource_3ptvg"]
+script = ExtResource("1_gu6mr")
+parts = Array[StringName]([&"al", &"cu", &"au", &"pc"])
+bases = PackedFloat32Array(12, 6, 3, 2)
+first_levels = PackedInt32Array(1, 4, 7, 9)
+last_levels = PackedInt32Array(6, 10, 10, 10)
+
+[sub_resource type="Resource" id="Resource_lumow"]
+script = ExtResource("2_h011q")
+stat = &"wrench.damage"
+value = 0.12
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("4_isr8a")
+id = &"attack.wrench_damage"
+branch = 1
+display_name = "Swing Damage"
+description = "+12% wrench damage per level."
+max_level = 10
+cost_curve = SubResource("Resource_3ptvg")
+effects = Array[ExtResource("2_h011q")]([SubResource("Resource_lumow")])

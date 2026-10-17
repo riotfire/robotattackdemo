@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_skudo"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_bmrra"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_hrxfe"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_6ykbv"]
+
+[sub_resource type="Resource" id="Resource_dtcut"]
+script = ExtResource("1_skudo")
+parts = Array[StringName]([&"al", &"cu", &"au"])
+bases = PackedFloat32Array(15, 6, 2)
+first_levels = PackedInt32Array(1, 3, 5)
+last_levels = PackedInt32Array(5, 5, 5)
+
+[sub_resource type="Resource" id="Resource_uf2nh"]
+script = ExtResource("2_bmrra")
+stat = &"silo.harvest_bonus"
+kind = 0
+value = 16.0
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("4_6ykbv")
+id = &"repair.harvest_helpers"
+branch = 2
+display_name = "Harvest Helpers"
+description = "+16 bushels Harvest Bonus per level (40 -> 120)."
+max_level = 5
+cost_curve = SubResource("Resource_dtcut")
+effects = Array[ExtResource("2_bmrra")]([SubResource("Resource_uf2nh")])
+board_position = Vector2i(2, 0)

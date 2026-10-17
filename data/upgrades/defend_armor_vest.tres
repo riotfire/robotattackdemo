@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_h1pic"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_e4eao"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_yu54r"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_epgfd"]
+
+[sub_resource type="Resource" id="Resource_dle6o"]
+script = ExtResource("1_h1pic")
+parts = Array[StringName]([&"al", &"cu"])
+bases = PackedFloat32Array(60, 20)
+first_levels = PackedInt32Array(1, 1)
+last_levels = PackedInt32Array(1, 1)
+
+[sub_resource type="Resource" id="Resource_3wmqb"]
+script = ExtResource("2_e4eao")
+stat = &"player.armor"
+kind = 3
+value = 50.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_y1f30"]
+script = ExtResource("3_yu54r")
+node_id = &"defend.armor_overalls"
+
+[resource]
+script = ExtResource("4_epgfd")
+id = &"defend.armor_vest"
+branch = 3
+display_name = "Armor: Padded Vest"
+description = "50 armor."
+prerequisites = Array[ExtResource("3_yu54r")]([SubResource("Resource_y1f30")])
+cost_curve = SubResource("Resource_dle6o")
+effects = Array[ExtResource("2_e4eao")]([SubResource("Resource_3wmqb")])
+board_position = Vector2i(1, 1)

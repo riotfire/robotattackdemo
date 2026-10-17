@@ -1,0 +1,6 @@
+# Godot 4+ import cache and editor state
+.godot/
+/android/
+
+# macOS
+.DS_Store

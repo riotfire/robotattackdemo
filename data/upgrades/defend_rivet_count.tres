@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_kfais"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_lpeh6"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_v68ot"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_tjetc"]
+
+[sub_resource type="Resource" id="Resource_8jddp"]
+script = ExtResource("1_kfais")
+parts = Array[StringName]([&"al", &"cu"])
+bases = PackedFloat32Array(20, 11)
+first_levels = PackedInt32Array(1, 4)
+last_levels = PackedInt32Array(5, 5)
+
+[sub_resource type="Resource" id="Resource_x85j8"]
+script = ExtResource("2_lpeh6")
+stat = &"silo.max_structure"
+value = 0.1
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_yhcfo"]
+script = ExtResource("3_v68ot")
+node_id = &"defend.plating_tin"
+
+[resource]
+script = ExtResource("4_tjetc")
+id = &"defend.rivet_count"
+branch = 3
+display_name = "Rivet Count"
+description = "+10% silo max Structure per level."
+max_level = 5
+prerequisites = Array[ExtResource("3_v68ot")]([SubResource("Resource_yhcfo")])
+cost_curve = SubResource("Resource_8jddp")
+effects = Array[ExtResource("2_lpeh6")]([SubResource("Resource_x85j8")])
+board_position = Vector2i(3, 1)

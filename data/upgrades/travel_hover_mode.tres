@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_7d57e"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_4ajad"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_q0qge"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_bjb5w"]
+
+[sub_resource type="Resource" id="Resource_2i7ui"]
+script = ExtResource("1_7d57e")
+parts = Array[StringName]([&"cu"])
+bases = PackedFloat32Array(25)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_il3yh"]
+script = ExtResource("2_4ajad")
+stat = &"jetpack.hover"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_q5umx"]
+script = ExtResource("3_q0qge")
+node_id = &"travel.fuel_tank"
+level = 3
+
+[resource]
+script = ExtResource("4_bjb5w")
+id = &"travel.hover_mode"
+display_name = "Hover Mode"
+description = "Hold Jump while aiming to hover, burning fuel at 40%."
+prerequisites = Array[ExtResource("3_q0qge")]([SubResource("Resource_q5umx")])
+cost_curve = SubResource("Resource_2i7ui")
+effects = Array[ExtResource("2_4ajad")]([SubResource("Resource_il3yh")])
+board_position = Vector2i(2, 2)

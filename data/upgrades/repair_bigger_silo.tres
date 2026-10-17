@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_6jbl6"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_73wwg"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_mwjvm"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_543ba"]
+
+[sub_resource type="Resource" id="Resource_oat1t"]
+script = ExtResource("1_6jbl6")
+parts = Array[StringName]([&"cu", &"au"])
+bases = PackedFloat32Array(15, 5)
+first_levels = PackedInt32Array(1, 4)
+last_levels = PackedInt32Array(5, 5)
+
+[sub_resource type="Resource" id="Resource_rq337"]
+script = ExtResource("2_73wwg")
+stat = &"silo.max_grain"
+value = 0.1
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_36x1m"]
+script = ExtResource("3_mwjvm")
+node_id = &"repair.leak_plugs"
+level = 3
+
+[resource]
+script = ExtResource("4_543ba")
+id = &"repair.bigger_silo"
+branch = 2
+display_name = "Bigger Silo"
+description = "+10% grain capacity per level; Harvest Bonus fills the new space."
+max_level = 5
+prerequisites = Array[ExtResource("3_mwjvm")]([SubResource("Resource_36x1m")])
+cost_curve = SubResource("Resource_oat1t")
+effects = Array[ExtResource("2_73wwg")]([SubResource("Resource_rq337")])
+board_position = Vector2i(1, 2)

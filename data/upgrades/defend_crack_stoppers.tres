@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_ismap"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_hu5sg"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_1dfvm"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_aadhd"]
+
+[sub_resource type="Resource" id="Resource_5w75a"]
+script = ExtResource("1_ismap")
+parts = Array[StringName]([&"cu", &"au"])
+bases = PackedFloat32Array(15, 5)
+first_levels = PackedInt32Array(1, 3)
+last_levels = PackedInt32Array(3, 3)
+
+[sub_resource type="Resource" id="Resource_fas45"]
+script = ExtResource("2_hu5sg")
+stat = &"silo.crack_stop_chance"
+kind = 0
+value = 0.15
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_kxxmv"]
+script = ExtResource("3_1dfvm")
+node_id = &"defend.rivet_count"
+level = 3
+
+[resource]
+script = ExtResource("4_aadhd")
+id = &"defend.crack_stoppers"
+branch = 3
+display_name = "Crack Stoppers"
+description = "-15% chance per level that damage opens a new crack."
+max_level = 3
+prerequisites = Array[ExtResource("3_1dfvm")]([SubResource("Resource_kxxmv")])
+cost_curve = SubResource("Resource_5w75a")
+effects = Array[ExtResource("2_hu5sg")]([SubResource("Resource_fas45")])
+board_position = Vector2i(3, 2)

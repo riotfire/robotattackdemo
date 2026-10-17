@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="RobotArchetype" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/robot_archetype.gd" id="1_arch"]
+[ext_resource type="PackedScene" path="res://scenes/robots/thumper.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_arch")
+id = &"thumper"
+display_name = "Thumper"
+robot_type = 2
+robot_class = 0
+scene = ExtResource("2_scene")
+unlock_wave = 6
+squad_size = 1
+body_radius = 1.0
+base_hp = 400.0
+move_speed = 2.5
+attack_range = 3.0
+attack_interval = 2.5
+attack_windup = 0.8
+damage_vs_farmer = 25.0
+damage_vs_silo = 60.0
+farmer_target_chance = 0.3
+aggro_range = 10.0
+unreachable_give_up_time = 3.0
+shockwave_damage = 10.0
+shockwave_radius = 8.0
+shockwave_time = 0.8
+drop_al_min = 4
+drop_al_max = 6
+drop_al_class_bonus = 1
+drop_cu_chance = 1.0
+drop_cu_min = 2
+drop_cu_max = 3
+drop_au_chance = 0.3
+drop_pc_chance = 1.0

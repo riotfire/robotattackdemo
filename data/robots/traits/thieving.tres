@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotTrait" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_trait.gd" id="1_vw067"]
+
+[resource]
+script = ExtResource("1_vw067")
+id = &"thieving"
+display_name = "Thieving"
+description = "Any melee robot may steal grain."
+thieving = true
+tell = &"sack"

@@ -1,0 +1,184 @@
+class_name Pickup
+extends Node3D
+## Parts and grain sacks on the ground (GDD 12.3, 3.3). Parts burst out as springy clay bits, then
+## magnetize to a farmer within 3 m (Scrap Magnet adds range) and bank instantly. Uncollected parts blink
+## and vanish after 25 s; the Scrap Vac takes a share of them when a wave is cleared.
+## Grain sacks don't magnetize: walk over one to return its grain. Unclaimed sacks burst after 20 s
+## (Sack Tracker: they roll home on their own after 5 s).
+## Lightweight scripted nodes, not rigid bodies (GDD 18.4).
+
+const GROUP: StringName = &"pickups"
+const GRAIN: StringName = &"grain"
+const PART_LIFETIME: float = 25.0
+const SACK_LIFETIME: float = 20.0
+const SACK_AUTO_RETURN: float = 5.0
+const BLINK_TIME: float = 5.0
+const BASE_MAGNET_RADIUS: float = 3.0
+const COLLECT_RADIUS: float = 0.7
+const SACK_COLLECT_RADIUS: float = 1.4
+const GRAVITY: float = 18.0
+## At most this many bits per part type; bigger drops stack into fewer, worth more.
+const MAX_BITS: int = 6
+
+const COLORS: Dictionary[StringName, Color] = {
+	&"al": Color(0.82, 0.84, 0.88), &"cu": Color(0.9, 0.5, 0.22), &"au": Color(1.0, 0.8, 0.2),
+	&"pc": Color(0.3, 0.75, 0.35), &"grain": Color(0.78, 0.62, 0.38),
+}
+
+var kind: StringName = &"al"
+var amount: int = 1
+
+var _velocity: Vector3 = Vector3.ZERO
+var _ground_y: float = 0.0
+var _age: float = 0.0
+var _landed: bool = false
+var _magnet_speed: float = 0.0
+var _target: Node3D = null
+var _visual: Node3D
+
+
+static func spawn_parts(context: Node, at: Vector3, parts: Dictionary) -> void:
+	var rng := RngService.stream(RngService.STREAM_COSMETIC)
+	for part: StringName in parts:
+		var total := int(parts[part])
+		if total <= 0:
+			continue
+		var bits := mini(total, MAX_BITS)
+		for i in bits:
+			var value := floori(float(total) / bits) + (1 if i < total % bits else 0)
+			var pickup := Pickup.new()
+			pickup.kind = part
+			pickup.amount = value
+			pickup._velocity = Vector3(rng.randf_range(-3.0, 3.0), rng.randf_range(4.0, 7.0), rng.randf_range(-3.0, 3.0))
+			_add(context, pickup, at)
+
+
+static func spawn_grain(context: Node, at: Vector3, bushels: float) -> Pickup:
+	var pickup := Pickup.new()
+	pickup.kind = GRAIN
+	pickup.amount = roundi(bushels)
+	pickup._velocity = Vector3(0.0, 3.0, 0.0)
+	_add(context, pickup, at)
+	return pickup
+
+
+static func _add(context: Node, pickup: Pickup, at: Vector3) -> void:
+	var parent := context.get_tree().current_scene
+	parent.add_child(pickup)
+	pickup.global_position = at
+	pickup.reset_physics_interpolation()
+
+
+func _ready() -> void:
+	add_to_group(GROUP)
+	_visual = Node3D.new()
+	add_child(_visual)
+	var color := COLORS.get(kind, Color.WHITE) as Color
+	match kind:
+		&"al":  # a nut
+			Clay.part(_visual, _cylinder(0.12, 0.07, 6), color, Transform3D.IDENTITY)
+		&"cu":  # a coil
+			var coil := TorusMesh.new()
+			coil.inner_radius = 0.06
+			coil.outer_radius = 0.12
+			Clay.part(_visual, coil, color, Transform3D(Basis(Vector3.RIGHT, PI * 0.5), Vector3.ZERO))
+		&"au":  # a gear
+			Clay.part(_visual, _cylinder(0.13, 0.05, 8), color, Transform3D.IDENTITY, 0.6)
+		&"pc":  # a chunky battery
+			var cell := BoxMesh.new()
+			cell.size = Vector3(0.14, 0.24, 0.14)
+			Clay.part(_visual, cell, color, Transform3D.IDENTITY, 0.4)
+		_:  # a grain sack
+			var sack := SphereMesh.new()
+			sack.radius = 0.32
+			sack.height = 0.5
+			Clay.part(_visual, sack, color, Transform3D(Basis(), Vector3(0.0, 0.25, 0.0)))
+	_ground_y = _find_ground(global_position)
+
+
+func _physics_process(delta: float) -> void:
+	_age += delta
+	var lifetime := SACK_LIFETIME if kind == GRAIN else PART_LIFETIME
+	if kind == GRAIN and _age >= SACK_AUTO_RETURN and StatService.has_flag(&"grain.sack_tracker"):
+		_return_grain()
+		return
+	if _age >= lifetime:
+		if kind == GRAIN:
+			EventBus.hud_message.emit("A grain sack burst: %d bushels lost" % amount, 2.0)
+		queue_free()
+		return
+	_visual.visible = _age < lifetime - BLINK_TIME or int(_age * 8.0) % 2 == 0
+
+	if _target != null and is_instance_valid(_target):
+		_magnet_speed += 30.0 * delta
+		var goal := _target.global_position + Vector3.UP * 0.9
+		global_position = global_position.move_toward(goal, (6.0 + _magnet_speed) * delta)
+		if global_position.distance_to(goal) <= COLLECT_RADIUS:
+			_collect()
+		return
+
+	if not _landed:
+		_velocity.y -= GRAVITY * delta
+		var next := global_position + _velocity * delta
+		if next.y <= _ground_y:
+			next.y = _ground_y
+			_velocity = Vector3(_velocity.x * 0.5, -_velocity.y * 0.35, _velocity.z * 0.5)
+			if _velocity.y < 1.0:
+				_landed = true
+		global_position = next
+	else:
+		_visual.rotation.y += delta * 2.0
+
+	for player in GameState.players:
+		if not is_instance_valid(player):
+			continue
+		var d := player.global_position.distance_to(global_position)
+		if kind == GRAIN:
+			if d <= SACK_COLLECT_RADIUS:
+				_return_grain()
+				return
+		elif d <= BASE_MAGNET_RADIUS + StatService.get_stat(&"pickups.magnet_radius", 0.0):
+			_target = player
+			return
+
+
+func _collect() -> void:
+	GameState.add_parts({kind: amount})
+	queue_free()
+
+
+func _return_grain() -> void:
+	var silo := GameState.silo
+	if silo != null:
+		var added := silo.add_grain(float(amount))
+		EventBus.grain_returned.emit(added)
+		EventBus.hud_message.emit("Grain sack returned: +%d bushels" % roundi(added), 1.5)
+	queue_free()
+
+
+## Scrap Vac (GDD 11.1): banks a share of this pickup at wave end and removes it. Returns parts banked.
+func vacuum(fraction: float, rng: RandomNumberGenerator) -> int:
+	if kind == GRAIN:
+		return 0
+	var exact := amount * clampf(fraction, 0.0, 1.0)
+	var banked := floori(exact) + (1 if rng.randf() < exact - floorf(exact) else 0)
+	if banked > 0:
+		GameState.add_parts({kind: banked})
+	queue_free()
+	return banked
+
+
+func _find_ground(from: Vector3) -> float:
+	var query := PhysicsRayQueryParameters3D.create(from + Vector3.UP * 0.5, from + Vector3.DOWN * 40.0, 1)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	return (hit["position"] as Vector3).y + 0.12 if not hit.is_empty() else 0.12
+
+
+static func _cylinder(radius: float, height: float, segments: int) -> CylinderMesh:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = height
+	mesh.radial_segments = segments
+	mesh.rings = 1
+	return mesh

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="RobotArchetype" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/robot_archetype.gd" id="1_arch"]
+[ext_resource type="PackedScene" path="res://scenes/robots/nibbler.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_arch")
+id = &"nibbler"
+display_name = "Nibbler"
+robot_type = 0
+robot_class = 0
+scene = ExtResource("2_scene")
+unlock_wave = 1
+squad_size = 1
+body_radius = 0.35
+base_hp = 30.0
+move_speed = 8.0
+attack_range = 1.8
+attack_interval = 1.0
+attack_windup = 0.3
+damage_vs_farmer = 4.0
+damage_vs_silo = 6.0
+farmer_target_chance = 0.3
+aggro_range = 10.0
+unreachable_give_up_time = 3.0
+steal_chance = 0.5
+drop_al_min = 1
+drop_al_max = 2
+drop_al_class_bonus = 1
+drop_cu_chance = 0.15
+drop_au_chance = 0.01
+drop_pc_chance = 0.005

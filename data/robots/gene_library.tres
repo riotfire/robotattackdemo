@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="GeneLibrary" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/gene_library.gd" id="1_jjmhr"]
+[ext_resource type="Script" path="res://scripts/ai/genome/family_theme.gd" id="2_5feih"]
+[ext_resource type="Resource" path="res://data/robots/themes/junkyard.tres" id="3_q58m7"]
+[ext_resource type="Resource" path="res://data/robots/themes/disco.tres" id="4_nlkj4"]
+[ext_resource type="Resource" path="res://data/robots/themes/pirate.tres" id="5_dj0sh"]
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_trait.gd" id="6_bodba"]
+[ext_resource type="Resource" path="res://data/robots/traits/speedy.tres" id="7_ach8s"]
+[ext_resource type="Resource" path="res://data/robots/traits/armored.tres" id="8_elpgt"]
+[ext_resource type="Resource" path="res://data/robots/traits/gilded.tres" id="9_7a0g7"]
+[ext_resource type="Resource" path="res://data/robots/traits/thieving.tres" id="10_tbio2"]
+
+[resource]
+script = ExtResource("1_jjmhr")
+themes = Array[ExtResource("2_5feih")]([ExtResource("3_q58m7"), ExtResource("4_nlkj4"), ExtResource("5_dj0sh")])
+traits = Array[ExtResource("6_bodba")]([ExtResource("7_ach8s"), ExtResource("8_elpgt"), ExtResource("9_7a0g7"), ExtResource("10_tbio2")])

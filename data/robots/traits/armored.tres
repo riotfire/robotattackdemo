@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RobotTrait" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_trait.gd" id="1_5yi74"]
+
+[resource]
+script = ExtResource("1_5yi74")
+id = &"armored"
+display_name = "Armored"
+description = "+40% HP, -10% speed."
+hp_multiplier = 1.4
+speed_multiplier = 0.9
+tell = &"armor_plates"
