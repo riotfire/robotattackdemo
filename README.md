@@ -7,7 +7,7 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 ## What's in M1
 
 - **Farm:** every building from GDD 4.4 with ladders, hay-bale stairs, the porch trellis and ziplines Z1 (silo dome → barn), Z2 (water tower → silo catwalk) and Z3 (barn → stables). Each run scatters seeded props (hay, crates, fences, scarecrows, a tractor) and rebakes the navmesh around them.
-- **Robots:** Nibblers (scouts; about 10% of the wave's spawns steal 20-bushel grain sacks in wave 1, rising 1.5 points each wave to a 40% cap), Clanker squads of 3 hitting in a clank-clank-CLANK rhythm, and Thumpers whose slams send a shockwave ring you can jump over. Every Big Haul wave (5, 10, 15…) brings a crowned Foreman. Each wave is one procedural family (3 themes, 9 palettes, 4 traits) with a name card and a 6-character family code.
+- **Robots:** Nibblers (scouts; about 10% of the wave's spawns steal 20-bushel grain sacks in wave 1, rising 1.5 points each wave to a 40% cap; a Thieving family multiplies that by 1.5, up to 60%), Clanker squads of 3 hitting in a clank-clank-CLANK rhythm, and Thumpers whose slams send a shockwave ring you can jump over. Every Big Haul wave (5, 10, 15…) brings a crowned Foreman. Each wave is one procedural family (3 themes, 9 palettes, 4 traits) with a name card and a 6-character family code.
 - **Economy:** parts burst out of robots and magnetize to you; the Scrap Vac collects a share when a wave ends. The tool shed pegboard has 33 upgrades across Travel, Attack, Repair, Defend and Farmhand. The Rivet Pistol is the first purchase (20 Al); you start with the wrench.
 - **Persistence:** parts, upgrades, the jetpack, records and the Robot Almanac save to `user://profile.json` (on macOS, `~/Library/Application Support/Godot/app_userdata/Robot Attack!/`). Autosaves happen at each intermission start, after each purchase and on game over.
 - **Look:** a clay shader (lumps, thumbprints, subsurface scattering, and a 12 fps surface "boil" driven by `StopMotionClock`). Robot poses step at 12 fps and the farmer's squash and stretch at 24 fps.
@@ -23,16 +23,15 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 | Interact: repair (hold), shed pegboard, dinner bell (hold), zipline | E | X |
 | Reload | R | X |
 | Weapons | 1 wrench, 2 pistol, mouse wheel | Y |
-| Run (hold; +20% speed) | — | L3 |
 | Shoulder swap | Middle mouse | — |
 | Pegboard (shed open): move / buy / close | Mouse: hold click on a peg to buy | D-pad or left stick / hold A / B or Start |
 | Ladders | Walk into them; W/S climb; Space steps onto a catwalk or lets go | |
 
-Intermissions run 2 minutes, long enough to browse the pegboard. The jetpack unlocks for free after wave 2. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
+Intermissions run 2 minutes for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack unlocks for free after wave 2. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
 
 ## Debug keys (debug builds)
 
-F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `reset` (wipe the profile).
+F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `intermission <seconds>`, `reset` (wipe the profile).
 
 Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` for a separate profile.
 

@@ -92,10 +92,12 @@ func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyC
 
 	var roll := rng.randf()
 	var steal_chance := archetype.steal_chance
-	# Scouts steal at the curve's per-wave thief share, so the Thieving trait doesn't push it higher.
+	# Scouts steal at the curve's per-wave thief share; a Thieving family raises it (GDD 11.7, ROADMAP D4).
+	# Squads never steal, so Grunt formations stay readable.
 	if archetype.robot_class == RobotArchetype.RobotClass.MELEE \
 			and archetype.robot_type == RobotArchetype.RobotType.SCOUT:
-		steal_chance = curve.thief_chance(wave, archetype.farmer_target_chance)
+		var thieving := all_traits().any(func(t: RobotTrait) -> bool: return t.thieving)
+		steal_chance = curve.thief_chance(wave, archetype.farmer_target_chance, thieving)
 	if roll < archetype.farmer_target_chance:
 		target_kind = TargetKind.PLAYER
 	elif not foreman and robot_squad == null and rng.randf() < steal_chance:

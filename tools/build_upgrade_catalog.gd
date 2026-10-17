@@ -115,8 +115,8 @@ func _initialize() -> void:
 	# FARMHAND (GDD 13.8)
 	_node(&"farmhand.scrap_magnet", F, "Scrap Magnet", "+1.5 m pickup magnet radius per level (base 3 m).", 5, [],
 			_al(10.0, 5), [StatModifier.make(&"pickups.magnet_radius", FLAT, 1.5)], Vector2i(0, 0))
-	_node(&"farmhand.lucky_horseshoe", F, "Lucky Horseshoe", "+6% (relative) Gold and Power Cell drop chance per level.", 5,
-			[_req(&"farmhand.scrap_magnet", 2)], _cu_au(15.0, 5), [StatModifier.make(&"drops.rare_chance", PCT, 0.06)],
+	_node(&"farmhand.lucky_horseshoe", F, "Lucky Horseshoe", "+15% (relative) Gold and Power Cell drop chance per level.", 5,
+			[_req(&"farmhand.scrap_magnet", 2)], _cu_au(15.0, 5), [StatModifier.make(&"drops.rare_chance", PCT, 0.15)],
 			Vector2i(0, 1))
 	_node(&"farmhand.scrap_vac", F, "Scrap Vac", "End-of-wave auto-collect: 50% of leftover parts, +10% per level.", 5, [],
 			_al_cu(12.0, 5), [StatModifier.make(&"pickups.scrap_vac", FLAT, 0.10)], Vector2i(1, 0))

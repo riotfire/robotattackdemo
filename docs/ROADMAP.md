@@ -5,7 +5,7 @@
 | **Status** | Draft v0.1 |
 | **Date** | 2026-10-17 |
 | **Source of truth** | [Robot_Attack_GDD.md](../Robot_Attack_GDD.md). This roadmap breaks GDD section 21 into work packages. When the two disagree, the GDD wins once the decisions in section 2 are made. |
-| **Current state** | M0 and M1 are built (see section 1). M2 starts after the M1 playtest feedback is in. |
+| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17 and M2-A1 is done (section 2.4). The rest of M2 starts after the M1 playtest feedback is in. |
 
 ---
 
@@ -39,8 +39,8 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Meta | Profile save (parts, upgrades, records, Almanac data), Harvest Report, restart | + Farmhouse Hub, start-phase checkpoints, Almanac UI, cosmetics | M2 |
 | Look | Clay shader with lumps, thumbprints, subsurface scattering, 12 fps boil; stepped robot poses | Real models, felt/cellophane/cotton materials, VFX, cardboard UI | M2–M3 (see D8) |
 | Audio | None | Adaptive bluegrass-chiptune music, clay foley, robot voices | M3 (see D8) |
-| Tests | 33 GUT unit tests; 93-check headless smoke test; genome gallery | Grows with every work package | Ongoing |
-| Version control | **Not a git repository yet** | Required for parallel sessions | Before M2 (see D9) |
+| Tests | 34 GUT unit tests (all pass); 93-check headless smoke test that **passes on some seeds only** (seed 42 passes; seeds 1234 and 664607717 fail because wave 1 never clears); genome gallery | Grows with every work package | M2-A0 fixes the smoke test |
+| Version control | Git repository on `main` with an initial commit (D9, done) | Required for parallel sessions | Done |
 
 ---
 
@@ -48,7 +48,7 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 
 ### 2.1 Behavior that differs from the GDD
 
-Each row needs a choice from you. The recommendation is mine; the GDD gets updated to match whatever you pick (work package M2-A1).
+**Decided 2026-10-17: you accepted every recommendation below.** Section 2.4 lists what changed. The table is kept as the record of why.
 
 | # | Topic | GDD says | M1 does | Options | Recommendation |
 |---|---|---|---|---|---|
@@ -78,14 +78,28 @@ Each row needs a choice from you. The recommendation is mine; the GDD gets updat
 | Compass with lane markers, off-screen threat arrows | M2-H5 |
 | Settings menu, remapping, accessibility options (M1 saves only sensitivity, invert Y and reduce motion) | M3-E |
 
-### 2.3 GDD inconsistencies to fix
+### 2.3 GDD inconsistencies (fixed in M2-A1)
 
-The M1 session edited a few GDD lines, which left the GDD contradicting itself. M2-A1 fixes these once D1–D5 are decided:
+The M1 session edited a few GDD lines, which left the GDD contradicting itself. M2-A1 fixed all of these:
 
 - **Intermission:** 30 s in sections 2.2, 11.1 and 20, but 120 s in 17.3 and Appendix A.
 - **Run button:** a "Run (hold)" row was added to the 5.2 controls table, but 5.3 doesn't mention it.
 - **Thieves:** the code cites "GDD 11.7", which doesn't exist. Add a thieves subsection with the per-wave share model (D3).
 - **Crack model details** that M1 decided but 3.3 doesn't describe: each crack holds 10% of max Structure as its repair pool; new cracks open by height band with 50/30/20% weights (ground, catwalk 1, catwalk 2); when all 10 slots are full, extra damage goes into the nearest crack's pool.
+
+### 2.4 Outcomes
+
+| # | Decision | What changed |
+|---|---|---|
+| D1 | 30 s target; 120 s until the Hub pegboard and pinned goals exist | GDD says 30 s everywhere, with a note about builds. Code keeps 120 s (comment points here) and adds a console command, `intermission <seconds>`, for trying other lengths. **M2-H3/M2-G1 exit criteria now include switching the default to 30 s.** |
+| D2 | Remove the run button | Removed the `run` input action, `run_multiplier` and the README/GDD rows. |
+| D3 | Keep M1's thief ramp | New GDD section 11.7 documents it; Nibbler text in 3.3 and 9.3 updated; the archetype's `steal_chance` comment explains that scouts use the curve. |
+| D4 | Thieving = ×1.5 thief share (max 60%) | `DifficultyCurve.thief_share(wave, thieving)` plus `thieving_share_multiplier` / `thieving_share_cap`; `robot.gd` reads the trait; new unit test. Squads still never steal. |
+| D5 | Lucky Horseshoe +15% relative per level | Catalog tool, the `.tres` node and GDD 13.8 updated. |
+| D6 | LimboAI | **Spike passed** on Godot 4.7.2 with the LimboAI v1.8.1 GDExtension: all classes register, a `BTPlayer` ticks a GDScript task, and a `LimboHSM` switches states. Quirk: the first headless import of a fresh project crashes once (signal 11); later runs are fine. CI must run the import twice. |
+| D7 | Keep the custom camera | GDD 18.4 and 19.2 updated. |
+| D8 | Art and audio in parallel from M2 | Track J is active; GDD 21 points here. |
+| D9 | Git | Repository created on `main` with an initial commit. |
 
 ---
 
@@ -138,9 +152,10 @@ WPs that touch different files can run in separate sessions at the same time, ea
 
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
-| **M2-A1** | **Decisions + GDD sync.** Apply D1–D5 in code and data; fix the 2.3 inconsistencies; create `CREDITS.md`. | D1–D9 | S | GDD and code agree; tests pass |
+| ~~M2-A1~~ | **Done 2026-10-17.** Decisions + GDD sync: applied D1–D5 in code and data; fixed the 2.3 inconsistencies; created `CREDITS.md`. | D1–D9 | S | Unit tests pass (34/34); smoke results identical before and after the change |
+| **M2-A0** | **Fix the seed-dependent smoke test.** On some seeds wave 1 never clears, which cascades into ~37 failed checks; another seed failed the pistol-hitscan check. Find whether it's a stuck robot (navigation), a test-timing issue or a real bug, then fix it. Run the smoke test on 10+ fixed seeds. | — | M | The smoke test passes on 10 fixed seeds and a few random ones |
 | **M2-A2** | **Farmer refactor + weapon framework.** Split `farmer.gd` into movement, weapon holder, repair and interaction components. Add `WeaponData` resources, a weapon wheel (hold Q / Y; number keys), mod-slot plumbing (`on_fire`, `on_hit`, `on_kill` hooks) and pooled projectiles. | A1 | L | Wrench and pistol work unchanged on the new framework; the wheel works on keyboard and gamepad; smoke test passes |
-| **M2-A3** | **Robot AI restructure.** Per D6: migrate to LimboAI behavior trees, or split `robot.gd` into per-class behavior components. Add perch-aware positioning and a squad blackboard. | A1, D6 spike | L | The 3 melee archetypes behave as in M1 on the new structure; tests pass |
+| **M2-A3** | **Robot AI restructure.** Vendor the LimboAI v1.8.1 GDExtension (D6) and migrate `robot.gd`'s state machine to behavior trees (one per class). Add perch-aware positioning and a squad blackboard. Add LimboAI to `CREDITS.md`. | A1 | L | The 3 melee archetypes behave as in M1 on the new structure; tests pass |
 | **M2-A4** | **Telegraphs and enemy projectiles.** Pooled slow clay projectiles, red-yarn aim lines, chalk landing circles. | A3 | M | A test robot can fire each projectile type with its telegraph |
 | **M2-A5** | **Content tables.** Move the pegboard catalog, archetype stats and genome data to one editable source (CSV/JSON in `data/source/`), with the `tools/` scripts generating `.tres` files from it. Add an "orphan stat" test: every `StatModifier` key must be read by some system. | A1 | M | Regenerating from the tables reproduces M1's data exactly; the orphan test passes |
 
@@ -203,11 +218,11 @@ A2 and A3 touch different files, so they can run in parallel after A1.
 |---|---|---|---|---|
 | **M2-H1** | **Time of day and weather.** 6 lighting presets that advance one step per phase; Clear, Breezy, Drizzle and Morning Fog (fog shortens long-range robot range by 20%). | A1 | L | Every preset and weather type works and is seeded per run |
 | **M2-H2** | **Crop variation.** Seeded crop-wedge arrangement and trample trails that last the whole run. | A1 | M | Crops differ per seed; trails appear where robots walk |
-| **M2-H3** | **Farmhouse Hub + flow.** Title screen → Hub (pegboard, Almanac, settings stub, Start Run) → run → Harvest Report → Hub. Start-phase checkpoints; Full Harvest and checkpoint records tracked separately. Save schema v2 with a migration from v1. | A1 | L | A v1 profile migrates cleanly (tested); checkpoints follow GDD 14.2 |
+| **M2-H3** | **Farmhouse Hub + flow.** Title screen → Hub (pegboard, Almanac, settings stub, Start Run) → run → Harvest Report → Hub. Start-phase checkpoints; Full Harvest and checkpoint records tracked separately. Save schema v2 with a migration from v1. | A1 | L | A v1 profile migrates cleanly (tested); checkpoints follow GDD 14.2; once G1's pinned goals also exist, the intermission default drops to 30 s (D1) |
 | **M2-H4** | **Robot Almanac UI.** SubViewport photo of each family, family codes (view and enter), milestone cosmetics (hats). | H3, F2 | M | Entering a family code rebuilds that family's look |
 | **M2-H5** | **HUD pass.** Compass with lanes and threat pips, off-screen arrows (silo attackers, thieves, Longnecks), Foreman stinger, egg count, deployables. | B2, C4, D1 | M | All GDD 17.2 elements are present |
 
-### 4.9 Track J: Art and audio groundwork (only if D8 = parallel)
+### 4.9 Track J: Art and audio groundwork (D8: runs in parallel with the rest of M2)
 
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
@@ -254,8 +269,8 @@ flowchart LR
 
 | Batch | Sessions in parallel | Why this grouping |
 |---|---|---|
-| **0** | D9 (git init), D6 spike | Prerequisites |
-| **1** | A1 alone | Every later WP builds on it |
+| ~~0~~ | D9 (git init), D6 spike: **done** | Prerequisites |
+| **1** | ~~A1~~ (done) · A0 (smoke test fix) | A0 before parallel work, so every session can trust the smoke test |
 | **2** | A2 · A3 · A5 · H1 · J1 | Disjoint files: player, AI, data tools, lighting, Blender |
 | **3** | A4 → B1 and B2 (one session, AI files) · C1–C3 (weapons) · D1–D2 (repair) · H3 (hub) · F1 (robot parts) | Each owns its own folder |
 | **4** | B3–B5 · C4–C6 · D3–D4 · E1 · F2 · H2 · J2–J5 | Feature fill |
@@ -384,7 +399,9 @@ Re-plan at each milestone gate using the actual pace of the previous milestone.
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| LimboAI has no Godot 4.7 build | M2-A3 stalls | The D6 spike runs first; the fallback is per-class components in plain GDScript |
+| LimboAI breaks on a future Godot update | M2-A3+ stalls | Pin Godot 4.7.x and LimboAI 1.8.x together; upgrade both only between milestones. (The D6 spike confirmed v1.8.1 works on 4.7.2.) |
+| LimboAI's first-import crash breaks CI | Red builds | Run `--import` twice in CI before tests (M4-C) |
+| The smoke test stays seed-dependent | Parallel sessions can't trust it | M2-A0 fixes it before batch 2 |
 | Hotspot files collide between parallel sessions | Lost work, merge pain | Hotspot owner rule (3.3); A2 and A5 break up the worst files first; git worktrees (D9) |
 | The ~350-node pegboard gets too large to tune by hand | Dead or overpowered nodes | Content tables (A5), the orphan-stat test, the economy simulator (G2), telemetry (M3-A) |
 | Art lags behind code | M3 slips; the game looks graybox at beta | D8 = parallel art track; clayify pipeline proven in M2-J1 |
@@ -397,6 +414,6 @@ Re-plan at each milestone gate using the actual pace of the previous milestone.
 
 ## 10. Next steps
 
-1. **You:** playtest M1 and note feel and balance (economy, theft pressure, Nibbler speed vs. farmer speed, Thumper telegraphs, ziplines, Hover Mode).
-2. **You:** decide D1–D9 (section 2.1). D9 (git) and the D6 spike can happen right away.
-3. **Then:** run M2-A1 to apply the decisions and sync the GDD, and start batch 2 (section 4.11) in parallel sessions.
+1. **You:** playtest M1 and note feel and balance (economy, theft pressure, Nibbler speed vs. farmer speed, Thumper telegraphs, ziplines, Hover Mode). The run button is gone (D2); `intermission 30` in the console lets you try the 30 s target.
+2. **Next:** M2-A0 (fix the seed-dependent smoke test).
+3. **Then:** batch 2 (section 4.11) in parallel sessions, each in its own git worktree.

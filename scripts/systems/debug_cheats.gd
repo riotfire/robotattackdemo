@@ -13,7 +13,8 @@ F7  unlock the jetpack
 F8  damage the silo (100)
 `   console:  wave <n>   give <al|cu|au|pc|all> <n>
               godmode   jetpack   silo <dmg>   grain <n>
-              kill   bell   buy <upgrade id>   reset (wipe profile)"""
+              kill   bell   buy <upgrade id>   intermission <s>
+              reset (wipe profile)"""
 
 @export var director: WaveDirector
 @export var hud: Hud
@@ -118,6 +119,17 @@ func damage_silo(amount: float) -> void:
 	_say("Silo -%d" % roundi(amount))
 
 
+## Sets the intermission length for this session (ROADMAP D1); trims the current countdown if longer.
+func set_intermission(seconds: float) -> void:
+	if director == null or seconds <= director.siren_lead_time:
+		_say("Intermission must be longer than the %d s siren" % roundi(director.siren_lead_time if director else 10.0))
+		return
+	director.intermission_time = seconds
+	if director.phase == WaveDirector.Phase.INTERMISSION:
+		director.time_left = minf(director.time_left, seconds)
+	_say("Intermission: %d s" % roundi(seconds))
+
+
 func _on_console_submitted(text: String) -> void:
 	_console.clear()
 	var words := text.strip_edges().to_lower().split(" ", false)
@@ -148,6 +160,8 @@ func _on_console_submitted(text: String) -> void:
 		"buy":
 			var id := StringName(text.strip_edges().split(" ", false)[1]) if words.size() > 1 else &""
 			_say("Bought %s" % id if StatService.purchase(id) else "Can't buy %s" % id)
+		"intermission":
+			set_intermission(arg.to_float())
 		"reset":
 			SaveManager.reset_profile()
 			_say("Profile wiped: parts, upgrades, jetpack and records")

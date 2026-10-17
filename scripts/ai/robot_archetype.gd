@@ -39,7 +39,8 @@ const CLASS_COST_MULTIPLIERS: PackedFloat32Array = [1.0, 1.25, 1.6]
 @export var aggro_range: float = 10.0
 ## Gives up on a farmer who stays out of reach (e.g. on a roof) for this long and goes back to the silo.
 @export var unreachable_give_up_time: float = 3.0
-## Chance a silo-bound robot grabs a grain sack instead (Nibblers: 50%, GDD 9.3).
+## Chance a silo-bound robot grabs a grain sack instead. Ignored for Scout melee robots (Nibblers),
+## which steal at DifficultyCurve.thief_share instead (GDD 11.7).
 @export_range(0.0, 1.0) var steal_chance: float = 0.0
 
 @export_group("Heavy slam (GDD 9.3)")

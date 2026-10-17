@@ -13,8 +13,6 @@ const AIM_MASK: int = 1 | (1 << 4) | (1 << 5)
 
 @export_group("Movement (GDD 5.3)")
 @export var run_speed: float = 7.0
-## Hold Run (L3) to move this many times faster than run_speed. Not while aiming or repairing.
-@export var run_multiplier: float = 1.2
 @export var aim_walk_speed: float = 4.0
 @export var jump_height: float = 1.3
 @export var gravity: float = 22.0
@@ -167,8 +165,7 @@ func _process_free_move(delta: float, wish: Vector3) -> void:
 	if _try_start_climb(wish, grounded):
 		return
 
-	var run := run_multiplier if input.is_pressed(&"run") and not is_aiming else 1.0
-	var speed := 0.0 if is_repairing else (aim_walk_speed if is_aiming else StatService.get_stat(&"player.run_speed", run_speed) * run)
+	var speed := 0.0 if is_repairing else (aim_walk_speed if is_aiming else StatService.get_stat(&"player.run_speed", run_speed))
 	var target_velocity := wish * speed
 	var accel := ground_acceleration * (1.0 if grounded else air_control)
 

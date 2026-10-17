@@ -32,6 +32,9 @@ extends Resource
 @export var thief_share_base: float = 0.10
 @export var thief_share_per_wave: float = 0.015
 @export var thief_share_cap: float = 0.4
+## A Thieving family multiplies the share by this (ROADMAP D4), up to thieving_share_cap.
+@export var thieving_share_multiplier: float = 1.5
+@export var thieving_share_cap: float = 0.6
 
 @export_group("Spawn pacing (11.4)")
 ## Relative spawn intensity over the window: ramp, peak, short lull, bigger peak. Never even.
@@ -95,14 +98,18 @@ func lane_count(wave: int) -> int:
 
 
 ## Share of the wave's spawns that are thieves (GDD 11.7): thief_share_base in wave 1, creeping up each wave.
-func thief_share(wave: int) -> float:
-	return minf(thief_share_cap, thief_share_base + thief_share_per_wave * float(wave - 1))
+## A Thieving family multiplies it by thieving_share_multiplier, up to thieving_share_cap.
+func thief_share(wave: int, thieving: bool = false) -> float:
+	var share := minf(thief_share_cap, thief_share_base + thief_share_per_wave * float(wave - 1))
+	if thieving:
+		share = minf(thieving_share_cap, share * thieving_share_multiplier)
+	return share
 
 
 ## Steal roll for a scout, applied after its farmer-target roll. Dividing by the chance of not going
 ## for the farmer makes the overall thief share come out at thief_share(wave).
-func thief_chance(wave: int, farmer_target_chance: float) -> float:
-	return thief_share(wave) / maxf(0.01, 1.0 - farmer_target_chance)
+func thief_chance(wave: int, farmer_target_chance: float, thieving: bool = false) -> float:
+	return thief_share(wave, thieving) / maxf(0.01, 1.0 - farmer_target_chance)
 
 
 ## Relative spawn intensity at normalized time t in [0, 1].

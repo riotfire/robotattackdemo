@@ -15,7 +15,7 @@ last_levels = PackedInt32Array(5, 5)
 [sub_resource type="Resource" id="Resource_e20qc"]
 script = ExtResource("2_mdvf8")
 stat = &"drops.rare_chance"
-value = 0.06
+value = 0.15
 per_level = PackedFloat32Array()
 
 [sub_resource type="Resource" id="Resource_1l41t"]
@@ -28,7 +28,7 @@ script = ExtResource("4_0u35p")
 id = &"farmhand.lucky_horseshoe"
 branch = 4
 display_name = "Lucky Horseshoe"
-description = "+6% (relative) Gold and Power Cell drop chance per level."
+description = "+15% (relative) Gold and Power Cell drop chance per level."
 max_level = 5
 prerequisites = Array[ExtResource("3_8fbfy")]([SubResource("Resource_1l41t")])
 cost_curve = SubResource("Resource_u1t12")

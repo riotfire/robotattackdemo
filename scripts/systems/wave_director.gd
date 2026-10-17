@@ -25,7 +25,8 @@ const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-
 @export var type_weights: PackedFloat32Array = [0.55, 0.35, 0.10]
 ## The Foreman arrives at this fraction of the spawn window.
 @export var foreman_spawn_at: float = 0.45
-## Long enough to browse the pegboard and shop between waves.
+## GDD target is 30 s (ROADMAP D1). Builds keep 120 s until the Hub pegboard and pinned-goals
+## quick-buy land (M2-H3, M2-G1). Try other lengths with the console's `intermission <s>`.
 @export var intermission_time: float = 120.0
 @export var siren_lead_time: float = 10.0
 ## Pause on the "Cleared" jingle before the next intermission starts.

@@ -30,7 +30,6 @@ func _initialize() -> void:
 	# ignored A and B. These keep the keyboard defaults and add the pad.
 	_action(&"ui_accept", [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE], [], [JOY_BUTTON_A], [])
 	_action(&"ui_cancel", [KEY_ESCAPE], [], [JOY_BUTTON_B], [])
-	_action(&"run", [], [], [JOY_BUTTON_LEFT_STICK], [])
 	_action(&"pause", [KEY_ESCAPE], [], [JOY_BUTTON_START], [])
 	var err := ProjectSettings.save()
 	print("Input map saved: %s" % error_string(err))

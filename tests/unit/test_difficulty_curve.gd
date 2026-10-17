@@ -105,6 +105,14 @@ func test_thief_chance_hits_the_share_after_the_farmer_roll() -> void:
 	assert_almost_eq(overall, curve.thief_share(1), 0.0001)
 
 
+func test_thieving_family_raises_the_share_up_to_its_cap() -> void:
+	assert_almost_eq(curve.thief_share(1, true), 0.15, 0.0001, "x1.5 in wave 1")
+	assert_almost_eq(curve.thief_share(200, true), curve.thieving_share_cap, 0.0001, "capped at 60%")
+	var farmer_chance := 0.3
+	var overall := (1.0 - farmer_chance) * curve.thief_chance(10, farmer_chance, true)
+	assert_almost_eq(overall, curve.thief_share(10, true), 0.0001, "the steal roll still lands on the share")
+
+
 func test_archetype_costs_follow_type_and_class() -> void:
 	var archetype := RobotArchetype.new()
 	archetype.robot_type = RobotArchetype.RobotType.GRUNT

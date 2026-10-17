@@ -158,7 +158,9 @@ The silo has two meters:
 
 **Cracks and leaks**
 
-- Every 10% of Structure lost opens a new **crack** at one of 16 crack sockets on the silo (maximum 10 active cracks).
+- Every 10% of Structure lost opens a new **crack** at one of 16 crack sockets on the silo (maximum 10 active cracks). Each crack holds that 10% of max Structure as its **repair pool**: repairing drains the pool back into Structure, and the crack closes when the pool is empty.
+- New cracks pick a height band by weight (**ground 50%, catwalk 1 30%, catwalk 2 20%**), then the free socket in that band that faces the hit most directly.
+- When all 10 crack slots are full, further damage is added to the nearest crack's pool, so it stays repairable.
 - Sockets are spread across three heights: **ground level (0–4 m)**, **first catwalk (8 m)** and **upper catwalk (16 m)**. High cracks need the ladder, a zipline or the jetpack to reach. This ties repair to vertical traversal.
 - Each crack is a visible grain spout (golden clay pellets pouring out and piling on the ground).
 - A crack grows when more damage lands near it: **Small → Medium → Large**.
@@ -182,7 +184,7 @@ The silo has two meters:
 
 **Grain theft**
 
-- Scout melee robots (Nibblers) and any robot with the *Thieving* trait can snatch a **grain sack** (20 bushels) from the silo chute and run for the nearest corn lane.
+- Some Scout melee robots (Nibblers) snatch a **grain sack** (20 bushels) from the silo chute instead of attacking, then run for the nearest corn lane. How many is set per wave (see 11.7); a *Thieving* family raises it.
 - Thieves are marked on the HUD. Destroying one drops the sack; walk over it to return the grain. Unclaimed sacks burst after 20 s.
 
 **Harvest Bonus**
@@ -339,7 +341,6 @@ A stubby clay farmer in patched overalls, a straw hat and welding goggles (worki
 | Deploy (Auto Wrench, Scarecrow) | F | LB / L1 |
 | Eat pie | C | D-pad left |
 | Overdrive (jetpack capstone) | X | LB + RB |
-| Run (hold; +20% speed) | — | L3 |
 | Shoulder swap | Middle mouse | — |
 | Wave info / map | Tab | View / Select |
 | Pause | Esc | Start / Options |
@@ -500,7 +501,7 @@ Robots switch targets when the farmer damages them from within 10 m (melee) or s
 
 | | **Melee** | **Short-range** | **Long-range** |
 |---|---|---|---|
-| **Scout** | **Nibbler** — a zippy unicycle bot that nips ankles and bashes the silo. 50% chance to snatch a grain sack instead. | **Spritzer** — squirts a cone of hot oil (8 m). Runs circles around the farmer. | **Buzzer** — a hover drone that plinks from 25 m. **Flies.** It is the reason to master jetpack air combat. |
+| **Scout** | **Nibbler** — a zippy unicycle bot that nips ankles and bashes the silo. Some snatch a grain sack instead (see 11.7). | **Spritzer** — squirts a cone of hot oil (8 m). Runs circles around the farmer. | **Buzzer** — a hover drone that plinks from 25 m. **Flies.** It is the reason to master jetpack air combat. |
 | **Grunt** (×3) | **Clanker** — a waddling trio that punches the silo in rhythm. | **Popper** — sprays popcorn-kernel buckshot (8 m). | **Lobber** — lobs bolts in arcs from 30 m. Chalk circles mark where they will land. |
 | **Heavy** | **Thumper** — a tracked brute. Ground slam with a shockwave ring (jump over it). **Back vent** weak point. | **Boiler** — a steam and cellophane-flame cannon cone. **Back fuel tank** weak point. | **Longneck** — parks in the crop ring 45–55 m out and fires a telescoping rail cannon at the silo every 6 s after a 2 s red-yarn aim line. **Top hatch** weak point (×3), best hit from high perches or the jetpack. |
 
@@ -629,7 +630,7 @@ All robots in a wave share these genes, so the wave reads as one family.
 | **Overcharged** | ×2 Power Cell chance; robots explode on death (small AoE) | Crackling sparks |
 | **Shielded** | Front shield blocks 50% of damage; flank or shoot from above | Trash-can-lid shield |
 | **Splitter** | Scouts split into 2 mini-scouts on death | Visible seam down the middle |
-| **Thieving** | Any melee robot may steal grain | Little sacks on their backs |
+| **Thieving** | ×1.5 thief share for the wave (max 60% of spawns, see 11.7). Squads still never steal. | Little sacks on their backs |
 | **Medic** | Robots slowly repair nearby allies | Wrench antenna, green cross |
 
 **Trait count by wave:** 0 (waves 1–5), 1 (waves 6–15), 2 (waves 16–30), 3 (wave 31 and later). A Foreman always gets +1 extra trait.
@@ -666,7 +667,7 @@ stateDiagram-v2
 
 | Phase of a wave | Rules |
 |---|---|
-| **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. |
+| **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. (Builds use 120 s until the Hub pegboard and pinned-goals quick-buy exist; see `docs/ROADMAP.md`, decision D1.) |
 | **Siren (last 10 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. |
 | **Ring the bell early** | Hold Interact on the dinner bell (by the porch) or press the "Ready" button to jump straight to the siren. **Early Bird bonus:** +1 Aluminium per second skipped × (1 + wave/10). |
 | **Spawning** | The director spends the wave's threat budget over the spawn window. |
@@ -727,6 +728,13 @@ After wave 25 the window stops growing, but the budget keeps rising, so waves ge
 - 8 lanes at the compass points, emerging from the corn at about 110 m.
 - Waves 1–4 use 2 lanes; waves 5–14 use 3; waves 15–29 use 4; wave 30 and later use 5. The active lanes are chosen per wave from the wave seed.
 - Grunt squads always share a lane. Longnecks always take a lane that gives them a siege position facing the silo.
+
+### 11.7 Grain thieves
+
+- **Thief share:** the fraction of a wave's spawns that are thieves. **10% in wave 1, +1.5 points per wave, capped at 40%.** Only Scout melee robots (Nibblers) steal; Grunt squads never do, so formations stay readable.
+- **Thieving trait:** multiplies the share by **1.5**, up to **60%**.
+- **How it's rolled:** each Nibbler first rolls whether to target the farmer (30%). If it doesn't, the steal roll is scaled so the overall share of thieves matches the thief share above.
+- **Foremen** never steal.
 
 ---
 
@@ -1006,7 +1014,7 @@ About **350 purchasable levels** in total, so the tree is long. With full persis
 |---|---|---|---|---|
 | Scrap Magnet | 5 | +1.5 m pickup magnet radius (base 3 m) | — | Al |
 | Scrap Vac | 5 | End-of-wave auto-collect: 50% → 100% | — | Al / Cu |
-| Lucky Horseshoe | 5 | +6% Gold and Power Cell drop chance | Scrap Magnet 2 | Cu / Au |
+| Lucky Horseshoe | 5 | +15% (relative) Gold and Power Cell drop chance (+75% at max) | Scrap Magnet 2 | Cu / Au |
 | Early Bird | 3 | +25 / 50 / 75% Early Bird bonus | — | Al / Cu |
 | Farmer's Almanac | 1 | Lanes and the next family's traits are revealed at the **start** of intermission instead of T−10 s | — | 30 Cu + 2 Au |
 
@@ -1251,7 +1259,7 @@ flowchart LR
 - **States, shown by colour and outline (no filter toggle):** fill green = owned, cream = available, grey = locked; gold ring = you can afford the next level, red ring = short on parts. Owned and upgradable reads as green with a ring.
 - **Buying:** hold A (or hold the mouse on a peg) for 1 s, the same as the dinner bell, and a bar fills while you hold. Letting go early cancels, so a stray press can't spend parts.
 - **Controller:** D-pad or left stick moves across every branch, B or Start closes. Every peg is focusable, locked ones included, and the line under the board says what a peg needs.
-- **During a run:** the 2 min intermission timer stays visible on the pegboard and keeps running. Robots don't attack during intermission, but leaks keep draining.
+- **During a run:** the 30 s intermission timer stays visible on the pegboard and keeps running. A **pinned goals** quick-buy list lets players buy their next targets in a couple of seconds. Robots don't attack during intermission, but leaks keep draining.
 
 ### 17.4 Harvest Report (game over)
 
@@ -1323,7 +1331,7 @@ flowchart TD
 
 ```text
 res://
-  addons/                 # phantom_camera, limboai, proton_scatter, flipdot, gut ...
+  addons/                 # limboai, proton_scatter, flipdot, gut ...
   assets/
     models/  farm/ crops/ props/ robots/parts/ weapons/ player/
     textures/ clay/ decals/ ui/
@@ -1352,13 +1360,13 @@ res://
 | System | Implementation notes |
 |---|---|
 | **Player controller** | `CharacterBody3D` with a small state chart: Grounded, Airborne, Jetpacking, Hovering, Climbing, Ziplining, Repairing. Input arrives through a per-player `InputRouter` (co-op-ready). Use the GDQuest third-person controller's **code** (MIT) as a reference; do **not** ship its art (CC-BY-NC-SA). |
-| **Camera** | **Phantom Camera** third-person follow with a SpringArm3D; separate aim camera with a priority switch for the zoom blend. |
+| **Camera** | A custom SpringArm3D third-person camera (`farmer_camera.gd`) with an aim zoom. Phantom Camera is not used (ROADMAP D7); revisit if M3 cinematics need blending. |
 | **Weapons** | `WeaponData` resource + `Weapon` scene. Hitscan via `PhysicsDirectSpaceState3D.intersect_ray`; projectiles pooled. Mods are small strategy scripts that hook `on_fire`, `on_hit` and `on_kill`. |
 | **Damage** | `Hurtbox` (Area3D) → `HealthComponent`. A `DamagePacket` carries amount, source, weak-point flag, stun and knockback. |
 | **Silo** | 16 `CrackSocket` nodes (`Marker3D`) at 3 height bands. `CrackManager` opens and grows cracks from damage thresholds and drives leak particles and the grain drain. |
 | **Wave Director** | A state machine (Intermission → Siren → Spawning → MopUp → Cleared). Reads `DifficultyCurve`, spends the threat budget and asks `RobotFactory` for robots. Owns the wave seed. |
 | **Robot Factory** | `RobotGenome.roll(seed)` → selects parts → instances the body scene, fills sockets and sets instance uniforms. Objects are pooled per archetype. |
-| **Robot AI** | **LimboAI** behavior trees (one per class) with a blackboard holding the target, squad id, perch points and trait flags. Ground robots use `NavigationAgent3D` with avoidance on a baked navmesh; Buzzers use simple 3D steering. Far robots think at 5 Hz, near ones at 20 Hz. |
+| **Robot AI** | **LimboAI** behavior trees (one per class; the v1.8.1 GDExtension was verified on Godot 4.7.2, and M2-A3 migrates M1's custom state machine to it) with a blackboard holding the target, squad id, perch points and trait flags. Ground robots use `NavigationAgent3D` with avoidance on a baked navmesh; Buzzers use simple 3D steering. Far robots think at 5 Hz, near ones at 20 Hz. |
 | **Pickups** | Pooled lightweight nodes (not RigidBody3D) with a scripted bounce, then a magnet tween to the player. |
 | **Upgrades and stats** | `UpgradeNode` resources → `StatService` builds modifier stacks (`add_pct`, `mul`, `flat`) per stat key (e.g., `&"jetpack.fuel_time"`). Systems read stats, never upgrade levels directly. |
 | **Crops and corn** | **ProtonScatter** for authoring placement → baked to `MultiMeshInstance3D` chunks with visibility ranges. A corn shader bends stalks away from up to 16 actor positions passed as a uniform array. |
@@ -1554,8 +1562,8 @@ static func roll(run_seed: int, wave: int, lib: GeneLibrary,
 
 | Purpose | Addon | Repo | License | Notes |
 |---|---|---|---|---|
-| Camera | **Phantom Camera** | [ramokz/phantom-camera](https://github.com/ramokz/phantom-camera) | MIT | Third-person follow with a SpringArm3D; Cinemachine-like priority blends. Actively maintained. |
-| AI | **LimboAI** (behavior trees + hierarchical state machines, visual debugger) | [limbonaut/limboai](https://github.com/limbonaut/limboai) | MIT | Robot behavior trees, squad blackboards. Actively maintained. |
+| Camera (not used for now) | **Phantom Camera** | [ramokz/phantom-camera](https://github.com/ramokz/phantom-camera) | MIT | The game uses its own small SpringArm3D camera (ROADMAP D7). Keep this in mind if M3 cinematics need priority blends. |
+| AI | **LimboAI** (behavior trees + hierarchical state machines, visual debugger) | [limbonaut/limboai](https://github.com/limbonaut/limboai) | MIT | Robot behavior trees, squad blackboards. Use the GDExtension build (v1.8.1 verified on Godot 4.7.2). Known quirk: the first headless import of a fresh checkout can crash once; later runs are fine. |
 | AI (alternative) | **Beehave** (pure-GDScript behavior trees) | [bitbrain/beehave](https://github.com/bitbrain/beehave) | MIT | Use if you prefer no GDExtension |
 | State machines | **Godot State Charts** | [derkork/godot-statecharts](https://github.com/derkork/godot-statecharts) | MIT | Player movement states, Wave Director states |
 | Scattering | **ProtonScatter** | [HungryProton/scatter](https://github.com/HungryProton/scatter) | MIT | Crops, props and grass placement with exclusion zones |
@@ -1610,7 +1618,7 @@ Low-poly CC0 packs are faceted; claymation needs soft, lumpy forms. A Blender Py
 
 ## 21. Production Roadmap
 
-Estimates assume 1–2 developers working with mostly sourced art. Durations are rough and should be re-planned after M0.
+Estimates assume 1–2 developers working with mostly sourced art. Durations are rough and should be re-planned after each milestone. **The detailed plan for M2–M5 (work packages, dependencies, decisions) lives in [docs/ROADMAP.md](docs/ROADMAP.md).** Art and audio run as a parallel track starting in M2 (ROADMAP decision D8), and M5 covers post-launch Daily Harvest and online co-op.
 
 | Milestone | Duration | Goal | Exit criteria |
 |---|---|---|---|
@@ -1666,7 +1674,7 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 
 | Constant | Value | Section |
 |---|---|---|
-| Intermission length | 120 s | 11.1 |
+| Intermission length | 30 s (builds use 120 s until M2-H3 and M2-G1; ROADMAP D1) | 11.1 |
 | Siren lead time | 10 s | 11.1 |
 | Spawn window | min(45 + 7(w−1), 210) s | 11.3 |
 | Threat budget | 12 + 6·w^1.3 (×1.3 on Big Haul) | 11.4 |
