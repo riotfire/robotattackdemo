@@ -5,7 +5,7 @@
 | **Status** | Draft v0.1 |
 | **Date** | 2026-10-17 |
 | **Source of truth** | [Robot_Attack_GDD.md](../Robot_Attack_GDD.md). This roadmap breaks GDD section 21 into work packages. When the two disagree, the GDD wins once the decisions in section 2 are made. |
-| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17 and M2-A1 is done (section 2.4). The rest of M2 starts after the M1 playtest feedback is in. |
+| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17; M2-A1 and M2-A0 are done (section 2.4, section 4.1). The rest of M2 starts after the M1 playtest feedback is in. |
 
 ---
 
@@ -39,7 +39,7 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Meta | Profile save (parts, upgrades, records, Almanac data), Harvest Report, restart | + Farmhouse Hub, start-phase checkpoints, Almanac UI, cosmetics | M2 |
 | Look | Clay shader with lumps, thumbprints, subsurface scattering, 12 fps boil; stepped robot poses | Real models, felt/cellophane/cotton materials, VFX, cardboard UI | M2–M3 (see D8) |
 | Audio | None | Adaptive bluegrass-chiptune music, clay foley, robot voices | M3 (see D8) |
-| Tests | 34 GUT unit tests (all pass); 93-check headless smoke test that **passes on some seeds only** (seed 42 passes; seeds 1234 and 664607717 fail because wave 1 never clears); genome gallery | Grows with every work package | M2-A0 fixes the smoke test |
+| Tests | 35 GUT unit tests; 93-check headless smoke test that passes on every seed tried (104 fixed, 6 random; M2-A0); genome gallery | Grows with every work package | Ongoing |
 | Version control | Git repository on `main` with an initial commit (D9, done) | Required for parallel sessions | Done |
 
 ---
@@ -153,7 +153,7 @@ WPs that touch different files can run in separate sessions at the same time, ea
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
 | ~~M2-A1~~ | **Done 2026-10-17.** Decisions + GDD sync: applied D1–D5 in code and data; fixed the 2.3 inconsistencies; created `CREDITS.md`. | D1–D9 | S | Unit tests pass (34/34); smoke results identical before and after the change |
-| **M2-A0** | **Fix the seed-dependent smoke test.** On some seeds wave 1 never clears, which cascades into ~37 failed checks; another seed failed the pistol-hitscan check. Find whether it's a stuck robot (navigation), a test-timing issue or a real bug, then fix it. Run the smoke test on 10+ fixed seeds. | — | M | The smoke test passes on 10 fixed seeds and a few random ones |
+| ~~M2-A0~~ | **Done 2026-10-17.** Fixed the seed-dependent smoke test. Root cause: the test's god-mode farmer doesn't defend the silo, and on seeds without a wave-1 thief it waited 40 s for one while Nibblers destroyed the silo (about 40 s from full), which ended the run. The test now sends a silo attacker to the chute instead, reseals the silo between sections, clears the pistol's line of fire, uses one profile per process and fails once with the reason when a run ends early. **Game bug found and fixed:** robots stopped dead at building corners (a 2 s+ stall on 21 of 62 seeds; `wall_min_slide_angle`, regression test in `test_robot_movement.gd`). **Still open:** robots can stall against the Home porch's 0.2 m floor, which the navmesh treats as walkable (`agent_max_climb` 0.25 m) but their capsules can't step onto (3 of 102 seeds). | — | M | Smoke test passes on seeds 1–100, 1234, 2024, 31337, 664607717 and 6 random seeds; 35/35 unit tests pass |
 | **M2-A2** | **Farmer refactor + weapon framework.** Split `farmer.gd` into movement, weapon holder, repair and interaction components. Add `WeaponData` resources, a weapon wheel (hold Q / Y; number keys), mod-slot plumbing (`on_fire`, `on_hit`, `on_kill` hooks) and pooled projectiles. | A1 | L | Wrench and pistol work unchanged on the new framework; the wheel works on keyboard and gamepad; smoke test passes |
 | **M2-A3** | **Robot AI restructure.** Vendor the LimboAI v1.8.1 GDExtension (D6) and migrate `robot.gd`'s state machine to behavior trees (one per class). Add perch-aware positioning and a squad blackboard. Add LimboAI to `CREDITS.md`. | A1 | L | The 3 melee archetypes behave as in M1 on the new structure; tests pass |
 | **M2-A4** | **Telegraphs and enemy projectiles.** Pooled slow clay projectiles, red-yarn aim lines, chalk landing circles. | A3 | M | A test robot can fire each projectile type with its telegraph |
@@ -270,7 +270,7 @@ flowchart LR
 | Batch | Sessions in parallel | Why this grouping |
 |---|---|---|
 | ~~0~~ | D9 (git init), D6 spike: **done** | Prerequisites |
-| **1** | ~~A1~~ (done) · A0 (smoke test fix) | A0 before parallel work, so every session can trust the smoke test |
+| ~~1~~ | A1 · A0: **done** | A0 before parallel work, so every session can trust the smoke test |
 | **2** | A2 · A3 · A5 · H1 · J1 | Disjoint files: player, AI, data tools, lighting, Blender |
 | **3** | A4 → B1 and B2 (one session, AI files) · C1–C3 (weapons) · D1–D2 (repair) · H3 (hub) · F1 (robot parts) | Each owns its own folder |
 | **4** | B3–B5 · C4–C6 · D3–D4 · E1 · F2 · H2 · J2–J5 | Feature fill |
@@ -401,7 +401,7 @@ Re-plan at each milestone gate using the actual pace of the previous milestone.
 |---|---|---|
 | LimboAI breaks on a future Godot update | M2-A3+ stalls | Pin Godot 4.7.x and LimboAI 1.8.x together; upgrade both only between milestones. (The D6 spike confirmed v1.8.1 works on 4.7.2.) |
 | LimboAI's first-import crash breaks CI | Red builds | Run `--import` twice in CI before tests (M4-C) |
-| The smoke test stays seed-dependent | Parallel sessions can't trust it | M2-A0 fixes it before batch 2 |
+| Robots stall where the navmesh and their bodies disagree (the Home porch ledge today; new art in M2-J2) | Waves that only clear once the player finds the straggler | Match the navmesh's climb height to what robot capsules can step onto, or add stuck recovery in M2-A3; rerun a seed sweep after farm geometry changes |
 | Hotspot files collide between parallel sessions | Lost work, merge pain | Hotspot owner rule (3.3); A2 and A5 break up the worst files first; git worktrees (D9) |
 | The ~350-node pegboard gets too large to tune by hand | Dead or overpowered nodes | Content tables (A5), the orphan-stat test, the economy simulator (G2), telemetry (M3-A) |
 | Art lags behind code | M3 slips; the game looks graybox at beta | D8 = parallel art track; clayify pipeline proven in M2-J1 |
@@ -415,5 +415,4 @@ Re-plan at each milestone gate using the actual pace of the previous milestone.
 ## 10. Next steps
 
 1. **You:** playtest M1 and note feel and balance (economy, theft pressure, Nibbler speed vs. farmer speed, Thumper telegraphs, ziplines, Hover Mode). The run button is gone (D2); `intermission 30` in the console lets you try the 30 s target.
-2. **Next:** M2-A0 (fix the seed-dependent smoke test).
-3. **Then:** batch 2 (section 4.11) in parallel sessions, each in its own git worktree.
+2. **Next:** batch 2 (section 4.11) in parallel sessions, each in its own git worktree.

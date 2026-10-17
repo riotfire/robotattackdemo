@@ -4,14 +4,20 @@ extends Node
 ## spawning mixes and Clanker squads, cracks and repair, theft and grain sacks, weapons, pickups and the
 ## Scrap Vac, the pegboard and save round-trip, the dinner bell, jetpack, ladder, zipline, the Foreman's
 ## slam and shockwave, debug keys and all three game-over conditions.
-## Uses its own fresh profile (user://smoke_test_profile.json), never the player's.
-## Run from the project folder:
+## Uses its own fresh profile (user://smoke_test_profile_<pid>.json), never the player's.
+## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
+## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
+## and refills its grain between sections, and a run that ends before the game-over checks fails at once,
+## naming the section.
+## Run from the project folder (add `-- --seed=1234` for a fixed run seed):
 ##   <godot> --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn
 ## Exits 0 when every check passes, 1 otherwise.
 
 const MAIN_SCENE := "res://scenes/main/main.tscn"
-const PROFILE := "user://smoke_test_profile.json"
 
+## One profile per process: every worktree of this project shares user://, so parallel runs would
+## otherwise overwrite and delete each other's save mid-run.
+var _profile: String = "user://smoke_test_profile_%d.json" % OS.get_process_id()
 var _main: Node
 var _director: WaveDirector
 var _farmer: Farmer
@@ -19,11 +25,14 @@ var _pegboard: PegboardUI
 var _failures: PackedStringArray = PackedStringArray()
 var _checks: int = 0
 var _al_from_wave_1: int = 0
+var _section_title: String = ""
+var _game_over_expected: bool = false
+var _finished: bool = false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	SaveManager.use_profile(PROFILE, true)
+	SaveManager.use_profile(_profile, true)
 	_main = (load(MAIN_SCENE) as PackedScene).instantiate()
 	_main.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(_main)
@@ -36,6 +45,7 @@ func _run() -> void:
 	_pegboard = _main.get_node(^"Pegboard") as PegboardUI
 	_farmer = GameState.players[0] as Farmer
 	GameState.god_mode = true
+	EventBus.game_over.connect(_on_game_over)
 	var silo := GameState.silo
 
 	_section("Start")
@@ -96,10 +106,11 @@ func _run() -> void:
 	_al_from_wave_1 = GameState.parts[&"al"]
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(t >= 0.0 and _director.wave == 2, "back to intermission, now for wave 2")
-	_check(FileAccess.file_exists(PROFILE), "autosaved at the intermission start")
+	_check(FileAccess.file_exists(_profile), "autosaved at the intermission start")
 
 	_section("Repair")
 	await _test_repair()
+	_patch_up_silo()
 
 	_section("Pegboard and save")
 	await _test_pegboard_and_save()
@@ -119,6 +130,7 @@ func _run() -> void:
 	_check(GameState.jetpack_unlocked, "jetpack unlocks after wave 2")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(_director.wave == 3, "intermission for wave 3")
+	_patch_up_silo()
 
 	_section("Traversal")
 	await _test_jetpack()
@@ -139,6 +151,7 @@ func _run() -> void:
 	_check(_director.wave == 9 and GameState.waves_survived == 8, "console 'wave 9' jumps to wave 9")
 
 	_section("Game over")
+	_game_over_expected = true
 	_kill_all_robots()
 	# Full Structure first, so this 150 damage can't end the run on its own before the grain check.
 	silo.structure = silo.max_structure
@@ -160,7 +173,14 @@ func _run() -> void:
 	silo.take_damage(DamagePacket.create(99999.0, null, silo.wall_point_toward(Vector3.BACK, 1.0)))
 	_check(GameState.is_game_over and GameState.game_over_reason == &"silo", "silo at 0 Structure ends the run (reason %s)" % GameState.game_over_reason)
 	get_tree().paused = false
+	_finish()
 
+
+## Prints the summary, deletes the throwaway profile and quits. Runs once.
+func _finish() -> void:
+	if _finished:
+		return
+	_finished = true
 	print("")
 	print("Economy note: %d Al banked by the end of wave 1 (pistol costs 20)." % _al_from_wave_1)
 	if _failures.is_empty():
@@ -169,7 +189,7 @@ func _run() -> void:
 		print("SMOKE TEST FAILED: %d of %d checks" % [_failures.size(), _checks])
 		for failure in _failures:
 			print("  - " + failure)
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(_profile))
 	get_tree().quit(0 if _failures.is_empty() else 1)
 
 
@@ -203,35 +223,44 @@ func _check_spawn_mix(wave: int) -> void:
 
 func _test_theft() -> void:
 	var silo := GameState.silo
-	var thieves := get_tree().get_nodes_in_group(Robot.THIEF_GROUP)
-	var thief: Robot = null
-	var has_sack := func() -> bool:
-		for node in get_tree().get_nodes_in_group(Robot.THIEF_GROUP):
-			if (node as Robot).sack_amount > 0.0:
-				return true
-		return false
-	var t := await _wait_until(has_sack, 40.0)
-	if t < 0.0:
-		print("  NOTE  no thief reached the chute this run (%d thieves rolled); theft checks skipped" % thieves.size())
+	# About 40% of seeds roll no thief in wave 1 (10% of 9 spawns), and a thief that did roll may still be far
+	# out in the corn. Waiting for one leaves the silo to the robots long enough to destroy it. So if no thief
+	# holds a sack yet, send a Nibbler that's bashing the silo round to the chute, a few meters away: the
+	# theft checks then run on every seed.
+	if _thief_with_sack() == null:
+		var rolled := get_tree().get_nodes_in_group(Robot.THIEF_GROUP).size()
+		var recruit := await _first_robot(20.0, null, true)
+		if recruit == null:
+			_check(false, "a robot is attacking the silo to send to the chute")
+			return
+		print("  NOTE  no thief holds a sack yet (%d rolled so far); sending a silo attacker to the chute" % rolled)
+		recruit.is_thief = true
+		recruit.target_kind = Robot.TargetKind.CHUTE
+		recruit.add_to_group(Robot.THIEF_GROUP)
+	await _wait_until(func() -> bool: return _thief_with_sack() != null, 15.0)
+	var thief := _thief_with_sack()
+	_check(thief != null and thief.ai_state == Robot.AiState.FLEEING,
+			"a Nibbler thief grabs a %d-bushel sack and runs for the corn" % (roundi(thief.sack_amount) if thief else 0))
+	if thief == null:
 		return
-	for node in get_tree().get_nodes_in_group(Robot.THIEF_GROUP):
-		if (node as Robot).sack_amount > 0.0:
-			thief = node as Robot
-			break
-	_check(thief.ai_state == Robot.AiState.FLEEING, "a Nibbler thief grabs a %d-bushel sack and runs for the corn" % roundi(thief.sack_amount))
 	var at := thief.global_position
-	var grain_before := silo.grain
 	thief.take_damage(DamagePacket.create(9999.0, _farmer, at))
 	await _frames(40)
-	var sack: Pickup = null
-	for node in get_tree().get_nodes_in_group(Pickup.GROUP):
-		if (node as Pickup).kind == Pickup.GRAIN:
-			sack = node as Pickup
+	var sack := _nearest_grain_sack(at)
 	_check(sack != null, "destroying the thief drops the grain sack")
-	if sack != null:
-		_farmer.teleport_to(sack.global_position + Vector3.UP * 0.2)
-		await _frames(10)
-		_check(silo.grain > grain_before, "walking over the sack returns the grain (%.0f -> %.0f)" % [grain_before, silo.grain])
+	if sack == null:
+		return
+	# Count only this sack's grain: the cracks leak and another thief may grab a sack meanwhile.
+	var sack_amount := sack.amount
+	var returned: Array[float] = [0.0]
+	var on_returned := func(amount: float) -> void: returned[0] += amount
+	EventBus.grain_returned.connect(on_returned)
+	var grain_before := silo.grain
+	_farmer.teleport_to(sack.global_position + Vector3.UP * 0.2)
+	await _frames(10)
+	EventBus.grain_returned.disconnect(on_returned)
+	_check(not is_instance_valid(sack) and is_equal_approx(returned[0], float(sack_amount)),
+			"walking over the sack returns its %d bushels (+%.0f; grain %.0f -> %.0f)" % [sack_amount, returned[0], grain_before, silo.grain])
 
 
 func _test_wrench_and_pickups() -> void:
@@ -258,10 +287,15 @@ func _test_wrench_and_pickups() -> void:
 
 
 func _test_pistol() -> void:
-	var target := await _first_robot(30.0, null, true)
+	# Wave 2's first silo attacker can be most of a minute away when its early spawns go for the farmer or
+	# the chute. Nothing bashes the silo until one arrives, so waiting for it costs nothing.
+	var target := await _first_robot(90.0, null, true)
 	if target == null:
 		_check(false, "a robot is attacking the silo to test the pistol on")
 		return
+	# Clear the line of fire: a robot chasing the farmer, or one standing where the farmer lands, would take
+	# the rivet instead.
+	_kill_all_robots(target)
 	_farmer.equip(1)
 	var aim_at := target.global_position + Vector3.UP * 0.45 * target.type_scale()
 	var out := aim_at - GameState.silo.global_position
@@ -284,8 +318,10 @@ func _test_squads() -> void:
 			if (node as Robot).squad != null:
 				return true
 		return false
-	var t := await _wait_until(has_squad, 45.0)
-	if t < 0.0:
+	# A squad can be the window's last spawn, so wait for one or for every spawn to be out.
+	await _wait_until(func() -> bool: return has_squad.call() or _director.spawns_done >= _director.spawns_total,
+			_director.spawn_window + 5.0)
+	if not has_squad.call():
 		print("  NOTE  wave 2 rolled no Clanker squad this run; squad checks skipped")
 		return
 	for node in get_tree().get_nodes_in_group(Robot.GROUP):
@@ -351,7 +387,7 @@ func _test_pegboard_and_save() -> void:
 	_pegboard.close()
 	_check(not _pegboard.is_open and _farmer.input.enabled, "closing the pegboard gives control back")
 
-	var saved: Variant = JSON.parse_string(FileAccess.get_file_as_string(PROFILE))
+	var saved: Variant = JSON.parse_string(FileAccess.get_file_as_string(_profile))
 	var upgrades: Dictionary = (saved as Dictionary).get("upgrades", {}) if saved is Dictionary else {}
 	_check(int(upgrades.get("attack.pistol", 0)) == 1 and int(upgrades.get("travel.comfy_boots", 0)) == 1,
 			"purchases autosave to the profile")
@@ -477,6 +513,50 @@ func _test_foreman() -> void:
 
 # --- Helpers --------------------------------------------------------------------------------------
 
+## A run that ends before the game-over checks means a scenario let the silo or its grain run out.
+## Report it once, with where and why, and stop: every later check would fail behind the paused tree.
+func _on_game_over(reason: StringName) -> void:
+	if _game_over_expected or _finished:
+		return
+	var silo := GameState.silo
+	_check(false, "the run lasts until the game-over checks (it ended in '%s': %s, Structure %.0f, grain %.0f)"
+			% [_section_title, reason, silo.structure if silo else 0.0, silo.grain if silo else 0.0])
+	_finish()
+
+
+## Closes every crack through the same call the wrench uses and refills the grain, so the next section
+## starts from a healthy silo whatever the last one's robots (and the seed) did to it. Without this,
+## leftover cracks leak through the traversal checks and can empty the silo before the Big Haul.
+func _patch_up_silo() -> void:
+	var silo := GameState.silo
+	var structure := silo.structure
+	var grain := silo.grain
+	var cracks := silo.get_cracks().size()
+	for crack: SiloCrack in silo.get_cracks().duplicate():
+		silo.repair_crack(crack, crack.pool)
+	silo.add_grain(silo.max_grain)
+	print("  NOTE  patched up the silo between sections: %d cracks sealed, Structure %.0f -> %.0f, grain %.0f -> %.0f"
+			% [cracks, structure, silo.structure, grain, silo.grain])
+
+
+func _thief_with_sack() -> Robot:
+	for node in get_tree().get_nodes_in_group(Robot.THIEF_GROUP):
+		if (node as Robot).sack_amount > 0.0:
+			return node as Robot
+	return null
+
+
+func _nearest_grain_sack(near: Vector3) -> Pickup:
+	var best: Pickup = null
+	for node in get_tree().get_nodes_in_group(Pickup.GROUP):
+		var pickup := node as Pickup
+		if pickup.kind != Pickup.GRAIN or pickup.is_queued_for_deletion():
+			continue
+		if best == null or pickup.global_position.distance_to(near) < best.global_position.distance_to(near):
+			best = pickup
+	return best
+
+
 func _trait_hp(robot: Robot) -> float:
 	var multiplier := 1.0
 	for robot_trait in robot.all_traits():
@@ -563,10 +643,13 @@ func _frames(count: int) -> void:
 
 
 func _section(title: String) -> void:
+	_section_title = title
 	print("\n== %s ==" % title)
 
 
 func _check(ok: bool, what: String) -> void:
+	if _finished:
+		return
 	_checks += 1
 	print(("  PASS  " if ok else "  FAIL  ") + what)
 	if not ok:

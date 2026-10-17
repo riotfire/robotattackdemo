@@ -127,6 +127,10 @@ func _ready() -> void:
 	health.died.connect(_on_died)
 	agent.max_speed = move_speed()
 	agent.velocity_computed.connect(_on_velocity_computed)
+	# Always slide along walls. Robots are wider than the navmesh's 0.5 m clearance and turn for the next
+	# waypoint about 1 m before a corner, so they clip building corners a few degrees off head-on; below the
+	# default 15° move_and_slide() stops them dead there (tests/unit/test_robot_movement.gd).
+	wall_min_slide_angle = 0.0
 	look = RobotFactory.build(_pose, genome, archetype, RngService.stream(RngService.STREAM_COSMETIC), is_foreman, extra_traits)
 	if is_foreman:
 		_set_marker(foreman_title, Color(1.0, 0.82, 0.3), false, 1.0)

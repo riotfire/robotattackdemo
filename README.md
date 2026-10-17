@@ -39,17 +39,19 @@ Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` 
 
 Replace `godot` with your Godot 4.7 binary (e.g. `~/Downloads/Godot.app/Contents/MacOS/Godot`).
 
-GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration and wave buying:
+GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying and robots sliding round building corners:
 
 ```bash
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
 
-End-to-end smoke test (93 checks) that plays the real game headless on its own throwaway profile:
+End-to-end smoke test (93 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
 
 ```bash
-godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn
+godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --seed=1234
 ```
+
+Verified on 2026-10-17 (M2-A0): all 93 checks pass on seeds 1–100, 1234, 2024, 31337 and 664607717, and on 6 random seeds. Runs can go in parallel, even from different worktrees, since each run uses its own profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals the silo between sections. If a run ends early, the test stops with one failure that names the section and the reason.
 
 The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four families' robots for art review. Press R to reroll and the arrow keys to orbit.
 
