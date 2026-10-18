@@ -55,11 +55,7 @@ Verified on 2026-10-17 (M2-A0): all 93 checks pass on seeds 1–100, 1234, 2024,
 
 The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four families' robots for art review. Press R to reroll and the arrow keys to orbit.
 
-Generated content. Re-running a tool overwrites its output, so edit the results in the editor once they settle:
-
-```bash
-godot --headless --path . --script res://tools/build_graybox_farm.gd
-```
+Generated content. The pegboard, the robot archetypes and the robot family genes are edited as CSV tables in `data/source/` (format: [data/source/README.md](data/source/README.md)). Two tools turn them into the `.tres` files the game loads. Edit a table, regenerate, then run the unit tests: `test_content_tables.gd` fails if a `.tres` no longer matches its table, or if an upgrade modifies a stat that no system reads (the orphan-stat rule).
 
 ```bash
 godot --headless --path . --script res://tools/build_upgrade_catalog.gd
@@ -69,9 +65,19 @@ godot --headless --path . --script res://tools/build_upgrade_catalog.gd
 godot --headless --path . --script res://tools/build_robot_data.gd
 ```
 
+- `build_upgrade_catalog.gd` writes `data/upgrades/` from `data/source/upgrades/`, one `.tres` per pegboard node.
+- `build_robot_data.gd` writes `data/robots/` from `data/source/robots/`: archetypes, palettes, themes, traits and the gene library's theme and trait lists.
+- Regenerating unchanged tables rewrites identical files, because both tools keep each file's resource ids. That way `git diff data/` shows only what an edit changed. Removing a row deletes its `.tres` file.
+
+The tables are CSV rather than JSON for three reasons. With one row per node or archetype, a diff shows exactly which item changed. Git merges two branches that add rows in different places without conflicts. And the tables open in any spreadsheet for side-by-side balancing. In JSON, each node would be a multi-line object, and every append would edit the previous line to add a comma, so two branches adding nodes would conflict. CSV's cost is a small cell syntax for lists (costs, effects, prerequisites), described in `data/source/README.md`. Each table is a folder, so a work package can add its own file (for example `data/source/upgrades/stun_gun.csv`) instead of editing shared lines.
+
+The farm is generated too. Re-running the tool overwrites its output, so edit the results in the editor once they settle:
+
+```bash
+godot --headless --path . --script res://tools/build_graybox_farm.gd
+```
+
 - `build_graybox_farm.gd` writes `scenes/farm/`: farm, silo and navmesh. Add `-- --navmesh-only` to rebake only the navmesh from the saved `farm.tscn`.
-- `build_upgrade_catalog.gd` writes `data/upgrades/`, one `.tres` per pegboard node.
-- `build_robot_data.gd` writes `data/robots/`: themes, palettes, traits and the gene library.
 
 Clayify pipeline (GDD 19.4). It rebuilds `assets/models/` from the CC0 sources in `assets/source/`, as listed in `tools/clayify/manifest.json`: it bakes material colors into vertex colors, recolors them to the farm palette, welds, bevels, shades smooth, and stretches buildings onto their gameplay dimensions. Pass output names (e.g. `farm/farm_barn_01.glb`) after the three paths to rebuild only those. Re-run `build_graybox_farm.gd` afterwards if a building model changed:
 

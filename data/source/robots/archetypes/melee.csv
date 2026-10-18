@@ -1,0 +1,4 @@
+id,display_name,robot_type,robot_class,scene,unlock_wave,squad_size,body_radius,base_hp,move_speed,attack_range,attack_interval,attack_windup,damage_vs_farmer,damage_vs_silo,farmer_target_chance,aggro_range,unreachable_give_up_time,steal_chance,shockwave_damage,shockwave_radius,shockwave_time,drop_al_min,drop_al_max,drop_al_class_bonus,drop_cu_chance,drop_cu_min,drop_cu_max,drop_au_chance,drop_au_min,drop_au_max,drop_pc_chance,drop_pc_min,drop_pc_max
+nibbler,Nibbler,scout,melee,res://scenes/robots/nibbler.tscn,1,1,0.35,30,8,1.8,1,0.3,4,6,0.3,10,3,0.5,,,,1,2,1,0.15,,,0.01,,,0.005,,
+clanker,Clanker,grunt,melee,res://scenes/robots/clanker.tscn,2,3,0.6,60,4.5,2.2,1.2,0.35,8,12,0.3,10,3,,,,,1,3,1,0.4,,,0.03,,,0.02,,
+thumper,Thumper,heavy,melee,res://scenes/robots/thumper.tscn,6,1,1,400,2.5,3,2.5,0.8,25,60,0.3,10,3,,10,8,0.8,4,6,1,1,2,3,0.3,,,1,,

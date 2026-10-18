@@ -1,7 +1,8 @@
 class_name RobotArchetype
 extends Resource
 ## One of the nine robot archetypes (GDD 9.3): type x class, wave-1 stats, threat cost and drops.
-## M1 ships the melee class: Nibbler, Clanker and Thumper (data/robots/archetypes).
+## M1 ships the melee class: Nibbler, Clanker and Thumper (data/robots/archetypes, generated from the
+## data/source/robots/archetypes table by tools/build_robot_data.gd; one column per property below).
 
 enum RobotType { SCOUT, GRUNT, HEAVY }
 enum RobotClass { MELEE, SHORT_RANGE, LONG_RANGE }

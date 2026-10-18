@@ -1,0 +1,7 @@
+id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,description
+attack.wrench_damage,attack,0,0,Swing Damage,10,,al_to_pc 12,wrench.damage add_pct 0.12,+12% wrench damage per level.
+attack.wrench_speed,attack,0,1,Swing Speed,5,,al_cu 15,wrench.swing_rate add_pct 0.08,+8% swing speed per level.
+attack.pistol,attack,1,0,Rivet Pistol,1,,al 20,pistol.unlocked flag,"A reliable rivet gun: 12 damage, 10 rounds, 40 m."
+attack.pistol_damage,attack,1,1,Pistol Damage,10,attack.pistol,al_to_pc 15,pistol.damage add_pct 0.12,+12% pistol damage per level.
+attack.pistol_rate,attack,2,1,Pistol Fire Rate,10,attack.pistol,al_to_pc 15,pistol.fire_rate add_pct 0.08,+8% pistol fire rate per level.
+attack.pistol_handling,attack,1,2,Pistol Handling,5,attack.pistol,al_cu 20,pistol.magazine flat 2; pistol.reload_time add_pct -0.08,+2 magazine and -8% reload time per level.
