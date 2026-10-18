@@ -2,6 +2,8 @@
 
 Prepared October 18, 2026; expanded with the sharing, score-comparison, and build-sharing strategy. Working-tree inspection, native visual inspection, automated tests, a short graphical probe, and primary-source market research. Repository HEAD at the end of inspection: `8832272`. This is a proposed strategy; it does not replace the accepted GDD or roadmap decisions automatically.
 
+This report records that inspection snapshot. Since then, `main` has also merged the M2-J5 audio foundation and M2-J1 clay displacement work; the audio observation below describes the earlier `8832272` snapshot and does not assess those later changes.
+
 **The opportunity is a recognizable action game about a handmade farm, a ridiculous jetpack, and robots stealing your harvest.** The existing prototype supports that fantasy. It has seeded encounters, persistent upgrades, a vertical arena, repair pressure, readable enemy roles, and useful automated coverage. Those are assets worth preserving.
 
 The present build does not yet demonstrate bestseller-level combat, retention, presentation, or demand. The best next investment is a polished, testable 10–15 minute experience that proves the fantasy. Expanding to roughly 350 upgrade levels, twelve robot themes, and nine archetypes before that proof would multiply production and balancing costs without establishing why players buy or recommend the game.
