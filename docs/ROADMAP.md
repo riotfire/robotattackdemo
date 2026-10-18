@@ -39,7 +39,7 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Meta | Profile save (parts, upgrades, records, Almanac data), Harvest Report, restart | + Farmhouse Hub, start-phase checkpoints, Almanac UI, cosmetics | M2 |
 | Look | Clay shader with lumps, thumbprints, subsurface scattering, 12 fps boil; stepped robot poses | Real models, felt/cellophane/cotton materials, VFX, cardboard UI | M2–M3 (see D8) |
 | Audio | None | Adaptive bluegrass-chiptune music, clay foley, robot voices | M3 (see D8) |
-| Tests | 42 GUT unit tests; 104-check headless smoke test that passes on every seed tried (104 fixed, 6 random; M2-A0); genome gallery | Grows with every work package | Ongoing |
+| Tests | 64 GUT unit tests; 115-check headless smoke test that passes on every seed tried (10 fixed after the 2026-10-18 merges; 104 fixed and 6 random at M2-A0); genome and atmosphere galleries | Grows with every work package | Ongoing |
 | Version control | Git repository on `main` with an initial commit (D9, done) | Required for parallel sessions | Done |
 
 ---

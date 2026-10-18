@@ -26,13 +26,16 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 | Weapons: tap for the last weapon, hold for the weapon wheel (point at a weapon, let go to equip) | Q (point with the mouse); 1 wrench, 2 pistol (1–6 as more arrive); mouse wheel cycles | Y (point with the right stick) |
 | Shoulder swap | Middle mouse | — |
 | Pegboard (shed open): move / buy / close | Mouse: hold click on a peg to buy | D-pad or left stick / hold A / B or Start |
+| Pause / development menu | Escape | Start |
 | Ladders | Walk into them; W/S climb; Space steps onto a catwalk or lets go | |
 
-Intermissions run 2 minutes for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack unlocks for free after wave 2. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
+The pause menu freezes gameplay and includes a wave selector, next-wave and bell controls, plus debug tools for parts, god mode, the jetpack, clearing robots, and silo damage. Restart run is also available there.
+
+Intermissions run 2 minutes for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack becomes purchasable at the shed from wave 3 for 40 Al and 15 Cu. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
 
 ## Debug keys (debug builds)
 
-F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · F9 next time of day · F10 next weather · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `intermission <seconds>`, `reset` (wipe the profile).
+Escape opens the pause / development menu. F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · F9 next time of day · F10 next weather · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `intermission <seconds>`, `reset` (wipe the profile).
 
 Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` for a separate profile. `--time=<preset>` (`dawn`, `morning`, `noon`, `golden_hour`, `dusk`, `moonlit_night`) and `--weather=<type>` (`clear`, `breezy`, `drizzle`, `morning_fog`) force the run's starting time of day and weather.
 
@@ -46,13 +49,13 @@ GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty cu
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
 
-End-to-end smoke test (104 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
+End-to-end smoke test (115 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
 
 ```bash
 godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --seed=1234
 ```
 
-Verified on 2026-10-17 (M2-A0): all 93 checks pass on seeds 1–100, 1234, 2024, 31337 and 664607717, and on 6 random seeds. Runs can go in parallel, even from different worktrees, since each run uses its own profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals the silo between sections. If a run ends early, the test stops with one failure that names the section and the reason.
+Verified on 2026-10-18, after merging M2-A2, A5, H1, J1 and J5: all 115 checks pass on seeds 1, 2, 3, 7, 42, 99, 1234, 2024, 31337 and 664607717 (M2-A0's 93 checks passed on seeds 1–100 and 6 random seeds). Runs can go in parallel, even from different worktrees, since each run uses its own profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals the silo between sections. If a run ends early, the test stops with one failure that names the section and the reason.
 
 The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four families' robots for art review. Press R to reroll and the arrow keys to orbit.
 
