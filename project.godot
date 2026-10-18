@@ -182,6 +182,10 @@ pause={
 3d_physics/layer_9="Projectiles"
 3d_physics/layer_10="CameraCollision"
 
+[gui]
+
+theme/custom_font="res://assets/fonts/fredoka_semibold.tres"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

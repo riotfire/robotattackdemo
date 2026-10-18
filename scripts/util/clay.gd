@@ -8,6 +8,7 @@ const MATERIAL_PATH := "res://shaders/clay_material.tres"
 
 static var _shared: ShaderMaterial
 static var _colored: Dictionary[Color, ShaderMaterial] = {}
+static var _vertex_colored: ShaderMaterial
 
 
 static func shared() -> ShaderMaterial:
@@ -23,6 +24,29 @@ static func colored(color: Color) -> ShaderMaterial:
 		material.set_shader_parameter(&"albedo_color", color)
 		_colored[color] = material
 	return _colored[color]
+
+
+## The clay material for clayified models (tools/clayify): albedo from vertex colors, triplanar prints.
+static func vertex_colored() -> ShaderMaterial:
+	if _vertex_colored == null:
+		_vertex_colored = shared().duplicate() as ShaderMaterial
+		_vertex_colored.set_shader_parameter(&"use_vertex_color", true)
+		_vertex_colored.set_shader_parameter(&"triplanar_prints", true)
+	return _vertex_colored
+
+
+## Instances a clayified model scene under `parent` at `xform`, giving every mesh the vertex-colored clay
+## material. Returns the model's root.
+static func model(parent: Node, scene: PackedScene, xform: Transform3D, cast_shadow: bool = true) -> Node3D:
+	var root := scene.instantiate() as Node3D
+	parent.add_child(root)
+	root.transform = xform
+	for mesh_instance in root.find_children("*", "MeshInstance3D", true, false):
+		var instance := mesh_instance as MeshInstance3D
+		instance.material_override = vertex_colored()
+		if not cast_shadow:
+			instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return root
 
 
 ## Gives `instance` the shared clay material tinted `color`. `glow` > 0 makes it emissive.

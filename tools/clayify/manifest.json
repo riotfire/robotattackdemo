@@ -1,0 +1,59 @@
+{
+  "palettes": {
+    "quaternius_farm": {
+      "DarkRed": "#9C2E22",
+      "LightRed": "#C43E2C",
+      "RoofBlack": "#6E5A50",
+      "White": "#F3E7CF",
+      "Brown": "#8C5A36",
+      "DarkBrown": "#6A4630",
+      "LightBrown": "#B9824C",
+      "Grey": "#A7A39C",
+      "DarkGrey": "#6A6762",
+      "Black": "#2E2724"
+    },
+    "kenney_nature": {
+      "grass": "#6FA34A",
+      "leafsGreen": "#5E9E44",
+      "leafsDark": "#3F7A3A",
+      "leafsFall": "#E8862E",
+      "woodBark": "#8C5A36",
+      "woodInner": "#E9C995",
+      "wood": "#B47C46",
+      "woodDark": "#875A34",
+      "dirt": "#7A5236",
+      "corn": "#F0C445",
+      "colorRed": "#E0473E",
+      "colorYellow": "#F5C842",
+      "colorPurple": "#9C6AD1",
+      "stone": "#A9A49A",
+      "_defaultMat": "#E6C35C"
+    }
+  },
+  "models": [
+    {"src": "quaternius_farm/Barn.fbx", "out": "farm/farm_barn_01.glb", "fit": {"size": [18.0, 14.0], "height_keys": [[0, 0], [3.0, 9.0], [6.01, 13.0]]}, "palette_set": "quaternius_farm"},
+    {"src": "quaternius_farm/WaterTower.fbx", "out": "farm/farm_water_tower_01.glb", "palette": {"DarkGrey": "#6FA3AE", "Grey": "#B9B2A6"}, "fit": {"size": [8.4, 8.4], "height_keys": [[0, 0], [6.0, 15.0], [8.43, 19.4]]}, "palette_set": "quaternius_farm"},
+    {"src": "quaternius_farm/Well.fbx", "out": "farm/farm_well_01.glb", "fit": {"size": [2.3, 2.4], "height_keys": [[0, 0], [0.8, 1.0], [2.14, 2.85]]}, "palette_set": "quaternius_farm", "decimate": 0.5},
+    {"src": "quaternius_farm/Windmill.fbx", "out": "farm/farm_windmill_01.glb", "palette_set": "quaternius_farm", "bevel": 0.004},
+    {"src": "quaternius_farm/Fence.fbx", "out": "props/prop_fence_01.glb", "palette_set": "quaternius_farm", "bevel": 0.004},
+    {"src": "quaternius_farm/Fence2.fbx", "out": "props/prop_fence_02.glb", "palette_set": "quaternius_farm", "bevel": 0.004},
+    {"src": "kenney_survival/box.glb", "out": "props/prop_crate_02.glb", "tint": "#D8D2B8", "bevel": 0.03},
+    {"src": "kenney_survival/barrel.glb", "out": "props/prop_barrel_01.glb", "tint": "#D8D2B8", "bevel": 0.02},
+    {"src": "kenney_survival/workbench.glb", "out": "props/prop_workbench_01.glb", "tint": "#D8D2B8", "bevel": 0.015},
+    {"src": "kenney_survival/tool-shovel.glb", "out": "props/prop_shovel_01.glb", "bevel": 0.0},
+    {"src": "kenney_survival/tool-hoe.glb", "out": "props/prop_hoe_01.glb", "bevel": 0.0},
+    {"src": "kenney_nature/crops_cornStageC.glb", "out": "crops/crop_corn_mid.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/crop_pumpkin.glb", "out": "crops/crop_pumpkin.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/crop_carrot.glb", "out": "crops/crop_carrot.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/crop_melon.glb", "out": "crops/crop_melon.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/crops_leafsStageB.glb", "out": "crops/crop_leafy.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/crops_wheatStageB.glb", "out": "crops/crop_wheat.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/flower_redA.glb", "out": "props/nature_flower_red.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/flower_yellowA.glb", "out": "props/nature_flower_yellow.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/flower_purpleA.glb", "out": "props/nature_flower_purple.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/grass_large.glb", "out": "props/nature_grass_tuft.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/tree_default.glb", "out": "props/nature_tree_01.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/tree_fat.glb", "out": "props/nature_tree_02.glb", "palette_set": "kenney_nature", "bevel": 0.0},
+    {"src": "kenney_nature/tree_oak.glb", "out": "props/nature_tree_03.glb", "palette_set": "kenney_nature", "bevel": 0.0}
+  ]
+}

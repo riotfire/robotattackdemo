@@ -12,13 +12,22 @@ attribution is optional.
 
 ## Art, audio and fonts
 
-None yet. Everything in the game is graybox geometry built in code or by the `tools/` scripts.
+Model sources live in `assets/source/` (ignored by Godot); `tools/clayify/` turns them into the clay-ready
+models in `assets/models/`.
+
+| Name | Author | License | Where | Used for |
+|---|---|---|---|---|
+| [LowPoly Farm Buildings](https://quaternius.itch.io/lowpoly-farm-buildings) | Quaternius | CC0 1.0 | `assets/source/quaternius_farm/` | Barn, water tower, well, windpump, fences |
+| [Nature Kit](https://kenney.nl/assets/nature-kit) 2.1 | Kenney | CC0 1.0 | `assets/source/kenney_nature/` | Trees, wildflowers, grass tufts, garden and field crops |
+| [Survival Kit](https://kenney.nl/assets/survival-kit) | Kenney | CC0 1.0 | `assets/source/kenney_survival/` | Crates, rain barrel, workbench, shovel, hoe |
+| [Fabric 034](https://ambientcg.com/view?id=Fabric034) (felt) | ambientCG | CC0 1.0 | `assets/textures/felt/` | Felt ground (`shaders/felt.gdshader`) |
+| [Fredoka](https://fonts.google.com/specimen/Fredoka) | The Fredoka Project Authors | SIL OFL 1.1 ([assets/fonts/Fredoka_OFL.txt](assets/fonts/Fredoka_OFL.txt)) | `assets/fonts/` | All UI text, as a SemiBold variation |
 
 ## Planned (not yet in the project)
 
 | Name | License | Planned for |
 |---|---|---|
 | LimboAI v1.8.1 (GDExtension) | MIT | Robot AI, M2-A3 (verified on Godot 4.7.2) |
-| Quaternius farm buildings, crops, nature, animations | CC0 | Art track, M2-J |
-| Kenney Blaster, Survival and Nature kits; audio packs | CC0 | Weapons, props, SFX |
+| Quaternius crops, nature, animations (farm buildings now in use) | CC0 | Art track, M2-J |
+| Kenney Blaster kit; audio packs (Survival and Nature kits now in use) | CC0 | Weapons, SFX |
 | KayKit Space Base Bits, Prototype Bits, Adventurers | CC0 | Robot parts, prototyping, farmer base |
