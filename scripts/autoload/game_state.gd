@@ -24,10 +24,10 @@ var game_over_reason: StringName = &""
 ## Banked the instant they're collected (GDD 12.3). Survives scene reloads.
 var parts: Dictionary[StringName, int] = {&"al": 0, &"cu": 0, &"au": 0, &"pc": 0}
 ## Kept forever once earned (GDD 5.4). Stored as the free "travel.jetpack" pegboard node, so jetpack
-## upgrades can require it.
+## upgrades can require it; read through its stat flag like every other unlock.
 var jetpack_unlocked: bool:
 	get:
-		return StatService.level_of(&"travel.jetpack") > 0
+		return StatService.has_flag(&"jetpack.owned")
 	set(value):
 		StatService.grant(&"travel.jetpack", 1 if value else 0)
 var god_mode: bool = false
