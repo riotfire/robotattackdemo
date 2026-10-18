@@ -37,6 +37,9 @@
 [ext_resource type="Script" path="res://scripts/systems/farm_decor.gd" id="35_lwx6r"]
 [ext_resource type="Script" path="res://scripts/systems/corn_field.gd" id="36_1gnb4"]
 [ext_resource type="Script" path="res://scripts/systems/farm_boundary.gd" id="37_w5bqy"]
+[ext_resource type="Script" path="res://scripts/systems/weather.gd" id="38_wthr1"]
+[ext_resource type="Script" path="res://scripts/systems/time_of_day.gd" id="39_tday1"]
+[ext_resource type="Resource" path="res://data/environment/environment_table.tres" id="40_envt1"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_rbgwc"]
 seed = 7
@@ -59,6 +62,10 @@ shader_parameter/cloud_coverage = null
 shader_parameter/cloud_softness = null
 shader_parameter/cloud_scale = null
 shader_parameter/sun_disc_size = null
+shader_parameter/sun_disc_color = null
+shader_parameter/sun_disc_energy = null
+shader_parameter/cloud_offset = null
+shader_parameter/star_strength = null
 
 [sub_resource type="Sky" id="Sky_s4vy5"]
 sky_material = SubResource("ShaderMaterial_gu8sb")
@@ -5057,3 +5064,14 @@ script = ExtResource("37_w5bqy")
 
 [node name="PlayerSpawn" type="Marker3D" parent="." unique_id=1998391096 groups=["player_spawns"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 10)
+
+[node name="Weather" type="Node3D" parent="." node_paths=PackedStringArray("corn_field")]
+script = ExtResource("38_wthr1")
+corn_field = NodePath("../CornField")
+
+[node name="TimeOfDay" type="Node" parent="." node_paths=PackedStringArray("world_environment", "sun", "weather")]
+script = ExtResource("39_tday1")
+table = ExtResource("40_envt1")
+world_environment = NodePath("../WorldEnvironment")
+sun = NodePath("../Sun")
+weather = NodePath("../Weather")

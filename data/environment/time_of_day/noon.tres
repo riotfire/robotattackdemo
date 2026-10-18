@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="LightingPreset" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/environment/lighting_preset.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"noon"
+display_name = "Noon"
+sun_elevation = 62.0
+sun_bearing = 180.0
+sun_color = Color(1, 0.97, 0.92, 1)
+sun_energy = 1.35
+shadow_opacity = 1.0
+zenith_color = Color(0.3, 0.55, 0.92, 1)
+horizon_color = Color(0.84, 0.89, 0.93, 1)
+ground_color = Color(0.55, 0.62, 0.42, 1)
+cloud_color = Color(1, 1, 1, 1)
+cloud_shade = Color(0.74, 0.8, 0.9, 1)
+cloud_coverage = 0.45
+sun_disc_color = Color(1, 0.98, 0.9, 1)
+sun_disc_energy = 1.7
+sun_disc_size = 0.01
+star_strength = 0.0
+ambient_color = Color(0, 0, 0, 1)
+ambient_sky_contribution = 0.85
+ambient_energy = 1.0
+fog_color = Color(0.84, 0.88, 0.9, 1)
+fog_aerial_perspective = 0.45
+fog_sky_affect = 0.1
+exposure = 1.0
+saturation = 1.1
+contrast = 1.06
+glow_intensity = 0.0

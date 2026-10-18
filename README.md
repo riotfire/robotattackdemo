@@ -11,6 +11,7 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 - **Economy:** parts burst out of robots and magnetize to you; the Scrap Vac collects a share when a wave ends. The tool shed pegboard has 33 upgrades across Travel, Attack, Repair, Defend and Farmhand. The Rivet Pistol is the first purchase (20 Al); you start with the wrench.
 - **Persistence:** parts, upgrades, the jetpack, records and the Robot Almanac save to `user://profile.json` (on macOS, `~/Library/Application Support/Godot/app_userdata/Robot Attack!/`). Autosaves happen at each intermission start, after each purchase and on game over.
 - **Look:** a clay shader (lumps, thumbprints, subsurface scattering, and a 12 fps surface "boil" driven by `StopMotionClock`). Robot poses step at 12 fps and the farmer's squash and stretch at 24 fps. The barn, water tower, well, windpump, fences, crates and plants are clayified CC0 models (see [CREDITS.md](CREDITS.md)); the ground is tinted felt, the sky a painted backdrop with cotton-ball clouds, and the corn wall hand-cut paper stalks. UI text is Fredoka SemiBold.
+- **Time of day and weather (M2-H1, GDD 4.6):** each run starts at one of six lighting presets (Dawn, Morning, Noon, Golden Hour, Dusk, Moonlit Night) and steps to the next whenever a phase is completed, blending over 6 s in 12 fps steps. It also rolls one weather for the whole run: Clear, Breezy (the corn wall sways), Drizzle (clay droplets, puddles, shinier clay, darker felt) or Morning Fog (shorter sight lines, stronger eye glow; long-range robots get 80% of their range once they exist). Both come from the run seed. Presets and weathers are `.tres` files in `data/environment/`.
 
 ## Controls (GDD 5.2)
 
@@ -31,21 +32,21 @@ Intermissions run 2 minutes for now, long enough to browse the pegboard; the des
 
 ## Debug keys (debug builds)
 
-F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `intermission <seconds>`, `reset` (wipe the profile).
+F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · F9 next time of day · F10 next weather · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `intermission <seconds>`, `reset` (wipe the profile).
 
-Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` for a separate profile.
+Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` for a separate profile. `--time=<preset>` (`dawn`, `morning`, `noon`, `golden_hour`, `dusk`, `moonlit_night`) and `--weather=<type>` (`clear`, `breezy`, `drizzle`, `morning_fog`) force the run's starting time of day and weather.
 
 ## Tests and tools
 
 Replace `godot` with your Godot 4.7 binary (e.g. `~/Downloads/Godot.app/Contents/MacOS/Godot`).
 
-GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners and robots following the navmesh round the Home porch:
+GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners, robots following the navmesh round the Home porch, and time of day and weather (phase stepping, seeded rolls, the fog range hook, every preset under every weather):
 
 ```bash
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
 
-End-to-end smoke test (93 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
+End-to-end smoke test (104 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
 
 ```bash
 godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --seed=1234
@@ -54,6 +55,12 @@ godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --
 Verified on 2026-10-17 (M2-A0): all 93 checks pass on seeds 1–100, 1234, 2024, 31337 and 664607717, and on 6 random seeds. Runs can go in parallel, even from different worktrees, since each run uses its own profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals the silo between sections. If a run ends early, the test stops with one failure that names the section and the reason.
 
 The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four families' robots for art review. Press R to reroll and the arrow keys to orbit.
+
+The atmosphere gallery (`tests/tools/atmosphere_gallery.tscn`) shows the farm with robot families in the crop rows at 10, 25 and 45 m, for checking that robots stay readable under every preset and weather. F9 and F10 step the time of day and weather, Tab switches the camera, G toggles grayscale. To save every view, preset and weather as PNGs plus color and grayscale contact sheets, run it in a window with an output folder:
+
+```bash
+godot --path . res://tests/tools/atmosphere_gallery.tscn -- --out=/tmp/atmosphere
+```
 
 Generated content. Re-running a tool overwrites its output, so edit the results in the editor once they settle:
 
@@ -82,4 +89,4 @@ Clayify pipeline (GDD 19.4). It rebuilds `assets/models/` from the CC0 sources i
 
 ## Layout notes
 
-Folders follow GDD 18.3, plus `scripts/player`, `scripts/weapons`, `scripts/ui`, `scripts/ai/genome`, `scripts/systems/upgrades` and `tools/`. `WaveDirector`, `PlayerSpawner`, the HUD and the pegboard live in `main.tscn` next to the farm instance, so regenerating the farm doesn't touch them.
+Folders follow GDD 18.3, plus `scripts/player`, `scripts/weapons`, `scripts/ui`, `scripts/ai/genome`, `scripts/systems/upgrades` and `tools/`. `WaveDirector`, `PlayerSpawner`, the HUD and the pegboard live in `main.tscn` next to the farm instance, so regenerating the farm doesn't touch them. `TimeOfDay` and `Weather` live in `farm.tscn` next to the `WorldEnvironment` and `Sun` they drive; they follow `EventBus` signals, not the `WaveDirector`.

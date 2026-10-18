@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeatherType" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/environment/weather_type.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"morning_fog"
+display_name = "Morning Fog"
+weight = 0.15
+long_range_multiplier = 0.8
+fog_begin = 6.0
+fog_end = 85.0
+fog_curve = 1.0
+aerial_perspective_scale = 0.3
+fog_sky_affect_add = 0.35
+fog_desaturate = 0.35
+fog_brightness = 1.08
+cloud_coverage_add = 0.15
+sky_desaturate = 0.3
+sun_energy_scale = 0.75
+shadow_opacity_scale = 0.7
+glow_boost = 0.5
+glow_threshold_scale = 0.7

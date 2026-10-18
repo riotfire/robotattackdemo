@@ -3,7 +3,7 @@ extends Node
 ## wave 1 -> intermission -> wave 2, navmesh paths after the prop rebake, families and name cards,
 ## spawning mixes and Clanker squads, cracks and repair, theft and grain sacks, weapons, pickups and the
 ## Scrap Vac, the pegboard and save round-trip, the dinner bell, jetpack, ladder, zipline, the Foreman's
-## slam and shockwave, debug keys and all three game-over conditions.
+## slam and shockwave, debug keys, time of day and weather, and all three game-over conditions.
 ## Uses its own fresh profile (user://smoke_test_profile_<pid>.json), never the player's.
 ## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
 ## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
@@ -162,6 +162,9 @@ func _run() -> void:
 	_check(_director.wave == next_wave and _director.phase == WaveDirector.Phase.SIREN, "F5 skips to wave %d's siren" % next_wave)
 	(_main.get_node(^"DebugCheats") as DebugCheats).call(&"_on_console_submitted", "wave 9")
 	_check(_director.wave == 9 and GameState.waves_survived == 8, "console 'wave 9' jumps to wave 9")
+
+	_section("Time and weather")
+	await _test_time_and_weather()
 
 	_section("Game over")
 	_game_over_expected = true
@@ -526,6 +529,60 @@ func _test_foreman() -> void:
 	_check(_farmer.health.current < hp, "its shockwave ring hits a farmer standing on the ground (%.0f -> %.0f HP)" % [hp, _farmer.health.current])
 	GameState.god_mode = true
 	_silo_floor = 0.25
+
+
+## Time of day and weather (GDD 4.6, 11.2): the run's sky comes from its seed, the preset steps once per phase
+## (the Debug keys section left the run in wave 9, phase 2), the Morning Fog range hook, and every preset and
+## weather on the real farm, headless.
+func _test_time_and_weather() -> void:
+	var time_of_day := _main.get_node(^"Farm/TimeOfDay") as TimeOfDay
+	var weather := _main.get_node(^"Farm/Weather") as Weather
+	var sun := _main.get_node(^"Farm/Sun") as DirectionalLight3D
+	var env := (_main.get_node(^"Farm/WorldEnvironment") as WorldEnvironment).environment
+	var table := time_of_day.table
+	var count := table.presets.size()
+	var expected := table.roll(RngService.make_rng([GameState.run_seed, TimeOfDay.STREAM]))
+	var start := table.presets[expected.start_index]
+	var rolled := table.weathers[expected.weather_index]
+	_check(time_of_day.run_roll != null and time_of_day.run_roll.equals(expected),
+			"the run's sky comes from its seed: starts at %s, weather %s" % [start.display_name, rolled.display_name])
+	_check(Weather.current == rolled and time_of_day.current_weather() == rolled, "the weather is %s for the whole run" % rolled.display_name)
+	await _wait_until(func() -> bool: return not time_of_day.is_transitioning(), time_of_day.transition_time + 1.0)
+	_check(time_of_day.preset_index == (expected.start_index + 1) % count,
+			"wave 9 (phase 2) is one step on: %s" % time_of_day.current_preset().display_name)
+
+	var changes: Array[StringName] = []
+	var on_change := func(id: StringName, _index: int) -> void: changes.append(id)
+	EventBus.time_of_day_changed.connect(on_change)
+	(_main.get_node(^"DebugCheats") as DebugCheats).call(&"_on_console_submitted", "wave 11")
+	var next := table.presets[(expected.start_index + 2) % count]
+	_check(changes == [next.id] and time_of_day.is_transitioning(), "phase 3 steps to %s and blends in (%s)" % [next.display_name, changes])
+	var t := await _wait_until(func() -> bool: return not time_of_day.is_transitioning(), time_of_day.transition_time + 1.0)
+	var target := AtmosphereLook.compose(next, rolled, expected)
+	_check(t >= 0.0 and sun.light_color.is_equal_approx(target.sun_color) and is_equal_approx(env.tonemap_exposure, target.exposure),
+			"the blend lands on %s after %.1f s" % [next.display_name, t])
+	EventBus.time_of_day_changed.disconnect(on_change)
+
+	var long_range := Weather.engagement_range_multiplier(RobotArchetype.RobotClass.LONG_RANGE)
+	_check(is_equal_approx(long_range, rolled.long_range_multiplier) and Weather.engagement_range_multiplier(RobotArchetype.RobotClass.MELEE) == 1.0,
+			"long-range robots get x%.2f range in %s, melee x1" % [long_range, rolled.display_name])
+
+	for w in table.weathers.size():
+		var type := table.weathers[w]
+		time_of_day.set_weather_index(w)
+		await _frames(3)
+		var applied := true
+		for p in count:
+			time_of_day.show_preset(p, false)
+			var look := AtmosphereLook.compose(table.presets[p], type, expected)
+			applied = applied and is_equal_approx(env.fog_depth_end, type.fog_end) and sun.light_color.is_equal_approx(look.sun_color)
+		_check(applied and (weather.rain_drop_count() > 0) == (type.rain_amount > 0.0) and (weather.puddle_count() > 0) == (type.puddle_count > 0)
+				and weather.corn_is_swaying() == (type.wind_strength > 0.0),
+				"%s works with all %d presets (%d drops, %d puddles, corn %s)" % [type.display_name, count, weather.rain_drop_count(),
+				weather.puddle_count(), "swaying" if weather.corn_is_swaying() else "still"])
+	time_of_day.set_weather_index(expected.weather_index)
+	time_of_day.show_preset((expected.start_index + 2) % count, false)
+	_check(Weather.current == rolled, "back to the run's own weather")
 
 
 # --- Helpers --------------------------------------------------------------------------------------

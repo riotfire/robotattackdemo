@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="WeatherType" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/environment/weather_type.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"drizzle"
+display_name = "Drizzle"
+weight = 0.2
+fog_begin = 40.0
+fog_end = 115.0
+fog_curve = 1.2
+aerial_perspective_scale = 0.7
+fog_desaturate = 0.5
+fog_brightness = 0.95
+cloud_coverage_add = 0.38
+sky_desaturate = 0.5
+sun_energy_scale = 0.5
+shadow_opacity_scale = 0.55
+ambient_energy_scale = 1.1
+saturation_scale = 0.92
+exposure_scale = 1.05
+glow_boost = 0.2
+glow_threshold_scale = 0.85
+wind_strength = 0.35
+rain_amount = 1.0
+wetness = 1.0
+puddle_count = 20
