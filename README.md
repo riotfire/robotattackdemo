@@ -22,7 +22,7 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 | Wrench bonk | V | R3 |
 | Interact: repair (hold), shed pegboard, dinner bell (hold), zipline | E | X |
 | Reload | R | X |
-| Weapons | 1 wrench, 2 pistol, mouse wheel | Y |
+| Weapons: tap for the last weapon, hold for the weapon wheel (point at a weapon, let go to equip) | Q (point with the mouse); 1 wrench, 2 pistol (1–6 as more arrive); mouse wheel cycles | Y (point with the right stick) |
 | Shoulder swap | Middle mouse | — |
 | Pegboard (shed open): move / buy / close | Mouse: hold click on a peg to buy | D-pad or left stick / hold A / B or Start |
 | Ladders | Walk into them; W/S climb; Space steps onto a catwalk or lets go | |
@@ -39,13 +39,13 @@ Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` 
 
 Replace `godot` with your Godot 4.7 binary (e.g. `~/Downloads/Godot.app/Contents/MacOS/Godot`).
 
-GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners and robots following the navmesh round the Home porch:
+GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners, robots following the navmesh round the Home porch, and the weapon framework (weapon data, switching and the wheel, mod hooks and slots, pooled projectiles):
 
 ```bash
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
 
-End-to-end smoke test (93 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
+End-to-end smoke test (104 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
 
 ```bash
 godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --seed=1234
@@ -83,3 +83,5 @@ Clayify pipeline (GDD 19.4). It rebuilds `assets/models/` from the CC0 sources i
 ## Layout notes
 
 Folders follow GDD 18.3, plus `scripts/player`, `scripts/weapons`, `scripts/ui`, `scripts/ai/genome`, `scripts/systems/upgrades` and `tools/`. `WaveDirector`, `PlayerSpawner`, the HUD and the pegboard live in `main.tscn` next to the farm instance, so regenerating the farm doesn't touch them.
+
+The farmer (`scenes/player/farmer.tscn`) is split into components so work packages don't collide in one file: `Farmer` holds the state chart, health, armor, aiming and the model, and ticks `Movement` (run, jump, jetpack, ladders, ziplines), `Repair`, `Interaction` and the `WeaponHolder` in that order each physics frame. Each weapon is a `Weapon` node under the holder with a `WeaponData` resource in `data/weapons/` (base stats, slot, unlock flag and the stat keys its pegboard tracks modify). Shots go through `begin_shot()` and `deliver_hit()`, which run any installed `WeaponMod`'s `on_fire`, `on_hit` and `on_kill` hooks. Setting a weapon's `projectile_speed` above 0 switches it from hitscan to pooled projectiles (`ProjectilePool`).

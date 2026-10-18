@@ -51,4 +51,4 @@ func can_interact(farmer: Farmer) -> bool:
 
 
 func interact(farmer: Farmer) -> void:
-	farmer.start_zipline(self)
+	farmer.movement.start_zipline(self)

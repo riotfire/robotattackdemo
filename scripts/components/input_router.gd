@@ -10,10 +10,19 @@ extends Node
 ## Radians per second at full right-stick deflection (x = yaw, y = pitch).
 @export var stick_look_speed: Vector2 = Vector2(3.2, 2.2)
 @export var invert_y: bool = false
+## Mouse travel, in pixels, that pushes the weapon wheel's pointer all the way out.
+@export var wheel_mouse_radius: float = 120.0
 
 ## Off while a debug console or menu has focus.
 var enabled: bool = true
+## On while the weapon wheel is open: look input steers the wheel's pointer instead of the camera.
+var look_locked: bool = false:
+	set(value):
+		look_locked = value
+		_mouse_look = Vector2.ZERO
+		_wheel_mouse = Vector2.ZERO
 var _mouse_look: Vector2 = Vector2.ZERO
+var _wheel_mouse: Vector2 = Vector2.ZERO
 ## Swallows the click that captured the mouse so it doesn't also fire.
 var _fire_blocked_until_ms: int = 0
 
@@ -23,7 +32,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	var captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	if event is InputEventMouseMotion and captured:
-		_mouse_look += (event as InputEventMouseMotion).screen_relative * mouse_sensitivity
+		var motion := (event as InputEventMouseMotion).screen_relative
+		if look_locked:
+			_wheel_mouse = (_wheel_mouse + motion / wheel_mouse_radius).limit_length(1.0)
+		else:
+			_mouse_look += motion * mouse_sensitivity
 	elif event is InputEventMouseButton and (event as InputEventMouseButton).pressed and not captured:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		_fire_blocked_until_ms = Time.get_ticks_msec() + 200
@@ -41,11 +54,20 @@ func move_vector() -> Vector2:
 func consume_look(delta: float) -> Vector2:
 	var look := _mouse_look + Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down") * stick_look_speed * delta
 	_mouse_look = Vector2.ZERO
-	if not enabled:
+	if not enabled or look_locked:
 		return Vector2.ZERO
 	if invert_y:
 		look.y = -look.y
 	return look
+
+
+## The weapon wheel's pointer (x right, y down, length 0-1): the right stick while it's pushed, otherwise
+## how far the mouse has moved since the wheel opened.
+func wheel_pointer() -> Vector2:
+	if not enabled:
+		return Vector2.ZERO
+	var stick := Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down")
+	return stick if stick.length() >= WeaponHolder.WHEEL_DEADZONE else _wheel_mouse
 
 
 func is_pressed(action: StringName) -> bool:

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MeleeWeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/melee_weapon_data.gd" id="1_melee"]
+
+[resource]
+script = ExtResource("1_melee")
+id = &"wrench"
+display_name = "Wrench"
+slot = 1
+trigger_mode = 1
+damage = 25.0
+damage_stat = &"wrench.damage"
+fire_rate = 1.6
+fire_rate_stat = &"wrench.swing_rate"
+max_range = 2.2
+hit_radius = 0.9
+combo_multiplier = 1.5
+combo_knockback = 9.0
+combo_reset_time = 1.2

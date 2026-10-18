@@ -8,6 +8,12 @@
 [ext_resource type="Script" path="res://scripts/weapons/wrench.gd" id="6_wrench"]
 [ext_resource type="Script" path="res://scripts/weapons/pistol.gd" id="7_pistol"]
 [ext_resource type="Material" path="res://shaders/clay_material.tres" id="8_clay"]
+[ext_resource type="Script" path="res://scripts/player/farmer_movement.gd" id="9_movement"]
+[ext_resource type="Script" path="res://scripts/player/farmer_repair.gd" id="10_repair"]
+[ext_resource type="Script" path="res://scripts/player/farmer_interaction.gd" id="11_interaction"]
+[ext_resource type="Script" path="res://scripts/weapons/weapon_holder.gd" id="12_holder"]
+[ext_resource type="Resource" path="res://data/weapons/wrench.tres" id="13_wrench_data"]
+[ext_resource type="Resource" path="res://data/weapons/pistol.tres" id="14_pistol_data"]
 
 [sub_resource type="CapsuleShape3D" id="Shape_body"]
 radius = 0.4
@@ -160,10 +166,11 @@ mesh = SubResource("Mesh_flame")
 
 [node name="WeaponHolder" type="Node3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.0, -0.25)
+script = ExtResource("12_holder")
 
 [node name="Wrench" type="Node3D" parent="Model/WeaponHolder"]
 script = ExtResource("6_wrench")
-display_name = "Wrench"
+data = ExtResource("13_wrench_data")
 
 [node name="Pivot" type="Node3D" parent="Model/WeaponHolder/Wrench"]
 
@@ -181,7 +188,7 @@ instance_shader_parameters/tint = Color(0.85, 0.15, 0.12, 1)
 
 [node name="Pistol" type="Node3D" parent="Model/WeaponHolder"]
 script = ExtResource("7_pistol")
-display_name = "Rivet Pistol"
+data = ExtResource("14_pistol_data")
 
 [node name="Body" type="MeshInstance3D" parent="Model/WeaponHolder/Pistol"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
@@ -201,6 +208,15 @@ max_health = 100.0
 
 [node name="Jetpack" type="Node" parent="."]
 script = ExtResource("4_jetpack")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("9_movement")
+
+[node name="Repair" type="Node" parent="."]
+script = ExtResource("10_repair")
+
+[node name="Interaction" type="Node" parent="."]
+script = ExtResource("11_interaction")
 
 [node name="CameraRig" type="Node3D" parent="."]
 top_level = true

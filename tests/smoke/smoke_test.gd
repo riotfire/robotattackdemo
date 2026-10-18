@@ -3,7 +3,7 @@ extends Node
 ## wave 1 -> intermission -> wave 2, navmesh paths after the prop rebake, families and name cards,
 ## spawning mixes and Clanker squads, cracks and repair, theft and grain sacks, weapons, pickups and the
 ## Scrap Vac, the pegboard and save round-trip, the dinner bell, jetpack, ladder, zipline, the Foreman's
-## slam and shockwave, debug keys and all three game-over conditions.
+## slam and shockwave, the weapon wheel and mod hooks, debug keys and all three game-over conditions.
 ## Uses its own fresh profile (user://smoke_test_profile_<pid>.json), never the player's.
 ## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
 ## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
@@ -69,7 +69,7 @@ func _run() -> void:
 	_director.intermission_time = 30.0
 	_director.time_left = 30.0
 	_check(not GameState.jetpack_unlocked, "fresh profile: jetpack locked")
-	_check(_farmer.current_weapon == _farmer.wrench and not _farmer.is_weapon_available(_farmer.pistol),
+	_check(_farmer.weapons.current == _wrench() and not _pistol().is_available(),
 			"fresh profile: wrench only, the pistol must be bought")
 	var props := (_main.get_node(^"Farm/NavRegion/Props") as PropScatter).placed
 	_check(props.size() >= 8, "seeded prop scatter placed %d props" % props.size())
@@ -127,6 +127,9 @@ func _run() -> void:
 
 	_section("Pegboard and save")
 	await _test_pegboard_and_save()
+
+	_section("Weapon wheel")
+	await _test_weapon_wheel()
 
 	_section("Wave 2")
 	await _test_dinner_bell()
@@ -289,7 +292,7 @@ func _test_wrench_and_pickups() -> void:
 	_farmer.teleport_to(robot.global_position + away * 1.2 + Vector3.UP * 0.1)
 	await _aim_camera_at(robot.global_position + Vector3.UP * 0.4)
 	var hp_before := robot.health.current
-	_farmer.wrench.swing()
+	_wrench().swing()
 	_check(is_equal_approx(hp_before - robot.health.current, 25.0), "wrench bonk does 25 to a Nibbler (%.0f -> %.0f HP)" % [hp_before, robot.health.current])
 	_check(robot.target_kind == Robot.TargetKind.PLAYER, "a Nibbler hit from up close switches to the farmer")
 	var parts_before := GameState.parts.values().reduce(func(a: int, b: int) -> int: return a + b, 0) as int
@@ -310,18 +313,23 @@ func _test_pistol() -> void:
 	# Clear the line of fire: a robot chasing the farmer, or one standing where the farmer lands, would take
 	# the rivet instead.
 	_kill_all_robots(target)
-	_farmer.equip(1)
+	_farmer.weapons.equip(_pistol())
 	var aim_at := target.global_position + Vector3.UP * 0.45 * target.type_scale()
 	var out := aim_at - GameState.silo.global_position
 	out.y = 0.0
 	_farmer.teleport_to(aim_at + out.normalized() * 7.0 - Vector3.UP * 0.35 * target.type_scale())
 	await _aim_camera_at(aim_at)
 	var hp := target.health.current
-	var ammo := _farmer.pistol.ammo
-	_farmer.pistol.fire()
-	_check(_farmer.pistol.ammo == ammo - 1, "pistol uses a round (%d -> %d)" % [ammo, _farmer.pistol.ammo])
+	var pistol := _pistol()
+	var ammo := pistol.ammo
+	var hooks := HookCounter.new()
+	_check(pistol.install_mod(hooks) and not pistol.install_mod(HookCounter.new()), "the pistol takes one mod (1 slot)")
+	pistol.fire()
+	pistol.remove_mod(hooks)
+	_check(pistol.ammo == ammo - 1, "pistol uses a round (%d -> %d)" % [ammo, pistol.ammo])
 	_check(target.health.current < hp or target.ai_state == Robot.AiState.DEAD,
 			"pistol hitscan from the camera-center ray hits a %s (%.0f -> %.0f HP)" % [target.archetype.display_name, hp, target.health.current])
+	_check(hooks.fired == 1 and hooks.hits == 1, "the shot runs the mod's on_fire and on_hit hooks (%d, %d)" % [hooks.fired, hooks.hits])
 	_farmer.teleport_to(Vector3(0.0, 0.2, 14.0))
 
 
@@ -361,7 +369,7 @@ func _test_repair() -> void:
 			crack = c
 	_farmer.teleport_to(_stand_point_for(crack))
 	await _frames(20)
-	_check(_farmer.repair_target == crack, "standing next to a %s puts it in reach" % crack.describe())
+	_check(_farmer.repair.target == crack, "standing next to a %s puts it in reach" % crack.describe())
 	var leak_before := silo.total_leak_rate()
 	var crack_leak := crack.leak_rate(silo.leak_rates)
 	var structure_before := silo.structure
@@ -369,7 +377,7 @@ func _test_repair() -> void:
 	var crack_id := crack.get_instance_id()
 	Input.action_press(&"interact")
 	var t := await _wait_until(func() -> bool: return not silo.get_cracks().any(func(c: SiloCrack) -> bool: return c.get_instance_id() == crack_id),
-			maxf(15.0, 1.5 * pool / _farmer.repair_rate_now()))
+			maxf(15.0, 1.5 * pool / _farmer.repair.rate_now()))
 	Input.action_release(&"interact")
 	_check(t >= 0.0, "holding repair closes the crack (%.1f s for %.0f Structure)" % [t, pool])
 	_check(absf((leak_before - silo.total_leak_rate()) - crack_leak) < 0.01,
@@ -381,7 +389,7 @@ func _test_pegboard_and_save() -> void:
 	var shed := get_tree().get_first_node_in_group(ToolShed.GROUP_SHED) as ToolShed
 	_farmer.teleport_to(shed.interaction_point() + Vector3.UP * 0.2)
 	await _frames(15)
-	_check(_farmer.focus_interactable == shed, "the shed door is in reach")
+	_check(_farmer.interaction.focus == shed, "the shed door is in reach")
 	Input.action_press(&"interact")
 	await _frames(2)
 	Input.action_release(&"interact")
@@ -392,7 +400,7 @@ func _test_pegboard_and_save() -> void:
 	if short > 0:
 		GameState.add_parts({&"al": short})
 	_check(_pegboard.buy(&"attack.pistol"), "buy the Rivet Pistol for 20 Al")
-	_check(_farmer.is_weapon_available(_farmer.pistol) and _farmer.current_weapon == _farmer.pistol, "the pistol is now equipped")
+	_check(_pistol().is_available() and _farmer.weapons.current == _pistol(), "the pistol is now equipped")
 	_check(not _pegboard.buy(&"attack.pistol"), "an unlock can't be bought twice")
 	_check(not _pegboard.buy(&"travel.fuel_tank"), "Fuel Tank stays locked until the jetpack is unlocked")
 	_check(_pegboard.buy(&"travel.comfy_boots"), "buy Comfy Boots level 1")
@@ -409,11 +417,47 @@ func _test_pegboard_and_save() -> void:
 	_check(StatService.level_of(&"attack.pistol") == 1 and StatService.level_of(&"travel.comfy_boots") == 1, "loading the profile restores the pegboard")
 
 
+## Tap, hold and number keys (GDD 5.2). The mouse can't be captured headless, so the wheel is pointed with
+## the right stick; WeaponHolder.slot_at's unit test covers the geometry for both.
+func _test_weapon_wheel() -> void:
+	var holder := _farmer.weapons
+	var wrench := _wrench()
+	var pistol := _pistol()
+	var expected: Array[Weapon] = [wrench, pistol]
+	_check(holder.weapons == expected and wrench.data.slot == 1 and pistol.data.slot == 2,
+			"the farmer carries the wrench (slot 1) and pistol (slot 2), set up from data/weapons")
+	await _press_action(&"weapon_1")
+	_check(holder.current == wrench, "1 equips the wrench")
+	Input.action_press(&"weapon_wheel")
+	await _frames(3)
+	Input.action_release(&"weapon_wheel")
+	await _frames(2)
+	_check(holder.current == pistol and not holder.wheel_open, "tapping Q / (Y) swaps back to the last weapon")
+	var rig := _farmer.camera_rig
+	var view := Vector2(rig.yaw, rig.pitch)
+	Input.action_press(&"weapon_wheel")
+	await _frames(roundi(WeaponHolder.WHEEL_HOLD_TIME * 60.0) + 6)
+	_check(holder.wheel_open and _farmer.input.look_locked, "holding Q / (Y) opens the weapon wheel")
+	Input.action_press(&"look_up", 1.0)
+	await _frames(10)
+	_check(holder.wheel_choice == wrench, "pushing the right stick up points the wheel at slot 1, the wrench")
+	_check(Vector2(rig.yaw, rig.pitch).is_equal_approx(view), "the camera holds still while the wheel takes the stick")
+	Input.action_release(&"look_up")
+	await _frames(2)
+	_check(holder.wheel_choice == wrench, "the choice sticks when the stick springs back")
+	Input.action_release(&"weapon_wheel")
+	await _frames(2)
+	_check(holder.current == wrench and not holder.wheel_open and not _farmer.input.look_locked,
+			"letting go equips the wrench and gives the camera back")
+	await _press_action(&"weapon_2")
+	_check(holder.current == pistol, "2 equips the pistol")
+
+
 func _test_dinner_bell() -> void:
 	var bell := _main.get_node(^"Farm/DinnerBell") as DinnerBell
 	_farmer.teleport_to(bell.interaction_point() + Vector3(0.8, 0.2, 0.0))
 	await _frames(10)
-	_check(_farmer.focus_interactable == bell, "the dinner bell is in reach")
+	_check(_farmer.interaction.focus == bell, "the dinner bell is in reach")
 	var al_before := GameState.parts[&"al"]
 	Input.action_press(&"interact")
 	var t := await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SIREN, 3.0)
@@ -457,7 +501,7 @@ func _test_ladder() -> void:
 	Input.action_release(&"move_forward")
 	_check(t > 1.5 and t < 2.6, "climbs at 4 m/s (8 m in %.2f s)" % t)
 	await _frames(2)
-	_check(_farmer.can_step_off_ladder(), "the HUD can offer stepping onto catwalk 1")
+	_check(_farmer.movement.can_step_off_ladder(), "the HUD can offer stepping onto catwalk 1")
 	Input.action_press(&"jump")
 	await _frames(2)
 	Input.action_release(&"jump")
@@ -470,7 +514,7 @@ func _test_zipline() -> void:
 	var line := _main.get_node(^"Farm/Ziplines/Z1_SiloToBarn") as Zipline
 	_farmer.teleport_to(line.interaction_point() + Vector3.UP * 0.1)
 	await _frames(20)
-	_check(_farmer.is_on_floor() and _farmer.focus_interactable == line, "Z1 start is reachable on the silo dome (y = %.2f)" % _farmer.global_position.y)
+	_check(_farmer.is_on_floor() and _farmer.interaction.focus == line, "Z1 start is reachable on the silo dome (y = %.2f)" % _farmer.global_position.y)
 	Input.action_press(&"interact")
 	await _frames(2)
 	Input.action_release(&"interact")
@@ -644,6 +688,21 @@ func _wait_until(condition: Callable, timeout: float) -> float:
 	return waited
 
 
+func _press_action(action: StringName) -> void:
+	Input.action_press(action)
+	await _frames(2)
+	Input.action_release(action)
+	await _frames(2)
+
+
+func _wrench() -> Wrench:
+	return _farmer.weapons.get_weapon(&"wrench") as Wrench
+
+
+func _pistol() -> Pistol:
+	return _farmer.weapons.get_weapon(&"pistol") as Pistol
+
+
 func _press_key(keycode: Key) -> void:
 	for pressed: bool in [true, false]:
 		var event := InputEventKey.new()
@@ -671,3 +730,17 @@ func _check(ok: bool, what: String) -> void:
 	print(("  PASS  " if ok else "  FAIL  ") + what)
 	if not ok:
 		_failures.append(what)
+
+
+## Counts a weapon's hook calls, to check that shots go through the mod hooks (M2-A2).
+class HookCounter:
+	extends WeaponMod
+
+	var fired: int = 0
+	var hits: int = 0
+
+	func on_fire(_weapon: Weapon, _shot: WeaponShot) -> void:
+		fired += 1
+
+	func on_hit(_weapon: Weapon, _target: Node, _packet: DamagePacket) -> void:
+		hits += 1

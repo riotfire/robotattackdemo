@@ -32,6 +32,7 @@ var _toast_label: Label
 var _toast_left: float = 0.0
 var _repair_bar: ProgressBar
 var _crosshair: Crosshair
+var _weapon_wheel: WeaponWheel
 var _game_over_panel: PanelContainer
 var _game_over_label: Label
 var _help_label: Label
@@ -51,6 +52,7 @@ func _ready() -> void:
 func _on_player_registered(player: Node3D) -> void:
 	if _player == null and player is Farmer:
 		_player = player
+		_weapon_wheel.holder = _player.weapons
 
 
 func show_message(text: String, duration: float = 2.5) -> void:
@@ -135,9 +137,11 @@ func _update_player() -> void:
 			"   ARMOR %d" % ceili(_player.armor) if _player.max_armor > 0.0 else "", "   (GOD MODE)" if GameState.god_mode else ""]
 	_armor_bar.visible = _player.max_armor > 0.0
 	_armor_bar.value = _player.armor / _player.max_armor * 100.0 if _player.max_armor > 0.0 else 0.0
-	_hint_label.text = "1 Wrench  2 Pistol%s   V bonk   R reload   E use   F1 debug" % (
-			"" if _player.is_weapon_available(_player.pistol) else " (buy at the shed)")
-	var weapon := _player.current_weapon
+	var slots := PackedStringArray()
+	for carried in _player.weapons.weapons:
+		slots.append("%d %s%s" % [carried.data.slot, carried.display_name, "" if carried.is_available() else " (buy at the shed)"])
+	_hint_label.text = "%s   hold Q wheel   V bonk   R reload   E use   F1 debug" % "  ".join(slots)
+	var weapon := _player.weapons.current
 	if weapon != null:
 		var ammo := weapon.ammo_text()
 		_weapon_label.text = weapon.display_name + ("   " + ammo if ammo != "" else "")
@@ -146,19 +150,19 @@ func _update_player() -> void:
 
 	var prompt := ""
 	_repair_bar.visible = false
-	if _player.repair_target != null and is_instance_valid(_player.repair_target):
-		var crack := _player.repair_target
+	if _player.repair.target != null and is_instance_valid(_player.repair.target):
+		var crack := _player.repair.target
 		_repair_bar.value = crack.repair_fraction() * 100.0
 		_repair_bar.visible = true
-		prompt = ("Repairing " if _player.is_repairing else "Hold E / (X) to repair: ") + crack.describe()
-	elif _player.focus_interactable != null:
-		var target := _player.focus_interactable
+		prompt = ("Repairing " if _player.repair.is_repairing else "Hold E / (X) to repair: ") + crack.describe()
+	elif _player.interaction.focus != null:
+		var target := _player.interaction.focus
 		var usable := target.can_interact(_player)
 		prompt = ("E / (X): " if usable else "") + target.prompt_text(_player)
 		if usable and target.hold_time > 0.0:
-			_repair_bar.value = _player.interact_progress * 100.0
+			_repair_bar.value = _player.interaction.progress * 100.0
 			_repair_bar.visible = true
-	elif _player.can_step_off_ladder():
+	elif _player.movement.can_step_off_ladder():
 		prompt = "SPACE / (A): step onto the catwalk"
 	elif _player.state == Farmer.State.CLIMBING:
 		prompt = "W/S climb   SPACE let go"
@@ -263,6 +267,10 @@ func _build() -> void:
 	_crosshair.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(_crosshair)
 	_place(_crosshair, Control.PRESET_CENTER, Rect2(0, 0, 0, 0))
+
+	_weapon_wheel = WeaponWheel.new()
+	root.add_child(_weapon_wheel)
+	_place(_weapon_wheel, Control.PRESET_CENTER, Rect2(0, 0, 0, 0))
 
 	_repair_bar = _bar(root, Color(1.0, 0.75, 0.25), 160)
 	_place(_repair_bar, Control.PRESET_CENTER, Rect2(-80, 44, 160, 16))
