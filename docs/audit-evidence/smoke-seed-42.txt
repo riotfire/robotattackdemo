@@ -1,0 +1,117 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Robot Attack! run seed: 42
+
+== Start ==
+  PASS  silo registered
+  PASS  starts in the wave 1 intermission
+  PASS  intermission is 120 s (119.83 left)
+  PASS  fresh profile: jetpack locked
+  PASS  fresh profile: wrench only, the pistol must be bought
+  PASS  seeded prop scatter placed 17 props
+  PASS  navmesh rebaked at run start around the props
+  PASS  navmesh path from lane 1 to the silo (18 points)
+  PASS  navmesh path from lane 2 to the silo (23 points)
+  PASS  navmesh path from lane 3 to the silo (24 points)
+  PASS  navmesh path from lane 4 to the silo (24 points)
+  PASS  navmesh path from lane 5 to the silo (27 points)
+  PASS  navmesh path from lane 6 to the silo (31 points)
+  PASS  navmesh path from lane 7 to the silo (36 points)
+  PASS  navmesh path from lane 8 to the silo (21 points)
+
+== Wave 1 ==
+  PASS  siren starts at T-10 (9.98 s left of the 30 s intermission)
+  PASS  wave 1 uses 2 lanes [2, 4]
+  PASS  wave family rolled: The Grape Disco Toasters (7P5B4H)
+  PASS  family logged in the Almanac
+  PASS  spawning starts 10 s after the siren (10.00 s)
+  PASS  wave 1 buys 9 Nibblers with budget 18 (got 9)
+  PASS  robots are kit-bashed from the family genome (26 parts)
+  PASS  Nibblers reach and damage the silo (first hit after 13.4 s)
+  PASS  a crack opens after 10% Structure lost (structure 898)
+  PASS  a Nibbler thief grabs a 20-bushel sack and runs for the corn
+  PASS  destroying the thief drops the grain sack
+  PASS  walking over the sack returns the grain (960 -> 979)
+  PASS  wrench bonk does 25 to a Nibbler (30 -> 5 HP)
+  PASS  a Nibbler hit from up close switches to the farmer
+  PASS  its parts burst out, magnetize and bank (2 -> 5)
+  PASS  wave 1 cleared after the last robot
+  PASS  harvest bonus adds grain (966.1 -> 999.1)
+  PASS  Scrap Vac banks leftover parts (5 -> 14 Al)
+  PASS  Scrap Vac clears the parts off the field
+  PASS  back to intermission, now for wave 2
+  PASS  autosaved at the intermission start
+
+== Repair ==
+  PASS  standing next to a Small crack (catwalk 2) puts it in reach
+  PASS  holding repair closes the crack (5.0 s for 100 Structure)
+  PASS  its leak stops (1.8 -> 1.2 bu/s)
+  PASS  repair restores Structure (700 -> 800)
+
+== Pegboard and save ==
+  PASS  the shed door is in reach
+  PASS  Interact at the shed opens the pegboard during the intermission
+  PASS  the farmer stops taking input while the pegboard is open
+  PASS  buy the Rivet Pistol for 20 Al
+  PASS  the pistol is now equipped
+  PASS  an unlock can't be bought twice
+  PASS  Fuel Tank stays locked until the jetpack is unlocked
+  PASS  buy Comfy Boots level 1
+  PASS  run speed 7.0 -> 7.21 m/s
+  PASS  closing the pegboard gives control back
+  PASS  purchases autosave to the profile
+  PASS  loading the profile restores the pegboard
+
+== Wave 2 ==
+  PASS  the dinner bell is in reach
+  PASS  holding Interact for 1 s rings the bell and starts the siren (1.00 s)
+  PASS  Early Bird bonus paid (0 -> 15 Al)
+  PASS  wave 2 spends 26 of its 26.8 threat budget on 13 robots (clanker, nibbler, nibbler, clanker, nibbler, nibbler, clanker)
+  PASS  wave 2 rolls a new family: The Teal Pirate Tin Cans
+  PASS  no theme repeats back to back (Disco -> Pirate)
+  PASS  Clankers arrive as a squad of 3
+  PASS  Clanker HP 60 x wave 2 scaling (64.3)
+  PASS  the squad shares one target
+  PASS  pistol uses a round (10 -> 9)
+  PASS  pistol hitscan from the camera-center ray hits a Nibbler (32 -> 20 HP)
+  PASS  wave 2 cleared
+  PASS  jetpack unlocks after wave 2
+  PASS  intermission for wave 3
+
+== Traversal ==
+  PASS  standing jump + full thrust reaches ~8.5 m (8.51 m)
+  PASS  1.2 s of fuel is used up
+  PASS  no recharge during the 0.5 s delay
+  PASS  fuel refills on the ground in ~2 s after the delay (2.17 s)
+  PASS  walking into the silo ladder starts a climb
+  PASS  climbs at 4 m/s (8 m in 2.03 s)
+  PASS  the HUD can offer stepping onto catwalk 1
+  PASS  stepped off onto the 8 m catwalk (y = 8.00)
+  PASS  Z1 start is reachable on the silo dome (y = 22.00)
+  PASS  Interact grabs the zipline
+  PASS  rides 38 m at 12 m/s (3.48 s, expected ~3.21)
+  PASS  lands on the barn roof (-31.1, 12.6, -23.1)
+
+== Big Haul ==
+  PASS  wave 5 is a Big Haul
+  PASS  a Foreman spawns during the Big Haul (after 32.8 s)
+  PASS  the Foreman is a Thumper with 3x HP (2204) and a bonus trait (Armored)
+  PASS  Foreman drops are guaranteed: 10 Al, 6 Cu, 2 Au, 3 PC
+  PASS  the Foreman slams the silo for 71
+  PASS  its shockwave ring hits a farmer standing on the ground (100 -> 88 HP)
+
+== Debug keys ==
+  PASS  F3 gives parts (42 -> 142 Al)
+  PASS  F5 skips to wave 6's siren
+  PASS  console 'wave 9' jumps to wave 9
+
+== Game over ==
+  PASS  grain at 0 ends the run (reason grain)
+  PASS  game pauses on game over
+  PASS  director stops
+  PASS  best wave recorded (8)
+  PASS  farmer at 0 HP ends the run (reason farmer)
+  PASS  silo at 0 Structure ends the run (reason silo)
+
+Economy note: 14 Al banked by the end of wave 1 (pistol costs 20).
+SMOKE TEST PASSED (93 checks)

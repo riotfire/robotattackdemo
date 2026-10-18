@@ -1,0 +1,75 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+---  GUT  ---
+[INFO]:  using [/Users/DH_1/Library/Application Support/Godot/app_userdata/Robot Attack!] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+
+
+res://tests/unit/test_difficulty_curve.gd
+* test_spawn_window_matches_gdd_table
+* test_base_threat_budget_matches_gdd_table
+* test_big_haul_every_fifth_wave_multiplies_budget
+* test_hp_multiplier_matches_gdd_table
+* test_damage_multiplier_matches_gdd_table
+* test_drop_multiplier
+* test_trait_count_steps
+* test_lane_count_steps
+* test_spawn_schedule_is_sorted_and_inside_the_window
+* test_spawn_schedule_is_wave_shaped_not_even
+* test_nibbler_costs_two_threat
+* test_thief_share_starts_at_ten_percent_and_creeps_up
+* test_thief_chance_hits_the_share_after_the_farmer_roll
+* test_thieving_family_raises_the_share_up_to_its_cap
+* test_archetype_costs_follow_type_and_class
+15/15 passed.
+
+
+res://tests/unit/test_genome.gd
+* test_same_code_rebuilds_the_same_family
+* test_same_seed_and_wave_roll_the_same_family
+* test_family_codes_use_the_safe_alphabet
+* test_novelty_rules_hold_over_a_run
+* test_trait_count_follows_the_curve
+* test_every_palette_contrasts_with_the_farm
+* test_factory_keeps_the_readability_locks
+7/7 passed.
+
+
+res://tests/unit/test_save_and_waves.gd
+* test_migrates_a_v0_profile
+* test_current_profile_is_left_alone
+* test_profile_round_trip
+* test_heavy_cap
+* test_spawn_buying_spends_the_budget_within_the_rules
+5/5 passed.
+
+
+res://tests/unit/test_upgrades.gd
+* test_pistol_damage_costs_match_gdd_table
+* test_modifier_kinds
+* test_fuel_tank_compounds_like_gdd_table
+* test_stacks_add_multiply_and_take_max
+* test_flags_respect_their_level
+* test_purchase_spends_parts_and_checks_prerequisites
+* test_catalog_is_complete_and_consistent
+7/7 passed.
+
+
+
+
+==============================================
+= Run Summary
+==============================================
+
+Totals
+------
+Scripts               4
+Tests                34
+Passing Tests        34
+Asserts            1894
+Time              0.431s
+
+
+---- All tests passed! ----
+

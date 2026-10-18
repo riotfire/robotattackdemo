@@ -1,0 +1,146 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Robot Attack! run seed: 1234
+
+== Start ==
+  PASS  silo registered
+  PASS  starts in the wave 1 intermission
+  PASS  intermission is 120 s (119.83 left)
+  PASS  fresh profile: jetpack locked
+  PASS  fresh profile: wrench only, the pistol must be bought
+  PASS  seeded prop scatter placed 14 props
+  PASS  navmesh rebaked at run start around the props
+  PASS  navmesh path from lane 1 to the silo (16 points)
+  PASS  navmesh path from lane 2 to the silo (14 points)
+  PASS  navmesh path from lane 3 to the silo (23 points)
+  PASS  navmesh path from lane 4 to the silo (34 points)
+  PASS  navmesh path from lane 5 to the silo (25 points)
+  PASS  navmesh path from lane 6 to the silo (25 points)
+  PASS  navmesh path from lane 7 to the silo (29 points)
+  PASS  navmesh path from lane 8 to the silo (21 points)
+
+== Wave 1 ==
+  PASS  siren starts at T-10 (9.98 s left of the 30 s intermission)
+  PASS  wave 1 uses 2 lanes [3, 8]
+  PASS  wave family rolled: The Slate Junkyard Toasters (D775W5)
+  PASS  family logged in the Almanac
+  PASS  spawning starts 10 s after the siren (10.00 s)
+  PASS  wave 1 buys 9 Nibblers with budget 18 (got 9)
+  PASS  robots are kit-bashed from the family genome (29 parts)
+  PASS  Nibblers reach and damage the silo (first hit after 20.7 s)
+  PASS  a crack opens after 10% Structure lost (structure 898)
+  NOTE  no thief reached the chute this run (0 thieves rolled); theft checks skipped
+  PASS  wrench bonk does 25 to a Nibbler (30 -> 5 HP)
+  PASS  a Nibbler hit from up close switches to the farmer
+  PASS  its parts burst out, magnetize and bank (0 -> 3)
+  FAIL  wave 1 cleared after the last robot
+  FAIL  harvest bonus adds grain (886.7 -> 886.7)
+  FAIL  Scrap Vac banks leftover parts (3 -> 3 Al)
+  PASS  Scrap Vac clears the parts off the field
+  FAIL  back to intermission, now for wave 2
+  PASS  autosaved at the intermission start
+
+== Repair ==
+  FAIL  standing next to a Large crack (ground) puts it in reach
+  FAIL  holding repair closes the crack (-1.0 s for 100 Structure)
+  FAIL  its leak stops (7.4 -> 7.4 bu/s)
+  FAIL  repair restores Structure (0 -> 0)
+
+== Pegboard and save ==
+  FAIL  the shed door is in reach
+  FAIL  Interact at the shed opens the pegboard during the intermission
+  FAIL  the farmer stops taking input while the pegboard is open
+  PASS  buy the Rivet Pistol for 20 Al
+  PASS  the pistol is now equipped
+  PASS  an unlock can't be bought twice
+  PASS  Fuel Tank stays locked until the jetpack is unlocked
+  PASS  buy Comfy Boots level 1
+  PASS  run speed 7.0 -> 7.21 m/s
+  PASS  closing the pegboard gives control back
+  PASS  purchases autosave to the profile
+  PASS  loading the profile restores the pegboard
+
+== Wave 2 ==
+  FAIL  the dinner bell is in reach
+  FAIL  holding Interact for 1 s rings the bell and starts the siren (-1.00 s)
+  FAIL  Early Bird bonus paid (0 -> 0 Al)
+  FAIL  wave 2 spends 18 of its 26.8 threat budget on 9 robots (nibbler, nibbler, nibbler, nibbler, nibbler, nibbler, nibbler, nibbler, nibbler)
+  FAIL  wave 2 rolls a new family: The Slate Junkyard Toasters
+  FAIL  no theme repeats back to back (Junkyard -> Junkyard)
+  NOTE  wave 2 rolled no Clanker squad this run; squad checks skipped
+  FAIL  a robot is attacking the silo to test the pistol on
+  FAIL  wave 2 cleared
+  FAIL  jetpack unlocks after wave 2
+  FAIL  intermission for wave 3
+
+== Traversal ==
+  FAIL  standing jump + full thrust reaches ~8.5 m (0.00 m)
+  FAIL  1.2 s of fuel is used up
+  PASS  no recharge during the 0.5 s delay
+  FAIL  fuel refills on the ground in ~2 s after the delay (0.00 s)
+  FAIL  walking into the silo ladder starts a climb
+  FAIL  climbs at 4 m/s (8 m in -1.00 s)
+  FAIL  the HUD can offer stepping onto catwalk 1
+  FAIL  stepped off onto the 8 m catwalk (y = 0.20)
+  FAIL  Z1 start is reachable on the silo dome (y = 22.15)
+  FAIL  Interact grabs the zipline
+  FAIL  rides 38 m at 12 m/s (0.00 s, expected ~3.21)
+  FAIL  lands on the barn roof (-0.9, 22.1, -0.8)
+
+== Big Haul ==
+  PASS  wave 5 is a Big Haul
+  FAIL  a Foreman spawns during the Big Haul (after -1.0 s)
+
+== Debug keys ==
+  FAIL  F3 gives parts (0 -> 0 Al)
+  FAIL  F5 skips to wave 2's siren
+  FAIL  console 'wave 9' jumps to wave 9
+
+== Game over ==
+  FAIL  grain at 0 ends the run (reason silo)
+  PASS  game pauses on game over
+  PASS  director stops
+  FAIL  best wave recorded (0)
+  PASS  farmer at 0 HP ends the run (reason farmer)
+  PASS  silo at 0 Structure ends the run (reason silo)
+
+Economy note: 3 Al banked by the end of wave 1 (pistol costs 20).
+SMOKE TEST FAILED: 38 of 82 checks
+  - wave 1 cleared after the last robot
+  - harvest bonus adds grain (886.7 -> 886.7)
+  - Scrap Vac banks leftover parts (3 -> 3 Al)
+  - back to intermission, now for wave 2
+  - standing next to a Large crack (ground) puts it in reach
+  - holding repair closes the crack (-1.0 s for 100 Structure)
+  - its leak stops (7.4 -> 7.4 bu/s)
+  - repair restores Structure (0 -> 0)
+  - the shed door is in reach
+  - Interact at the shed opens the pegboard during the intermission
+  - the farmer stops taking input while the pegboard is open
+  - the dinner bell is in reach
+  - holding Interact for 1 s rings the bell and starts the siren (-1.00 s)
+  - Early Bird bonus paid (0 -> 0 Al)
+  - wave 2 spends 18 of its 26.8 threat budget on 9 robots (nibbler, nibbler, nibbler, nibbler, nibbler, nibbler, nibbler, nibbler, nibbler)
+  - wave 2 rolls a new family: The Slate Junkyard Toasters
+  - no theme repeats back to back (Junkyard -> Junkyard)
+  - a robot is attacking the silo to test the pistol on
+  - wave 2 cleared
+  - jetpack unlocks after wave 2
+  - intermission for wave 3
+  - standing jump + full thrust reaches ~8.5 m (0.00 m)
+  - 1.2 s of fuel is used up
+  - fuel refills on the ground in ~2 s after the delay (0.00 s)
+  - walking into the silo ladder starts a climb
+  - climbs at 4 m/s (8 m in -1.00 s)
+  - the HUD can offer stepping onto catwalk 1
+  - stepped off onto the 8 m catwalk (y = 0.20)
+  - Z1 start is reachable on the silo dome (y = 22.15)
+  - Interact grabs the zipline
+  - rides 38 m at 12 m/s (0.00 s, expected ~3.21)
+  - lands on the barn roof (-0.9, 22.1, -0.8)
+  - a Foreman spawns during the Big Haul (after -1.0 s)
+  - F3 gives parts (0 -> 0 Al)
+  - F5 skips to wave 2's siren
+  - console 'wave 9' jumps to wave 9
+  - grain at 0 ends the run (reason silo)
+  - best wave recorded (0)
