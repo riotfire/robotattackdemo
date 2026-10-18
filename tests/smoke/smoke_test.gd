@@ -7,8 +7,8 @@ extends Node
 ## Uses its own fresh profile (user://smoke_test_profile_<pid>.json), never the player's.
 ## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
 ## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
-## and refills its grain between sections, and a run that ends before the game-over checks fails at once,
-## naming the section.
+## and refills its grain between sections, holds both at a 25% floor while waves play, and a run that ends
+## before the game-over checks fails at once, naming the section.
 ## Run from the project folder (add `-- --seed=1234` for a fixed run seed):
 ##   <godot> --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn
 ## Exits 0 when every check passes, 1 otherwise.
@@ -28,6 +28,10 @@ var _al_from_wave_1: int = 0
 var _section_title: String = ""
 var _game_over_expected: bool = false
 var _finished: bool = false
+## While > 0, the silo's Structure and grain can't drop below this fraction of their max. On some seeds the Nibblers
+## finish off the unrepaired silo before the waits for spawns and cracks are over, which ends the run and fails every
+## later check; the floor keeps the run alive without touching balance. Turned off where the test damages the silo itself.
+var _silo_floor: float = 0.0
 
 
 func _ready() -> void:
@@ -39,6 +43,14 @@ func _ready() -> void:
 	_run.call_deferred()
 
 
+func _physics_process(_delta: float) -> void:
+	var silo := GameState.silo
+	if _silo_floor <= 0.0 or silo == null or not is_instance_valid(silo):
+		return
+	silo.structure = maxf(silo.structure, silo.max_structure * _silo_floor)
+	silo.grain = maxf(silo.grain, silo.max_grain * _silo_floor)
+
+
 func _run() -> void:
 	await _frames(10)
 	_director = _main.get_node(^"WaveDirector") as WaveDirector
@@ -46,6 +58,7 @@ func _run() -> void:
 	_farmer = GameState.players[0] as Farmer
 	GameState.god_mode = true
 	EventBus.game_over.connect(_on_game_over)
+	_silo_floor = 0.25
 	var silo := GameState.silo
 
 	_section("Start")
@@ -152,6 +165,7 @@ func _run() -> void:
 
 	_section("Game over")
 	_game_over_expected = true
+	_silo_floor = 0.0
 	_kill_all_robots()
 	# Full Structure first, so this 150 damage can't end the run on its own before the grain check.
 	silo.structure = silo.max_structure
@@ -340,13 +354,11 @@ func _test_repair() -> void:
 	var silo := GameState.silo
 	if silo.get_cracks().is_empty():
 		(_main.get_node(^"DebugCheats") as DebugCheats).damage_silo(120.0)
+	# The smallest ground-level crack: overflow damage piles into existing cracks once they're all open.
 	var crack: SiloCrack = null
 	for c in silo.get_cracks():
-		if c.band == 0:
+		if crack == null or (c.band == 0 and crack.band != 0) or (c.band == crack.band and c.pool < crack.pool):
 			crack = c
-			break
-	if crack == null:
-		crack = silo.get_cracks()[0]
 	_farmer.teleport_to(_stand_point_for(crack))
 	await _frames(20)
 	_check(_farmer.repair_target == crack, "standing next to a %s puts it in reach" % crack.describe())
@@ -356,7 +368,8 @@ func _test_repair() -> void:
 	var pool := crack.pool
 	var crack_id := crack.get_instance_id()
 	Input.action_press(&"interact")
-	var t := await _wait_until(func() -> bool: return not silo.get_cracks().any(func(c: SiloCrack) -> bool: return c.get_instance_id() == crack_id), 15.0)
+	var t := await _wait_until(func() -> bool: return not silo.get_cracks().any(func(c: SiloCrack) -> bool: return c.get_instance_id() == crack_id),
+			maxf(15.0, 1.5 * pool / _farmer.repair_rate_now()))
 	Input.action_release(&"interact")
 	_check(t >= 0.0, "holding repair closes the crack (%.1f s for %.0f Structure)" % [t, pool])
 	_check(absf((leak_before - silo.total_leak_rate()) - crack_leak) < 0.01,
@@ -497,6 +510,9 @@ func _test_foreman() -> void:
 	foreman.target_kind = Robot.TargetKind.SILO
 	foreman.global_position = silo.global_position + Vector3.LEFT * (silo.radius + 1.6)
 	foreman.reset_physics_interpolation()
+	# Full Structure and no floor, so the slam shows up as a drop and can't end the run.
+	_silo_floor = 0.0
+	silo.structure = silo.max_structure
 	GameState.god_mode = false
 	_farmer.armor = 0.0
 	_farmer.health.reset(_farmer.health.max_health)
@@ -509,6 +525,7 @@ func _test_foreman() -> void:
 	await _frames(60)
 	_check(_farmer.health.current < hp, "its shockwave ring hits a farmer standing on the ground (%.0f -> %.0f HP)" % [hp, _farmer.health.current])
 	GameState.god_mode = true
+	_silo_floor = 0.25
 
 
 # --- Helpers --------------------------------------------------------------------------------------
