@@ -10,7 +10,7 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 - **Robots:** Nibblers (scouts; about 10% of the wave's spawns steal 20-bushel grain sacks in wave 1, rising 1.5 points each wave to a 40% cap; a Thieving family multiplies that by 1.5, up to 60%), Clanker squads of 3 hitting in a clank-clank-CLANK rhythm, and Thumpers whose slams send a shockwave ring you can jump over. Every Big Haul wave (5, 10, 15…) brings a crowned Foreman. Each wave is one procedural family (3 themes, 9 palettes, 4 traits) with a name card and a 6-character family code.
 - **Economy:** parts burst out of robots and magnetize to you; the Scrap Vac collects a share when a wave ends. The tool shed pegboard has 33 upgrades across Travel, Attack, Repair, Defend and Farmhand. The Rivet Pistol is the first purchase (20 Al); you start with the wrench.
 - **Persistence:** parts, upgrades, the jetpack, records and the Robot Almanac save to `user://profile.json` (on macOS, `~/Library/Application Support/Godot/app_userdata/Robot Attack!/`). Autosaves happen at each intermission start, after each purchase and on game over.
-- **Look:** a clay shader (lumps, thumbprints, subsurface scattering, and a 12 fps surface "boil" driven by `StopMotionClock`). Robot poses step at 12 fps and the farmer's squash and stretch at 24 fps.
+- **Look:** a clay shader (lumps, thumbprints, subsurface scattering, and a 12 fps surface "boil" driven by `StopMotionClock`). Robot poses step at 12 fps and the farmer's squash and stretch at 24 fps. The barn, water tower, well, windpump, fences, crates and plants are clayified CC0 models (see [CREDITS.md](CREDITS.md)); the ground is tinted felt, the sky a painted backdrop with cotton-ball clouds, and the corn wall hand-cut paper stalks. UI text is Fredoka SemiBold.
 
 ## Controls (GDD 5.2)
 
@@ -70,6 +70,12 @@ godot --headless --path . --script res://tools/build_robot_data.gd
 - `build_graybox_farm.gd` writes `scenes/farm/`: farm, silo and navmesh.
 - `build_upgrade_catalog.gd` writes `data/upgrades/`, one `.tres` per pegboard node.
 - `build_robot_data.gd` writes `data/robots/`: themes, palettes, traits and the gene library.
+
+Clayify pipeline (GDD 19.4). It rebuilds `assets/models/` from the CC0 sources in `assets/source/`, as listed in `tools/clayify/manifest.json`: it bakes material colors into vertex colors, recolors them to the farm palette, welds, bevels, shades smooth, and stretches buildings onto their gameplay dimensions. Pass output names (e.g. `farm/farm_barn_01.glb`) after the three paths to rebuild only those. Re-run `build_graybox_farm.gd` afterwards if a building model changed:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P tools/clayify/clayify.py -- tools/clayify/manifest.json assets/source assets/models
+```
 - `setup_input_map.gd` rewrites the default input map in `project.godot`.
 
 ## Layout notes

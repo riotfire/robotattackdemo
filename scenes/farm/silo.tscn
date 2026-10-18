@@ -9,7 +9,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t75ax"]
 render_priority = 0
 shader = ExtResource("2_5no5i")
-shader_parameter/albedo_color = Color(0.78, 0.2, 0.15, 1)
+shader_parameter/albedo_color = Color(0.77, 0.24, 0.17, 1)
 shader_parameter/noise_tex = ExtResource("3_oy03c")
 shader_parameter/thumbprint_normal = ExtResource("4_h1t6c")
 shader_parameter/lump_strength = 0.012
@@ -18,6 +18,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
+shader_parameter/use_vertex_color = null
+shader_parameter/triplanar_prints = null
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_cvyej"]
 top_radius = 4.0
@@ -28,7 +30,7 @@ radial_segments = 32
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nuv6a"]
 render_priority = 0
 shader = ExtResource("2_5no5i")
-shader_parameter/albedo_color = Color(0.62, 0.62, 0.64, 1)
+shader_parameter/albedo_color = Color(0.95, 0.9, 0.81, 1)
 shader_parameter/noise_tex = ExtResource("3_oy03c")
 shader_parameter/thumbprint_normal = ExtResource("4_h1t6c")
 shader_parameter/lump_strength = 0.012
@@ -37,13 +39,44 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
+shader_parameter/use_vertex_color = null
+shader_parameter/triplanar_prints = null
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_2qu54"]
-top_radius = 1.8
-bottom_radius = 4.0
+[sub_resource type="SphereMesh" id="SphereMesh_2qu54"]
+radius = 4.12
+height = 4.3
 radial_segments = 32
+rings = 10
+is_hemisphere = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_53b1k"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_53b1k"]
+top_radius = 1.8
+bottom_radius = 2.1
+height = 0.3
+radial_segments = 24
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1txca"]
+render_priority = 0
+shader = ExtResource("2_5no5i")
+shader_parameter/albedo_color = Color(0.56, 0.16, 0.12, 1)
+shader_parameter/noise_tex = ExtResource("3_oy03c")
+shader_parameter/thumbprint_normal = ExtResource("4_h1t6c")
+shader_parameter/lump_strength = 0.012
+shader_parameter/boil_strength = 0.004
+shader_parameter/print_scale = 2.5
+shader_parameter/roughness_value = 0.62
+shader_parameter/sss_strength = 0.25
+shader_parameter/rim_strength = 0.2
+shader_parameter/use_vertex_color = null
+shader_parameter/triplanar_prints = null
+
+[sub_resource type="TorusMesh" id="TorusMesh_f3pi1"]
+inner_radius = 3.98
+outer_radius = 4.14
+rings = 48
+ring_segments = 6
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wc5vv"]
 render_priority = 0
 shader = ExtResource("2_5no5i")
 shader_parameter/albedo_color = Color(0.45, 0.46, 0.5, 1)
@@ -55,11 +88,13 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
+shader_parameter/use_vertex_color = null
+shader_parameter/triplanar_prints = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_1txca"]
+[sub_resource type="BoxMesh" id="BoxMesh_oc7sr"]
 size = Vector3(2.2778184, 0.2, 1.7)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_f3pi1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ktnvq"]
 render_priority = 0
 shader = ExtResource("2_5no5i")
 shader_parameter/albedo_color = Color(0.3, 0.3, 0.33, 1)
@@ -71,42 +106,44 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
+shader_parameter/use_vertex_color = null
+shader_parameter/triplanar_prints = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_wc5vv"]
+[sub_resource type="BoxMesh" id="BoxMesh_s4yra"]
 size = Vector3(2.2778184, 1, 0.08)
 
-[sub_resource type="BoxMesh" id="BoxMesh_oc7sr"]
+[sub_resource type="BoxMesh" id="BoxMesh_t1ev3"]
 size = Vector3(2.2778184, 0.2, 1.7)
 
-[sub_resource type="BoxMesh" id="BoxMesh_ktnvq"]
+[sub_resource type="BoxMesh" id="BoxMesh_gl8d4"]
 size = Vector3(2.2778184, 1, 0.08)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_s4yra"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_i2fba"]
 height = 20.0
 radius = 4.0
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_t1ev3"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_dkrmm"]
 points = PackedVector3Array(4, -1, 0, 1.8, 1, 0, 3.923141, -1, 0.7803613, 1.7654135, 1, 0.35116258, 3.695518, -1, 1.5307337, 1.6629832, 1, 0.6888302, 3.3258784, -1, 2.222281, 1.4966453, 1, 1.0000265, 2.828427, -1, 2.828427, 1.2727922, 1, 1.2727922, 2.222281, -1, 3.3258784, 1.0000265, 1, 1.4966453, 1.5307337, -1, 3.695518, 0.6888302, 1, 1.6629832, 0.7803613, -1, 3.923141, 0.35116258, 1, 1.7654135, 2.4492937e-16, -1, 4, 1.1021821e-16, 1, 1.8, -0.7803613, -1, 3.923141, -0.35116258, 1, 1.7654135, -1.5307337, -1, 3.695518, -0.6888302, 1, 1.6629832, -2.222281, -1, 3.3258784, -1.0000265, 1, 1.4966453, -2.828427, -1, 2.828427, -1.2727922, 1, 1.2727922, -3.3258784, -1, 2.222281, -1.4966453, 1, 1.0000265, -3.695518, -1, 1.5307337, -1.6629832, 1, 0.6888302, -3.923141, -1, 0.7803613, -1.7654135, 1, 0.35116258, -4, -1, 4.8985874e-16, -1.8, 1, 2.2043642e-16, -3.923141, -1, -0.7803613, -1.7654135, 1, -0.35116258, -3.695518, -1, -1.5307337, -1.6629832, 1, -0.6888302, -3.3258784, -1, -2.222281, -1.4966453, 1, -1.0000265, -2.828427, -1, -2.828427, -1.2727922, 1, -1.2727922, -2.222281, -1, -3.3258784, -1.0000265, 1, -1.4966453, -1.5307337, -1, -3.695518, -0.6888302, 1, -1.6629832, -0.7803613, -1, -3.923141, -0.35116258, 1, -1.7654135, -7.3478806e-16, -1, -4, -3.3065464e-16, 1, -1.8, 0.7803613, -1, -3.923141, 0.35116258, 1, -1.7654135, 1.5307337, -1, -3.695518, 0.6888302, 1, -1.6629832, 2.222281, -1, -3.3258784, 1.0000265, 1, -1.4966453, 2.828427, -1, -2.828427, 1.2727922, 1, -1.2727922, 3.3258784, -1, -2.222281, 1.4966453, 1, -1.0000265, 3.695518, -1, -1.5307337, 1.6629832, 1, -0.6888302, 3.923141, -1, -0.7803613, 1.7654135, 1, -0.35116258)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gl8d4"]
-size = Vector3(2.2778184, 0.2, 1.7)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_i2fba"]
-size = Vector3(2.2778184, 1, 0.08)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_dkrmm"]
-size = Vector3(2.2778184, 0.2, 1.7)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_4xp5u"]
-size = Vector3(2.2778184, 1, 0.08)
+size = Vector3(2.2778184, 0.2, 1.7)
 
-[sub_resource type="BoxMesh" id="BoxMesh_007l1"]
-size = Vector3(0.12, 0.9, 1.2)
+[sub_resource type="BoxShape3D" id="BoxShape3D_007l1"]
+size = Vector3(2.2778184, 1, 0.08)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hl6j8"]
+size = Vector3(2.2778184, 0.2, 1.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0own4"]
+size = Vector3(2.2778184, 1, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ttin8"]
+size = Vector3(0.12, 0.9, 1.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5k14t"]
 size = Vector3(0.9, 21.8, 1.2)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0own4"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ugqxn"]
 render_priority = 0
 shader = ExtResource("2_5no5i")
 shader_parameter/albedo_color = Color(0.22, 0.22, 0.25, 1)
@@ -118,14 +155,16 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
+shader_parameter/use_vertex_color = null
+shader_parameter/triplanar_prints = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_ttin8"]
+[sub_resource type="BoxMesh" id="BoxMesh_lqefh"]
 size = Vector3(0.08, 21.2, 0.08)
 
-[sub_resource type="BoxMesh" id="BoxMesh_5k14t"]
+[sub_resource type="BoxMesh" id="BoxMesh_gw56l"]
 size = Vector3(0.7, 0.05, 0.05)
 
-[node name="Silo" type="StaticBody3D" unique_id=1325962937]
+[node name="Silo" type="StaticBody3D" unique_id=569764326]
 collision_layer = 33
 collision_mask = 0
 script = ExtResource("1_taydp")
@@ -133,665 +172,705 @@ leak_rates = PackedFloat32Array(0.6, 1.2, 2)
 hits_to_grow = PackedInt32Array(3, 4)
 band_weights = PackedFloat32Array(0.5, 0.3, 0.2)
 
-[node name="Visual" type="Node3D" parent="." unique_id=83289255]
+[node name="Visual" type="Node3D" parent="." unique_id=1174797828]
 
-[node name="Body" type="MeshInstance3D" parent="Visual" unique_id=1322852413]
+[node name="Body" type="MeshInstance3D" parent="Visual" unique_id=43871690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 material_override = SubResource("ShaderMaterial_t75ax")
 mesh = SubResource("CylinderMesh_cvyej")
 
-[node name="Cap" type="MeshInstance3D" parent="Visual" unique_id=1253783745]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, 0)
+[node name="Cap" type="MeshInstance3D" parent="Visual" unique_id=1814308608]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.85, 0)
 material_override = SubResource("ShaderMaterial_nuv6a")
-mesh = SubResource("CylinderMesh_2qu54")
+mesh = SubResource("SphereMesh_2qu54")
 
-[node name="Catwalk8" type="Node3D" parent="Visual" unique_id=334456252]
+[node name="Perch" type="MeshInstance3D" parent="Visual" unique_id=1521690237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.86, 0)
+material_override = SubResource("ShaderMaterial_nuv6a")
+mesh = SubResource("CylinderMesh_53b1k")
 
-[node name="Floor00" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=204021891]
+[node name="Band0" type="MeshInstance3D" parent="Visual" unique_id=1146086885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Band1" type="MeshInstance3D" parent="Visual" unique_id=465933408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.75, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Band2" type="MeshInstance3D" parent="Visual" unique_id=1331872798]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.25, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Band3" type="MeshInstance3D" parent="Visual" unique_id=1558770615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.75, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Band4" type="MeshInstance3D" parent="Visual" unique_id=1247603502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.25, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Band5" type="MeshInstance3D" parent="Visual" unique_id=267476885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.75, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Band7" type="MeshInstance3D" parent="Visual" unique_id=1242994041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.75, 0)
+material_override = SubResource("ShaderMaterial_1txca")
+mesh = SubResource("TorusMesh_f3pi1")
+
+[node name="Catwalk8" type="Node3D" parent="Visual" unique_id=2078353062]
+
+[node name="Floor00" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=949796500]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.9, 4.75)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Floor01" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=693442681]
+[node name="Floor01" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1245539426]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 1.8177463, 7.9, 4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail01" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=92212144]
+[node name="Rail01" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=2136740695]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 2.1277199, 8.5, 5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor02" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1130616546]
+[node name="Floor02" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1354350370]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.3587573, 7.9, 3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail02" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1511063293]
+[node name="Rail02" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1936435902]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.9315135, 8.5, 3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor03" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1849241508]
+[node name="Floor03" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1479766673]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 4.3884277, 7.9, 1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail03" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1466781511]
+[node name="Rail03" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=966766211]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 5.13677, 8.5, 2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor04" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1092583597]
+[node name="Floor04" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1676425397]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.75, 7.9, 2.9085362e-16)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail04" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=360521625]
+[node name="Rail04" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=48990928]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.56, 8.5, 3.4045182e-16)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor05" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=803565597]
+[node name="Floor05" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1771659002]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 4.3884277, 7.9, -1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail05" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1912756319]
+[node name="Rail05" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1383049531]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 5.13677, 8.5, -2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor06" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1439721447]
+[node name="Floor06" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=488928099]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.3587573, 7.9, -3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail06" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1353350493]
+[node name="Rail06" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=493803062]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.9315135, 8.5, -3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor07" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1953808656]
+[node name="Floor07" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=415002440]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 1.8177463, 7.9, -4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail07" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=28645700]
+[node name="Rail07" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1109862059]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 2.1277199, 8.5, -5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor08" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1371539506]
+[node name="Floor08" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1797737073]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.8170724e-16, 7.9, -4.75)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail08" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1344195272]
+[node name="Rail08" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=464333020]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.8090363e-16, 8.5, -5.56)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor09" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1697564561]
+[node name="Floor09" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1946415763]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -1.8177463, 7.9, -4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail09" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=257333918]
+[node name="Rail09" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=617297916]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -2.1277199, 8.5, -5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor10" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1357086138]
+[node name="Floor10" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=209956309]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.3587573, 7.9, -3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail10" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1107865730]
+[node name="Rail10" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=186596585]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.9315135, 8.5, -3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor11" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=160753457]
+[node name="Floor11" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=405779753]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -4.3884277, 7.9, -1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail11" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=907096065]
+[node name="Rail11" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=865911898]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -5.13677, 8.5, -2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor12" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=175451519]
+[node name="Floor12" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=224657122]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -4.75, 7.9, -8.725608e-16)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail12" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1769631627]
+[node name="Rail12" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=599946303]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -5.56, 8.5, -1.0213554e-15)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor13" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=989090970]
+[node name="Floor13" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=793883791]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -4.3884277, 7.9, 1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail13" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1489124281]
+[node name="Rail13" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1001226004]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -5.13677, 8.5, 2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor14" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1099392437]
+[node name="Floor14" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1783263096]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.3587573, 7.9, 3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail14" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=327648484]
+[node name="Rail14" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=456543504]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.9315135, 8.5, 3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Floor15" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=31841687]
+[node name="Floor15" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=690675613]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -1.8177463, 7.9, 4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_1txca")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_oc7sr")
 
-[node name="Rail15" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1254251781]
+[node name="Rail15" type="MeshInstance3D" parent="Visual/Catwalk8" unique_id=1085525965]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -2.1277199, 8.5, 5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_wc5vv")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_s4yra")
 
-[node name="Catwalk16" type="Node3D" parent="Visual" unique_id=1454072270]
+[node name="Catwalk16" type="Node3D" parent="Visual" unique_id=1218559292]
 
-[node name="Floor00" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1981863767]
+[node name="Floor00" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=777292007]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9, 4.75)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Floor01" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=913144641]
+[node name="Floor01" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1306683653]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 1.8177463, 15.9, 4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail01" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=709810139]
+[node name="Rail01" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1565839681]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 2.1277199, 16.5, 5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor02" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=355256469]
+[node name="Floor02" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1864076567]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.3587573, 15.9, 3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail02" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=540025745]
+[node name="Rail02" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1141375352]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.9315135, 16.5, 3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor03" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=435511149]
+[node name="Floor03" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1581772858]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 4.3884277, 15.9, 1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail03" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=282989029]
+[node name="Rail03" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1349550987]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 5.13677, 16.5, 2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor04" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=838075600]
+[node name="Floor04" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=2134877052]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.75, 15.9, 2.9085362e-16)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail04" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=217276661]
+[node name="Rail04" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1660380901]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.56, 16.5, 3.4045182e-16)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor05" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1415221858]
+[node name="Floor05" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1953719675]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 4.3884277, 15.9, -1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail05" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1973142833]
+[node name="Rail05" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1581690637]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 5.13677, 16.5, -2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor06" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=2068696145]
+[node name="Floor06" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1030746711]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.3587573, 15.9, -3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail06" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1939612802]
+[node name="Rail06" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1690290069]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.9315135, 16.5, -3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor07" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=569594864]
+[node name="Floor07" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=777501816]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 1.8177463, 15.9, -4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail07" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1907941082]
+[node name="Rail07" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1322179517]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 2.1277199, 16.5, -5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor08" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1602069396]
+[node name="Floor08" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1803736501]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.8170724e-16, 15.9, -4.75)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail08" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1802516680]
+[node name="Rail08" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=561939771]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.8090363e-16, 16.5, -5.56)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor09" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=738066538]
+[node name="Floor09" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1983419041]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -1.8177463, 15.9, -4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail09" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=390037213]
+[node name="Rail09" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=25269067]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -2.1277199, 16.5, -5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor10" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1713885510]
+[node name="Floor10" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=2025049162]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.3587573, 15.9, -3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail10" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=491351817]
+[node name="Rail10" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=857981827]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.9315135, 16.5, -3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor11" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=2090008683]
+[node name="Floor11" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1139803505]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -4.3884277, 15.9, -1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail11" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=2016180432]
+[node name="Rail11" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1031471465]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -5.13677, 16.5, -2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor12" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=518849995]
+[node name="Floor12" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=188696231]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -4.75, 15.9, -8.725608e-16)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail12" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=165674974]
+[node name="Rail12" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1784749281]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -5.56, 16.5, -1.0213554e-15)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor13" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=343580838]
+[node name="Floor13" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1900343736]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -4.3884277, 15.9, 1.8177463)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail13" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=344950428]
+[node name="Rail13" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=2013900305]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -5.13677, 16.5, 2.1277199)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor14" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=30109540]
+[node name="Floor14" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1971380504]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.3587573, 15.9, 3.3587573)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail14" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1837763123]
+[node name="Rail14" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1283538812]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.9315135, 16.5, 3.9315135)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="Floor15" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1005490534]
+[node name="Floor15" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=111327806]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -1.8177463, 15.9, 4.3884277)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_oc7sr")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_t1ev3")
 
-[node name="Rail15" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=942847225]
+[node name="Rail15" type="MeshInstance3D" parent="Visual/Catwalk16" unique_id=1740360317]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -2.1277199, 16.5, 5.13677)
-material_override = SubResource("ShaderMaterial_f3pi1")
-mesh = SubResource("BoxMesh_ktnvq")
+material_override = SubResource("ShaderMaterial_ktnvq")
+mesh = SubResource("BoxMesh_gl8d4")
 
-[node name="BodyShape" type="CollisionShape3D" parent="." unique_id=588513240]
+[node name="BodyShape" type="CollisionShape3D" parent="." unique_id=532389612]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
-shape = SubResource("CylinderShape3D_s4yra")
+shape = SubResource("CylinderShape3D_i2fba")
 
-[node name="CapShape" type="CollisionShape3D" parent="." unique_id=989192349]
+[node name="CapShape" type="CollisionShape3D" parent="." unique_id=1697734214]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, 0)
-shape = SubResource("ConvexPolygonShape3D_t1ev3")
+shape = SubResource("ConvexPolygonShape3D_dkrmm")
 
-[node name="Catwalk8Floor00" type="CollisionShape3D" parent="." unique_id=686707586]
+[node name="Catwalk8Floor00" type="CollisionShape3D" parent="." unique_id=1507419211]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.9, 4.75)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Floor01" type="CollisionShape3D" parent="." unique_id=412683021]
+[node name="Catwalk8Floor01" type="CollisionShape3D" parent="." unique_id=30307789]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 1.8177463, 7.9, 4.3884277)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail01" type="CollisionShape3D" parent="." unique_id=1917279213]
+[node name="Catwalk8Rail01" type="CollisionShape3D" parent="." unique_id=1504882843]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 2.1277199, 8.5, 5.13677)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor02" type="CollisionShape3D" parent="." unique_id=841405729]
+[node name="Catwalk8Floor02" type="CollisionShape3D" parent="." unique_id=514719399]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.3587573, 7.9, 3.3587573)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail02" type="CollisionShape3D" parent="." unique_id=432041936]
+[node name="Catwalk8Rail02" type="CollisionShape3D" parent="." unique_id=592180342]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.9315135, 8.5, 3.9315135)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor03" type="CollisionShape3D" parent="." unique_id=424567835]
+[node name="Catwalk8Floor03" type="CollisionShape3D" parent="." unique_id=556908880]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 4.3884277, 7.9, 1.8177463)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail03" type="CollisionShape3D" parent="." unique_id=1762548075]
+[node name="Catwalk8Rail03" type="CollisionShape3D" parent="." unique_id=844909579]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 5.13677, 8.5, 2.1277199)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor04" type="CollisionShape3D" parent="." unique_id=2001876829]
+[node name="Catwalk8Floor04" type="CollisionShape3D" parent="." unique_id=2051302262]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.75, 7.9, 2.9085362e-16)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail04" type="CollisionShape3D" parent="." unique_id=1003185705]
+[node name="Catwalk8Rail04" type="CollisionShape3D" parent="." unique_id=532839930]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.56, 8.5, 3.4045182e-16)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor05" type="CollisionShape3D" parent="." unique_id=707806038]
+[node name="Catwalk8Floor05" type="CollisionShape3D" parent="." unique_id=24863728]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 4.3884277, 7.9, -1.8177463)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail05" type="CollisionShape3D" parent="." unique_id=1645343765]
+[node name="Catwalk8Rail05" type="CollisionShape3D" parent="." unique_id=827065964]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 5.13677, 8.5, -2.1277199)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor06" type="CollisionShape3D" parent="." unique_id=627987363]
+[node name="Catwalk8Floor06" type="CollisionShape3D" parent="." unique_id=1850796857]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.3587573, 7.9, -3.3587573)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail06" type="CollisionShape3D" parent="." unique_id=842345024]
+[node name="Catwalk8Rail06" type="CollisionShape3D" parent="." unique_id=371180972]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.9315135, 8.5, -3.9315135)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor07" type="CollisionShape3D" parent="." unique_id=1020079595]
+[node name="Catwalk8Floor07" type="CollisionShape3D" parent="." unique_id=178601951]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 1.8177463, 7.9, -4.3884277)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail07" type="CollisionShape3D" parent="." unique_id=896714202]
+[node name="Catwalk8Rail07" type="CollisionShape3D" parent="." unique_id=605678652]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 2.1277199, 8.5, -5.13677)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor08" type="CollisionShape3D" parent="." unique_id=718978773]
+[node name="Catwalk8Floor08" type="CollisionShape3D" parent="." unique_id=255326143]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.8170724e-16, 7.9, -4.75)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail08" type="CollisionShape3D" parent="." unique_id=354958343]
+[node name="Catwalk8Rail08" type="CollisionShape3D" parent="." unique_id=2135719319]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.8090363e-16, 8.5, -5.56)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor09" type="CollisionShape3D" parent="." unique_id=828299188]
+[node name="Catwalk8Floor09" type="CollisionShape3D" parent="." unique_id=517404968]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -1.8177463, 7.9, -4.3884277)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail09" type="CollisionShape3D" parent="." unique_id=1303253901]
+[node name="Catwalk8Rail09" type="CollisionShape3D" parent="." unique_id=407808961]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -2.1277199, 8.5, -5.13677)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor10" type="CollisionShape3D" parent="." unique_id=576960063]
+[node name="Catwalk8Floor10" type="CollisionShape3D" parent="." unique_id=347980476]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.3587573, 7.9, -3.3587573)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail10" type="CollisionShape3D" parent="." unique_id=69325606]
+[node name="Catwalk8Rail10" type="CollisionShape3D" parent="." unique_id=853067785]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.9315135, 8.5, -3.9315135)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor11" type="CollisionShape3D" parent="." unique_id=940757339]
+[node name="Catwalk8Floor11" type="CollisionShape3D" parent="." unique_id=1495303249]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -4.3884277, 7.9, -1.8177463)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail11" type="CollisionShape3D" parent="." unique_id=815877949]
+[node name="Catwalk8Rail11" type="CollisionShape3D" parent="." unique_id=840341523]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -5.13677, 8.5, -2.1277199)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor12" type="CollisionShape3D" parent="." unique_id=1991817175]
+[node name="Catwalk8Floor12" type="CollisionShape3D" parent="." unique_id=1714070672]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -4.75, 7.9, -8.725608e-16)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail12" type="CollisionShape3D" parent="." unique_id=406491086]
+[node name="Catwalk8Rail12" type="CollisionShape3D" parent="." unique_id=445018933]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -5.56, 8.5, -1.0213554e-15)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor13" type="CollisionShape3D" parent="." unique_id=155916008]
+[node name="Catwalk8Floor13" type="CollisionShape3D" parent="." unique_id=202758186]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -4.3884277, 7.9, 1.8177463)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail13" type="CollisionShape3D" parent="." unique_id=271911732]
+[node name="Catwalk8Rail13" type="CollisionShape3D" parent="." unique_id=1712238223]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -5.13677, 8.5, 2.1277199)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor14" type="CollisionShape3D" parent="." unique_id=879592281]
+[node name="Catwalk8Floor14" type="CollisionShape3D" parent="." unique_id=671170765]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.3587573, 7.9, 3.3587573)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail14" type="CollisionShape3D" parent="." unique_id=70049636]
+[node name="Catwalk8Rail14" type="CollisionShape3D" parent="." unique_id=555948316]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.9315135, 8.5, 3.9315135)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk8Floor15" type="CollisionShape3D" parent="." unique_id=908199457]
+[node name="Catwalk8Floor15" type="CollisionShape3D" parent="." unique_id=1394380701]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -1.8177463, 7.9, 4.3884277)
-shape = SubResource("BoxShape3D_gl8d4")
+shape = SubResource("BoxShape3D_4xp5u")
 
-[node name="Catwalk8Rail15" type="CollisionShape3D" parent="." unique_id=830166479]
+[node name="Catwalk8Rail15" type="CollisionShape3D" parent="." unique_id=418210982]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -2.1277199, 8.5, 5.13677)
-shape = SubResource("BoxShape3D_i2fba")
+shape = SubResource("BoxShape3D_007l1")
 
-[node name="Catwalk16Floor00" type="CollisionShape3D" parent="." unique_id=399554497]
+[node name="Catwalk16Floor00" type="CollisionShape3D" parent="." unique_id=865171310]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9, 4.75)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Floor01" type="CollisionShape3D" parent="." unique_id=1060203682]
+[node name="Catwalk16Floor01" type="CollisionShape3D" parent="." unique_id=366434498]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 1.8177463, 15.9, 4.3884277)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail01" type="CollisionShape3D" parent="." unique_id=1750083784]
+[node name="Catwalk16Rail01" type="CollisionShape3D" parent="." unique_id=1886946241]
 transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 2.1277199, 16.5, 5.13677)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor02" type="CollisionShape3D" parent="." unique_id=1395493552]
+[node name="Catwalk16Floor02" type="CollisionShape3D" parent="." unique_id=1304670125]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.3587573, 15.9, 3.3587573)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail02" type="CollisionShape3D" parent="." unique_id=262064657]
+[node name="Catwalk16Rail02" type="CollisionShape3D" parent="." unique_id=1174887536]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.9315135, 16.5, 3.9315135)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor03" type="CollisionShape3D" parent="." unique_id=382632512]
+[node name="Catwalk16Floor03" type="CollisionShape3D" parent="." unique_id=506485183]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 4.3884277, 15.9, 1.8177463)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail03" type="CollisionShape3D" parent="." unique_id=100861743]
+[node name="Catwalk16Rail03" type="CollisionShape3D" parent="." unique_id=1564015864]
 transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 5.13677, 16.5, 2.1277199)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor04" type="CollisionShape3D" parent="." unique_id=2079886948]
+[node name="Catwalk16Floor04" type="CollisionShape3D" parent="." unique_id=1265245930]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.75, 15.9, 2.9085362e-16)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail04" type="CollisionShape3D" parent="." unique_id=1786282562]
+[node name="Catwalk16Rail04" type="CollisionShape3D" parent="." unique_id=112512255]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.56, 16.5, 3.4045182e-16)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor05" type="CollisionShape3D" parent="." unique_id=669516701]
+[node name="Catwalk16Floor05" type="CollisionShape3D" parent="." unique_id=581409851]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 4.3884277, 15.9, -1.8177463)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail05" type="CollisionShape3D" parent="." unique_id=1691187225]
+[node name="Catwalk16Rail05" type="CollisionShape3D" parent="." unique_id=543965143]
 transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 5.13677, 16.5, -2.1277199)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor06" type="CollisionShape3D" parent="." unique_id=841294040]
+[node name="Catwalk16Floor06" type="CollisionShape3D" parent="." unique_id=1949225977]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.3587573, 15.9, -3.3587573)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail06" type="CollisionShape3D" parent="." unique_id=1837266725]
+[node name="Catwalk16Rail06" type="CollisionShape3D" parent="." unique_id=2008481163]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 3.9315135, 16.5, -3.9315135)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor07" type="CollisionShape3D" parent="." unique_id=583996281]
+[node name="Catwalk16Floor07" type="CollisionShape3D" parent="." unique_id=791675441]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 1.8177463, 15.9, -4.3884277)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail07" type="CollisionShape3D" parent="." unique_id=906330609]
+[node name="Catwalk16Rail07" type="CollisionShape3D" parent="." unique_id=1665255608]
 transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 2.1277199, 16.5, -5.13677)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor08" type="CollisionShape3D" parent="." unique_id=2058484905]
+[node name="Catwalk16Floor08" type="CollisionShape3D" parent="." unique_id=1888866839]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.8170724e-16, 15.9, -4.75)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail08" type="CollisionShape3D" parent="." unique_id=138880139]
+[node name="Catwalk16Rail08" type="CollisionShape3D" parent="." unique_id=557898268]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.8090363e-16, 16.5, -5.56)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor09" type="CollisionShape3D" parent="." unique_id=1839160837]
+[node name="Catwalk16Floor09" type="CollisionShape3D" parent="." unique_id=1218504292]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -1.8177463, 15.9, -4.3884277)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail09" type="CollisionShape3D" parent="." unique_id=216708965]
+[node name="Catwalk16Rail09" type="CollisionShape3D" parent="." unique_id=807220390]
 transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -2.1277199, 16.5, -5.13677)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor10" type="CollisionShape3D" parent="." unique_id=1981167403]
+[node name="Catwalk16Floor10" type="CollisionShape3D" parent="." unique_id=1148886026]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.3587573, 15.9, -3.3587573)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail10" type="CollisionShape3D" parent="." unique_id=1069448439]
+[node name="Catwalk16Rail10" type="CollisionShape3D" parent="." unique_id=981904036]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -3.9315135, 16.5, -3.9315135)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor11" type="CollisionShape3D" parent="." unique_id=527857526]
+[node name="Catwalk16Floor11" type="CollisionShape3D" parent="." unique_id=840754207]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -4.3884277, 15.9, -1.8177463)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail11" type="CollisionShape3D" parent="." unique_id=265951438]
+[node name="Catwalk16Rail11" type="CollisionShape3D" parent="." unique_id=664245408]
 transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -5.13677, 16.5, -2.1277199)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor12" type="CollisionShape3D" parent="." unique_id=288107659]
+[node name="Catwalk16Floor12" type="CollisionShape3D" parent="." unique_id=268718084]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -4.75, 15.9, -8.725608e-16)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail12" type="CollisionShape3D" parent="." unique_id=1354685041]
+[node name="Catwalk16Rail12" type="CollisionShape3D" parent="." unique_id=174463445]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -5.56, 16.5, -1.0213554e-15)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor13" type="CollisionShape3D" parent="." unique_id=690653718]
+[node name="Catwalk16Floor13" type="CollisionShape3D" parent="." unique_id=500203107]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -4.3884277, 15.9, 1.8177463)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail13" type="CollisionShape3D" parent="." unique_id=107334859]
+[node name="Catwalk16Rail13" type="CollisionShape3D" parent="." unique_id=363785121]
 transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -5.13677, 16.5, 2.1277199)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor14" type="CollisionShape3D" parent="." unique_id=1874491042]
+[node name="Catwalk16Floor14" type="CollisionShape3D" parent="." unique_id=1321637210]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.3587573, 15.9, 3.3587573)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail14" type="CollisionShape3D" parent="." unique_id=1900092993]
+[node name="Catwalk16Rail14" type="CollisionShape3D" parent="." unique_id=1303190538]
 transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -3.9315135, 16.5, 3.9315135)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="Catwalk16Floor15" type="CollisionShape3D" parent="." unique_id=1528337890]
+[node name="Catwalk16Floor15" type="CollisionShape3D" parent="." unique_id=1014893666]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -1.8177463, 15.9, 4.3884277)
-shape = SubResource("BoxShape3D_dkrmm")
+shape = SubResource("BoxShape3D_hl6j8")
 
-[node name="Catwalk16Rail15" type="CollisionShape3D" parent="." unique_id=415805127]
+[node name="Catwalk16Rail15" type="CollisionShape3D" parent="." unique_id=240000812]
 transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -2.1277199, 16.5, 5.13677)
-shape = SubResource("BoxShape3D_4xp5u")
+shape = SubResource("BoxShape3D_0own4")
 
-[node name="CrackSockets" type="Node3D" parent="." unique_id=1951424737]
+[node name="CrackSockets" type="Node3D" parent="." unique_id=1310758045]
 
-[node name="Socket_00" type="Marker3D" parent="CrackSockets" unique_id=385788985]
+[node name="Socket_00" type="Marker3D" parent="CrackSockets" unique_id=6399565]
 transform = Transform3D(0.92387956, 0, 0.38268346, 0, 1.0000001, 0, -0.38268346, 0, 0.92387956, 1.5422143, 1.3, 3.7232347)
 metadata/band = 0
 
-[node name="Socket_01" type="Marker3D" parent="CrackSockets" unique_id=1000768948]
+[node name="Socket_01" type="Marker3D" parent="CrackSockets" unique_id=1539264064]
 transform = Transform3D(0.38268346, 0, 0.92387956, 0, 1.0000001, 0, -0.92387956, 0, 0.38268346, 3.7232347, 2.6, 1.5422143)
 metadata/band = 0
 
-[node name="Socket_02" type="Marker3D" parent="CrackSockets" unique_id=2032528879]
+[node name="Socket_02" type="Marker3D" parent="CrackSockets" unique_id=2010749341]
 transform = Transform3D(-0.38268346, 0, 0.92387956, 0, 1.0000001, 0, -0.92387956, 0, -0.38268346, 3.7232347, 1.3, -1.5422143)
 metadata/band = 0
 
-[node name="Socket_03" type="Marker3D" parent="CrackSockets" unique_id=537506780]
+[node name="Socket_03" type="Marker3D" parent="CrackSockets" unique_id=1084795077]
 transform = Transform3D(-0.92387956, 0, 0.38268346, 0, 1.0000001, 0, -0.38268346, 0, -0.92387956, 1.5422143, 2.6, -3.7232347)
 metadata/band = 0
 
-[node name="Socket_04" type="Marker3D" parent="CrackSockets" unique_id=1446067996]
+[node name="Socket_04" type="Marker3D" parent="CrackSockets" unique_id=190318878]
 transform = Transform3D(-0.92387956, 0, -0.38268346, 0, 1.0000001, 0, 0.38268346, 0, -0.92387956, -1.5422143, 1.3, -3.7232347)
 metadata/band = 0
 
-[node name="Socket_05" type="Marker3D" parent="CrackSockets" unique_id=1772113759]
+[node name="Socket_05" type="Marker3D" parent="CrackSockets" unique_id=176277851]
 transform = Transform3D(-0.38268346, 0, -0.92387956, 0, 1.0000001, 0, 0.92387956, 0, -0.38268346, -3.7232347, 2.6, -1.5422143)
 metadata/band = 0
 
-[node name="Socket_06" type="Marker3D" parent="CrackSockets" unique_id=587998937]
+[node name="Socket_06" type="Marker3D" parent="CrackSockets" unique_id=515080783]
 transform = Transform3D(0.38268346, 0, -0.92387956, 0, 1.0000001, 0, 0.92387956, 0, 0.38268346, -3.7232347, 1.3, 1.5422143)
 metadata/band = 0
 
-[node name="Socket_07" type="Marker3D" parent="CrackSockets" unique_id=2015877208]
+[node name="Socket_07" type="Marker3D" parent="CrackSockets" unique_id=607668782]
 transform = Transform3D(0.92387956, 0, -0.38268346, 0, 1.0000001, 0, 0.38268346, 0, 0.92387956, -1.5422143, 2.6, 3.7232347)
 metadata/band = 0
 
-[node name="Socket_08" type="Marker3D" parent="CrackSockets" unique_id=1538785793]
+[node name="Socket_08" type="Marker3D" parent="CrackSockets" unique_id=726074420]
 transform = Transform3D(0.7071068, 0, 0.7071068, 0, 1.0000001, 0, -0.7071068, 0, 0.7071068, 2.8496404, 9.3, 2.8496404)
 metadata/band = 1
 
-[node name="Socket_09" type="Marker3D" parent="CrackSockets" unique_id=1229650460]
+[node name="Socket_09" type="Marker3D" parent="CrackSockets" unique_id=296015905]
 transform = Transform3D(-0.7071068, 0, 0.7071068, 0, 1.0000001, 0, -0.7071068, 0, -0.7071068, 2.8496404, 9.3, -2.8496404)
 metadata/band = 1
 
-[node name="Socket_10" type="Marker3D" parent="CrackSockets" unique_id=1161964601]
+[node name="Socket_10" type="Marker3D" parent="CrackSockets" unique_id=443008231]
 transform = Transform3D(-0.7071068, 0, -0.7071068, 0, 1.0000001, 0, 0.7071068, 0, -0.7071068, -2.8496404, 9.3, -2.8496404)
 metadata/band = 1
 
-[node name="Socket_11" type="Marker3D" parent="CrackSockets" unique_id=2102592897]
+[node name="Socket_11" type="Marker3D" parent="CrackSockets" unique_id=581847125]
 transform = Transform3D(0.7071068, 0, -0.7071068, 0, 1.0000001, 0, 0.7071068, 0, 0.7071068, -2.8496404, 9.3, 2.8496404)
 metadata/band = 1
 
-[node name="Socket_12" type="Marker3D" parent="CrackSockets" unique_id=1126197024]
+[node name="Socket_12" type="Marker3D" parent="CrackSockets" unique_id=276879256]
 transform = Transform3D(0.38268346, 0, 0.92387956, 0, 1.0000001, 0, -0.92387956, 0, 0.38268346, 3.7232347, 17.3, 1.5422143)
 metadata/band = 2
 
-[node name="Socket_13" type="Marker3D" parent="CrackSockets" unique_id=916707893]
+[node name="Socket_13" type="Marker3D" parent="CrackSockets" unique_id=1863896225]
 transform = Transform3D(-0.92387956, 0, 0.38268346, 0, 1.0000001, 0, -0.38268346, 0, -0.92387956, 1.5422143, 17.3, -3.7232347)
 metadata/band = 2
 
-[node name="Socket_14" type="Marker3D" parent="CrackSockets" unique_id=498667000]
+[node name="Socket_14" type="Marker3D" parent="CrackSockets" unique_id=395069819]
 transform = Transform3D(-0.38268346, 0, -0.92387956, 0, 1.0000001, 0, 0.92387956, 0, -0.38268346, -3.7232347, 17.3, -1.5422143)
 metadata/band = 2
 
-[node name="Socket_15" type="Marker3D" parent="CrackSockets" unique_id=2060828629]
+[node name="Socket_15" type="Marker3D" parent="CrackSockets" unique_id=1679618224]
 transform = Transform3D(0.92387956, 0, -0.38268346, 0, 1.0000001, 0, 0.38268346, 0, 0.92387956, -1.5422143, 17.3, 3.7232347)
 metadata/band = 2
 
-[node name="Cracks" type="Node3D" parent="." unique_id=1597484480]
+[node name="Cracks" type="Node3D" parent="." unique_id=1808393761]
 
-[node name="Chute" type="Marker3D" parent="." unique_id=434670742]
+[node name="Chute" type="Marker3D" parent="." unique_id=1642606515]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.02, 0.6, 0)
 
-[node name="ChuteHatch" type="MeshInstance3D" parent="." unique_id=337247245]
+[node name="ChuteHatch" type="MeshInstance3D" parent="." unique_id=1611615529]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.02, 0.75, 0)
-material_override = SubResource("ShaderMaterial_53b1k")
-mesh = SubResource("BoxMesh_007l1")
+material_override = SubResource("ShaderMaterial_wc5vv")
+mesh = SubResource("BoxMesh_ttin8")
 
-[node name="Ladder" type="Area3D" parent="." unique_id=1118442425]
+[node name="Ladder" type="Area3D" parent="." unique_id=1946922491]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.2)
 collision_layer = 128
 collision_mask = 2
@@ -803,181 +882,181 @@ landing_depth = 1.4
 top_exit_depth = 5.2
 top_exit_rise = 1.85
 
-[node name="Shape" type="CollisionShape3D" parent="Ladder" unique_id=1104917580]
+[node name="Shape" type="CollisionShape3D" parent="Ladder" unique_id=1870670912]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.6, 0)
-shape = SubResource("BoxShape3D_hl6j8")
+shape = SubResource("BoxShape3D_5k14t")
 
-[node name="Rail-1" type="MeshInstance3D" parent="Ladder" unique_id=1304737640]
+[node name="Rail-1" type="MeshInstance3D" parent="Ladder" unique_id=606497446]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 10.6, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_ttin8")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_lqefh")
 
-[node name="Rail1" type="MeshInstance3D" parent="Ladder" unique_id=1800431491]
+[node name="Rail1" type="MeshInstance3D" parent="Ladder" unique_id=1345944913]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 10.6, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_ttin8")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_lqefh")
 
-[node name="Rung00" type="MeshInstance3D" parent="Ladder" unique_id=1542473610]
+[node name="Rung00" type="MeshInstance3D" parent="Ladder" unique_id=1276672572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung01" type="MeshInstance3D" parent="Ladder" unique_id=1378913718]
+[node name="Rung01" type="MeshInstance3D" parent="Ladder" unique_id=592640073]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung02" type="MeshInstance3D" parent="Ladder" unique_id=974358507]
+[node name="Rung02" type="MeshInstance3D" parent="Ladder" unique_id=999329676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung03" type="MeshInstance3D" parent="Ladder" unique_id=104668320]
+[node name="Rung03" type="MeshInstance3D" parent="Ladder" unique_id=1271772121]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung04" type="MeshInstance3D" parent="Ladder" unique_id=110090228]
+[node name="Rung04" type="MeshInstance3D" parent="Ladder" unique_id=830465553]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung05" type="MeshInstance3D" parent="Ladder" unique_id=917971314]
+[node name="Rung05" type="MeshInstance3D" parent="Ladder" unique_id=1228300175]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung06" type="MeshInstance3D" parent="Ladder" unique_id=630095316]
+[node name="Rung06" type="MeshInstance3D" parent="Ladder" unique_id=1597555218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung07" type="MeshInstance3D" parent="Ladder" unique_id=542486783]
+[node name="Rung07" type="MeshInstance3D" parent="Ladder" unique_id=85670651]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung08" type="MeshInstance3D" parent="Ladder" unique_id=631514772]
+[node name="Rung08" type="MeshInstance3D" parent="Ladder" unique_id=632820772]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.1, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung09" type="MeshInstance3D" parent="Ladder" unique_id=849578606]
+[node name="Rung09" type="MeshInstance3D" parent="Ladder" unique_id=1013155470]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.7, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung10" type="MeshInstance3D" parent="Ladder" unique_id=1013649645]
+[node name="Rung10" type="MeshInstance3D" parent="Ladder" unique_id=868880690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung11" type="MeshInstance3D" parent="Ladder" unique_id=55521258]
+[node name="Rung11" type="MeshInstance3D" parent="Ladder" unique_id=815855540]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung12" type="MeshInstance3D" parent="Ladder" unique_id=1459315579]
+[node name="Rung12" type="MeshInstance3D" parent="Ladder" unique_id=2043103530]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung13" type="MeshInstance3D" parent="Ladder" unique_id=1725617098]
+[node name="Rung13" type="MeshInstance3D" parent="Ladder" unique_id=2077932373]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.1, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung14" type="MeshInstance3D" parent="Ladder" unique_id=424490097]
+[node name="Rung14" type="MeshInstance3D" parent="Ladder" unique_id=2110436163]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.7, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung15" type="MeshInstance3D" parent="Ladder" unique_id=1218817119]
+[node name="Rung15" type="MeshInstance3D" parent="Ladder" unique_id=552965557]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung16" type="MeshInstance3D" parent="Ladder" unique_id=1256133494]
+[node name="Rung16" type="MeshInstance3D" parent="Ladder" unique_id=903677520]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung17" type="MeshInstance3D" parent="Ladder" unique_id=440964100]
+[node name="Rung17" type="MeshInstance3D" parent="Ladder" unique_id=454354818]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung18" type="MeshInstance3D" parent="Ladder" unique_id=1479617112]
+[node name="Rung18" type="MeshInstance3D" parent="Ladder" unique_id=758939326]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.1, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung19" type="MeshInstance3D" parent="Ladder" unique_id=789387727]
+[node name="Rung19" type="MeshInstance3D" parent="Ladder" unique_id=1936412416]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.7, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung20" type="MeshInstance3D" parent="Ladder" unique_id=1627057563]
+[node name="Rung20" type="MeshInstance3D" parent="Ladder" unique_id=327318062]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung21" type="MeshInstance3D" parent="Ladder" unique_id=698013515]
+[node name="Rung21" type="MeshInstance3D" parent="Ladder" unique_id=1940040181]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung22" type="MeshInstance3D" parent="Ladder" unique_id=1004354289]
+[node name="Rung22" type="MeshInstance3D" parent="Ladder" unique_id=1382540718]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung23" type="MeshInstance3D" parent="Ladder" unique_id=1935620385]
+[node name="Rung23" type="MeshInstance3D" parent="Ladder" unique_id=1244044616]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.1, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung24" type="MeshInstance3D" parent="Ladder" unique_id=1406544668]
+[node name="Rung24" type="MeshInstance3D" parent="Ladder" unique_id=1265042084]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.7, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung25" type="MeshInstance3D" parent="Ladder" unique_id=6488416]
+[node name="Rung25" type="MeshInstance3D" parent="Ladder" unique_id=1023801186]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung26" type="MeshInstance3D" parent="Ladder" unique_id=37106941]
+[node name="Rung26" type="MeshInstance3D" parent="Ladder" unique_id=2102834781]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung27" type="MeshInstance3D" parent="Ladder" unique_id=1861373124]
+[node name="Rung27" type="MeshInstance3D" parent="Ladder" unique_id=1362712036]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung28" type="MeshInstance3D" parent="Ladder" unique_id=1405761510]
+[node name="Rung28" type="MeshInstance3D" parent="Ladder" unique_id=1285517340]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.1, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung29" type="MeshInstance3D" parent="Ladder" unique_id=332817358]
+[node name="Rung29" type="MeshInstance3D" parent="Ladder" unique_id=2139294780]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.7, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung30" type="MeshInstance3D" parent="Ladder" unique_id=349275110]
+[node name="Rung30" type="MeshInstance3D" parent="Ladder" unique_id=334231391]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.3, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung31" type="MeshInstance3D" parent="Ladder" unique_id=802215629]
+[node name="Rung31" type="MeshInstance3D" parent="Ladder" unique_id=751170027]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.9, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")
 
-[node name="Rung32" type="MeshInstance3D" parent="Ladder" unique_id=88738220]
+[node name="Rung32" type="MeshInstance3D" parent="Ladder" unique_id=1688273703]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.5, -0.3)
-material_override = SubResource("ShaderMaterial_0own4")
-mesh = SubResource("BoxMesh_5k14t")
+material_override = SubResource("ShaderMaterial_ugqxn")
+mesh = SubResource("BoxMesh_gw56l")

@@ -26,8 +26,13 @@ uniform float print_scale = 2.5;
 uniform float roughness_value = 0.62;
 uniform float sss_strength = 0.25;
 uniform float rim_strength = 0.2;
+// Clayified models (tools/clayify) carry their palette in vertex colors and have no reliable UVs, so they
+// multiply albedo by COLOR and project thumbprints in object space instead (Clay.vertex_colored()).
+uniform bool use_vertex_color = false;
+uniform bool triplanar_prints = false;
 
 varying vec3 local_pos;
+varying vec3 local_normal;
 
 void vertex() {
 	vec3 p = VERTEX;
@@ -43,6 +48,7 @@ void vertex() {
 	}
 	VERTEX += dir * (lump * lump_strength + boil * boil_strength);
 	local_pos = VERTEX;
+	local_normal = NORMAL;
 }
 
 float pattern_mask(vec3 p) {
@@ -68,6 +74,9 @@ float pattern_mask(vec3 p) {
 void fragment() {
 	float mottling = texture(noise_tex, local_pos.xy * 0.3 + local_pos.z * 0.1).r;
 	vec3 base = albedo_color.rgb * tint.rgb;
+	if (use_vertex_color) {
+		base *= COLOR.rgb;
+	}
 	base = mix(base, pattern_color.rgb, pattern_mask(local_pos));
 	// Wear: scuffs darken and roughen the clay; heavy wear adds rusty blotches.
 	float rust = step(0.66, texture(noise_tex, local_pos.xz * 1.3 + local_pos.y).r) * step(0.6, wear);
@@ -76,7 +85,15 @@ void fragment() {
 	ALBEDO = base * mix(0.88, 1.06, mottling);
 	ROUGHNESS = mix(roughness_value, 0.92, wear);
 	SPECULAR = 0.35;
-	NORMAL_MAP = texture(thumbprint_normal, UV * print_scale).rgb;
+	if (triplanar_prints) {
+		// Pick the projection plane from the dominant object-space normal axis; the thumbprints are
+		// isotropic noise, so the seams between planes don't read.
+		vec3 n = abs(local_normal);
+		vec2 puv = n.x > n.y && n.x > n.z ? local_pos.zy : (n.y > n.z ? local_pos.xz : local_pos.xy);
+		NORMAL_MAP = texture(thumbprint_normal, puv * print_scale * 0.5).rgb;
+	} else {
+		NORMAL_MAP = texture(thumbprint_normal, UV * print_scale).rgb;
+	}
 	NORMAL_MAP_DEPTH = 0.6;
 	SSS_STRENGTH = sss_strength;
 	RIM = rim_strength;
