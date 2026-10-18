@@ -10,7 +10,8 @@ extends SceneTree
 ##   <godot> --headless --path . --script res://tools/build_graybox_farm.gd
 ##
 ## Re-running overwrites those files, so hand edits to them are lost. Once the layout settles, edit the
-## scenes in the editor instead and stop using this script.
+## scenes in the editor instead and stop using this script. To rebake only farm_navmesh.res from the
+## farm.tscn on disk (after hand edits, or a change to the bake settings), add `-- --navmesh-only`.
 ## GDD positions are (x = east, y = north) in meters from the silo. Godot is (x = east, z = south),
 ## so GDD (x, y) becomes Vector3(x, 0, -y).
 
@@ -108,6 +109,9 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	if "--navmesh-only" in OS.get_cmdline_user_args():
+		quit(0 if _rebake_saved_farm() else 1)
+		return
 	if not _save_scene(_build_silo(), SILO_SCENE_PATH):
 		quit(1)
 		return
@@ -126,6 +130,19 @@ func _run() -> void:
 	var saved_navmesh := ResourceLoader.load(NAVMESH_PATH, "", ResourceLoader.CACHE_MODE_REPLACE) as NavigationMesh
 	(farm.get_node(^"NavRegion") as NavigationRegion3D).navigation_mesh = saved_navmesh
 	quit(0 if _save_scene(farm, FARM_SCENE_PATH) else 1)
+
+
+## Bakes farm_navmesh.res from the saved farm.tscn and leaves the scenes alone.
+func _rebake_saved_farm() -> bool:
+	var farm := (load(FARM_SCENE_PATH) as PackedScene).instantiate()
+	root.add_child(farm)
+	var navmesh := _bake_navmesh(farm.get_node(^"NavRegion") as NavigationRegion3D)
+	root.remove_child(farm)
+	farm.free()
+	if navmesh == null or ResourceSaver.save(navmesh, NAVMESH_PATH) != OK:
+		push_error("Navmesh bake or save failed")
+		return false
+	return true
 
 
 # --- Silo -----------------------------------------------------------------------------------------
@@ -510,10 +527,15 @@ func _bake_navmesh(region: NavigationRegion3D) -> NavigationMesh:
 	navmesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	navmesh.geometry_collision_mask = LAYER_WORLD
 	navmesh.cell_size = 0.25
-	navmesh.cell_height = 0.25
+	# Join only steps robots can walk onto. A capsule of radius r with a 45° floor_max_angle steps up about
+	# r * (1 - cos 45°): 0.10 m for a Nibbler. Recast rounds heights to cell_height, so it may join steps
+	# just under (agent_max_climb / cell_height + 1) * cell_height, 0.1 m here. The old 0.25 / 0.25 joined
+	# the 0.2 m porch floor, and robots walked into its edge for good (tests/unit/test_robot_movement.gd).
+	# project.godot sets navigation/3d/default_cell_height to match.
+	navmesh.cell_height = 0.05
 	navmesh.agent_radius = 0.5
 	navmesh.agent_height = 1.25
-	navmesh.agent_max_climb = 0.25
+	navmesh.agent_max_climb = 0.05
 	navmesh.agent_max_slope = 40.0
 	navmesh.filter_baking_aabb = AABB(Vector3(-124.0, -2.0, -124.0), Vector3(248.0, 34.0, 248.0))
 	var source := NavigationMeshSourceGeometryData3D.new()

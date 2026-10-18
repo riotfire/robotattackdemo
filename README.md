@@ -39,7 +39,7 @@ Pass `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` 
 
 Replace `godot` with your Godot 4.7 binary (e.g. `~/Downloads/Godot.app/Contents/MacOS/Godot`).
 
-GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying and robots sliding round building corners:
+GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners and robots following the navmesh round the Home porch:
 
 ```bash
 godot --headless --path . -s addons/gut/gut_cmdln.gd
@@ -69,7 +69,7 @@ godot --headless --path . --script res://tools/build_upgrade_catalog.gd
 godot --headless --path . --script res://tools/build_robot_data.gd
 ```
 
-- `build_graybox_farm.gd` writes `scenes/farm/`: farm, silo and navmesh.
+- `build_graybox_farm.gd` writes `scenes/farm/`: farm, silo and navmesh. Add `-- --navmesh-only` to rebake only the navmesh from the saved `farm.tscn`.
 - `build_upgrade_catalog.gd` writes `data/upgrades/`, one `.tres` per pegboard node.
 - `build_robot_data.gd` writes `data/robots/`: themes, palettes, traits and the gene library.
 - `setup_input_map.gd` rewrites the default input map in `project.godot`.
