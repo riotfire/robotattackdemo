@@ -8,6 +8,7 @@ id = &"wrench"
 display_name = "Wrench"
 slot = 1
 trigger_mode = 1
+fire_cue = &"wrench"
 damage = 25.0
 damage_stat = &"wrench.damage"
 fire_rate = 1.6
