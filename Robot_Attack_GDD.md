@@ -1359,7 +1359,7 @@ res://
 
 | System | Implementation notes |
 |---|---|
-| **Player controller** | `CharacterBody3D` with a small state chart: Grounded, Airborne, Jetpacking, Hovering, Climbing, Ziplining, Repairing. Input arrives through a per-player `InputRouter` (co-op-ready). Use the GDQuest third-person controller's **code** (MIT) as a reference; do **not** ship its art (CC-BY-NC-SA). |
+| **Player controller** | `CharacterBody3D` with a small state chart: Grounded, Airborne, Jetpacking, Hovering, Climbing, Ziplining, Repairing. The `Farmer` node holds the state, health and armor and ticks child components in a fixed order: `FarmerMovement`, `FarmerRepair`, `FarmerInteraction`, `WeaponHolder`. Input arrives through a per-player `InputRouter` (co-op-ready). Use the GDQuest third-person controller's **code** (MIT) as a reference; do **not** ship its art (CC-BY-NC-SA). |
 | **Camera** | A custom SpringArm3D third-person camera (`farmer_camera.gd`) with an aim zoom. Phantom Camera is not used (ROADMAP D7); revisit if M3 cinematics need blending. |
 | **Weapons** | `WeaponData` resource + `Weapon` scene. Hitscan via `PhysicsDirectSpaceState3D.intersect_ray`; projectiles pooled. Mods are small strategy scripts that hook `on_fire`, `on_hit` and `on_kill`. |
 | **Damage** | `Hurtbox` (Area3D) → `HealthComponent`. A `DamagePacket` carries amount, source, weak-point flag, stun and knockback. |

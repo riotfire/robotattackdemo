@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"pistol"
+display_name = "Rivet Pistol"
+slot = 2
+unlock_flag = &"pistol.unlocked"
+usable_on_zipline = true
+trigger_mode = 0
+damage = 12.0
+damage_stat = &"pistol.damage"
+fire_rate = 4.0
+fire_rate_stat = &"pistol.fire_rate"
+max_range = 40.0
+magazine_size = 10
+magazine_stat = &"pistol.magazine"
+reload_time = 1.1
+reload_stat = &"pistol.reload_time"

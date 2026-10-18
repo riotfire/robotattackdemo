@@ -21,10 +21,16 @@ func _initialize() -> void:
 	_action(&"melee", [KEY_V], [], [JOY_BUTTON_RIGHT_STICK], [])
 	_action(&"interact", [KEY_E], [], [JOY_BUTTON_X], [])
 	_action(&"reload", [KEY_R], [], [JOY_BUTTON_X], [])
-	_action(&"weapon_next", [], [MOUSE_BUTTON_WHEEL_DOWN], [JOY_BUTTON_Y], [])
+	# Weapon wheel (GDD 5.2): hold to open, tap for the last weapon.
+	_action(&"weapon_wheel", [KEY_Q], [], [JOY_BUTTON_Y], [])
+	_action(&"weapon_next", [], [MOUSE_BUTTON_WHEEL_DOWN], [], [])
 	_action(&"weapon_prev", [], [MOUSE_BUTTON_WHEEL_UP], [], [])
 	_action(&"weapon_1", [KEY_1], [], [], [])
 	_action(&"weapon_2", [KEY_2], [], [], [])
+	_action(&"weapon_3", [KEY_3], [], [], [])
+	_action(&"weapon_4", [KEY_4], [], [], [])
+	_action(&"weapon_5", [KEY_5], [], [], [])
+	_action(&"weapon_6", [KEY_6], [], [], [])
 	_action(&"shoulder_swap", [], [MOUSE_BUTTON_MIDDLE], [], [])
 	# Godot's default ui_accept and ui_cancel have no gamepad buttons, so the pegboard and menus
 	# ignored A and B. These keep the keyboard defaults and add the pad.

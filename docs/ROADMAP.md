@@ -5,7 +5,7 @@
 | **Status** | Draft v0.1 |
 | **Date** | 2026-10-17 |
 | **Source of truth** | [Robot_Attack_GDD.md](../Robot_Attack_GDD.md). This roadmap breaks GDD section 21 into work packages. When the two disagree, the GDD wins once the decisions in section 2 are made. |
-| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17; M2-A1 and M2-A0 are done (section 2.4, section 4.1). The rest of M2 starts after the M1 playtest feedback is in. |
+| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17; M2-A1, M2-A0, M2-A2 and M2-J1 are done (section 2.4, section 4.1, section 4.9). Batch 2 (section 4.11) is under way. |
 
 ---
 
@@ -39,7 +39,7 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Meta | Profile save (parts, upgrades, records, Almanac data), Harvest Report, restart | + Farmhouse Hub, start-phase checkpoints, Almanac UI, cosmetics | M2 |
 | Look | Clay shader with lumps, thumbprints, subsurface scattering, 12 fps boil; stepped robot poses | Real models, felt/cellophane/cotton materials, VFX, cardboard UI | M2–M3 (see D8) |
 | Audio | None | Adaptive bluegrass-chiptune music, clay foley, robot voices | M3 (see D8) |
-| Tests | 36 GUT unit tests; 93-check headless smoke test that passes on every seed tried (104 fixed, 6 random; M2-A0); genome gallery | Grows with every work package | Ongoing |
+| Tests | 42 GUT unit tests; 104-check headless smoke test that passes on every seed tried (104 fixed, 6 random; M2-A0); genome gallery | Grows with every work package | Ongoing |
 | Version control | Git repository on `main` with an initial commit (D9, done) | Required for parallel sessions | Done |
 
 ---
@@ -67,7 +67,7 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Gap in M1 | Planned in |
 |---|---|
 | Short-range and long-range robot classes (6 archetypes); Foreman rotation | M2-B |
-| Stun Gun, Shotgun, Machine Gun, Egg Grenades, mods, weapon wheel (M1 uses 1/2 keys, mouse wheel and Y to cycle) | M2-A2, M2-C |
+| Stun Gun, Shotgun, Machine Gun, Egg Grenades, mods (the weapon wheel and mod hooks arrived in M2-A2) | M2-C |
 | Auto Wrench, Welder, armor tiers past Padded Vest, silo plating past Aluminium, Scarecrow, capstones | M2-D |
 | Air-combat jetpack upgrades (Air Dash, Ground Pound, ...) | M2-E |
 | The remaining ~300 pegboard levels | M2-G |
@@ -133,7 +133,7 @@ WPs that touch different files can run in separate sessions at the same time, ea
 
 | Hotspot | Lines | Why it's hot | Plan |
 |---|---|---|---|
-| `scripts/player/farmer.gd` | 592 | Movement, weapons, repair and interaction in one file | M2-A2 splits it into components first |
+| `scripts/player/farmer.gd` | 247 | State chart, health, armor, aiming, presentation | Split by M2-A2: movement (`farmer_movement.gd`, M2-E1), repair (`farmer_repair.gd`, M2-D1/D2), interaction and weapons (`scripts/weapons/`, M2-C) now have their own files |
 | `scripts/ai/robot.gd` | 507 | All robot behavior | M2-A3 restructures it (LimboAI or per-class components) |
 | `scripts/systems/wave_director.gd` | 380 | Spawning, the wave loop and Foreman logic | Only M2-B5 and M2-H3 touch it, one after the other |
 | `scripts/ui/pegboard_ui.gd` | 558 | The whole upgrade UI | Only M2-G1 touches it |
@@ -154,7 +154,7 @@ WPs that touch different files can run in separate sessions at the same time, ea
 |---|---|---|---|---|
 | ~~M2-A1~~ | **Done 2026-10-17.** Decisions + GDD sync: applied D1–D5 in code and data; fixed the 2.3 inconsistencies; created `CREDITS.md`. | D1–D9 | S | Unit tests pass (34/34); smoke results identical before and after the change |
 | ~~M2-A0~~ | **Done 2026-10-17.** Fixed the seed-dependent smoke test. Root cause: the test's god-mode farmer doesn't defend the silo, and on seeds without a wave-1 thief it waited 40 s for one while Nibblers destroyed the silo (about 40 s from full), which ended the run. The test now sends a silo attacker to the chute instead, reseals the silo between sections, clears the pistol's line of fire, uses one profile per process and fails once with the reason when a run ends early. **Game bug found and fixed:** robots stopped dead at building corners (a 2 s+ stall on 21 of 62 seeds; `wall_min_slide_angle`, regression test in `test_robot_movement.gd`). **Porch stall fixed 2026-10-18:** robots were also pinned for good against the Home porch's 0.2 m floor and the sides of its ramp (3 of 102 seeds). The navmesh joined steps up to 0.25 m, but a capsule only steps up about a third of its radius (Nibbler 0.10 m, Clanker 0.18 m, Thumper 0.24 m). The bake now uses `cell_height` and `agent_max_climb` 0.05 m, so it never joins a step of 0.1 m or more, and robots reach the porch up its ramp (`tools/build_graybox_farm.gd`, rebaked `farm_navmesh.res`, `navigation/3d/default_cell_height`; regression test in `test_robot_movement.gd`). | — | M | Smoke test passes on seeds 1–100, 1234, 2024, 31337, 664607717 and 6 random seeds; 36/36 unit tests pass; no robot pinned for 2 s on seeds 1–100 |
-| **M2-A2** | **Farmer refactor + weapon framework.** Split `farmer.gd` into movement, weapon holder, repair and interaction components. Add `WeaponData` resources, a weapon wheel (hold Q / Y; number keys), mod-slot plumbing (`on_fire`, `on_hit`, `on_kill` hooks) and pooled projectiles. | A1 | L | Wrench and pistol work unchanged on the new framework; the wheel works on keyboard and gamepad; smoke test passes |
+| ~~M2-A2~~ | **Done 2026-10-18.** Farmer refactor + weapon framework. `farmer.gd` (589 lines) is now a coordinator that ticks `FarmerMovement`, `FarmerRepair`, `FarmerInteraction` and `WeaponHolder` in a fixed order. `WeaponData` resources (`data/weapons/wrench.tres`, a `MeleeWeaponData`, and `pistol.tres`) hold base stats, slot, unlock flag and the stat keys each pegboard track modifies. Weapon wheel: tap Q / Y for the last weapon, hold to open it (mouse or right stick points, release equips; the camera holds still and nothing fires, the farmer keeps moving, no slow-motion); number keys 1–6; the mouse wheel cycles. `WeaponMod` hooks (`on_fire` can change the shot, `on_hit` the packet before it lands, `on_kill` after) with 1 slot per weapon plus a Gold Mod Slot flag; `Hurtbox.hit()` now reports kills. `ProjectilePool` + `Projectile` (ray-swept, piercing, gravity) for any weapon with `projectile_speed` > 0, and for robot projectiles in M2-A4. A newly bought weapon is equipped; other purchases no longer swap the wrench for the pistol. Mods aren't saved yet (M2-C5 adds the loadout UI). | A1 | L | 42/42 unit tests pass (6 new in `test_weapons.gd`); smoke test (104 checks, 11 new: wheel tap/hold/stick/number keys, mod slots and hooks) passes on seeds 1–10, 42, 1234, 2024, 31337, 664607717 and 2 random seeds |
 | **M2-A3** | **Robot AI restructure.** Vendor the LimboAI v1.8.1 GDExtension (D6) and migrate `robot.gd`'s state machine to behavior trees (one per class). Add perch-aware positioning and a squad blackboard. Add LimboAI to `CREDITS.md`. | A1 | L | The 3 melee archetypes behave as in M1 on the new structure; tests pass |
 | **M2-A4** | **Telegraphs and enemy projectiles.** Pooled slow clay projectiles, red-yarn aim lines, chalk landing circles. | A3 | M | A test robot can fire each projectile type with its telegraph |
 | ~~M2-A5~~ | **Done 2026-10-18.** Content tables: the pegboard, archetype stats and genome data are CSV tables in `data/source/` (format in `data/source/README.md`; why CSV in the README). Each table is a folder with one row per item, and M1 ships one file per branch or class, so parallel WPs add rows or their own files without touching the same lines. `tools/build_upgrade_catalog.gd` and `tools/build_robot_data.gd` generate the `.tres` files through a shared reader (`tools/content_tables.gd`) and keep resource ids, so regenerating reproduces M1's `data/` byte for byte (even from empty folders) and a table edit only changes its own lines. New `test_content_tables.gd`: the `.tres` files match the tables, bad cells are reported with file and line, the GDD 12.4 recipes hold, and the orphan-stat rule (every `StatModifier` key appears in a system's script, scene or data; `PENDING_STATS` holds keys whose feature WP is still open, empty now). **One orphan found and fixed:** `jetpack.owned` was never read (`GameState.jetpack_unlocked` checked the node's level), so the getter now reads the flag. No orphans remain. `StatService` is unchanged: the catalog is plain data and a profile is just a levels dictionary, so the Daily Kit (M5a-2) and per-player pegboards (M5b-5) can fold another set of levels without touching the tables. | A1 | M | Regenerating from the tables reproduces M1's data exactly (`git diff data/` empty); 42/42 unit tests pass, including the orphan test; smoke test passes on seeds 1–10 and 1234 |
@@ -226,7 +226,7 @@ A2 and A3 touch different files, so they can run in parallel after A1.
 
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
-| **M2-J1** | **Clayify pipeline.** Blender batch script (GDD 19.4): weld, bevel, subdivide, displace, smooth, decimate, export glTF. | — | M | One CC0 building goes in faceted and comes out soft and lumpy |
+| ~~M2-J1~~ | **Done 2026-10-18 in the visual pass.** Clayify pipeline: `tools/clayify/clayify.py` bakes material colors to vertex colors, recolors to the farm palette, welds, bevels, shades smooth and stretches buildings onto their gameplay dimensions (see README). The barn, water tower, well and windpump already use it, which is part of M2-J2. | — | M | One CC0 building goes in faceted and comes out soft and lumpy |
 | **M2-J2** | **Farm buildings.** Replace graybox buildings with clayified Quaternius farm buildings, keeping collision, perch heights and ladders. | J1 | L | Every perch height in GDD 4.4 still holds; the navmesh rebakes cleanly |
 | **M2-J3** | **First real robot family.** Modeled parts for one theme across all 3 type sizes. | J1, F1 | L | That family renders in game next to graybox families |
 | **M2-J4** | **Farmer model + animations.** Base mesh plus Universal Animation Library animations retargeted to it. | J1 | L | The farmer is no longer a capsule; animations are stepped at 24 fps |
