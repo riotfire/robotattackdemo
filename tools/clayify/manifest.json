@@ -33,7 +33,7 @@
   "models": [
     {"src": "quaternius_farm/Barn.fbx", "out": "farm/farm_barn_01.glb", "fit": {"size": [18.0, 14.0], "height_keys": [[0, 0], [3.0, 9.0], [6.01, 13.0]]}, "palette_set": "quaternius_farm"},
     {"src": "quaternius_farm/WaterTower.fbx", "out": "farm/farm_water_tower_01.glb", "palette": {"DarkGrey": "#6FA3AE", "Grey": "#B9B2A6"}, "fit": {"size": [8.4, 8.4], "height_keys": [[0, 0], [6.0, 15.0], [8.43, 19.4]]}, "palette_set": "quaternius_farm"},
-    {"src": "quaternius_farm/Well.fbx", "out": "farm/farm_well_01.glb", "fit": {"size": [2.3, 2.4], "height_keys": [[0, 0], [0.8, 1.0], [2.14, 2.85]]}, "palette_set": "quaternius_farm", "decimate": 0.5},
+    {"src": "quaternius_farm/Well.fbx", "out": "farm/farm_well_01.glb", "fit": {"size": [2.3, 2.4], "height_keys": [[0, 0], [0.8, 1.0], [2.14, 2.85]]}, "palette_set": "quaternius_farm", "displace": {"strength": 0.055, "scale": 0.48, "seed": 17}, "decimate": 0.5, "max_tris": 7000},
     {"src": "quaternius_farm/Windmill.fbx", "out": "farm/farm_windmill_01.glb", "palette_set": "quaternius_farm", "bevel": 0.004},
     {"src": "quaternius_farm/Fence.fbx", "out": "props/prop_fence_01.glb", "palette_set": "quaternius_farm", "bevel": 0.004},
     {"src": "quaternius_farm/Fence2.fbx", "out": "props/prop_fence_02.glb", "palette_set": "quaternius_farm", "bevel": 0.004},

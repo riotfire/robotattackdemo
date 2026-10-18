@@ -73,10 +73,10 @@ godot --headless --path . --script res://tools/build_robot_data.gd
 - `build_upgrade_catalog.gd` writes `data/upgrades/`, one `.tres` per pegboard node.
 - `build_robot_data.gd` writes `data/robots/`: themes, palettes, traits and the gene library.
 
-Clayify pipeline (GDD 19.4). It rebuilds `assets/models/` from the CC0 sources in `assets/source/`, as listed in `tools/clayify/manifest.json`: it bakes material colors into vertex colors, recolors them to the farm palette, welds, bevels, shades smooth, and stretches buildings onto their gameplay dimensions. Pass output names (e.g. `farm/farm_barn_01.glb`) after the three paths to rebuild only those. Re-run `build_graybox_farm.gd` afterwards if a building model changed:
+Clayify pipeline (GDD 19.4). It rebuilds `assets/models/` from the CC0 sources in `assets/source/`, as listed in `tools/clayify/manifest.json`: it bakes material colors into vertex colors, recolors them to the farm palette, welds and bevels, then optionally subdivides, displaces and decimates before stretching buildings onto their gameplay dimensions. `max_tris` rejects an asset that exceeds its explicit triangle budget. Pass output names (e.g. `farm/farm_barn_01.glb`) after the three paths to rebuild only those. Re-run `build_graybox_farm.gd` afterwards if a building model changed:
 
 ```bash
-/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P tools/clayify/clayify.py -- tools/clayify/manifest.json assets/source assets/models
+/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python-exit-code 1 -P tools/clayify/clayify.py -- tools/clayify/manifest.json assets/source assets/models
 ```
 - `setup_input_map.gd` rewrites the default input map in `project.godot`.
 

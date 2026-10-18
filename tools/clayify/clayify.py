@@ -1,15 +1,17 @@
 """Clayify asset pipeline (GDD 19.4), run by Blender in the background:
 
-    Blender -b --factory-startup -P tools/clayify/clayify.py -- tools/clayify/manifest.json <source root> <output root>
+    Blender -b --factory-startup --python-exit-code 1 -P tools/clayify/clayify.py -- tools/clayify/manifest.json <source root> <output root>
 
 For each manifest entry it imports the source model (FBX / glTF / OBJ), bakes every face's material color
 (or its texture color at the face's UVs) into a vertex color, recolors material names to the farm
-palette, applies transforms, welds vertices, bevels hard edges, shades smooth, moves the origin to the
-bottom center and exports a single-mesh glTF binary. In Godot the clay shader reads that vertex color
-(Clay.vertex_colored()), so one material serves every model.
+palette, applies transforms, welds vertices, bevels hard edges, optionally subdivides, decimates and
+displaces the surface, checks an explicit triangle budget, shades smooth, moves the origin to the
+bottom center and exports a single-mesh glTF binary. In Godot the clay shader reads that vertex
+color (Clay.vertex_colored()), so one material serves every model.
 """
 
 import json
+import math
 import os
 import sys
 
@@ -111,6 +113,54 @@ def fit_to_gameplay(obj, fit: dict) -> None:
     obj.data.update()
 
 
+def triangle_count(obj) -> int:
+    obj.data.calc_loop_triangles()
+    return len(obj.data.loop_triangles)
+
+
+def _lattice(x: int, y: int, z: int, seed: int) -> float:
+    value = (x * 73856093) ^ (y * 19349663) ^ (z * 83492791) ^ (seed * 2654435761)
+    value &= 0xFFFFFFFF
+    value ^= value >> 13
+    value = (value * 1274126177) & 0xFFFFFFFF
+    return value / 0xFFFFFFFF * 2.0 - 1.0
+
+
+def _value_noise(x: float, y: float, z: float, seed: int) -> float:
+    ix, iy, iz = math.floor(x), math.floor(y), math.floor(z)
+    fx, fy, fz = x - ix, y - iy, z - iz
+    fx, fy, fz = (f * f * (3.0 - 2.0 * f) for f in (fx, fy, fz))
+
+    def lerp(a: float, b: float, t: float) -> float:
+        return a + (b - a) * t
+
+    planes = []
+    for dz in (0, 1):
+        rows = []
+        for dy in (0, 1):
+            rows.append(lerp(_lattice(ix, iy + dy, iz + dz, seed),
+                             _lattice(ix + 1, iy + dy, iz + dz, seed), fx))
+        planes.append(lerp(rows[0], rows[1], fy))
+    return lerp(planes[0], planes[1], fz)
+
+
+def displace_clay(obj, settings: dict) -> None:
+    """Continuous, repeatable vector displacement avoids seams at split normals."""
+    strength = float(settings.get("strength", 0.0))
+    scale = float(settings.get("scale", 0.0))
+    if strength <= 0.0 or scale <= 0.0:
+        raise ValueError("displace strength and scale must be positive")
+    seed = int(settings.get("seed", 17))
+    for vertex in obj.data.vertices:
+        x, y, z = (coord / scale for coord in vertex.co)
+        vertex.co += Vector((
+            _value_noise(x, y, z, seed),
+            _value_noise(x, y, z, seed + 37),
+            _value_noise(x, y, z, seed + 89),
+        )) * strength
+    obj.data.update()
+
+
 def process(entry: dict, src_root: str, out_root: str) -> None:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     import_model(os.path.join(src_root, entry["src"]))
@@ -166,6 +216,14 @@ def process(entry: dict, src_root: str, out_root: str) -> None:
         mod = obj.modifiers.new("Decimate", "DECIMATE")
         mod.ratio = entry["decimate"]
         bpy.ops.object.modifier_apply(modifier=mod.name)
+    if "displace" in entry:
+        displace_clay(obj, entry["displace"])
+    max_tris = entry.get("max_tris")
+    tris = 0
+    if max_tris is not None:
+        tris = triangle_count(obj)
+        if tris > max_tris:
+            raise ValueError("%s has %d triangles (budget %d)" % (entry["out"], tris, max_tris))
     bpy.ops.object.shade_smooth()
 
     # Origin at the bottom center of the bounds, so placement in Godot is just "stand it here".
@@ -185,9 +243,10 @@ def process(entry: dict, src_root: str, out_root: str) -> None:
         export_vertex_color="ACTIVE", export_all_vertex_colors=False, export_normals=True,
         export_texcoords=True, export_materials="PLACEHOLDER", export_yup=True,
         export_animations=False, export_cameras=False, export_lights=False)
-    obj.data.calc_loop_triangles()
+    if max_tris is None:
+        tris = triangle_count(obj)
     print("CLAYIFY %s  tris=%d  size=(%.2f, %.2f, %.2f)" % (
-        entry["out"], len(obj.data.loop_triangles), dims.x, dims.z, dims.y))
+        entry["out"], tris, obj.dimensions.x, obj.dimensions.z, obj.dimensions.y))
 
 
 def main() -> None:
