@@ -20,6 +20,10 @@ signal wave_phase_changed(phase: int, wave: int)
 signal siren_started(wave: int, lanes: PackedInt32Array)
 signal wave_started(wave: int)
 signal wave_cleared(wave: int)
+## The farm's lighting preset changed (GDD 4.6, 11.2): the run's starting time of day, then one step each phase.
+signal time_of_day_changed(preset_id: StringName, preset_index: int)
+## The run's weather was rolled (GDD 4.6).
+signal weather_changed(weather_id: StringName)
 
 signal parts_changed(parts: Dictionary)
 signal upgrade_purchased(id: StringName, level: int)

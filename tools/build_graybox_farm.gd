@@ -2,7 +2,7 @@ extends SceneTree
 ## Builds the M0 graybox farm (GDD 4.4) out of primitive meshes and saves:
 ##   res://scenes/farm/silo.tscn         silo, catwalks at 8 m and 16 m, caged ladder, 16 crack sockets, chute
 ##   res://scenes/farm/farm.tscn         ground, buildings, ladders, ziplines, porch heal zone, dinner bell,
-##                                       shed door, prop slots, 8 spawn lanes, corn, fog
+##                                       shed door, prop slots, 8 spawn lanes, corn, fog, time of day + weather
 ##   res://scenes/farm/farm_navmesh.res  navmesh baked from the static colliders (rebaked at run start
 ##                                       once the seeded props are placed)
 ##
@@ -33,6 +33,9 @@ const TOOL_SHED_SCRIPT_PATH := "res://scripts/components/tool_shed.gd"
 const PROP_SCATTER_SCRIPT_PATH := "res://scripts/systems/prop_scatter.gd"
 const CLAY_MODEL_SCRIPT_PATH := "res://scripts/components/clay_model.gd"
 const FARM_DECOR_SCRIPT_PATH := "res://scripts/systems/farm_decor.gd"
+const TIME_OF_DAY_SCRIPT_PATH := "res://scripts/systems/time_of_day.gd"
+const WEATHER_SCRIPT_PATH := "res://scripts/systems/weather.gd"
+const ENVIRONMENT_TABLE_PATH := "res://data/environment/environment_table.tres"
 
 ## Clayified CC0 models (tools/clayify, credits in CREDITS.md). Building models are baked to the exact
 ## gameplay dimensions below, so they sit on the colliders this script authors with identity transforms.
@@ -335,6 +338,7 @@ func _build_farm() -> Node3D:
 	spawn.position = Vector3(0.0, 0.2, 10.0)
 	_add(farm, spawn, "PlayerSpawn")
 	spawn.add_to_group(&"player_spawns", true)
+	_build_time_and_weather(farm, corn)
 	return farm
 
 
@@ -396,6 +400,23 @@ func _build_environment(farm: Node3D) -> void:
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 150.0
 	_add(farm, sun, "Sun")
+
+
+## Time of day and weather (GDD 4.6): TimeOfDay re-lights the WorldEnvironment, Sun and painted sky above from the
+## presets in data/environment each phase; Weather sways the corn and adds rain, puddles and wet clay. The
+## environment saved above is only the editor's view; every run starts from a rolled preset.
+func _build_time_and_weather(farm: Node3D, corn: Node3D) -> void:
+	var weather := Node3D.new()
+	weather.set_script(load(WEATHER_SCRIPT_PATH))
+	_add(farm, weather, "Weather")
+	weather.set(&"corn_field", corn)
+	var time_of_day := Node.new()
+	time_of_day.set_script(load(TIME_OF_DAY_SCRIPT_PATH))
+	_add(farm, time_of_day, "TimeOfDay")
+	time_of_day.set(&"table", load(ENVIRONMENT_TABLE_PATH))
+	time_of_day.set(&"world_environment", farm.get_node(^"WorldEnvironment"))
+	time_of_day.set(&"sun", farm.get_node(^"Sun"))
+	time_of_day.set(&"weather", weather)
 
 
 func _build_home(nav: Node3D, climbables: Node3D) -> void:

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeatherType" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/environment/weather_type.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"breezy"
+display_name = "Breezy"
+weight = 0.25
+cloud_coverage_add = 0.08
+wind_strength = 1.0

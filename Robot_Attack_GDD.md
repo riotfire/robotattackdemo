@@ -309,6 +309,13 @@ Each run rolls a **Farm Seed** that sets:
 
 Weather is mostly cosmetic. The one gameplay effect is that Morning Fog reduces long-range robot engagement range by 20%.
 
+How the time of day and weather work (M2-H1):
+
+- The starting time of day and the weather come from the Farm Seed through their own `environment` RNG stream, so they never shift spawn, lane or genome rolls. Weather weights: Clear 40%, Breezy 25%, Drizzle 20%, Morning Fog 15%. The weather lasts the whole run.
+- The time of day steps when the next phase's first intermission begins, right after the Big Haul, and blends over about 6 s in 12 fps steps. A checkpoint run (14.2) opens on its rolled preset.
+- Fog distances belong to the weather, not the time of day, so every preset keeps the 4.7 boundary fog. Morning Fog's boosted eye glows are a stronger bloom on emissive parts (eyes, weak points), not brighter emission.
+- Long-range robots scale their engagement range by `Weather.engagement_range_multiplier()` (0.8 in Morning Fog, 1 otherwise). Breezy also exposes `Weather.wind` for drifting flyers.
+
 ### 4.7 The boundary: "Lost in the Corn"
 
 - The farmer can walk about 15 m into the corn. Fog thickens and the music gets muffled.

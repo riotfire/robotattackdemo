@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="LightingPreset" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/environment/lighting_preset.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"golden_hour"
+display_name = "Golden Hour"
+sun_elevation = 20.0
+sun_bearing = 245.0
+sun_color = Color(1, 0.82, 0.58, 1)
+sun_energy = 1.4
+shadow_opacity = 1.0
+zenith_color = Color(0.38, 0.56, 0.86, 1)
+horizon_color = Color(1, 0.86, 0.62, 1)
+ground_color = Color(0.55, 0.55, 0.4, 1)
+cloud_color = Color(1, 0.92, 0.78, 1)
+cloud_shade = Color(0.76, 0.7, 0.78, 1)
+cloud_coverage = 0.4
+sun_disc_color = Color(1, 0.88, 0.6, 1)
+sun_disc_energy = 1.7
+sun_disc_size = 0.012
+star_strength = 0.0
+ambient_color = Color(0, 0, 0, 1)
+ambient_sky_contribution = 0.85
+ambient_energy = 1.05
+fog_color = Color(0.95, 0.85, 0.68, 1)
+fog_aerial_perspective = 0.5
+fog_sky_affect = 0.1
+exposure = 1.05
+saturation = 1.12
+contrast = 1.05
+glow_intensity = 0.0

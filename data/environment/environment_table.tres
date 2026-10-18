@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnvironmentTable" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/environment/environment_table.gd" id="1_table"]
+[ext_resource type="Script" path="res://scripts/systems/environment/lighting_preset.gd" id="2_preset"]
+[ext_resource type="Script" path="res://scripts/systems/environment/weather_type.gd" id="3_weather"]
+[ext_resource type="Resource" path="res://data/environment/time_of_day/dawn.tres" id="10_dawn"]
+[ext_resource type="Resource" path="res://data/environment/time_of_day/morning.tres" id="11_morning"]
+[ext_resource type="Resource" path="res://data/environment/time_of_day/noon.tres" id="12_noon"]
+[ext_resource type="Resource" path="res://data/environment/time_of_day/golden_hour.tres" id="13_golden_hour"]
+[ext_resource type="Resource" path="res://data/environment/time_of_day/dusk.tres" id="14_dusk"]
+[ext_resource type="Resource" path="res://data/environment/time_of_day/moonlit_night.tres" id="15_moonlit_night"]
+[ext_resource type="Resource" path="res://data/environment/weather/clear.tres" id="20_clear"]
+[ext_resource type="Resource" path="res://data/environment/weather/breezy.tres" id="21_breezy"]
+[ext_resource type="Resource" path="res://data/environment/weather/drizzle.tres" id="22_drizzle"]
+[ext_resource type="Resource" path="res://data/environment/weather/morning_fog.tres" id="23_morning_fog"]
+
+[resource]
+script = ExtResource("1_table")
+presets = Array[ExtResource("2_preset")]([ExtResource("10_dawn"), ExtResource("11_morning"), ExtResource("12_noon"), ExtResource("13_golden_hour"), ExtResource("14_dusk"), ExtResource("15_moonlit_night")])
+weathers = Array[ExtResource("3_weather")]([ExtResource("20_clear"), ExtResource("21_breezy"), ExtResource("22_drizzle"), ExtResource("23_morning_fog")])
