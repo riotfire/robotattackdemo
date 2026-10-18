@@ -24,6 +24,11 @@ StopMotionClock="*res://scripts/autoload/stop_motion_clock.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 StatService="*res://scripts/autoload/stat_service.gd"
 SaveManager="*res://scripts/autoload/save_manager.gd"
+AudioDirector="*res://scripts/autoload/audio_director.gd"
+
+[audio]
+
+buses/default_bus_layout="res://default_bus_layout.tres"
 
 [debug]
 
