@@ -101,10 +101,15 @@ func _build() -> void:
 	_root.add_child(dim)
 
 	_panel = PanelContainer.new()
-	_panel.custom_minimum_size = Vector2(680, 0)
-	_panel.set_anchors_preset(Control.PRESET_CENTER)
-	_panel.position = Vector2(-340, -350)
-	_panel.size = Vector2(680, 700)
+	# 680 wide, centered, and as tall as the window allows; the contents scroll when they don't fit.
+	_panel.anchor_left = 0.5
+	_panel.anchor_right = 0.5
+	_panel.anchor_top = 0.0
+	_panel.anchor_bottom = 1.0
+	_panel.offset_left = -340.0
+	_panel.offset_right = 340.0
+	_panel.offset_top = 24.0
+	_panel.offset_bottom = -24.0
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.16, 0.12, 0.09, 0.98)
 	panel_style.border_color = Color(0.78, 0.57, 0.28)
@@ -120,7 +125,12 @@ func _build() -> void:
 	var box := VBoxContainer.new()
 	box.name = "VBox"
 	box.add_theme_constant_override(&"separation", 10)
-	margin.add_child(box)
+	var scroll := ScrollContainer.new()
+	scroll.name = "Scroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	margin.add_child(scroll)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(box)
 
 	var title := _label("PAUSED", 34, Color(1.0, 0.86, 0.52))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -152,12 +162,15 @@ func _build() -> void:
 	var jump := _button("Jump", "Jump to selected wave")
 	jump.pressed.connect(_jump_to_selected_wave)
 	wave_row.add_child(jump)
+	var wave_buttons := HBoxContainer.new()
+	wave_buttons.add_theme_constant_override(&"separation", 8)
+	box.add_child(wave_buttons)
 	var next := _button("Next wave now", "Skip directly to the next wave")
 	next.pressed.connect(_skip_next_wave)
-	box.add_child(next)
+	wave_buttons.add_child(next)
 	var bell := _button("Ring bell", "End intermission or siren early")
 	bell.pressed.connect(_ring_bell)
-	box.add_child(bell)
+	wave_buttons.add_child(bell)
 
 	box.add_child(_section("DISPLAY"))
 	_fps_button = _button("", "Show or hide the frame rate in the top-right corner")
