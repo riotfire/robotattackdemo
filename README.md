@@ -25,7 +25,7 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 | Wrench bonk | V | R3 |
 | Interact: repair (hold), shed pegboard, dinner bell (hold), zipline | E | X |
 | Reload | R | X |
-| Weapons: tap for the last weapon, hold for the weapon wheel (point at a weapon, let go to equip) | Q (point with the mouse); 1 wrench, 2 pistol (1–6 as more arrive); mouse wheel cycles | Y (point with the right stick) |
+| Weapons: tap for the last weapon, hold for the weapon wheel (point at a weapon, let go to equip) | Q (point with the mouse); 1 wrench, 2 pistol (1–6 as more arrive); mouse wheel cycles | Y (point with the left stick) |
 | Shoulder swap | Middle mouse | — |
 | Pegboard (shed open): move / buy / close | Mouse: hold click on a peg to buy | D-pad or left stick / hold A / B or Start |
 | Pause / development menu | Escape | Start |

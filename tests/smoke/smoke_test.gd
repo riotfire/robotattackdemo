@@ -461,6 +461,14 @@ func _test_pegboard_and_save() -> void:
 	_check(StatService.level_of(&"attack.pistol") == 1 and StatService.level_of(&"travel.comfy_boots") == 1, "loading the profile restores the pegboard")
 
 
+func _push_left_stick(y: float) -> void:
+	var ev := InputEventJoypadMotion.new()
+	ev.device = 0
+	ev.axis = JOY_AXIS_LEFT_Y
+	ev.axis_value = y
+	Input.parse_input_event(ev)
+
+
 ## Tap, hold and number keys (GDD 5.2). The mouse can't be captured headless, so the wheel is pointed with
 ## the right stick; WeaponHolder.slot_at's unit test covers the geometry for both.
 func _test_weapon_wheel() -> void:
@@ -482,11 +490,11 @@ func _test_weapon_wheel() -> void:
 	Input.action_press(&"weapon_wheel")
 	await _frames(roundi(WeaponHolder.WHEEL_HOLD_TIME * 60.0) + 6)
 	_check(holder.wheel_open and _farmer.input.look_locked, "holding Q / (Y) opens the weapon wheel")
-	Input.action_press(&"look_up", 1.0)
+	_push_left_stick(-1.0)
 	await _frames(10)
-	_check(holder.wheel_choice == wrench, "pushing the right stick up points the wheel at slot 1, the wrench")
+	_check(holder.wheel_choice == wrench, "pushing the left stick up points the wheel at slot 1, the wrench")
 	_check(Vector2(rig.yaw, rig.pitch).is_equal_approx(view), "the camera holds still while the wheel takes the stick")
-	Input.action_release(&"look_up")
+	_push_left_stick(0.0)
 	await _frames(2)
 	_check(holder.wheel_choice == wrench, "the choice sticks when the stick springs back")
 	Input.action_release(&"weapon_wheel")

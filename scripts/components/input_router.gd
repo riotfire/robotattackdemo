@@ -47,6 +47,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func move_vector() -> Vector2:
 	if not enabled:
 		return Vector2.ZERO
+	# The left stick steers the weapon wheel while it's open, so it must not also walk the farmer.
+	if look_locked and _left_stick().length() >= WeaponHolder.WHEEL_DEADZONE:
+		return Vector2.ZERO
 	return Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
 
 
@@ -61,12 +64,25 @@ func consume_look(delta: float) -> Vector2:
 	return look
 
 
-## The weapon wheel's pointer (x right, y down, length 0-1): the right stick while it's pushed, otherwise
+## The raw left stick (x right, y down), ignoring the keyboard bindings that share the move actions.
+func _left_stick() -> Vector2:
+	var pads := Input.get_connected_joypads()
+	if pads.is_empty():
+		pads = [0]
+	var best := Vector2.ZERO
+	for pad in pads:
+		var stick := Vector2(Input.get_joy_axis(pad, JOY_AXIS_LEFT_X), Input.get_joy_axis(pad, JOY_AXIS_LEFT_Y))
+		if stick.length() > best.length():
+			best = stick
+	return best.limit_length(1.0)
+
+
+## The weapon wheel's pointer (x right, y down, length 0-1): the left stick while it's pushed, otherwise
 ## how far the mouse has moved since the wheel opened.
 func wheel_pointer() -> Vector2:
 	if not enabled:
 		return Vector2.ZERO
-	var stick := Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down")
+	var stick := _left_stick()
 	return stick if stick.length() >= WeaponHolder.WHEEL_DEADZONE else _wheel_mouse
 
 

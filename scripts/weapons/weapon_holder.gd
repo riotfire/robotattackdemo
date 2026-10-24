@@ -4,7 +4,7 @@ extends Node3D
 ## found at setup and ordered by WeaponData.slot. Handles switching (number keys 1-6, the mouse wheel and
 ## the weapon wheel), melee bonks, firing and reloading. The Farmer calls physics_step() each frame.
 ## Weapon wheel (GDD 5.2): tap Q / (Y) to swap to the last weapon; hold it to open the wheel, point with
-## the mouse or right stick, and let go to equip. Look input steers the wheel instead of the camera while
+## the mouse or left stick, and let go to equip. Look input steers the wheel instead of the camera while
 ## it's open, and nothing fires; the farmer keeps moving (no slow-motion, so co-op stays fair).
 
 signal equipped(weapon: Weapon)
