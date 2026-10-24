@@ -1636,7 +1636,7 @@ shader_parameter/use_vertex_color = false
 shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_ncblv"]
-size = Vector3(0.05, 0.05, 38.46882)
+size = Vector3(0.05, 0.05, 39.04216)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_5syl0"]
 top_radius = 0.07
@@ -4932,24 +4932,19 @@ font_size = 160
 [node name="Ziplines" type="Node3D" parent="." unique_id=1662057833]
 
 [node name="Z1_SiloToBarn" type="Node3D" parent="Ziplines" unique_id=1726880152]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 24, -0.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 26.2, -0.8)
 script = ExtResource("33_sacyb")
 
 [node name="End" type="Marker3D" parent="Ziplines/Z1_SiloToBarn" unique_id=1776559831]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.1, -9, -22.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.1, -11.2, -22.2)
 
 [node name="Cable" type="MeshInstance3D" parent="Ziplines/Z1_SiloToBarn" unique_id=1558233980]
-transform = Transform3D(0.5935638, -0.1882845, 0.7824519, 0, 0.9722473, 0.23395571, -0.8047869, -0.13886765, 0.5770908, -15.05, -4.5, -11.1)
+transform = Transform3D(0.5935638, -0.23086875, 0.77096151, 0, 0.9579697, 0.2868694, -0.8047869, -0.17027528, 0.56861613, -15.05, -5.6, -11.1)
 material_override = SubResource("ShaderMaterial_mlsi3")
 mesh = SubResource("BoxMesh_ncblv")
 
-[node name="StartPole" type="MeshInstance3D" parent="Ziplines/Z1_SiloToBarn" unique_id=720749505]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32191476, -1.05, 0.23742552)
-material_override = SubResource("ShaderMaterial_qp5ba")
-mesh = SubResource("CylinderMesh_5syl0")
-
 [node name="EndPole" type="MeshInstance3D" parent="Ziplines/Z1_SiloToBarn" unique_id=1012037599]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.421915, -10.05, -22.437426)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.421915, -12.25, -22.437426)
 material_override = SubResource("ShaderMaterial_qp5ba")
 mesh = SubResource("CylinderMesh_5syl0")
 

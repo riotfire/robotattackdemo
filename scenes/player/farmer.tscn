@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://bsv8sps5nixiw" path="res://scripts/player/farmer_camera.gd" id="5_camera"]
 [ext_resource type="Script" uid="uid://foqypsyqr5kv" path="res://scripts/weapons/wrench.gd" id="6_wrench"]
 [ext_resource type="Script" uid="uid://4vk8ckr03eb4" path="res://scripts/weapons/pistol.gd" id="7_pistol"]
-[ext_resource type="Material" path="res://shaders/clay_material.tres" id="8_clay"]
+[ext_resource type="Material" uid="uid://ccje1h8xjyjvn" path="res://shaders/clay_material.tres" id="8_clay"]
 [ext_resource type="Script" uid="uid://brwkuawenorvf" path="res://scripts/player/farmer_movement.gd" id="9_movement"]
 [ext_resource type="Script" uid="uid://b0lpjhnhcjtcy" path="res://scripts/player/farmer_repair.gd" id="10_repair"]
 [ext_resource type="Script" uid="uid://bnw0ni0g1rerw" path="res://scripts/player/farmer_interaction.gd" id="11_interaction"]
@@ -133,6 +133,7 @@ mesh = SubResource("Mesh_head")
 
 [node name="Goggles" type="MeshInstance3D" parent="Model/Pose" unique_id=2118077838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53, -0.25)
+visible = false
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.2, 0.2, 0.22, 1)
 mesh = SubResource("Mesh_goggles")

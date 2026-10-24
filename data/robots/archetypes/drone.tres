@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="RobotArchetype" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/robot_archetype.gd" id="1_arch"]
+[ext_resource type="PackedScene" path="res://scenes/robots/drone.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_arch")
+id = &"drone"
+display_name = "Drone"
+robot_type = 0
+robot_class = 1
+scene = ExtResource("2_scene")
+unlock_wave = 6
+spawn_weight = 0.6
+base_hp = 35.0
+move_speed = 9.0
+attack_interval = 2.8
+attack_windup = 0.9
+damage_vs_farmer = 4.0
+damage_vs_silo = 8.0
+farmer_target_chance = 0.0
+steal_chance = 0.0
+drop_al_min = 2
+drop_al_max = 3
+drop_cu_chance = 0.25

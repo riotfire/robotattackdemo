@@ -292,7 +292,7 @@ Positions are in meters from the silo (x = east, y = north).
 | **Vine trellis** | Always | Home porch roof. |
 | **Jetpack** | Build at the shed for 40 Al + 15 Cu from wave 3 | Base reach about 8.5 m. Upgrades extend it to every roof (see 5.4). |
 
-**Design rule:** every perch has at least two ways up and one fast way down. Robots can't climb. Ranged robots and flying Buzzers are the counter to camping.
+**Design rule:** every perch has at least two ways up and one fast way down. Roof Lobbers climb the outer walls of the barn, chicken house, stables and tool shed, then throw slow projectiles from their perches. Drones fly above the farm and fire while circling the silo. Both give the farmer a reason to watch and use the farm's vertical routes.
 
 ### 4.6 Per-run variation (seeded)
 

@@ -175,6 +175,16 @@ func take_damage(packet: DamagePacket) -> void:
 		movement.add_knockback(packet.knockback)
 
 
+## Landing damage from an effective drop of `height` metres. Ignores armor; `lethal` metres or more is fatal.
+func take_fall_damage(height: float, safe: float, lethal: float, curve: float) -> void:
+	if state == State.DEAD or GameState.god_mode or height <= safe:
+		return
+	var fraction := minf(1.0, pow((height - safe) / (lethal - safe), curve))
+	_since_damage = 0.0
+	if health.apply_damage(health.max_health * fraction) > 0.0:
+		_hurt_flash_left = HURT_FLASH_SECONDS
+
+
 func heal(amount: float) -> void:
 	health.heal(amount)
 

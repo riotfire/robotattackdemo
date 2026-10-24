@@ -53,6 +53,9 @@ const LAYER_INTERACTABLES := 1 << 7
 
 const SILO_RADIUS := 4.0
 const SILO_BODY_HEIGHT := 20.0
+const SILO_CAP_RADIUS := SILO_RADIUS + 0.12
+const SILO_CAP_HEIGHT := 4.3
+const SILO_CAP_RINGS := 10
 const CATWALK_LEVELS: PackedFloat32Array = [8.0, 16.0]
 const CATWALK_SEGMENTS := 16
 const CATWALK_OUTER := 5.6
@@ -94,10 +97,11 @@ const C_CABLE := Color(0.2, 0.2, 0.22)
 const C_BELL := Color(0.9, 0.72, 0.25)
 
 ## Ziplines (GDD 4.5): cable start and end. Riders hang 1.95 m below the cable.
-## Z1 silo dome (22 m) -> barn roof (13 m); Z2 water tower top (19 m) -> silo upper catwalk (16 m);
+## Z1 silo-top mast (26.2 m, clear of the 24 m dome so the farmer can stand and walk under it) -> barn roof (13 m); Z2 water tower top (19 m) -> silo upper catwalk (16 m);
 ## Z3 barn roof (13 m) -> stables roof (6 m).
+const SILO_ZIP_START_Y := 26.2
 const ZIPLINES: Array[Array] = [
-	["Z1_SiloToBarn", Vector3(-0.9, 24.0, -0.8), Vector3(-31.0, 15.0, -23.0)],
+	["Z1_SiloToBarn", Vector3(-0.9, SILO_ZIP_START_Y, -0.8), Vector3(-31.0, 15.0, -23.0)],
 	["Z2_TowerToSilo", Vector3(26.6, 21.0, 22.7), Vector3(3.65, 18.0, 3.12)],
 	["Z3_BarnToStables", Vector3(-32.0, 15.0, -31.5), Vector3(8.0, 8.0, -34.0)],
 ]
@@ -188,22 +192,23 @@ func _build_silo() -> Node3D:
 	body_shape.radius = SILO_RADIUS
 	body_shape.height = SILO_BODY_HEIGHT
 	_shape(silo, "BodyShape", body_shape, body_xform)
-	# Cap: the collider is a truncated cone up to the flat 22 m perch; the visual is a cream dome whose
-	# crown is flattened at the perch so the farmer stands on what they see.
+	# Cap: the collider is the convex hull of the dome's own half-ellipsoid, so the farmer stands on
+	# exactly what they see.
 	var cap_shape := ConvexPolygonShape3D.new()
 	var cap_points := PackedVector3Array()
-	for i in 32:
-		var a := TAU * i / 32
-		cap_points.append(Vector3(cos(a) * SILO_RADIUS, -1.0, sin(a) * SILO_RADIUS))
-		cap_points.append(Vector3(cos(a) * 1.8, 1.0, sin(a) * 1.8))
+	for ring in range(SILO_CAP_RINGS + 1):
+		var v := PI * 0.5 * ring / SILO_CAP_RINGS
+		for i in 32:
+			var a := TAU * i / 32
+			cap_points.append(Vector3(cos(v) * cos(a) * SILO_CAP_RADIUS, sin(v) * SILO_CAP_HEIGHT, cos(v) * sin(a) * SILO_CAP_RADIUS))
 	cap_shape.points = cap_points
-	_shape(silo, "CapShape", cap_shape, Transform3D(Basis(), Vector3(0.0, SILO_BODY_HEIGHT + 1.0, 0.0)))
+	_shape(silo, "CapShape", cap_shape, Transform3D(Basis(), Vector3(0.0, SILO_BODY_HEIGHT - 0.15, 0.0)))
 	var dome := SphereMesh.new()
-	dome.radius = SILO_RADIUS + 0.12
-	dome.height = 4.3
+	dome.radius = SILO_CAP_RADIUS
+	dome.height = SILO_CAP_HEIGHT
 	dome.is_hemisphere = true
 	dome.radial_segments = 32
-	dome.rings = 10
+	dome.rings = SILO_CAP_RINGS
 	_mesh(visual, "Cap", dome, Transform3D(Basis().scaled(Vector3(1.0, 1.0, 1.0)), Vector3(0.0, SILO_BODY_HEIGHT - 0.15, 0.0)), C_SILO_CAP)
 	var perch := CylinderMesh.new()
 	perch.top_radius = 1.8
@@ -211,6 +216,13 @@ func _build_silo() -> Node3D:
 	perch.height = 0.3
 	perch.radial_segments = 24
 	_mesh(visual, "Perch", perch, Transform3D(Basis(), Vector3(0.0, SILO_BODY_HEIGHT + 1.86, 0.0)), C_SILO_CAP)
+	# Mast: raises the zipline start above the dome so the farmer can stand beneath it.
+	var mast := CylinderMesh.new()
+	mast.top_radius = 0.1
+	mast.bottom_radius = 0.1
+	mast.height = 2.6
+	mast.radial_segments = 12
+	_mesh(visual, "ZiplineMast", mast, Transform3D(Basis(), Vector3(-0.9, 25.0, -0.8)), C_SILO_CAP)
 	# Hoop bands every 2.5 m, the classic stave-silo look.
 	var band := TorusMesh.new()
 	band.inner_radius = SILO_RADIUS - 0.02
@@ -250,7 +262,7 @@ func _build_silo() -> Node3D:
 	_box(silo, "ChuteHatch", Vector3(0.12, 0.9, 1.2), Vector3(SILO_RADIUS + 0.02, 0.75, 0.0), C_METAL, false)
 
 	_climbable(silo, "Ladder", Vector3(0.0, 0.0, SILO_LADDER_RADIUS), Vector3.BACK, SILO_BODY_HEIGHT + 0.2,
-			PackedFloat32Array(CATWALK_LEVELS), 1.4, SILO_LADDER_RADIUS - 1.0, 1.85)
+			PackedFloat32Array(CATWALK_LEVELS), 1.4, SILO_LADDER_RADIUS - 0.6, 3.95)
 	return silo
 
 
@@ -668,7 +680,8 @@ func _build_ziplines(farm: Node3D) -> void:
 		pole.top_radius = 0.07
 		pole.bottom_radius = 0.07
 		pole.height = 2.5
-		_mesh(line, "StartPole", pole, Transform3D(Basis(), flat_back * 0.4 + Vector3.DOWN * 1.05), C_WOOD)
+		if spec[0] != "Z1_SiloToBarn":  # Z1 starts on the silo's own mast.
+			_mesh(line, "StartPole", pole, Transform3D(Basis(), flat_back * 0.4 + Vector3.DOWN * 1.05), C_WOOD)
 		_mesh(line, "EndPole", pole, Transform3D(Basis(), end - start - flat_back * 0.4 + Vector3.DOWN * 1.05), C_WOOD)
 		_label(line, spec[0].left(2), Vector3(0.0, 0.6, 0.0), 40)
 

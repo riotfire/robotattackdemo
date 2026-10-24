@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://sy1y8avldos1"
 path.s3tc="res://.godot/imported/felt_color.jpg-c3dd514ec76c5b3f23163fdb13e9ebcb.s3tc.ctex"
+path.etc2="res://.godot/imported/felt_color.jpg-c3dd514ec76c5b3f23163fdb13e9ebcb.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/textures/felt/felt_color.jpg"
-dest_files=["res://.godot/imported/felt_color.jpg-c3dd514ec76c5b3f23163fdb13e9ebcb.s3tc.ctex"]
+dest_files=["res://.godot/imported/felt_color.jpg-c3dd514ec76c5b3f23163fdb13e9ebcb.s3tc.ctex", "res://.godot/imported/felt_color.jpg-c3dd514ec76c5b3f23163fdb13e9ebcb.etc2.ctex"]
 
 [params]
 

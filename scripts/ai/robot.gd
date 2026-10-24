@@ -1,7 +1,7 @@
 class_name Robot
 extends CharacterBody3D
-## A ground robot (GDD 9). M1 has the melee class in all three types: the Nibbler (Scout), Clankers
-## (Grunt squads of 3, see RobotSquad) and the Thumper (Heavy, see HeavyRobot).
+## Shared robot health, damage, drops and appearance. This AI drives the ground melee robots: Nibbler,
+## Clanker squads and Thumper. VerticalRobot supplies the roof and flying ranged behaviors.
 ##
 ## Melee AI (GDD 9.6): walk the navmesh to the silo (70%) or the nearest farmer (30%), bash it, and switch
 ## to the farmer when hurt from within aggro range. Nibblers (and any melee robot in a Thieving family) may
@@ -243,7 +243,7 @@ func _validate_target(delta: float) -> void:
 		if target_player == null:
 			target_kind = TargetKind.SILO
 			return
-	# Robots can't climb (GDD 4.5): give up on a farmer camping out of reach.
+	# Ground melee robots give up on a farmer camping out of reach.
 	if target_player.global_position.y - global_position.y > 2.5:
 		_unreachable_time += delta
 		if _unreachable_time >= archetype.unreachable_give_up_time:

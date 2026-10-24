@@ -1,57 +1,59 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://brhnbskdbolj4"]
 
-[ext_resource type="Script" path="res://scripts/systems/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://scenes/farm/farm.tscn" id="2_farm"]
-[ext_resource type="Script" path="res://scripts/systems/player_spawner.gd" id="3_spawner"]
-[ext_resource type="PackedScene" path="res://scenes/player/farmer.tscn" id="4_farmer"]
-[ext_resource type="Script" path="res://scripts/systems/wave_director.gd" id="5_director"]
+[ext_resource type="Script" uid="uid://8e5ql17a5ylp" path="res://scripts/systems/main.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://cnma7okbbdfyw" path="res://scenes/farm/farm.tscn" id="2_farm"]
+[ext_resource type="Script" uid="uid://bis6m7laijqo3" path="res://scripts/systems/player_spawner.gd" id="3_spawner"]
+[ext_resource type="PackedScene" uid="uid://c7xaacyro5ndq" path="res://scenes/player/farmer.tscn" id="4_farmer"]
+[ext_resource type="Script" uid="uid://cx07rcvcbuslv" path="res://scripts/systems/wave_director.gd" id="5_director"]
 [ext_resource type="Resource" path="res://data/difficulty/default_difficulty.tres" id="6_curve"]
-[ext_resource type="Script" path="res://scripts/ai/robot_archetype.gd" id="7_archetype"]
+[ext_resource type="Script" uid="uid://drjrgcgrbcorc" path="res://scripts/ai/robot_archetype.gd" id="7_archetype"]
 [ext_resource type="Resource" path="res://data/robots/archetypes/nibbler.tres" id="8_nibbler"]
+[ext_resource type="Script" uid="uid://cp4sabe4ksjyi" path="res://scripts/ui/hud.gd" id="9_hud"]
+[ext_resource type="Script" uid="uid://cmr4652lpevff" path="res://scripts/systems/debug_cheats.gd" id="10_cheats"]
 [ext_resource type="Resource" path="res://data/robots/archetypes/clanker.tres" id="11_clanker"]
 [ext_resource type="Resource" path="res://data/robots/archetypes/thumper.tres" id="12_thumper"]
+[ext_resource type="Resource" path="res://data/robots/archetypes/roof_lobber.tres" id="16_roof_lobber"]
+[ext_resource type="Resource" path="res://data/robots/archetypes/drone.tres" id="17_drone"]
 [ext_resource type="Resource" path="res://data/robots/gene_library.tres" id="13_genes"]
-[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="9_hud"]
-[ext_resource type="Script" path="res://scripts/systems/debug_cheats.gd" id="10_cheats"]
-[ext_resource type="Script" path="res://scripts/ui/pegboard_ui.gd" id="14_pegboard"]
-[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="15_pause"]
+[ext_resource type="Script" uid="uid://c4frj8vedthcc" path="res://scripts/ui/pegboard_ui.gd" id="14_pegboard"]
+[ext_resource type="Script" uid="uid://c3e06yt7nmnft" path="res://scripts/ui/pause_menu.gd" id="15_pause"]
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=2011713188]
 script = ExtResource("1_main")
 
-[node name="Farm" parent="." instance=ExtResource("2_farm")]
+[node name="Farm" parent="." unique_id=1165690436 instance=ExtResource("2_farm")]
 
-[node name="Robots" type="Node3D" parent="."]
+[node name="Robots" type="Node3D" parent="." unique_id=1987801978]
 
-[node name="Players" type="Node3D" parent="."]
+[node name="Players" type="Node3D" parent="." unique_id=102386793]
 
-[node name="PlayerSpawner" type="Node" parent="." node_paths=PackedStringArray("players_parent")]
+[node name="PlayerSpawner" type="Node" parent="." unique_id=1333694527 node_paths=PackedStringArray("players_parent")]
 script = ExtResource("3_spawner")
 player_scene = ExtResource("4_farmer")
 players_parent = NodePath("../Players")
 
-[node name="WaveDirector" type="Node" parent="." node_paths=PackedStringArray("robots_parent")]
+[node name="WaveDirector" type="Node" parent="." unique_id=1635651726 node_paths=PackedStringArray("robots_parent")]
 script = ExtResource("5_director")
 curve = ExtResource("6_curve")
-archetypes = Array[ExtResource("7_archetype")]([ExtResource("8_nibbler"), ExtResource("11_clanker"), ExtResource("12_thumper")])
+archetypes = Array[ExtResource("7_archetype")]([ExtResource("8_nibbler"), ExtResource("11_clanker"), ExtResource("12_thumper"), ExtResource("16_roof_lobber"), ExtResource("17_drone")])
 foreman_archetype = ExtResource("12_thumper")
 gene_library = ExtResource("13_genes")
 robots_parent = NodePath("../Robots")
 
-[node name="HUD" type="CanvasLayer" parent="." node_paths=PackedStringArray("director")]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1283997605 node_paths=PackedStringArray("director")]
 script = ExtResource("9_hud")
 director = NodePath("../WaveDirector")
 
-[node name="Pegboard" type="CanvasLayer" parent="." node_paths=PackedStringArray("director")]
+[node name="Pegboard" type="CanvasLayer" parent="." unique_id=1153195874 node_paths=PackedStringArray("director")]
 script = ExtResource("14_pegboard")
 director = NodePath("../WaveDirector")
 
-[node name="DebugCheats" type="Node" parent="." node_paths=PackedStringArray("director", "hud")]
+[node name="DebugCheats" type="Node" parent="." unique_id=1486879376 node_paths=PackedStringArray("director", "hud")]
 script = ExtResource("10_cheats")
 director = NodePath("../WaveDirector")
 hud = NodePath("../HUD")
 
-[node name="PauseMenu" type="CanvasLayer" parent="." node_paths=PackedStringArray("director", "cheats", "hud")]
+[node name="PauseMenu" type="CanvasLayer" parent="." unique_id=416859341 node_paths=PackedStringArray("director", "cheats", "hud")]
 script = ExtResource("15_pause")
 director = NodePath("../WaveDirector")
 cheats = NodePath("../DebugCheats")

@@ -243,20 +243,35 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 	var budget := curve.threat_budget(wave_number)
 	var heavies := 0
 	var heavy_cap := heavy_cap_for(wave_number)
+	var rooftop_count := 0
+	var drone_count := 0
+	# Give each new vertical threat a guaranteed introduction on its unlock wave.
+	for archetype in available:
+		if (wave_number == 4 and archetype.id == &"roof_lobber") \
+				or (wave_number == 6 and archetype.id == &"drone"):
+			if archetype.threat_cost() <= budget:
+				events.append(SpawnEvent.new(archetype))
+				budget -= archetype.threat_cost()
+				if archetype.id == &"roof_lobber":
+					rooftop_count += 1
+				else:
+					drone_count += 1
 	while not available.is_empty():
 		var options: Array[RobotArchetype] = []
 		var total_weight := 0.0
 		for archetype in available:
 			var is_heavy := archetype.robot_type == RobotArchetype.RobotType.HEAVY
-			if archetype.threat_cost() <= budget + 0.001 and not (is_heavy and heavies >= heavy_cap):
+			var at_cap := (archetype.id == &"roof_lobber" and rooftop_count >= (1 if wave_number < 10 else 2)) \
+					or (archetype.id == &"drone" and drone_count >= (1 if wave_number < 8 else 3))
+			if archetype.threat_cost() <= budget + 0.001 and not (is_heavy and heavies >= heavy_cap) and not at_cap:
 				options.append(archetype)
-				total_weight += type_weights[int(archetype.robot_type)]
+				total_weight += type_weights[int(archetype.robot_type)] * archetype.spawn_weight
 		if options.is_empty():
 			break
 		var roll := _wave_rng.randf() * total_weight
 		var pick := options[options.size() - 1]
 		for archetype in options:
-			roll -= type_weights[int(archetype.robot_type)]
+			roll -= type_weights[int(archetype.robot_type)] * archetype.spawn_weight
 			if roll <= 0.0:
 				pick = archetype
 				break
@@ -264,6 +279,10 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 		budget -= pick.threat_cost()
 		if pick.robot_type == RobotArchetype.RobotType.HEAVY:
 			heavies += 1
+		if pick.id == &"roof_lobber":
+			rooftop_count += 1
+		elif pick.id == &"drone":
+			drone_count += 1
 	return events
 
 

@@ -19,6 +19,14 @@ signal landed(fall_speed: float)
 @export var jump_buffer_time: float = 0.12
 @export var max_fall_speed: float = 40.0
 
+@export_group("Fall damage")
+## Effective drops shorter than this hurt nothing, so the jetpack can hop freely.
+@export var safe_fall_height: float = 5.0
+## An effective drop this tall (about the silo's top) kills outright. In between, damage is
+## ((height - safe) / (this - safe)) ^ fall_curve of max health.
+@export var lethal_fall_height: float = 22.0
+@export var fall_curve: float = 1.5
+
 @export_group("Climbing (GDD 4.5)")
 @export var mantle_speed: float = 7.0
 ## After letting go of a ladder or zipline, ignore it for this long so you don't re-grab it instantly.
@@ -46,6 +54,7 @@ var _zipline: Zipline = null
 var _zip_distance: float = 0.0
 var _knockback: Vector3 = Vector3.ZERO
 var _was_on_floor: bool = true
+var _fall_peak: float = 0.0
 
 
 func setup(owner_farmer: Farmer) -> void:
@@ -53,6 +62,8 @@ func setup(owner_farmer: Farmer) -> void:
 
 
 func physics_step(delta: float, move: Vector2, wish: Vector3) -> void:
+	if farmer.state in [Farmer.State.CLIMBING, Farmer.State.MANTLING, Farmer.State.ZIPLINING]:
+		_fall_peak = farmer.global_position.y
 	_regrab_left = maxf(0.0, _regrab_left - delta)
 	match farmer.state:
 		Farmer.State.CLIMBING:
@@ -126,8 +137,15 @@ func _process_free_move(delta: float, wish: Vector3) -> void:
 	if farmer.is_on_floor():
 		if not _was_on_floor:
 			landed.emit(falling_speed)
+			# Judged by the lesser of the real drop and the drop that would give this impact speed, so
+			# braking with the jetpack (or hovering down) softens a landing.
+			var speed_height := falling_speed * falling_speed / (2.0 * gravity)
+			var drop := minf(_fall_peak - farmer.global_position.y, speed_height)
+			farmer.take_fall_damage(drop, safe_fall_height, lethal_fall_height, fall_curve)
+		_fall_peak = farmer.global_position.y
 		farmer.state = Farmer.State.GROUNDED
 	else:
+		_fall_peak = maxf(_fall_peak, farmer.global_position.y)
 		farmer.state = Farmer.State.JETPACKING if thrusting else Farmer.State.AIRBORNE
 	_was_on_floor = farmer.is_on_floor()
 

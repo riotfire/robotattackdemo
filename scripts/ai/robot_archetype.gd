@@ -18,6 +18,8 @@ const CLASS_COST_MULTIPLIERS: PackedFloat32Array = [1.0, 1.25, 1.6]
 @export var scene: PackedScene
 ## First wave this archetype can spawn in regular spawns (GDD 9.5). Heavies debut earlier as a Foreman.
 @export var unlock_wave: int = 1
+## Relative chance among archetypes of the same type during spawn-budget selection.
+@export var spawn_weight: float = 1.0
 ## Robots spawned per spawn event: Grunts come in squads of 3 (GDD 9.1).
 @export var squad_size: int = 1
 ## Roughly the body radius at this type's scale; used to stand off the silo wall.

@@ -1,0 +1,3 @@
+id,display_name,robot_type,robot_class,scene,unlock_wave,spawn_weight,base_hp,move_speed,attack_interval,attack_windup,damage_vs_farmer,damage_vs_silo,farmer_target_chance,steal_chance,drop_al_min,drop_al_max,drop_cu_chance
+roof_lobber,Roof Lobber,scout,long_range,res://scenes/robots/roof_lobber.tscn,4,0.55,45,6,3.6,1.1,6,12,0,0,2,3,0.25
+drone,Drone,scout,short_range,res://scenes/robots/drone.tscn,6,0.6,35,9,2.8,0.9,4,8,0,0,2,3,0.25

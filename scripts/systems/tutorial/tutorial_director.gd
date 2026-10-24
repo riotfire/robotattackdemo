@@ -9,20 +9,22 @@ extends Node
 ##               and its spring bonks you for 20 (so you have a reason for the next step).
 ##   3. PORCH    Stand on the Home porch until the normal HP bar is full: this is where you heal.
 ##   4. PRACTICE Stop one slow Nibbler with the wrench. If it lands a hit, repair the resulting leak.
-##   5. CATWALK  Climb the silo ladder to the 8 m catwalk. A short camera sweep lights up the chicken house,
+##   5. CATWALK  Climb the silo ladder to the top. A short camera sweep lights up the chicken house,
 ##               the water tower and the 8 robot lanes in the corn.
-##   6. BELL     Hold Interact on the dinner bell to start a melee-only wave 1. The shed opens after wave 1.
+##   6. ZIPLINE  Already on top of the silo, ride the zipline down to the barn roof.
+##   7. BELL     Hold Interact on the dinner bell to start a melee-only wave 1. The shed opens after wave 1.
 ## The bell works from the start, so a player who just wants to play can skip: no bonus, same siren.
 ## Runs only while WaveDirector is in its TUTORIAL phase (a profile that hasn't finished it yet).
 
-enum Step { INTRO, SILO, DUMMY, PORCH, PRACTICE, REPAIR, CATWALK, BELL, DONE }
+enum Step { INTRO, SILO, DUMMY, PORCH, PRACTICE, REPAIR, CATWALK, ZIPLINE, BELL, DONE }
 
 ## The ground-level silo socket facing the farmer's spawn.
 const CRACK_SOCKET: int = 0
 const CRACK_POOL: float = 100.0
 const DUMMY_POSITION := Vector3(-18.0, 0.0, 17.0)
 const STARTER_AL: int = 5
-const CATWALK_HEIGHT: float = 7.2
+## Standing on the silo's cap; the dome peaks at about 24 m.
+const SILO_TOP_HEIGHT: float = 23.0
 const PRACTICE_POSITION := Vector3(-12.0, 0.0, 8.0)
 const EARLY_BIRD_AL: int = 5
 ## How long the camera lingers on each vista target.
@@ -41,6 +43,8 @@ var _hud: Hud
 var _silo: Silo
 var _shed: ToolShed
 var _bell: DinnerBell
+var _zipline: Zipline
+var _zip_ridden: bool = false
 var _heal_zone: HealZone
 var _farm: Node3D
 
@@ -75,6 +79,7 @@ func begin(main: Node) -> void:
 	_silo = GameState.silo
 	_heal_zone = _farm.get_node_or_null(^"PorchHealZone") as HealZone
 	_bell = _farm.get_node_or_null(^"DinnerBell") as DinnerBell
+	_zipline = _farm.get_node_or_null(^"Ziplines/Z1_SiloToBarn") as Zipline
 	_shed = get_tree().get_first_node_in_group(ToolShed.GROUP_SHED) as ToolShed
 	if _farmer == null or _silo == null or _shed == null or _bell == null or _heal_zone == null or _director == null:
 		push_warning("TutorialDirector: the farm is missing a station; skipping Level 0.")
@@ -117,6 +122,8 @@ func _go(next: Step) -> void:
 			_begin_repair()
 		Step.CATWALK:
 			_begin_catwalk()
+		Step.ZIPLINE:
+			_begin_zipline()
 		Step.BELL:
 			_begin_bell()
 
@@ -164,8 +171,8 @@ func _begin_porch() -> void:
 
 
 func _begin_catwalk() -> void:
-	_lesson("Climb the silo ladder to see where robots come from.")
-	_action("Follow the trail to the silo ladder and climb")
+	_lesson("Climb to the very top of the silo to see where robots come from.")
+	_action("Follow the trail to the silo ladder and climb to the top")
 	var ladder := _silo.get_node_or_null(^"Ladder") as Node3D
 	var foot := (ladder.global_position if ladder != null else _silo.global_position + Vector3(0, 0, 6.2)) + Vector3(0.0, 0.0, 0.8)
 	foot.y = 0.0
@@ -216,6 +223,16 @@ func _begin_repair() -> void:
 	_trail.set_goal(stand)
 
 
+func _begin_zipline() -> void:
+	if _zipline == null:
+		_go(Step.BELL)
+		return
+	_zip_ridden = false
+	_lesson("Ziplines are the fast way down.\nRide the cable from the silo top to the barn.")
+	_action("Stand under the cable and Interact to ride the zipline")
+	_show(TutorialMarker.create(_zipline.interaction_point(), SKY, 1.3))
+
+
 func _begin_bell() -> void:
 	_lesson("Protect the silo and its grain with your wrench.\nRing the bell for wave 1; build new gear afterward.")
 	_action("Follow the trail to the dinner bell")
@@ -255,6 +272,8 @@ func _process(delta: float) -> void:
 					_trail.set_goal(_practice_robot.global_position)
 		Step.CATWALK:
 			_update_catwalk(delta)
+		Step.ZIPLINE:
+			_update_zipline()
 
 
 func _update_dummy() -> void:
@@ -280,8 +299,15 @@ func _update_catwalk(delta: float) -> void:
 	if _vista_time >= 0.0:
 		_run_vista(delta)
 		return
-	if _farmer.state == Farmer.State.GROUNDED and _farmer.global_position.y >= CATWALK_HEIGHT:
+	if _farmer.state == Farmer.State.GROUNDED and _farmer.global_position.y >= SILO_TOP_HEIGHT:
 		_start_vista()
+
+
+func _update_zipline() -> void:
+	if _farmer.state == Farmer.State.ZIPLINING:
+		_zip_ridden = true
+	elif _zip_ridden and _farmer.state == Farmer.State.GROUNDED:
+		_go(Step.BELL)
 
 
 # --- Events ---------------------------------------------------------------------------------------
@@ -423,7 +449,7 @@ func _end_vista() -> void:
 	var to_bell := _bell.global_position - _farmer.global_position
 	_farmer.camera_rig.yaw = atan2(-to_bell.x, -to_bell.z)
 	_farmer.camera_rig.pitch = deg_to_rad(-18.0)
-	_go(Step.BELL)
+	_go(Step.ZIPLINE)
 
 
 func _drop_vista_cam() -> void:
