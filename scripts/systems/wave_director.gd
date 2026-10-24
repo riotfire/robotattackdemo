@@ -1,18 +1,21 @@
 class_name WaveDirector
 extends Node
-## The wave loop (GDD 11.1): Intermission (120 s; the siren winds up for its last 10 s) -> Spawning -> Mop-up
+## The wave loop (GDD 11.1): Intermission (120 s; the siren winds up for its last 3 s) -> Spawning -> Mop-up
 ## -> Cleared -> next Intermission. Each wave's threat budget (GDD 11.4) is spent over its spawn window
 ## (GDD 11.3) in a ramp-peak-lull-peak shape, from 2-5 lanes picked by the wave seed (GDD 11.6).
 ## Each wave rolls one robot family (RobotGenome, GDD 10) at the siren. Spawns are bought by type weight
 ## (Scout 55%, Grunt squads 35%, Heavy 10% with a per-wave cap, GDD 9.1), and every Big Haul wave adds a
 ## Foreman (GDD 11.2).
 ## Authoritative: in co-op this runs on the host only (GDD 18.8).
+## A first run opens with Level 0 "Morning Chores" (TUTORIAL): no clock runs until the dinner bell is rung,
+## and TutorialDirector teaches the farm with pictures in the meantime.
 
-enum Phase { INTERMISSION, SIREN, SPAWNING, MOP_UP, CLEARED, GAME_OVER }
+## TUTORIAL comes last so the other phases keep their numbers.
+enum Phase { INTERMISSION, SIREN, SPAWNING, MOP_UP, CLEARED, GAME_OVER, TUTORIAL }
 
 const GROUP: StringName = &"wave_director"
 
-const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-up", "Cleared", "Game over"]
+const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-up", "Cleared", "Game over", "Morning chores"]
 
 @export var curve: DifficultyCurve
 @export var archetypes: Array[RobotArchetype] = []
@@ -28,19 +31,20 @@ const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-
 ## GDD target is 30 s (ROADMAP D1). Builds keep 120 s until the Hub pegboard and pinned-goals
 ## quick-buy land (M2-H3, M2-G1). Try other lengths with the console's `intermission <s>`.
 @export var intermission_time: float = 120.0
-@export var siren_lead_time: float = 10.0
+@export var siren_lead_time: float = 3.0
 ## Pause on the "Cleared" jingle before the next intermission starts.
 @export var cleared_hold_time: float = 2.0
 ## Mop-up seconds before the last robots get a see-through marker (GDD 9.6).
 @export var straggler_time: float = 20.0
 ## Live robot cap; extra spawns wait in the queue (GDD 11.4: 60 on PC, 40 on Steam Deck).
 @export var live_robot_cap: int = 60
-## The free "Jetpack Moment" (GDD 2.4, 5.4).
-@export var jetpack_unlock_after_wave: int = 2
+## Wave progression and early-bird settings (GDD 2.4, 5.4).
 ## Early Bird bonus for ringing the bell early: Al per second skipped x (1 + wave / 10) (GDD 11.1).
 @export var early_bird_al_per_second: float = 1.0
 
 var phase: Phase = Phase.INTERMISSION
+## Aluminium the dinner bell pays for finishing Level 0's chores (set by TutorialDirector).
+var tutorial_bonus_al: int = 0
 var wave: int = 0
 ## Countdown for Intermission, Siren and Cleared.
 var time_left: float = 0.0
@@ -80,14 +84,18 @@ func _ready() -> void:
 	EventBus.game_over.connect(_on_game_over)
 
 
-func start_run() -> void:
+## `tutorial` opens with Level 0 instead of the first intermission.
+func start_run(tutorial: bool = false) -> void:
 	_lanes.clear()
 	for node in get_tree().get_nodes_in_group(LaneMarker.GROUP):
 		var lane := node as LaneMarker
 		_lanes[lane.lane_index] = lane
 	_running = true
 	_set_wave(1)
-	_enter_intermission(intermission_time)
+	if tutorial:
+		_enter_tutorial()
+	else:
+		_enter_intermission(intermission_time)
 
 
 func _physics_process(delta: float) -> void:
@@ -131,6 +139,25 @@ func _enter_intermission(duration: float) -> void:
 	Robot.hive_period = 12
 	_set_lanes_active(false)
 	_set_phase(Phase.INTERMISSION)
+
+
+func _enter_tutorial() -> void:
+	time_left = 0.0
+	Robot.hive_period = 12
+	_set_lanes_active(false)
+	_set_phase(Phase.TUTORIAL)
+
+
+## Level 0 is over: wave 1's siren winds up (bonus Al is the tutorial's Early Bird reward).
+func finish_tutorial(bonus_al: int = 0) -> void:
+	if phase != Phase.TUTORIAL:
+		return
+	if bonus_al > 0:
+		GameState.add_parts({&"al": bonus_al})
+	SaveManager.tutorial_completed = true
+	SaveManager.save_profile()
+	_enter_siren(siren_lead_time)
+	EventBus.tutorial_finished.emit()
 
 
 func _enter_siren(remaining: float) -> void:
@@ -188,11 +215,6 @@ func _enter_cleared() -> void:
 	EventBus.wave_cleared.emit(wave)
 	var vac_text := "   Scrap Vac +%d parts" % vacuumed if vacuumed > 0 else ""
 	EventBus.hud_message.emit("Wave %d cleared!  Harvest +%d grain%s" % [wave, roundi(grain_added), vac_text], 3.0)
-	if wave >= jetpack_unlock_after_wave and not GameState.jetpack_unlocked:
-		GameState.unlock_jetpack()
-		EventBus.hud_message.emit("Grandpa's Milk-Can Jetpack!  Hold JUMP in the air to fly.", 5.0)
-
-
 func _on_game_over(_reason: StringName) -> void:
 	_running = false
 	_set_phase(Phase.GAME_OVER)
@@ -347,7 +369,9 @@ func robots_to_come() -> int:
 
 ## Skips the rest of the intermission (GDD 11.1 "Ring the bell early"), paying the Early Bird bonus.
 func ring_bell() -> void:
-	if phase == Phase.INTERMISSION:
+	if phase == Phase.TUTORIAL:
+		finish_tutorial(tutorial_bonus_al)
+	elif phase == Phase.INTERMISSION:
 		var skipped := maxf(0.0, time_left - siren_lead_time)
 		var bonus := floori(skipped * early_bird_al_per_second * (1.0 + wave / 10.0)
 				* StatService.get_stat(&"economy.early_bird", 1.0))

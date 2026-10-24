@@ -98,7 +98,8 @@ func corn_is_swaying() -> bool:
 
 # --- Rain -----------------------------------------------------------------------------------------
 
-## Drizzle: little glossy clay droplets, stepped at 12 fps like the rest of the set (GDD 15.4).
+## Drizzle: little glossy clay droplets, simulated every rendered frame. Stepping at 12 fps
+## moved a 15 m/s drop ~1.25 m per tick (nearly 5x its 0.26 m length), which read as strobing, not rain.
 func _apply_rain() -> void:
 	var drops := roundi(max_rain_drops * weather.rain_amount)
 	if drops <= 0:
@@ -121,8 +122,8 @@ func _build_rain() -> GPUParticles3D:
 	rain.local_coords = false
 	rain.lifetime = 1.3
 	rain.preprocess = 1.3
-	rain.fixed_fps = 12
-	rain.interpolate = false
+	rain.fixed_fps = 0
+	rain.interpolate = true
 	rain.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	rain.visibility_aabb = AABB(Vector3(-rain_area, -rain_height * 1.5, -rain_area), Vector3(rain_area, rain_height * 2.0, rain_area) * 2.0)
 	var process := ParticleProcessMaterial.new()

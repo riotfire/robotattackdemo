@@ -8,6 +8,9 @@ extends CanvasLayer
 ## The intermission timer keeps running while it's open, and it closes itself when the shed shutters for
 ## the wave. Graybox 2D overlay; the 3D pegboard dolly comes later.
 
+## The board was shut (by the player, or by the shutters coming down).
+signal closed
+
 const CELL := Vector2(158.0, 84.0)
 const PEG_SIZE := Vector2(150.0, 74.0)
 const BOARD_ROWS: Array[Array] = [
@@ -111,6 +114,12 @@ func close() -> void:
 	_set_player_input(true)
 	if not GameState.is_game_over and DisplayServer.get_name() != "headless":
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	closed.emit()
+
+
+## A peg's button, for UI effects and navigation.
+func peg_button(id: StringName) -> Button:
+	return _pegs.get(id)
 
 
 func _set_player_input(enabled: bool) -> void:
@@ -186,15 +195,18 @@ func _style_peg(id: StringName, peg: Button) -> void:
 	var affordable := StatService.can_afford(cost)
 	var free_unlock := node.cost_curve == null
 	var owned := level > 0
-	var locked := not owned and (free_unlock or not prereqs)
+	var wave_locked := id == &"travel.jetpack" and GameState.wave < 3
+	var locked := not owned and (free_unlock or not prereqs or wave_locked)
 	var pips := ""
 	if node.max_level > 1:
 		pips = "[%s%s]" % ["#".repeat(level), "-".repeat(node.max_level - level)] if node.max_level <= 5 else "Lv %d / %d" % [level, node.max_level]
 	var line2 := ""
 	if maxed:
 		line2 = "OWNED" if node.is_unlock() else "MAX"
+	elif wave_locked:
+		line2 = "Available at wave 3"
 	elif free_unlock:
-		line2 = "Free after wave 2"
+		line2 = "Free"
 	elif not prereqs:
 		line2 = "Needs " + _requirement_text(node)
 	else:
@@ -205,7 +217,7 @@ func _style_peg(id: StringName, peg: Button) -> void:
 
 	var fill := FILL_LOCKED if locked else (FILL_OWNED if owned else FILL_AVAILABLE)
 	var ring := RING_NONE
-	if not maxed and not free_unlock and prereqs:
+	if not maxed and not free_unlock and prereqs and not wave_locked:
 		ring = RING_AFFORDABLE if affordable else RING_SHORT
 	var style := _peg_style(fill, ring)
 	for state: StringName in [&"normal", &"hover", &"pressed", &"disabled"]:
@@ -254,6 +266,8 @@ func _refusal_text(id: StringName) -> String:
 	var node := StatService.catalog[id]
 	if StatService.is_maxed(id):
 		return "Already owned" if node.is_unlock() else "Already at max level"
+	if id == &"travel.jetpack" and GameState.wave < 3:
+		return "Available at wave 3"
 	if node.cost_curve == null:
 		return "Free after wave 2"
 	if not StatService.prerequisites_met(id):
@@ -266,6 +280,8 @@ func _status_text(id: StringName) -> String:
 	var node := StatService.catalog[id]
 	if StatService.is_maxed(id):
 		return "Owned" if node.is_unlock() else "Owned, at max level"
+	if id == &"travel.jetpack" and GameState.wave < 3:
+		return "Available at wave 3"
 	if node.cost_curve == null:
 		return "Free after wave 2"
 	if not StatService.prerequisites_met(id):

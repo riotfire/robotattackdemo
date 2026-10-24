@@ -142,6 +142,11 @@ func _physics_process(delta: float) -> void:
 			return
 
 
+## Sends the pickup flying to `who` at once, whatever the distance (Level 0's Dummy-Bot drop mustn't be missed).
+func attract_to(who: Node3D) -> void:
+	_target = who
+
+
 func _collect() -> void:
 	GameState.add_parts({kind: amount})
 	queue_free()

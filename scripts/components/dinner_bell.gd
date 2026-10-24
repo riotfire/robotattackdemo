@@ -1,7 +1,7 @@
 class_name DinnerBell
 extends Interactable
 ## The dinner bell by the porch (GDD 11.1): hold Interact during an intermission to call the next wave
-## early and collect the Early Bird bonus.
+## early and collect the Early Bird bonus. During Level 0 it ends the tutorial and starts wave 1.
 
 
 func _ready() -> void:
@@ -16,7 +16,7 @@ func _director() -> WaveDirector:
 
 func can_interact(_farmer: Farmer) -> bool:
 	var director := _director()
-	return director != null and director.phase == WaveDirector.Phase.INTERMISSION
+	return director != null and director.phase in [WaveDirector.Phase.INTERMISSION, WaveDirector.Phase.TUTORIAL]
 
 
 func interact(_farmer: Farmer) -> void:

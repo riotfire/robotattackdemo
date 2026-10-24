@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="9_hud"]
 [ext_resource type="Script" path="res://scripts/systems/debug_cheats.gd" id="10_cheats"]
 [ext_resource type="Script" path="res://scripts/ui/pegboard_ui.gd" id="14_pegboard"]
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="15_pause"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -48,4 +49,10 @@ director = NodePath("../WaveDirector")
 [node name="DebugCheats" type="Node" parent="." node_paths=PackedStringArray("director", "hud")]
 script = ExtResource("10_cheats")
 director = NodePath("../WaveDirector")
+hud = NodePath("../HUD")
+
+[node name="PauseMenu" type="CanvasLayer" parent="." node_paths=PackedStringArray("director", "cheats", "hud")]
+script = ExtResource("15_pause")
+director = NodePath("../WaveDirector")
+cheats = NodePath("../DebugCheats")
 hud = NodePath("../HUD")

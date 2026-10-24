@@ -33,6 +33,9 @@ signal grain_stolen(amount: float, thief: Node3D)
 signal grain_returned(amount: float)
 signal jetpack_unlocked
 signal game_over(reason: StringName)
+## Level 0 "Morning Chores" moved to a new step (TutorialDirector.Step), and ended when the bell started wave 1.
+signal tutorial_step_changed(step: int)
+signal tutorial_finished
 
 ## Short center-screen toast for the HUD.
 signal hud_message(text: String, duration: float)

@@ -2,7 +2,7 @@ id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,
 travel.comfy_boots,travel,0,0,Comfy Boots,5,,al_cu 12,player.run_speed add_pct 0.03,+3% run speed per level.
 travel.springy_soles,travel,0,1,Springy Soles,3,travel.comfy_boots 2,al 15,player.jump_height add_pct 0.10,+10% jump height per level.
 travel.zipline_grip,travel,0,2,Zipline Grip,2,travel.comfy_boots 3,al 25; cu 10 2-2,zipline.speed add_pct 0.30; zipline.any_weapon flag [0 1],+30% zipline speed per level. Level 2: fire any weapon while riding.
-travel.jetpack,travel,1,0,Milk-Can Jetpack,1,,,jetpack.owned flag,Grandpa's jetpack. Free after wave 2 of your first run; hold Jump in the air.
+travel.jetpack,travel,1,0,Milk-Can Jetpack,1,,al 40; cu 15,jetpack.owned flag,"Build Grandpa's jetpack at the shed for 40 Al and 15 Cu. Available starting wave 3; hold Jump in the air."
 travel.fuel_tank,travel,1,1,Fuel Tank,10,travel.jetpack,al_to_pc 15,jetpack.flight_time mul 1.2,x1.2 flight time per level (compounding).
 travel.quick_refill,travel,2,1,Quick Refill,8,travel.jetpack,al_to_au 12,jetpack.recharge_speed add_pct 0.15; jetpack.recharge_delay flat [0 0 0 -0.25 -0.25 -0.25 -0.25 -0.25],+15% recharge speed per level. Level 4 also cuts the recharge delay by 0.25 s.
 travel.thrusters,travel,1,2,Thrusters,5,travel.fuel_tank 2,al_cu 20,jetpack.climb_rate add_pct 0.08; jetpack.air_speed add_pct 0.08,+8% jetpack climb rate and air speed per level.

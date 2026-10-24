@@ -3,6 +3,14 @@
 [ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="1_ba2w0"]
 [ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="2_imx8d"]
 [ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="3_if0lu"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="4_cost"]
+
+[sub_resource type="Resource" id="Resource_cost"]
+script = ExtResource("4_cost")
+parts = Array[StringName]([&"al", &"cu"])
+bases = PackedFloat32Array(40, 15)
+first_levels = PackedInt32Array(1, 1)
+last_levels = PackedInt32Array(1, 1)
 
 [sub_resource type="Resource" id="Resource_hlbsu"]
 script = ExtResource("1_ba2w0")
@@ -15,6 +23,7 @@ per_level = PackedFloat32Array()
 script = ExtResource("3_if0lu")
 id = &"travel.jetpack"
 display_name = "Milk-Can Jetpack"
-description = "Grandpa's jetpack. Free after wave 2 of your first run; hold Jump in the air."
+description = "Build Grandpa's jetpack at the shed for 40 Al and 15 Cu. Available starting wave 3; hold Jump in the air."
+cost_curve = SubResource("Resource_cost")
 effects = Array[ExtResource("1_ba2w0")]([SubResource("Resource_hlbsu")])
 board_position = Vector2i(1, 0)

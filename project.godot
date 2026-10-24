@@ -26,10 +26,6 @@ StatService="*res://scripts/autoload/stat_service.gd"
 SaveManager="*res://scripts/autoload/save_manager.gd"
 AudioDirector="*res://scripts/autoload/audio_director.gd"
 
-[audio]
-
-buses/default_bus_layout="res://default_bus_layout.tres"
-
 [debug]
 
 gdscript/warnings/untyped_declaration=1
@@ -40,10 +36,15 @@ window/size/viewport_width=1600
 window/size/viewport_height=900
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[gui]
+
+theme/custom_font="res://assets/fonts/fredoka_semibold.tres"
 
 [input]
 
@@ -212,18 +213,14 @@ weapon_6={
 3d_physics/layer_9="Projectiles"
 3d_physics/layer_10="CameraCollision"
 
-[gui]
+[navigation]
 
-theme/custom_font="res://assets/fonts/fredoka_semibold.tres"
+3d/default_cell_height=0.05
 
 [physics]
 
 3d/physics_engine="Jolt Physics"
 common/physics_interpolation=true
-
-[navigation]
-
-3d/default_cell_height=0.05
 
 [rendering]
 

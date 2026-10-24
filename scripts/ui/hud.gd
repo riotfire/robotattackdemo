@@ -36,8 +36,23 @@ var _weapon_wheel: WeaponWheel
 var _game_over_panel: PanelContainer
 var _game_over_label: Label
 var _help_label: Label
-
-
+var _tutorial_lesson: Label
+var _tutorial_action: String = ""
+var _silo_alert: PanelContainer
+var _fps_label: Label
+var _fps_refresh_left: float = 0.0
+var _silo_alert_title: Label
+var _silo_alert_detail: Label
+var _silo_alert_style: StyleBoxFlat
+var _silo_hit_left: float = 0.0
+var _silo_alarm_cooldown: float = 0.0
+var _theft_explained: bool = false
+var _sack_explained: bool = false
+var _grain_return_explained: bool = false
+var _build_choice_prompted: bool = false
+const SILO_HIT_HOLD: float = 5.0
+const SILO_ALARM_COOLDOWN: float = 9.0
+const SILO_REMOTE_DISTANCE: float = 15.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build()
@@ -45,6 +60,12 @@ func _ready() -> void:
 	EventBus.game_over.connect(_on_game_over)
 	EventBus.player_registered.connect(_on_player_registered)
 	EventBus.family_revealed.connect(_on_family_revealed)
+	EventBus.grain_stolen.connect(_on_grain_stolen)
+	EventBus.robot_destroyed.connect(_on_robot_destroyed)
+	EventBus.grain_returned.connect(_on_grain_returned)
+	EventBus.silo_damaged.connect(_on_silo_damaged)
+	EventBus.wave_phase_changed.connect(_on_wave_phase_changed)
+	EventBus.upgrade_purchased.connect(_on_upgrade_purchased)
 	for player in GameState.players:
 		_on_player_registered(player)
 
@@ -60,14 +81,82 @@ func show_message(text: String, duration: float = 2.5) -> void:
 	_toast_left = duration
 
 
+## A short explanation above the normal HUD. Actions and hold progress stay in their usual HUD positions.
+func set_tutorial_lesson(text: String) -> void:
+	_tutorial_lesson.text = text
+	_tutorial_lesson.visible = not text.is_empty()
+
+
+func set_tutorial_action(text: String) -> void:
+	_tutorial_action = text
+
+
+func _on_grain_stolen(_amount: float, _thief: Node3D) -> void:
+	if not _theft_explained:
+		_theft_explained = true
+		show_message("That robot stole grain! Pop it to drop the sack.", 4.0)
+
+
+func _on_robot_destroyed(robot: Node3D, _killer: Node) -> void:
+	if not _sack_explained and robot is Robot and (robot as Robot).sack_amount > 0.0:
+		_sack_explained = true
+		show_message("It dropped the sack. Walk over it to return grain.", 4.0)
+
+
+func _on_grain_returned(_amount: float) -> void:
+	if _sack_explained and not _grain_return_explained:
+		_grain_return_explained = true
+		show_message("Grain returned to the silo.", 2.5)
+
+
+func _on_silo_damaged(_amount: float, _at_position: Vector3) -> void:
+	if (director != null and director.phase == WaveDirector.Phase.TUTORIAL) or GameState.is_game_over:
+		return
+	_silo_hit_left = SILO_HIT_HOLD
+	if _silo_alarm_cooldown > 0.0 or _player == null or not is_instance_valid(_player):
+		return
+	var silo := GameState.silo
+	if silo != null and silo.distance_to_wall(_player.global_position) >= SILO_REMOTE_DISTANCE:
+		AudioDirector.play_cue(&"silo_alarm")
+		_silo_alarm_cooldown = SILO_ALARM_COOLDOWN
+
+
+func _on_wave_phase_changed(phase: int, wave: int) -> void:
+	if phase == WaveDirector.Phase.INTERMISSION and wave == 2 and not _build_choice_prompted:
+		_build_choice_prompted = true
+		set_tutorial_lesson("The shed is open. Spend robot parts on what you need:\nwrench power, a pistol for range, repairs/defense, or speed.")
+	elif wave >= 2 and phase != WaveDirector.Phase.INTERMISSION and _build_choice_prompted:
+		set_tutorial_lesson("")
+
+
+func _on_upgrade_purchased(_id: StringName, _level: int) -> void:
+	if _build_choice_prompted and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
+		set_tutorial_lesson("")
+
+
 func toggle_help() -> void:
 	_help_label.visible = not _help_label.visible
 
 
+## Shows or hides the FPS counter in the top-right corner (the pause menu owns the setting).
+func set_fps_visible(on: bool) -> void:
+	_fps_label.visible = on
+	_fps_refresh_left = 0.0
+
+
+func _update_fps(delta: float) -> void:
+	_fps_refresh_left -= delta
+	if _fps_label.visible and _fps_refresh_left <= 0.0:
+		_fps_refresh_left = 0.25
+		_fps_label.text = "%d FPS" % Engine.get_frames_per_second()
+
+
 func _process(delta: float) -> void:
+	_update_fps(delta)
 	_update_wave()
 	_update_silo()
 	_update_player()
+	_update_silo_alert(delta)
 	_toast_left -= delta
 	_toast_label.visible = _toast_left > 0.0
 	_name_card_left -= delta
@@ -106,6 +195,13 @@ func _update_wave() -> void:
 			_phase_label.text = "CLEARED!"
 		WaveDirector.Phase.GAME_OVER:
 			_phase_label.text = "GAME OVER"
+		WaveDirector.Phase.TUTORIAL:
+			_phase_label.text = "MORNING CHORES"
+	if director.phase == WaveDirector.Phase.TUTORIAL:
+		_wave_label.text = "PREPARE FOR WAVE 1"
+		_robots_label.text = "Defend the silo"
+		_family_label.text = ""
+		return
 	var to_come := director.robots_to_come()
 	var thieves := get_tree().get_nodes_in_group(Robot.THIEF_GROUP).size()
 	_robots_label.text = "Robots %d%s%s" % [director.live_robot_count(), "  +%d coming" % to_come if to_come > 0 else "",
@@ -124,8 +220,48 @@ func _update_silo() -> void:
 	var cracks := silo.get_cracks().size()
 	var leak := silo.total_leak_rate()
 	_grain_label.text = "GRAIN  %d bu" % ceili(silo.grain) + ("   leaking %.1f/s  (%d crack%s)" % [leak, cracks, "" if cracks == 1 else "s"] if cracks > 0 else "")
-	var critical := silo.damage_state() == 4
-	_structure_bar.modulate = Color(1.0, 0.6, 0.6) if critical and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else Color.WHITE
+	var warning := silo.damage_state() == 4 or _silo_hit_left > 0.0
+	_structure_bar.modulate = Color(1.0, 0.6, 0.6) if warning and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else Color.WHITE
+
+
+func _update_silo_alert(delta: float) -> void:
+	_silo_hit_left = maxf(0.0, _silo_hit_left - delta)
+	_silo_alarm_cooldown = maxf(0.0, _silo_alarm_cooldown - delta)
+	var silo := GameState.silo
+	if (director != null and director.phase == WaveDirector.Phase.TUTORIAL) or GameState.is_game_over \
+			or silo == null or _player == null or not is_instance_valid(_player):
+		_silo_alert.visible = false
+		_tutorial_lesson.visible = not _tutorial_lesson.text.is_empty()
+		return
+	var distance := maxf(0.0, silo.distance_to_wall(_player.global_position))
+	var under_attack := _silo_hit_left > 0.0
+	var leaking_away := silo.total_leak_rate() > 0.0 and distance >= SILO_REMOTE_DISTANCE
+	_silo_alert.visible = under_attack or leaking_away
+	_tutorial_lesson.visible = not _tutorial_lesson.text.is_empty() and not _silo_alert.visible
+	if not _silo_alert.visible:
+		return
+	_silo_alert_title.text = "SILO UNDER ATTACK!" if under_attack else "SILO LEAKING GRAIN"
+	_silo_alert_style.bg_color = Color(0.48, 0.08, 0.07, 0.94) if under_attack else Color(0.36, 0.24, 0.06, 0.92)
+	_silo_alert_style.border_color = Color(1.0, 0.42, 0.24) if under_attack else Color(1.0, 0.79, 0.33)
+	var direction := _silo_direction(silo.global_position - _player.global_position)
+	var location := "Defend the silo" if distance < SILO_REMOTE_DISTANCE else "Silo %s · %d m away" % [direction, roundi(distance)]
+	_silo_alert_detail.text = "%s · %d%% Structure%s" % [location, roundi(silo.structure_fraction() * 100.0),
+		" · seal the leak" if not under_attack else ""]
+	_silo_alert.modulate.a = 0.85 + 0.15 * sin(Time.get_ticks_msec() * 0.014) if under_attack else 1.0
+
+
+func _silo_direction(offset: Vector3) -> String:
+	offset.y = 0.0
+	if offset.length_squared() < 0.001:
+		return "ahead"
+	var toward := offset.normalized()
+	var forward := _player.camera_rig.flat_forward()
+	var right := _player.camera_rig.flat_basis().x
+	var ahead := toward.dot(forward)
+	var sideways := toward.dot(right)
+	if absf(ahead) >= absf(sideways):
+		return "ahead" if ahead >= 0.0 else "behind you"
+	return "to your right" if sideways >= 0.0 else "to your left"
 
 
 func _update_player() -> void:
@@ -168,6 +304,8 @@ func _update_player() -> void:
 		prompt = "W/S climb   SPACE let go"
 	elif _player.state == Farmer.State.ZIPLINING:
 		prompt = "SPACE: let go of the zipline"
+	if prompt.is_empty():
+		prompt = _tutorial_action
 	_prompt_label.text = prompt
 
 
@@ -260,6 +398,8 @@ func _build() -> void:
 
 	var top_right := _vbox(root, Control.PRESET_TOP_RIGHT, Vector2(-24, 20))
 	top_right.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_fps_label = _label(top_right, 16, Color(0.7, 0.95, 0.7))
+	_fps_label.visible = bool(SaveManager.settings.get("show_fps", false))
 	_parts_label = _label(top_right, 18)
 	_parts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
@@ -284,6 +424,33 @@ func _build() -> void:
 	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(_toast_label, Control.PRESET_CENTER_TOP, Rect2(-600, 130, 1200, 40))
 	_toast_label.visible = false
+
+	_tutorial_lesson = _label(root, 22, Color(1.0, 0.96, 0.82))
+	_tutorial_lesson.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_tutorial_lesson.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_tutorial_lesson.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_tutorial_lesson.add_theme_color_override(&"font_shadow_color", Color(0.08, 0.05, 0.03, 0.95))
+	_tutorial_lesson.add_theme_constant_override(&"shadow_offset_x", 2)
+	_tutorial_lesson.add_theme_constant_override(&"shadow_offset_y", 2)
+	_place(_tutorial_lesson, Control.PRESET_CENTER_TOP, Rect2(-440, 24, 880, 76))
+	_tutorial_lesson.visible = false
+
+	_silo_alert = PanelContainer.new()
+	_silo_alert.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_silo_alert_style = StyleBoxFlat.new()
+	_silo_alert_style.set_corner_radius_all(12)
+	_silo_alert_style.set_border_width_all(3)
+	_silo_alert_style.set_content_margin_all(12)
+	_silo_alert.add_theme_stylebox_override(&"panel", _silo_alert_style)
+	var silo_alert_text := VBoxContainer.new()
+	_silo_alert.add_child(silo_alert_text)
+	_silo_alert_title = _label(silo_alert_text, 26, Color(1.0, 0.96, 0.84))
+	_silo_alert_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_silo_alert_detail = _label(silo_alert_text, 17, Color(1.0, 0.94, 0.82))
+	_silo_alert_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	root.add_child(_silo_alert)
+	_place(_silo_alert, Control.PRESET_CENTER_TOP, Rect2(-275, 24, 550, 82))
+	_silo_alert.visible = false
 
 	_name_card = PanelContainer.new()
 	_name_card.mouse_filter = Control.MOUSE_FILTER_IGNORE

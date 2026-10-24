@@ -13,7 +13,9 @@ var profile_path: String = DEFAULT_PROFILE_PATH
 var records: Dictionary = {"best_wave": 0, "best_full_harvest_wave": 0, "robots_popped": {}}
 ## [{code, name, wave, kills}], newest last.
 var almanac: Array[Dictionary] = []
-var settings: Dictionary = {"mouse_sensitivity": 0.0022, "invert_y": false, "reduce_motion": false}
+## Level 0 "Morning Chores" has been finished (or skipped) once; later runs open on the normal intermission.
+var tutorial_completed: bool = false
+var settings: Dictionary = {"mouse_sensitivity": 0.0022, "invert_y": false, "reduce_motion": false, "show_fps": false}
 
 
 func _ready() -> void:
@@ -77,6 +79,7 @@ func to_dictionary() -> Dictionary:
 		"unlocks": {"jetpack": GameState.jetpack_unlocked},
 		"records": records.duplicate(true),
 		"almanac": almanac.duplicate(true),
+		"tutorial_completed": tutorial_completed,
 		"cosmetics": {"hat": "straw", "unlocked": ["straw"]},
 	}
 
@@ -90,6 +93,9 @@ func apply(data: Dictionary) -> void:
 	var unlocks: Dictionary = data.get("unlocks", {})
 	if bool(unlocks.get("jetpack", false)):
 		GameState.jetpack_unlocked = true
+	# Profiles from before Level 0 existed belong to someone who has already played.
+	var has_played := int((data.get("records", {}) as Dictionary).get("best_wave", 0)) > 0
+	tutorial_completed = bool(data.get("tutorial_completed", has_played))
 	records = (data.get("records", {}) as Dictionary).duplicate(true)
 	for key: String in ["best_wave", "best_full_harvest_wave"]:
 		records[key] = int(records.get(key, 0))
@@ -184,4 +190,5 @@ func _default_profile() -> Dictionary:
 		"unlocks": {"jetpack": false},
 		"records": {"best_wave": 0, "best_full_harvest_wave": 0, "robots_popped": {}},
 		"almanac": [],
+		"tutorial_completed": false,
 	}

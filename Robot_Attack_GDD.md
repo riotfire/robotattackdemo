@@ -125,12 +125,12 @@ flowchart TD
 
 ### 2.4 The first 10 minutes (onboarding)
 
-1. **Morning Chores (tutorial, about 90 s, skippable on later runs):** walk to the silo, patch one small crack with the wrench, bonk a practice "Dummy-bot" on a hay bale, climb the silo ladder to the first catwalk.
+1. **Morning Chores (first-run tutorial, untimed):** patch a silo leak, bonk a practice Dummy-Bot with the wrench, and heal on the porch. Then intercept one slow, real Nibbler with the wrench; if it reaches the silo, stop it and repair the crack it caused. Climb the silo catwalk to see the attack lanes, then ring the bell. Short cues explain why each action matters.
 2. **Siren:** the hand-cranked siren on the water tower winds up. The HUD shows "INCOMING" with the first family's name card.
 3. **Wave 1 (45 s):** only Scout melee robots (Nibblers). The wrench is enough.
-4. **Intermission 1:** the shed pegboard glows. Buying the **Pistol** is the obvious first purchase (affordable after wave 1).
+4. **Intermission 1:** the shed pegboard opens for the first build choice. Spend earned parts on a stronger wrench, the **Rivet Pistol** for range, repair and defense, or movement. The player is free to follow their play style; the pistol is built later rather than handed out in the prologue.
 5. **Wave 2:** Grunt melee trios (Clankers) appear.
-6. **The Jetpack Moment:** after wave 2, a short scene shows Grandpa's **Milk-Can Jetpack** falling off a shelf in the shed. It is free and unlocked forever. A prompt teaches jetpack hops onto the tool shed and stable roofs.
+6. **The Jetpack Moment:** starting wave 3, Grandpa's **Milk-Can Jetpack** can be built at the shed for 40 Al and 15 Cu. A prompt teaches jetpack hops onto the tool shed and stable roofs.
 7. **Waves 3–5:** short-range robots appear. Wave 5 is the first **Big Haul** with a Foreman (a Thumper heavy). Phase 1 complete.
 
 ---
@@ -290,7 +290,7 @@ Positions are in meters from the silo (x = east, y = north).
 | **Ziplines** | Always | **Z1:** silo dome (22 m) → barn roof (13 m). **Z2:** water tower top (19 m) → silo upper catwalk (16 m). **Z3:** barn roof (13 m) → stables roof (6 m). 12 m/s. You can fire the pistol while riding. |
 | **Hay-bale stairs** | Always | Stacked bales next to the stables and chicken house. They give early-game access to low roofs. |
 | **Vine trellis** | Always | Home porch roof. |
-| **Jetpack** | Unlocked free after wave 2 | Base reach about 8.5 m. Upgrades extend it to every roof (see 5.4). |
+| **Jetpack** | Build at the shed for 40 Al + 15 Cu from wave 3 | Base reach about 8.5 m. Upgrades extend it to every roof (see 5.4). |
 
 **Design rule:** every perch has at least two ways up and one fast way down. Robots can't climb. Ranged robots and flying Buzzers are the counter to camping.
 
@@ -371,7 +371,7 @@ All bindings are remappable. Gamepad gets aim assist (slowdown plus light magnet
 
 ### 5.4 The Milk-Can Jetpack
 
-**Unlock:** free, after wave 2 of the very first run ("The Jetpack Moment"). It is kept forever.
+**Unlock:** build at the shed for 40 Al + 15 Cu, available from wave 3. It is kept forever.
 
 **Early role:** traversal. It gets you onto low roofs and catwalks quickly. **Later role:** attack advantage through hovering, air dashes, aerial damage bonuses, ground pounds and afterburner damage (see the Travel branch in 13.4).
 
@@ -662,7 +662,7 @@ Robots are **modular kit-bashes**, not unique meshes:
 ```mermaid
 stateDiagram-v2
     [*] --> Intermission
-    Intermission --> Siren: T-10 s, or player rings the bell early
+    Intermission --> Siren: T-3 s, or player rings the bell early
     Siren --> Spawning: T-0
     Spawning --> MopUp: spawn window ends
     MopUp --> Cleared: last robot destroyed
@@ -675,7 +675,7 @@ stateDiagram-v2
 | Phase of a wave | Rules |
 |---|---|
 | **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. (Builds use 120 s until the Hub pegboard and pinned-goals quick-buy exist; see `docs/ROADMAP.md`, decision D1.) |
-| **Siren (last 10 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. |
+| **Siren (last 3 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. |
 | **Ring the bell early** | Hold Interact on the dinner bell (by the porch) or press the "Ready" button to jump straight to the siren. **Early Bird bonus:** +1 Aluminium per second skipped × (1 + wave/10). |
 | **Spawning** | The director spends the wave's threat budget over the spawn window. |
 | **Mop-up** | No new spawns. The wave ends when the last robot is destroyed. |
@@ -804,7 +804,7 @@ Each weapon or system has a base multiplier (Pistol ×1.0, Stun Gun ×1.3, Shotg
 
 | Milestone | Target playtime |
 |---|---|
-| First purchase (Pistol) | After wave 1 of run 1 |
+| First build choice (melee, range, repair/defense, or speed) | After wave 1 of run 1 |
 | Something affordable in the shed | After almost every wave |
 | All 6 weapons unlocked | About 3–4 hours |
 | About 50% of pegboard levels | About 10–12 hours |
@@ -878,7 +878,7 @@ About **350 purchasable levels** in total, so the tree is long. With full persis
 | Comfy Boots | 5 | +3% run speed | — | Al → Cu |
 | Springy Soles | 3 | +10% jump height | Comfy Boots 2 | Al |
 | Zipline Grip | 2 | +30% zipline speed; level 2 lets you fire **any** weapon while ziplining | Comfy Boots 3 | Al / Cu |
-| **Milk-Can Jetpack** | Unlock | Free after wave 2 (first run) | — | — |
+| **Milk-Can Jetpack** | Unlock | 40 Al + 15 Cu; available from wave 3 | — | — |
 | Fuel Tank | 10 | ×1.20 flight time (compounding; see 5.4) | Jetpack | Al → PC |
 | Quick Refill | 8 | +15% recharge speed; level 4 also cuts recharge delay by 0.25 s | Jetpack | Al → Au |
 | Thrusters | 5 | +8% climb rate and air speed | Fuel Tank 2 | Al / Cu |
@@ -1659,7 +1659,7 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 **Assumptions made in this draft (easy to change):**
 
 1. **"Phase" = 5 waves.** The score is waves survived, displayed as Phase.Wave, and every 5th wave is a Big Haul with a Foreman.
-2. **The jetpack is a free story unlock after wave 2**, rather than a purchase, to guarantee the early unlock.
+2. **The jetpack is a shed purchase from wave 3 onward**, costing 40 Al + 15 Cu.
 3. **The Chicken House restocks Egg Grenades.** This gives the coop a gameplay role beyond elevation.
 4. **Harvest Bonus grain** (+40 per wave cleared) exists so grain is a slow-burning threat rather than a guaranteed end to every run.
 5. **A small fifth branch, FARMHAND** (magnet, scrap vac, luck, early bird, almanac), was added alongside Travel, Attack, Repair and Defend.
@@ -1682,7 +1682,7 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 | Constant | Value | Section |
 |---|---|---|
 | Intermission length | 30 s (builds use 120 s until M2-H3 and M2-G1; ROADMAP D1) | 11.1 |
-| Siren lead time | 10 s | 11.1 |
+| Siren lead time | 3 s | 11.1 |
 | Spawn window | min(45 + 7(w−1), 210) s | 11.3 |
 | Threat budget | 12 + 6·w^1.3 (×1.3 on Big Haul) | 11.4 |
 | Robot HP multiplier | 1 + 0.07(w−1) + 0.002(w−1)² | 11.5 |

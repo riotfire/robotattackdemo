@@ -10,6 +10,10 @@ extends CharacterBody3D
 enum State { GROUNDED, AIRBORNE, JETPACKING, CLIMBING, MANTLING, ZIPLINING, DEAD }
 
 ## Collision layers the aim ray can hit: World, RobotHurtbox, Silo.
+const HURT_FLASH_SECONDS: float = 0.3
+const HURT_TINT := Color(1.0, 0.12, 0.1)
+## Metres the model jitters at the start of a hit.
+const HURT_SHAKE: float = 0.12
 const AIM_MASK: int = 1 | (1 << 4) | (1 << 5)
 
 @export var turn_speed: float = 14.0
@@ -29,6 +33,8 @@ var facing_yaw: float = 0.0
 
 var _combat_facing_left: float = 0.0
 var _hurt_flash_left: float = 0.0
+var _model_rest_position: Vector3
+var _rest_tints: Dictionary = {}
 var _since_damage: float = 99.0
 var _land_squash_left: float = 0.0
 var _pose_frame: int = 0
@@ -49,6 +55,12 @@ var _pose_frame: int = 0
 
 
 func _ready() -> void:
+	_model_rest_position = model.position
+	for node in model.find_children("*", "MeshInstance3D", true, false):
+		var mesh := node as MeshInstance3D
+		var rest: Variant = mesh.get_instance_shader_parameter(&"tint")
+		if rest is Color:
+			_rest_tints[mesh] = rest
 	add_to_group(&"players")
 	movement.setup(self)
 	repair.setup(self)
@@ -158,7 +170,7 @@ func take_damage(packet: DamagePacket) -> void:
 	armor -= absorbed
 	amount -= absorbed
 	if health.apply_damage(amount) > 0.0 or absorbed > 0.0:
-		_hurt_flash_left = 0.2
+		_hurt_flash_left = HURT_FLASH_SECONDS
 	if packet.knockback != Vector3.ZERO and state in [State.GROUNDED, State.AIRBORNE, State.JETPACKING]:
 		movement.add_knockback(packet.knockback)
 
@@ -217,7 +229,20 @@ func _update_model(delta: float, wish: Vector3) -> void:
 	model.rotation.y = lerp_angle(model.rotation.y, facing_yaw, 1.0 - exp(-turn_speed * delta))
 	_jetpack_can.visible = GameState.jetpack_unlocked
 	_jet_flame.visible = jetpack.is_thrusting
-	_body_mesh.set_instance_shader_parameter(&"emission_strength", 0.8 if _hurt_flash_left > 0.0 else 0.0)
+	_update_hurt_feedback()
+
+
+## Taking a hit flashes the body red and shakes the model, both fading over HURT_FLASH_SECONDS.
+func _update_hurt_feedback() -> void:
+	var hurt := _hurt_flash_left > 0.0
+	for mesh: MeshInstance3D in _rest_tints:
+		mesh.set_instance_shader_parameter(&"tint", HURT_TINT if hurt else _rest_tints[mesh])
+	_body_mesh.set_instance_shader_parameter(&"emission_strength", 0.7 if hurt else 0.0)
+	if hurt:
+		var strength := HURT_SHAKE * _hurt_flash_left / HURT_FLASH_SECONDS
+		model.position = _model_rest_position + Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0)) * strength
+	else:
+		model.position = _model_rest_position
 
 
 ## Clay squash on a hard landing (GDD 3.4: purely visual).

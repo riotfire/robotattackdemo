@@ -1,17 +1,17 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c7xaacyro5ndq"]
 
-[ext_resource type="Script" path="res://scripts/player/farmer.gd" id="1_farmer"]
-[ext_resource type="Script" path="res://scripts/components/input_router.gd" id="2_input"]
-[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
-[ext_resource type="Script" path="res://scripts/components/jetpack.gd" id="4_jetpack"]
-[ext_resource type="Script" path="res://scripts/player/farmer_camera.gd" id="5_camera"]
-[ext_resource type="Script" path="res://scripts/weapons/wrench.gd" id="6_wrench"]
-[ext_resource type="Script" path="res://scripts/weapons/pistol.gd" id="7_pistol"]
+[ext_resource type="Script" uid="uid://dtk7mckg3ad8o" path="res://scripts/player/farmer.gd" id="1_farmer"]
+[ext_resource type="Script" uid="uid://c36cef5f5qlxj" path="res://scripts/components/input_router.gd" id="2_input"]
+[ext_resource type="Script" uid="uid://hl8qj4txtjjd" path="res://scripts/components/health_component.gd" id="3_health"]
+[ext_resource type="Script" uid="uid://d3ii8xyd04gv6" path="res://scripts/components/jetpack.gd" id="4_jetpack"]
+[ext_resource type="Script" uid="uid://bsv8sps5nixiw" path="res://scripts/player/farmer_camera.gd" id="5_camera"]
+[ext_resource type="Script" uid="uid://foqypsyqr5kv" path="res://scripts/weapons/wrench.gd" id="6_wrench"]
+[ext_resource type="Script" uid="uid://4vk8ckr03eb4" path="res://scripts/weapons/pistol.gd" id="7_pistol"]
 [ext_resource type="Material" path="res://shaders/clay_material.tres" id="8_clay"]
-[ext_resource type="Script" path="res://scripts/player/farmer_movement.gd" id="9_movement"]
-[ext_resource type="Script" path="res://scripts/player/farmer_repair.gd" id="10_repair"]
-[ext_resource type="Script" path="res://scripts/player/farmer_interaction.gd" id="11_interaction"]
-[ext_resource type="Script" path="res://scripts/weapons/weapon_holder.gd" id="12_holder"]
+[ext_resource type="Script" uid="uid://brwkuawenorvf" path="res://scripts/player/farmer_movement.gd" id="9_movement"]
+[ext_resource type="Script" uid="uid://b0lpjhnhcjtcy" path="res://scripts/player/farmer_repair.gd" id="10_repair"]
+[ext_resource type="Script" uid="uid://bnw0ni0g1rerw" path="res://scripts/player/farmer_interaction.gd" id="11_interaction"]
+[ext_resource type="Script" uid="uid://bi82d23nselt6" path="res://scripts/weapons/weapon_holder.gd" id="12_holder"]
 [ext_resource type="Resource" path="res://data/weapons/wrench.tres" id="13_wrench_data"]
 [ext_resource type="Resource" path="res://data/weapons/pistol.tres" id="14_pistol_data"]
 
@@ -19,55 +19,34 @@
 radius = 0.4
 height = 1.7
 
-[sub_resource type="SphereShape3D" id="Shape_camera"]
-radius = 0.25
-
 [sub_resource type="StandardMaterial3D" id="Mat_overalls"]
 albedo_color = Color(0.27, 0.42, 0.72, 1)
 roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_skin"]
-albedo_color = Color(0.96, 0.76, 0.6, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_straw"]
-albedo_color = Color(0.93, 0.8, 0.45, 1)
-roughness = 0.95
-
-[sub_resource type="StandardMaterial3D" id="Mat_goggles"]
-albedo_color = Color(0.2, 0.2, 0.22, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_can"]
-albedo_color = Color(0.78, 0.8, 0.84, 1)
-metallic = 0.6
-roughness = 0.4
-
-[sub_resource type="StandardMaterial3D" id="Mat_flame"]
-shading_mode = 0
-albedo_color = Color(1, 0.6, 0.15, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_wrench"]
-albedo_color = Color(0.85, 0.15, 0.12, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="Mat_pistol"]
-albedo_color = Color(0.35, 0.36, 0.4, 1)
-metallic = 0.5
-roughness = 0.5
 
 [sub_resource type="CapsuleMesh" id="Mesh_body"]
 material = SubResource("Mat_overalls")
 radius = 0.38
 height = 1.2
 
+[sub_resource type="StandardMaterial3D" id="Mat_skin"]
+albedo_color = Color(0.96, 0.76, 0.6, 1)
+roughness = 0.9
+
 [sub_resource type="SphereMesh" id="Mesh_head"]
 material = SubResource("Mat_skin")
 radius = 0.3
 height = 0.6
 
+[sub_resource type="StandardMaterial3D" id="Mat_goggles"]
+albedo_color = Color(0.2, 0.2, 0.22, 1)
+
 [sub_resource type="BoxMesh" id="Mesh_goggles"]
 material = SubResource("Mat_goggles")
 size = Vector3(0.44, 0.12, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_straw"]
+albedo_color = Color(0.93, 0.8, 0.45, 1)
+roughness = 0.95
 
 [sub_resource type="CylinderMesh" id="Mesh_brim"]
 material = SubResource("Mat_straw")
@@ -81,17 +60,30 @@ top_radius = 0.22
 bottom_radius = 0.27
 height = 0.22
 
+[sub_resource type="StandardMaterial3D" id="Mat_can"]
+albedo_color = Color(0.78, 0.8, 0.84, 1)
+metallic = 0.6
+roughness = 0.4
+
 [sub_resource type="CylinderMesh" id="Mesh_can"]
 material = SubResource("Mat_can")
 top_radius = 0.17
 bottom_radius = 0.2
 height = 0.62
 
+[sub_resource type="StandardMaterial3D" id="Mat_flame"]
+shading_mode = 0
+albedo_color = Color(1, 0.6, 0.15, 1)
+
 [sub_resource type="CylinderMesh" id="Mesh_flame"]
 material = SubResource("Mat_flame")
 top_radius = 0.14
 bottom_radius = 0.0
 height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Mat_wrench"]
+albedo_color = Color(0.85, 0.15, 0.12, 1)
+roughness = 0.7
 
 [sub_resource type="BoxMesh" id="Mesh_wrench_handle"]
 material = SubResource("Mat_wrench")
@@ -101,137 +93,144 @@ size = Vector3(0.08, 0.08, 0.7)
 material = SubResource("Mat_wrench")
 size = Vector3(0.24, 0.1, 0.16)
 
+[sub_resource type="StandardMaterial3D" id="Mat_pistol"]
+albedo_color = Color(0.35, 0.36, 0.4, 1)
+metallic = 0.5
+roughness = 0.5
+
 [sub_resource type="BoxMesh" id="Mesh_pistol"]
 material = SubResource("Mat_pistol")
 size = Vector3(0.12, 0.16, 0.42)
 
-[node name="Farmer" type="CharacterBody3D"]
+[sub_resource type="SphereShape3D" id="Shape_camera"]
+radius = 0.25
+
+[node name="Farmer" type="CharacterBody3D" unique_id=1466899661]
 collision_layer = 2
 collision_mask = 33
 floor_snap_length = 0.2
 script = ExtResource("1_farmer")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=887019430]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 shape = SubResource("Shape_body")
 
-[node name="Model" type="Node3D" parent="."]
+[node name="Model" type="Node3D" parent="." unique_id=1532165445]
 
-[node name="Pose" type="Node3D" parent="Model"]
+[node name="Pose" type="Node3D" parent="Model" unique_id=1754754858]
 
-[node name="Body" type="MeshInstance3D" parent="Model/Pose"]
+[node name="Body" type="MeshInstance3D" parent="Model/Pose" unique_id=155447446]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
-mesh = SubResource("Mesh_body")
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.27, 0.42, 0.72, 1)
+mesh = SubResource("Mesh_body")
 
-[node name="Head" type="MeshInstance3D" parent="Model/Pose"]
+[node name="Head" type="MeshInstance3D" parent="Model/Pose" unique_id=1797204943]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48, 0)
-mesh = SubResource("Mesh_head")
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.96, 0.76, 0.6, 1)
+mesh = SubResource("Mesh_head")
 
-[node name="Goggles" type="MeshInstance3D" parent="Model/Pose"]
+[node name="Goggles" type="MeshInstance3D" parent="Model/Pose" unique_id=2118077838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53, -0.25)
-mesh = SubResource("Mesh_goggles")
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.2, 0.2, 0.22, 1)
+mesh = SubResource("Mesh_goggles")
 
-[node name="HatBrim" type="MeshInstance3D" parent="Model/Pose"]
+[node name="HatBrim" type="MeshInstance3D" parent="Model/Pose" unique_id=1951851422]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.72, 0)
+material_override = ExtResource("8_clay")
+instance_shader_parameters/tint = Color(0.93, 0.8, 0.45, 1)
 mesh = SubResource("Mesh_brim")
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.93, 0.8, 0.45, 1)
 
-[node name="HatCrown" type="MeshInstance3D" parent="Model/Pose"]
+[node name="HatCrown" type="MeshInstance3D" parent="Model/Pose" unique_id=183394670]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.84, 0)
-mesh = SubResource("Mesh_crown")
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.93, 0.8, 0.45, 1)
+mesh = SubResource("Mesh_crown")
 
-[node name="JetpackCan" type="Node3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.38)
+[node name="JetpackCan" type="Node3D" parent="Model" unique_id=1331171944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.38)
 visible = false
 
-[node name="Can" type="MeshInstance3D" parent="Model/JetpackCan"]
-mesh = SubResource("Mesh_can")
+[node name="Can" type="MeshInstance3D" parent="Model/JetpackCan" unique_id=1157207899]
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.78, 0.8, 0.84, 1)
+mesh = SubResource("Mesh_can")
 
-[node name="Flame" type="MeshInstance3D" parent="Model/JetpackCan"]
+[node name="Flame" type="MeshInstance3D" parent="Model/JetpackCan" unique_id=213233383]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
 visible = false
 cast_shadow = 0
 mesh = SubResource("Mesh_flame")
 
-[node name="WeaponHolder" type="Node3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.0, -0.25)
+[node name="WeaponHolder" type="Node3D" parent="Model" unique_id=328672994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1, -0.25)
 script = ExtResource("12_holder")
 
-[node name="Wrench" type="Node3D" parent="Model/WeaponHolder"]
+[node name="Wrench" type="Node3D" parent="Model/WeaponHolder" unique_id=1421271338]
 script = ExtResource("6_wrench")
 data = ExtResource("13_wrench_data")
 
-[node name="Pivot" type="Node3D" parent="Model/WeaponHolder/Wrench"]
+[node name="Pivot" type="Node3D" parent="Model/WeaponHolder/Wrench" unique_id=751925712]
 
-[node name="Handle" type="MeshInstance3D" parent="Model/WeaponHolder/Wrench/Pivot"]
+[node name="Handle" type="MeshInstance3D" parent="Model/WeaponHolder/Wrench/Pivot" unique_id=784771878]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+material_override = ExtResource("8_clay")
+instance_shader_parameters/tint = Color(0.85, 0.15, 0.12, 1)
 mesh = SubResource("Mesh_wrench_handle")
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.85, 0.15, 0.12, 1)
 
-[node name="Head" type="MeshInstance3D" parent="Model/WeaponHolder/Wrench/Pivot"]
+[node name="Head" type="MeshInstance3D" parent="Model/WeaponHolder/Wrench/Pivot" unique_id=253321309]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.66)
-mesh = SubResource("Mesh_wrench_head")
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.85, 0.15, 0.12, 1)
+mesh = SubResource("Mesh_wrench_head")
 
-[node name="Pistol" type="Node3D" parent="Model/WeaponHolder"]
+[node name="Pistol" type="Node3D" parent="Model/WeaponHolder" unique_id=89402330]
 script = ExtResource("7_pistol")
 data = ExtResource("14_pistol_data")
 
-[node name="Body" type="MeshInstance3D" parent="Model/WeaponHolder/Pistol"]
+[node name="Body" type="MeshInstance3D" parent="Model/WeaponHolder/Pistol" unique_id=1797413165]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
-mesh = SubResource("Mesh_pistol")
 material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.35, 0.36, 0.4, 1)
+mesh = SubResource("Mesh_pistol")
 
-[node name="Muzzle" type="Marker3D" parent="Model/WeaponHolder/Pistol"]
+[node name="Muzzle" type="Marker3D" parent="Model/WeaponHolder/Pistol" unique_id=634384161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.4)
 
-[node name="InputRouter" type="Node" parent="."]
+[node name="InputRouter" type="Node" parent="." unique_id=1097285340]
 script = ExtResource("2_input")
 
-[node name="Health" type="Node" parent="."]
+[node name="Health" type="Node" parent="." unique_id=1710343928]
 script = ExtResource("3_health")
-max_health = 100.0
 
-[node name="Jetpack" type="Node" parent="."]
+[node name="Jetpack" type="Node" parent="." unique_id=475542466]
 script = ExtResource("4_jetpack")
 
-[node name="Movement" type="Node" parent="."]
+[node name="Movement" type="Node" parent="." unique_id=1857324548]
 script = ExtResource("9_movement")
 
-[node name="Repair" type="Node" parent="."]
+[node name="Repair" type="Node" parent="." unique_id=406613685]
 script = ExtResource("10_repair")
 
-[node name="Interaction" type="Node" parent="."]
+[node name="Interaction" type="Node" parent="." unique_id=294967527]
 script = ExtResource("11_interaction")
 
-[node name="CameraRig" type="Node3D" parent="."]
+[node name="CameraRig" type="Node3D" parent="." unique_id=1505187782]
 top_level = true
 script = ExtResource("5_camera")
 
-[node name="Pitch" type="Node3D" parent="CameraRig"]
+[node name="Pitch" type="Node3D" parent="CameraRig" unique_id=1167996933]
 
-[node name="SpringArm3D" type="SpringArm3D" parent="CameraRig/Pitch"]
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraRig/Pitch" unique_id=155152368]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, 0)
 collision_mask = 545
 shape = SubResource("Shape_camera")
 spring_length = 3.2
 margin = 0.15
 
-[node name="Camera3D" type="Camera3D" parent="CameraRig/Pitch/SpringArm3D"]
+[node name="Camera3D" type="Camera3D" parent="CameraRig/Pitch/SpringArm3D" unique_id=1195853910]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.2)
 fov = 70.0
 far = 1000.0

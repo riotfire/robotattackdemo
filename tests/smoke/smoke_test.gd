@@ -5,7 +5,7 @@ extends Node
 ## Scrap Vac, the pegboard and save round-trip, the dinner bell, jetpack, ladder, zipline, the Foreman's
 ## slam and shockwave, the weapon wheel and mod hooks, debug keys, time of day and weather, and all three
 ## game-over conditions.
-## Uses its own fresh profile (user://smoke_test_profile_<pid>.json), never the player's.
+## Uses its own fresh profile in the system temp directory, never the player's.
 ## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
 ## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
 ## and refills its grain between sections, holds both at a 25% floor while waves play, and a run that ends
@@ -16,9 +16,8 @@ extends Node
 
 const MAIN_SCENE := "res://scenes/main/main.tscn"
 
-## One profile per process: every worktree of this project shares user://, so parallel runs would
-## otherwise overwrite and delete each other's save mid-run.
-var _profile: String = "user://smoke_test_profile_%d.json" % OS.get_process_id()
+## One profile per process, so parallel runs cannot overwrite or delete each other's save mid-run.
+var _profile: String = OS.get_temp_dir().path_join("smoke_test_profile_%d.json" % OS.get_process_id())
 var _main: Node
 var _director: WaveDirector
 var _farmer: Farmer
@@ -38,6 +37,8 @@ var _silo_floor: float = 0.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	SaveManager.use_profile(_profile, true)
+	# This test plays the waves, not Level 0 (tests/smoke/tutorial_test.gd covers that).
+	SaveManager.tutorial_completed = true
 	_main = (load(MAIN_SCENE) as PackedScene).instantiate()
 	_main.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(_main)
@@ -57,6 +58,7 @@ func _run() -> void:
 	_director = _main.get_node(^"WaveDirector") as WaveDirector
 	_pegboard = _main.get_node(^"Pegboard") as PegboardUI
 	_farmer = GameState.players[0] as Farmer
+	var hud := _main.get_node(^"HUD") as Hud
 	GameState.god_mode = true
 	EventBus.game_over.connect(_on_game_over)
 	_silo_floor = 0.25
@@ -83,7 +85,7 @@ func _run() -> void:
 	_section("Wave 1")
 	var siren_due := _director.time_left - _director.siren_lead_time
 	var t := await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SIREN, 40.0)
-	_check(absf(t - siren_due) < 0.5, "siren starts at T-10 (%.2f s left of the 30 s intermission)" % (_director.time_left))
+	_check(absf(t - siren_due) < 0.5, "siren starts at T-%d (%.2f s left of the 30 s intermission)" % [roundi(_director.siren_lead_time), _director.time_left])
 	_check(_director.active_lanes.size() == 2, "wave 1 uses 2 lanes %s" % [_director.active_lanes])
 	var family := _director.genome
 	_check(family != null and family.family_name.begins_with("The ") and family.family_code.length() == 6,
@@ -91,16 +93,34 @@ func _run() -> void:
 	_check(SaveManager.almanac.any(func(e: Dictionary) -> bool: return e.get("code") == family.family_code),
 			"family logged in the Almanac")
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
-	_check(absf(t - 10.0) < 0.5, "spawning starts 10 s after the siren (%.2f s)" % t)
+	_check(absf(t - _director.siren_lead_time) < 0.5, "spawning starts after the siren (%.2f s)" % t)
 	_check(_director.spawns_total == 9, "wave 1 buys 9 Nibblers with budget 18 (got %d)" % _director.spawns_total)
 	var first := await _first_robot(20.0)
 	if first != null:
 		var kit := first.get_node(^"Model/Pose/Kit")
 		_check(first.family_code == family.family_code and kit != null and kit.get_child_count() >= 10,
 				"robots are kit-bashed from the family genome (%d parts)" % (kit.get_child_count() if kit else 0))
+	_farmer.teleport_to(Vector3(-30.0, 0.3, 29.0))
+	await _frames(3)
+	_check(silo.distance_to_wall(_farmer.global_position) > Hud.SILO_REMOTE_DISTANCE,
+		"the farmer is away from the silo when the first hit lands")
+	var alarm_voice: int = AudioDirector.get(&"_next_sfx")
 
 	t = await _wait_until(func() -> bool: return silo.structure < silo.max_structure, 60.0)
 	_check(t >= 0.0, "Nibblers reach and damage the silo (first hit after %.1f s)" % t)
+	await _frames(2)
+	_check(hud._silo_alert.visible and hud._silo_alert_title.text == "SILO UNDER ATTACK!",
+		"an off-site hit raises a prominent silo warning")
+	_check("m away" in hud._silo_alert_detail.text and "Structure" in hud._silo_alert_detail.text,
+		"the warning gives distance and remaining Structure")
+	var alarm_player := AudioDirector.get_node("Sfx%d" % alarm_voice) as AudioStreamPlayer
+	_check(alarm_player.stream != null and alarm_player.stream.resource_path.ends_with("/silo_alarm.wav"),
+		"the first remote hit sounds a distinct alarm")
+	var voice_after_alarm: int = AudioDirector.get(&"_next_sfx")
+	var structure_after_alarm := silo.structure
+	await _wait_until(func() -> bool: return silo.structure < structure_after_alarm, 6.0)
+	_check(AudioDirector.get(&"_next_sfx") == voice_after_alarm,
+		"more hits in the same attack do not spam the alarm")
 	t = await _wait_until(func() -> bool: return silo.get_cracks().size() >= 1, 60.0)
 	_check(t >= 0.0, "a crack opens after 10%% Structure lost (structure %.0f)" % silo.structure)
 	await _test_theft()
@@ -121,10 +141,19 @@ func _run() -> void:
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(t >= 0.0 and _director.wave == 2, "back to intermission, now for wave 2")
 	_check(FileAccess.file_exists(_profile), "autosaved at the intermission start")
+	_check("pistol" in hud._tutorial_lesson.text.to_lower() and hud._silo_alert.visible,
+		"the repair warning takes priority over the first build choice")
+	_farmer.teleport_to(Vector3(-30.0, 0.3, 29.0))
+	await _frames(360)
+	_check(hud._silo_alert.visible and hud._silo_alert_title.text == "SILO LEAKING GRAIN",
+		"the warning stays as a quieter repair reminder while cracks leak")
 
 	_section("Repair")
 	await _test_repair()
 	_patch_up_silo()
+	await _frames(2)
+	_check(not hud._silo_alert.visible, "the silo warning clears after the leaks are repaired")
+	_check(hud._tutorial_lesson.visible, "the build choice returns once the silo is safe")
 
 	_section("Pegboard and save")
 	await _test_pegboard_and_save()
@@ -144,10 +173,20 @@ func _run() -> void:
 	_kill_all_robots()
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.CLEARED, 40.0)
 	_check(t >= 0.0, "wave 2 cleared")
-	_check(GameState.jetpack_unlocked, "jetpack unlocks after wave 2")
+	_check(not GameState.jetpack_unlocked, "the jetpack is still a later build choice after wave 2")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(_director.wave == 3, "intermission for wave 3")
 	_patch_up_silo()
+	var jetpack_cost := StatService.next_cost(&"travel.jetpack")
+	var jetpack_parts: Dictionary = {}
+	for part in jetpack_cost:
+		var missing: int = int(jetpack_cost[part]) - int(GameState.parts.get(part, 0))
+		if missing > 0:
+			jetpack_parts[part] = missing
+	if not jetpack_parts.is_empty():
+		GameState.add_parts(jetpack_parts)
+	_check(_pegboard.buy(&"travel.jetpack"), "the jetpack can be built from wave 3")
+	_check(GameState.jetpack_unlocked, "building the jetpack unlocks traversal")
 
 	_section("Traversal")
 	await _test_jetpack()
@@ -381,7 +420,7 @@ func _test_repair() -> void:
 	var crack_id := crack.get_instance_id()
 	Input.action_press(&"interact")
 	var t := await _wait_until(func() -> bool: return not silo.get_cracks().any(func(c: SiloCrack) -> bool: return c.get_instance_id() == crack_id),
-			maxf(15.0, 1.5 * pool / _farmer.repair.rate_now()))
+			maxf(5.0, 1.5 * crack.repair_seconds_left() / _farmer.repair.rate_now()))
 	Input.action_release(&"interact")
 	_check(t >= 0.0, "holding repair closes the crack (%.1f s for %.0f Structure)" % [t, pool])
 	_check(absf((leak_before - silo.total_leak_rate()) - crack_leak) < 0.01,
@@ -403,12 +442,13 @@ func _test_pegboard_and_save() -> void:
 	var short := 20 + 12 - GameState.parts[&"al"]
 	if short > 0:
 		GameState.add_parts({&"al": short})
-	_check(_pegboard.buy(&"attack.pistol"), "buy the Rivet Pistol for 20 Al")
+	_check(_pegboard.buy(&"travel.comfy_boots"), "Comfy Boots can be the first build choice")
+	_check(is_equal_approx(StatService.get_stat(&"player.run_speed", 7.0), 7.21), "run speed 7.0 -> %.2f m/s" % StatService.get_stat(&"player.run_speed", 7.0))
+	_check(not (_main.get_node(^"HUD") as Hud)._tutorial_lesson.visible, "the build guidance clears after a choice")
+	_check(_pegboard.buy(&"attack.pistol"), "build the Rivet Pistol later for 20 Al")
 	_check(_pistol().is_available() and _farmer.weapons.current == _pistol(), "the pistol is now equipped")
 	_check(not _pegboard.buy(&"attack.pistol"), "an unlock can't be bought twice")
 	_check(not _pegboard.buy(&"travel.fuel_tank"), "Fuel Tank stays locked until the jetpack is unlocked")
-	_check(_pegboard.buy(&"travel.comfy_boots"), "buy Comfy Boots level 1")
-	_check(is_equal_approx(StatService.get_stat(&"player.run_speed", 7.0), 7.21), "run speed 7.0 -> %.2f m/s" % StatService.get_stat(&"player.run_speed", 7.0))
 	_pegboard.close()
 	_check(not _pegboard.is_open and _farmer.input.enabled, "closing the pegboard gives control back")
 
@@ -652,7 +692,7 @@ func _patch_up_silo() -> void:
 	var grain := silo.grain
 	var cracks := silo.get_cracks().size()
 	for crack: SiloCrack in silo.get_cracks().duplicate():
-		silo.repair_crack(crack, crack.pool)
+		silo.repair_crack(crack, INF)
 	silo.add_grain(silo.max_grain)
 	print("  NOTE  patched up the silo between sections: %d cracks sealed, Structure %.0f -> %.0f, grain %.0f -> %.0f"
 			% [cracks, structure, silo.structure, grain, silo.grain])

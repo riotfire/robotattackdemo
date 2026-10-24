@@ -67,6 +67,18 @@ def music(notes: tuple[int, ...], *, bpm: int, pulse: float, bass: float, accent
     return bar, sample
 
 
+def silo_alarm(time: float) -> float:
+    """Two alternating warning notes with short attacks and tails."""
+    second_note = time >= 0.35
+    age = time - 0.35 if second_note else time
+    if age >= 0.30:
+        return 0.0
+    frequency = 560 if second_note else 740
+    envelope = min(1.0, age / 0.01) * min(1.0, (0.30 - age) / 0.09)
+    return (math.sin(TAU * frequency * age) * 0.30
+            + math.sin(TAU * frequency * 2 * age) * 0.08) * envelope
+
+
 def main() -> None:
     tracks = {
         "music_intermission": ((60, 64, 67, 64, 62, 65, 67, 65), 92, 0.025, 0.13, 0.01),
@@ -96,6 +108,9 @@ def main() -> None:
     write("robot_pop", 0.40, lambda t:
           (math.sin(TAU * (440 * t - 310 * t * t)) * math.exp(-t * 11) * 0.29
            + math.sin(TAU * 120 * t) * math.exp(-t * 22) * 0.18))
+
+    # Two short, alternating warning notes that cut through combat music.
+    write("silo_alarm", 0.78, silo_alarm)
 
     rng = random.Random(45)
     noise = [rng.uniform(-1, 1) for _ in range(int(RATE * 1.2))]

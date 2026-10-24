@@ -76,6 +76,8 @@ func can_afford(cost: Dictionary[StringName, int]) -> bool:
 
 
 func can_purchase(id: StringName) -> bool:
+	if id == &"travel.jetpack" and GameState.wave < 3:
+		return false
 	return catalog.has(id) and not is_maxed(id) and prerequisites_met(id) and can_afford(next_cost(id))
 
 

@@ -3,8 +3,6 @@ extends Node
 ## Hold Interact next to a silo crack to wrench it shut (GDD 7.1). The wrench is the only repair tool in
 ## M1; the Auto Wrench and the Welder (GDD 7.2, M2-D1/D2) belong here too.
 
-## Structure per second with the wrench.
-@export var repair_rate: float = 20.0
 ## How close a crack must be to the farmer's chest.
 @export var repair_reach: float = 2.5
 
@@ -36,6 +34,6 @@ func physics_step(delta: float) -> void:
 		silo.repair_crack(target, rate_now() * delta)
 
 
-## Structure per second the wrench restores, after Elbow Grease and Bigger Patches.
+## Wrench seconds worked per real second, after Elbow Grease and Bigger Patches.
 func rate_now() -> float:
-	return repair_rate * StatService.get_stat(&"repair.speed", 1.0) * StatService.get_stat(&"repair.amount", 1.0)
+	return StatService.get_stat(&"repair.speed", 1.0) * StatService.get_stat(&"repair.amount", 1.0)

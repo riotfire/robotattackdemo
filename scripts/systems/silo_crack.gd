@@ -9,6 +9,8 @@ const SIZE_NAMES: PackedStringArray = ["Small", "Medium", "Large"]
 const BAND_NAMES: PackedStringArray = ["ground", "catwalk 1", "catwalk 2"]
 const CRACK_EXTENTS: Array[Vector2] = [Vector2(0.5, 0.25), Vector2(0.9, 0.45), Vector2(1.4, 0.7)]
 const SPOUT_AMOUNTS: PackedInt32Array = [10, 20, 36]
+## Seconds of wrenching to work a crack down one size (Small closes, Medium -> Small, Large -> Medium).
+const STAGE_SECONDS: PackedFloat32Array = [1.2, 2.1, 2.4]
 
 var socket_index: int = -1
 var band: int = 0
@@ -18,6 +20,8 @@ var pool: float = 0.0
 var max_pool: float = 0.0
 
 var _hits_since_resize: int = 0
+## Wrench time already spent on the current size.
+var _stage_progress: float = 0.0
 var _highlighted: bool = false
 var _crack_mesh: MeshInstance3D
 var _spout: CPUParticles3D
@@ -80,31 +84,49 @@ func register_hit(hits_to_grow: PackedInt32Array) -> bool:
 	_hits_since_resize += 1
 	if _hits_since_resize >= hits_to_grow[size]:
 		_hits_since_resize = 0
+		_stage_progress = 0.0
 		size = (size + 1) as Size
 		_update_visual()
 		return true
 	return false
 
 
-## Drains the pool by up to `amount`. Returns the Structure actually restored.
-## Shrinks one size step each time a third of the pool is patched.
-func repair(amount: float) -> float:
-	var restored := minf(amount, pool)
-	pool -= restored
-	var shrink_to := Size.SMALL
-	if pool > max_pool * 2.0 / 3.0:
-		shrink_to = Size.LARGE
-	elif pool > max_pool / 3.0:
-		shrink_to = Size.MEDIUM
-	if shrink_to < size:
-		size = shrink_to
-		_hits_since_resize = 0
-		_update_visual()
-	return restored
+## Spends `seconds` of wrench time. Each size takes its own STAGE_SECONDS, then the crack drops one size
+## (closing at Small); the pool drains in step so Structure comes back evenly. Returns the Structure restored.
+func repair(seconds: float) -> float:
+	var left := seconds
+	var before := pool
+	var remaining := repair_seconds_left()
+	while left > 0.0 and pool > 0.0:
+		var step := minf(left, STAGE_SECONDS[size] - _stage_progress)
+		_stage_progress += step
+		left -= step
+		if _stage_progress >= STAGE_SECONDS[size] - 0.0001:
+			_stage_progress = 0.0
+			if size == Size.SMALL:
+				pool = 0.0
+				break
+			size = (size - 1) as Size
+			_hits_since_resize = 0
+			_update_visual()
+	if pool > 0.0 and remaining > 0.0:
+		pool = before * (repair_seconds_left() / remaining)
+	return before - pool
+
+
+## Wrench seconds still needed to close this crack.
+func repair_seconds_left() -> float:
+	var total := -_stage_progress
+	for stage in range(size + 1):
+		total += STAGE_SECONDS[stage]
+	return total
 
 
 func repair_fraction() -> float:
-	return 1.0 - pool / max_pool if max_pool > 0.0 else 1.0
+	var full := 0.0
+	for stage in range(size + 1):
+		full += STAGE_SECONDS[stage]
+	return 1.0 - repair_seconds_left() / full if pool > 0.0 else 1.0
 
 
 func leak_rate(rates: PackedFloat32Array) -> float:

@@ -1,44 +1,43 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cnma7okbbdfyw"]
 
-[ext_resource type="Shader" path="res://shaders/painted_sky.gdshader" id="1_hhofp"]
+[ext_resource type="Shader" uid="uid://bhploo6ysqvik" path="res://shaders/painted_sky.gdshader" id="1_hhofp"]
 [ext_resource type="NavigationMesh" path="res://scenes/farm/farm_navmesh.res" id="2_48r6r"]
-[ext_resource type="Shader" path="res://shaders/felt.gdshader" id="3_5hq5f"]
-[ext_resource type="Texture2D" path="res://assets/textures/felt/felt_color.jpg" id="4_rs80e"]
-[ext_resource type="Texture2D" path="res://assets/textures/felt/felt_normal.jpg" id="5_63404"]
-[ext_resource type="PackedScene" path="res://scenes/farm/silo.tscn" id="6_uwfwu"]
-[ext_resource type="Script" path="res://scripts/systems/silo.gd" id="7_dbu0n"]
-[ext_resource type="Shader" path="res://shaders/clay.gdshader" id="8_ykr6j"]
-[ext_resource type="Texture2D" path="res://shaders/clay_lumps.tres" id="9_opae2"]
-[ext_resource type="Texture2D" path="res://shaders/clay_thumbprints.tres" id="10_yufid"]
-[ext_resource type="Script" path="res://scripts/components/clay_model.gd" id="11_0d75t"]
-[ext_resource type="PackedScene" path="res://assets/models/props/prop_barrel_01.glb" id="12_oelmd"]
-[ext_resource type="PackedScene" path="res://assets/models/props/prop_crate_02.glb" id="13_271n8"]
-[ext_resource type="PackedScene" path="res://assets/models/props/prop_workbench_01.glb" id="14_14fuu"]
-[ext_resource type="PackedScene" path="res://assets/models/props/prop_shovel_01.glb" id="15_x6rnr"]
-[ext_resource type="PackedScene" path="res://assets/models/props/prop_hoe_01.glb" id="16_42hhd"]
-[ext_resource type="Script" path="res://scripts/components/tool_shed.gd" id="17_5liw8"]
-[ext_resource type="PackedScene" path="res://assets/models/farm/farm_barn_01.glb" id="18_w7suv"]
-[ext_resource type="PackedScene" path="res://assets/models/farm/farm_water_tower_01.glb" id="19_kxucr"]
-[ext_resource type="PackedScene" path="res://assets/models/crops/crop_carrot.glb" id="20_g54s1"]
-[ext_resource type="PackedScene" path="res://assets/models/crops/crop_pumpkin.glb" id="21_f0dfl"]
-[ext_resource type="PackedScene" path="res://assets/models/crops/crop_leafy.glb" id="22_c3rvb"]
-[ext_resource type="PackedScene" path="res://assets/models/crops/crop_melon.glb" id="23_6ooa3"]
-[ext_resource type="PackedScene" path="res://assets/models/farm/farm_well_01.glb" id="24_8tq74"]
-[ext_resource type="Script" path="res://scripts/systems/prop_scatter.gd" id="25_4j71o"]
-[ext_resource type="PackedScene" path="res://assets/models/farm/farm_windmill_01.glb" id="26_0n0aa"]
-[ext_resource type="PackedScene" path="res://assets/models/props/nature_tree_03.glb" id="27_d1ne3"]
-[ext_resource type="PackedScene" path="res://assets/models/props/nature_tree_02.glb" id="28_ow8ql"]
-[ext_resource type="PackedScene" path="res://assets/models/props/nature_tree_01.glb" id="29_ndx6u"]
-[ext_resource type="Script" path="res://scripts/components/climbable.gd" id="30_frinq"]
-[ext_resource type="Script" path="res://scripts/components/heal_zone.gd" id="31_onyyd"]
-[ext_resource type="Script" path="res://scripts/systems/lane_marker.gd" id="32_6olvd"]
-[ext_resource type="Script" path="res://scripts/components/zipline.gd" id="33_sacyb"]
-[ext_resource type="Script" path="res://scripts/components/dinner_bell.gd" id="34_mfcg8"]
-[ext_resource type="Script" path="res://scripts/systems/farm_decor.gd" id="35_lwx6r"]
-[ext_resource type="Script" path="res://scripts/systems/corn_field.gd" id="36_1gnb4"]
-[ext_resource type="Script" path="res://scripts/systems/farm_boundary.gd" id="37_w5bqy"]
-[ext_resource type="Script" path="res://scripts/systems/weather.gd" id="38_wthr1"]
-[ext_resource type="Script" path="res://scripts/systems/time_of_day.gd" id="39_tday1"]
+[ext_resource type="Shader" uid="uid://b7mu1vi81tejw" path="res://shaders/felt.gdshader" id="3_5hq5f"]
+[ext_resource type="Texture2D" uid="uid://sy1y8avldos1" path="res://assets/textures/felt/felt_color.jpg" id="4_rs80e"]
+[ext_resource type="Texture2D" uid="uid://ca4rmijcjfi8y" path="res://assets/textures/felt/felt_normal.jpg" id="5_63404"]
+[ext_resource type="PackedScene" uid="uid://cs5qiarbejfc1" path="res://scenes/farm/silo.tscn" id="6_uwfwu"]
+[ext_resource type="Shader" uid="uid://dwqx3kq8qndio" path="res://shaders/clay.gdshader" id="8_ykr6j"]
+[ext_resource type="Texture2D" uid="uid://c1hxff3yeudmt" path="res://shaders/clay_lumps.tres" id="9_opae2"]
+[ext_resource type="Texture2D" uid="uid://bohhm574qgbcw" path="res://shaders/clay_thumbprints.tres" id="10_yufid"]
+[ext_resource type="Script" uid="uid://xnqtv8w54kn5" path="res://scripts/components/clay_model.gd" id="11_0d75t"]
+[ext_resource type="PackedScene" uid="uid://c5abbaosn7dgd" path="res://assets/models/props/prop_barrel_01.glb" id="12_oelmd"]
+[ext_resource type="PackedScene" uid="uid://bmpj4f5dds8f5" path="res://assets/models/props/prop_crate_02.glb" id="13_271n8"]
+[ext_resource type="PackedScene" uid="uid://bfg0yqxwqv0tn" path="res://assets/models/props/prop_workbench_01.glb" id="14_14fuu"]
+[ext_resource type="PackedScene" uid="uid://d4m846ajji2yx" path="res://assets/models/props/prop_shovel_01.glb" id="15_x6rnr"]
+[ext_resource type="PackedScene" uid="uid://cc2kuyn53lh88" path="res://assets/models/props/prop_hoe_01.glb" id="16_42hhd"]
+[ext_resource type="Script" uid="uid://ca15nyc1utraq" path="res://scripts/components/tool_shed.gd" id="17_5liw8"]
+[ext_resource type="PackedScene" uid="uid://plsmm1740361" path="res://assets/models/farm/farm_barn_01.glb" id="18_w7suv"]
+[ext_resource type="PackedScene" uid="uid://g4qvs2l8n1r4" path="res://assets/models/farm/farm_water_tower_01.glb" id="19_kxucr"]
+[ext_resource type="PackedScene" uid="uid://c5nuwjiqygqiu" path="res://assets/models/crops/crop_carrot.glb" id="20_g54s1"]
+[ext_resource type="PackedScene" uid="uid://cw48g6frodx17" path="res://assets/models/crops/crop_pumpkin.glb" id="21_f0dfl"]
+[ext_resource type="PackedScene" uid="uid://crxv6kove0xw1" path="res://assets/models/crops/crop_leafy.glb" id="22_c3rvb"]
+[ext_resource type="PackedScene" uid="uid://dfhxcem0hnxw4" path="res://assets/models/crops/crop_melon.glb" id="23_6ooa3"]
+[ext_resource type="PackedScene" uid="uid://cqblevmuor1di" path="res://assets/models/farm/farm_well_01.glb" id="24_8tq74"]
+[ext_resource type="Script" uid="uid://dxwfkvp3hqevt" path="res://scripts/systems/prop_scatter.gd" id="25_4j71o"]
+[ext_resource type="PackedScene" uid="uid://cpyuvrkw74lgj" path="res://assets/models/farm/farm_windmill_01.glb" id="26_0n0aa"]
+[ext_resource type="PackedScene" uid="uid://i6uwiruphf37" path="res://assets/models/props/nature_tree_03.glb" id="27_d1ne3"]
+[ext_resource type="PackedScene" uid="uid://5ly0ghnfpqms" path="res://assets/models/props/nature_tree_02.glb" id="28_ow8ql"]
+[ext_resource type="PackedScene" uid="uid://x6xwf4wihsuo" path="res://assets/models/props/nature_tree_01.glb" id="29_ndx6u"]
+[ext_resource type="Script" uid="uid://bqqqaurulev35" path="res://scripts/components/climbable.gd" id="30_frinq"]
+[ext_resource type="Script" uid="uid://blbuchc6ahrip" path="res://scripts/components/heal_zone.gd" id="31_onyyd"]
+[ext_resource type="Script" uid="uid://byla3hfpw08lh" path="res://scripts/systems/lane_marker.gd" id="32_6olvd"]
+[ext_resource type="Script" uid="uid://837xa61bmnxa" path="res://scripts/components/zipline.gd" id="33_sacyb"]
+[ext_resource type="Script" uid="uid://by1s8yg6oiaab" path="res://scripts/components/dinner_bell.gd" id="34_mfcg8"]
+[ext_resource type="Script" uid="uid://cguwrgf3yc7w6" path="res://scripts/systems/farm_decor.gd" id="35_lwx6r"]
+[ext_resource type="Script" uid="uid://bdn3d2df3r6gn" path="res://scripts/systems/corn_field.gd" id="36_1gnb4"]
+[ext_resource type="Script" uid="uid://b37l3kf4cdeb0" path="res://scripts/systems/farm_boundary.gd" id="37_w5bqy"]
+[ext_resource type="Script" uid="uid://r1mws4tbrnhg" path="res://scripts/systems/weather.gd" id="38_wthr1"]
+[ext_resource type="Script" uid="uid://duu1sntgqjsmr" path="res://scripts/systems/time_of_day.gd" id="39_tday1"]
 [ext_resource type="Resource" path="res://data/environment/environment_table.tres" id="40_envt1"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_rbgwc"]
@@ -52,20 +51,20 @@ seamless = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gu8sb"]
 shader = ExtResource("1_hhofp")
-shader_parameter/zenith_color = null
-shader_parameter/horizon_color = null
-shader_parameter/ground_color = null
-shader_parameter/cloud_color = null
-shader_parameter/cloud_shade = null
+shader_parameter/zenith_color = Color(0.36, 0.6, 0.9, 1)
+shader_parameter/horizon_color = Color(0.93, 0.89, 0.78, 1)
+shader_parameter/ground_color = Color(0.55, 0.62, 0.42, 1)
+shader_parameter/cloud_color = Color(1, 0.99, 0.96, 1)
+shader_parameter/cloud_shade = Color(0.72, 0.76, 0.86, 1)
 shader_parameter/cloud_noise = SubResource("NoiseTexture2D_1qqnu")
-shader_parameter/cloud_coverage = null
-shader_parameter/cloud_softness = null
-shader_parameter/cloud_scale = null
-shader_parameter/sun_disc_size = null
-shader_parameter/sun_disc_color = null
-shader_parameter/sun_disc_energy = null
-shader_parameter/cloud_offset = null
-shader_parameter/star_strength = null
+shader_parameter/cloud_coverage = 0.4
+shader_parameter/cloud_softness = 0.1
+shader_parameter/cloud_scale = 0.22
+shader_parameter/sun_disc_size = 0.035
+shader_parameter/sun_disc_color = Color(1, 0.95, 0.8, 1)
+shader_parameter/sun_disc_energy = 1.6
+shader_parameter/cloud_offset = Vector2(0, 0)
+shader_parameter/star_strength = 0.0
 
 [sub_resource type="Sky" id="Sky_s4vy5"]
 sky_material = SubResource("ShaderMaterial_gu8sb")
@@ -113,10 +112,10 @@ shader_parameter/patch_color = Color(0.42, 0.56, 0.26, 1)
 shader_parameter/felt_color = ExtResource("4_rs80e")
 shader_parameter/felt_normal = ExtResource("5_63404")
 shader_parameter/patch_noise = SubResource("NoiseTexture2D_o7qis")
-shader_parameter/felt_scale = null
-shader_parameter/patch_scale = null
-shader_parameter/fiber_contrast = null
-shader_parameter/normal_depth = null
+shader_parameter/felt_scale = 0.35
+shader_parameter/patch_scale = 0.012
+shader_parameter/fiber_contrast = 0.55
+shader_parameter/normal_depth = 0.8
 
 [sub_resource type="BoxMesh" id="BoxMesh_6q0in"]
 size = Vector3(280, 1, 280)
@@ -143,10 +142,10 @@ shader_parameter/patch_color = Color(0.66, 0.6, 0.34, 1)
 shader_parameter/felt_color = ExtResource("4_rs80e")
 shader_parameter/felt_normal = ExtResource("5_63404")
 shader_parameter/patch_noise = SubResource("NoiseTexture2D_bb52c")
-shader_parameter/felt_scale = null
-shader_parameter/patch_scale = null
-shader_parameter/fiber_contrast = null
-shader_parameter/normal_depth = null
+shader_parameter/felt_scale = 0.35
+shader_parameter/patch_scale = 0.012
+shader_parameter/fiber_contrast = 0.55
+shader_parameter/normal_depth = 0.8
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lfpvn"]
 top_radius = 100.0
@@ -172,10 +171,10 @@ shader_parameter/patch_color = Color(0.55, 0.7, 0.34, 1)
 shader_parameter/felt_color = ExtResource("4_rs80e")
 shader_parameter/felt_normal = ExtResource("5_63404")
 shader_parameter/patch_noise = SubResource("NoiseTexture2D_bp6iu")
-shader_parameter/felt_scale = null
-shader_parameter/patch_scale = null
-shader_parameter/fiber_contrast = null
-shader_parameter/normal_depth = null
+shader_parameter/felt_scale = 0.35
+shader_parameter/patch_scale = 0.012
+shader_parameter/fiber_contrast = 0.55
+shader_parameter/normal_depth = 0.8
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_hgtd1"]
 top_radius = 55.0
@@ -194,8 +193,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_gk88r"]
 size = Vector3(14, 7, 10)
@@ -215,8 +214,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="PrismMesh" id="PrismMesh_lt16o"]
 size = Vector3(10, 3, 14)
@@ -236,8 +235,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_ima15"]
 size = Vector3(14, 0.2, 3.5)
@@ -281,8 +280,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_sq2dq"]
 size = Vector3(1.4, 2.4, 0.1)
@@ -299,8 +298,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_o4ora"]
 size = Vector3(1.8, 2.7, 0.06)
@@ -335,8 +334,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_4ao7h"]
 size = Vector3(1.2, 1.4, 0.08)
@@ -521,8 +520,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_sg06b"]
 size = Vector3(1.2, 3.6, 1.2)
@@ -539,8 +538,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_2wxqo"]
 size = Vector3(1.5, 0.25, 1.5)
@@ -557,8 +556,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_ly86n"]
 size = Vector3(8, 4, 6)
@@ -593,8 +592,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_yvvh1"]
 size = Vector3(3, 2.2, 0.1)
@@ -714,8 +713,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_umppi"]
 size = Vector3(1.2, 0.46, 1.2)
@@ -732,8 +731,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_n24ib"]
 size = Vector3(0.05, 0.48, 1.22)
@@ -1307,8 +1306,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_ft3bb"]
 size = Vector3(1, 0.8, 1)
@@ -1334,8 +1333,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_rb1y4"]
 size = Vector3(1.4, 0.06, 5.8)
@@ -1397,8 +1396,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_k6p8t"]
 size = Vector3(0.15, 1.8, 3)
@@ -1569,8 +1568,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_vuhxa"]
 size = Vector3(0.08, 8, 0.08)
@@ -1633,8 +1632,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_ncblv"]
 size = Vector3(0.05, 0.05, 38.46882)
@@ -1675,8 +1674,8 @@ shader_parameter/print_scale = 2.5
 shader_parameter/roughness_value = 0.62
 shader_parameter/sss_strength = 0.25
 shader_parameter/rim_strength = 0.2
-shader_parameter/use_vertex_color = null
-shader_parameter/triplanar_prints = null
+shader_parameter/use_vertex_color = false
+shader_parameter/triplanar_prints = false
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_fmp38"]
 top_radius = 0.12
@@ -1723,13 +1722,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.021, 0)
 material_override = SubResource("ShaderMaterial_4tnfy")
 mesh = SubResource("CylinderMesh_hgtd1")
 
-[node name="Silo" type="StaticBody3D" parent="NavRegion" unique_id=569764326 instance=ExtResource("6_uwfwu")]
-collision_layer = 33
-collision_mask = 0
-script = ExtResource("7_dbu0n")
-leak_rates = PackedFloat32Array(0.6, 1.2, 2)
-hits_to_grow = PackedInt32Array(3, 4)
-band_weights = PackedFloat32Array(0.5, 0.3, 0.2)
+[node name="Silo" parent="NavRegion" unique_id=569764326 instance=ExtResource("6_uwfwu")]
 
 [node name="Home" type="StaticBody3D" parent="NavRegion" unique_id=1031100835]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 22)
@@ -3116,7 +3109,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 shape = SubResource("BoxShape3D_vcrca")
 
 [node name="Roof" type="MeshInstance3D" parent="NavRegion/ChickenHouse" unique_id=1001899427]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.35, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3795996, 0)
 material_override = SubResource("ShaderMaterial_t75ax")
 mesh = SubResource("BoxMesh_xsxy6")
 
@@ -5065,11 +5058,11 @@ script = ExtResource("37_w5bqy")
 [node name="PlayerSpawn" type="Marker3D" parent="." unique_id=1998391096 groups=["player_spawns"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 10)
 
-[node name="Weather" type="Node3D" parent="." node_paths=PackedStringArray("corn_field")]
+[node name="Weather" type="Node3D" parent="." unique_id=1869435940 node_paths=PackedStringArray("corn_field")]
 script = ExtResource("38_wthr1")
 corn_field = NodePath("../CornField")
 
-[node name="TimeOfDay" type="Node" parent="." node_paths=PackedStringArray("world_environment", "sun", "weather")]
+[node name="TimeOfDay" type="Node" parent="." unique_id=161815046 node_paths=PackedStringArray("world_environment", "sun", "weather")]
 script = ExtResource("39_tday1")
 table = ExtResource("40_envt1")
 world_environment = NodePath("../WorldEnvironment")

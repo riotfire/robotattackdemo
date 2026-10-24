@@ -34,6 +34,7 @@ var _step_time: float = 0.0
 
 
 func _ready() -> void:
+	add_to_group(&"time_of_day")
 	set_process(false)
 	if not OS.is_debug_build():
 		set_process_unhandled_key_input(false)

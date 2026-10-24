@@ -23,7 +23,7 @@ var game_over_reason: StringName = &""
 
 ## Banked the instant they're collected (GDD 12.3). Survives scene reloads.
 var parts: Dictionary[StringName, int] = {&"al": 0, &"cu": 0, &"au": 0, &"pc": 0}
-## Kept forever once earned (GDD 5.4). Stored as the free "travel.jetpack" pegboard node, so jetpack
+## Kept forever once earned (GDD 5.4). Stored as the "travel.jetpack" pegboard node, so jetpack
 ## upgrades can require it; read through its stat flag like every other unlock.
 var jetpack_unlocked: bool:
 	get:
@@ -86,6 +86,12 @@ func add_parts(delta_parts: Dictionary) -> void:
 	for key: StringName in delta_parts:
 		if parts.has(key):
 			parts[key] = maxi(0, parts[key] + int(delta_parts[key]))
+	EventBus.parts_changed.emit(parts)
+
+
+func clear_parts() -> void:
+	for key: StringName in parts:
+		parts[key] = 0
 	EventBus.parts_changed.emit(parts)
 
 

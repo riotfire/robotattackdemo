@@ -27,7 +27,8 @@ func test_profile_round_trip() -> void:
 	var path := SaveManager.profile_path
 	var levels := StatService.levels.duplicate()
 	var parts := GameState.parts.duplicate()
-	SaveManager.use_profile("user://gut_profile.json", true)
+	var test_profile := OS.get_temp_dir().path_join("gut_profile_%d.json" % OS.get_process_id())
+	SaveManager.use_profile(test_profile, true)
 	GameState.add_parts({&"al": 42, &"au": 3})
 	StatService.grant(&"attack.pistol")
 	GameState.jetpack_unlocked = true
@@ -39,7 +40,7 @@ func test_profile_round_trip() -> void:
 	assert_eq(GameState.parts[&"au"], 3)
 	assert_eq(StatService.level_of(&"attack.pistol"), 1)
 	assert_true(GameState.jetpack_unlocked)
-	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://gut_profile.json"))
+	DirAccess.remove_absolute(test_profile)
 	SaveManager.profile_path = path
 	StatService.set_levels(levels)
 	for key: StringName in parts:
@@ -79,3 +80,25 @@ func test_spawn_buying_spends_the_budget_within_the_rules() -> void:
 	assert_eq(first.map(func(e: WaveDirector.SpawnEvent) -> StringName: return e.archetype.id),
 			second.map(func(e: WaveDirector.SpawnEvent) -> StringName: return e.archetype.id), "same seed, same wave")
 	director.free()
+
+
+func test_tutorial_flag_defaults_by_history() -> void:
+	var path := SaveManager.profile_path
+	var done := SaveManager.tutorial_completed
+	SaveManager.apply({})
+	assert_false(SaveManager.tutorial_completed, "a brand-new profile still has Level 0 to do")
+	SaveManager.apply({"records": {"best_wave": 4}})
+	assert_true(SaveManager.tutorial_completed, "a profile from before Level 0 that has played skips it")
+	SaveManager.apply({"records": {"best_wave": 4}, "tutorial_completed": false})
+	assert_false(SaveManager.tutorial_completed, "an explicit flag wins")
+	SaveManager.tutorial_completed = true
+	assert_true(bool(SaveManager.to_dictionary()["tutorial_completed"]), "the flag is saved")
+	SaveManager.tutorial_completed = done
+	SaveManager.profile_path = path
+
+
+func test_tutorial_phase_keeps_the_other_phase_numbers() -> void:
+	assert_eq(WaveDirector.Phase.INTERMISSION, 0)
+	assert_eq(WaveDirector.Phase.GAME_OVER, 5)
+	assert_eq(WaveDirector.PHASE_NAMES.size(), WaveDirector.Phase.size())
+	assert_eq(AudioDirector.state_for_phase(WaveDirector.Phase.TUTORIAL, 1), &"intermission", "Level 0 plays the field theme")

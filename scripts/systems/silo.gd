@@ -111,11 +111,22 @@ func take_damage(packet: DamagePacket) -> void:
 		GameState.trigger_game_over(&"silo")
 
 
-## Patches `amount` Structure into a crack. Returns the Structure restored.
-func repair_crack(crack: SiloCrack, amount: float) -> float:
+## Level 0: the silo springs a leak on a given socket (a Small crack holding `pool_amount` Structure),
+## so the first thing the farmer learns is that a crack costs Structure and Grain until it is patched.
+func open_tutorial_crack(socket_index: int, pool_amount: float) -> SiloCrack:
+	if socket_index < 0 or socket_index >= _sockets.size() or _occupied.has(socket_index):
+		return null
+	structure = maxf(0.0, max_structure - pool_amount)
+	_open_crack_at(socket_index, pool_amount)
+	_update_damage_visual()
+	return _occupied.get(socket_index)
+
+
+## Spends `seconds` of wrench time on a crack. Returns the Structure restored.
+func repair_crack(crack: SiloCrack, seconds: float) -> float:
 	if crack == null or not is_instance_valid(crack) or GameState.is_game_over:
 		return 0.0
-	var restored := crack.repair(amount)
+	var restored := crack.repair(seconds)
 	structure = minf(max_structure, structure + restored)
 	if crack.pool <= 0.0:
 		_close_crack(crack)
@@ -213,7 +224,10 @@ func distance_to_wall(from: Vector3) -> float:
 
 
 func _open_crack(hit_position: Vector3, pool_amount: float) -> void:
-	var socket_index := _pick_socket(hit_position)
+	_open_crack_at(_pick_socket(hit_position), pool_amount)
+
+
+func _open_crack_at(socket_index: int, pool_amount: float) -> void:
 	if socket_index < 0:
 		return
 	var socket := _sockets[socket_index]

@@ -2,7 +2,7 @@ class_name Jetpack
 extends Node
 ## Grandpa's Milk-Can Jetpack (GDD 5.4). Hold Jump in the air to thrust.
 ## Fuel only recharges while grounded: 0.5 s delay, then empty to full in 2.0 s.
-## Unlocked for free after wave 2 of the first run, then kept forever (GameState.jetpack_unlocked).
+## Built at the shed from wave 3 onward, then kept forever (GameState.jetpack_unlocked).
 ## The base_* values are GDD 5.4's; Fuel Tank, Quick Refill and Thrusters apply on top via StatService.
 
 signal thrust_changed(thrusting: bool)
