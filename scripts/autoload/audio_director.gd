@@ -12,6 +12,10 @@ const POST_SIREN_FADE_SECONDS := 1.5
 const WAVE_END_FADE_SECONDS := 2.0
 const SFX_VOICES := 8
 const MUSIC_GAIN_DB := -8.0
+## Pops closer together than this climb in pitch, so a multi-kill plays a rising run of pops.
+const POP_STREAK_MSEC := 600
+const POP_STREAK_STEP := 0.06
+const POP_STREAK_MAX := 7
 
 const FIELD_THEME := "res://assets/audio/music/Surveying the Field.mp3"
 const ATTACK_THEME := "res://assets/audio/music/Robot Attack Pixel Banjo Defense.mp3"
@@ -47,6 +51,8 @@ var _sfx_players: Array[AudioStreamPlayer] = []
 var _next_sfx := 0
 var _leak_player: AudioStreamPlayer
 var _leak_poll := 0.0
+var _pop_streak := 0
+var _last_pop_msec := -100000
 
 
 func _ready() -> void:
@@ -140,7 +146,7 @@ func set_music_state(state: StringName, fade_seconds: float = MUSIC_FADE_SECONDS
 
 ## Weapon framework integration point: call only after a shot or swing actually starts.
 ## The fixed voice pool bounds SFX cost during crowded waves.
-func play_cue(cue: StringName) -> void:
+func play_cue(cue: StringName, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	if not CUES.has(cue):
 		push_warning("AudioDirector: unknown cue %s" % cue)
 		return
@@ -148,8 +154,22 @@ func play_cue(cue: StringName) -> void:
 	_next_sfx = (_next_sfx + 1) % _sfx_players.size()
 	player.stop()
 	player.stream = load(CUES[cue]) as AudioStream
+	player.pitch_scale = pitch_scale
+	player.volume_db = volume_db
 	if player.stream != null:
 		player.play()
+
+
+## A robot exploding. `size` is the robot's scale (1 Scout, ~2.8 Heavy): bigger robots pop deeper, and
+## big ones add a low boom layer under the pop. Quick kills in a row climb in pitch.
+func play_pop(size: float = 1.0) -> void:
+	var now := Time.get_ticks_msec()
+	_pop_streak = mini(_pop_streak + 1, POP_STREAK_MAX) if now - _last_pop_msec < POP_STREAK_MSEC else 0
+	_last_pop_msec = now
+	var pitch := randf_range(0.93, 1.07) * (1.0 + POP_STREAK_STEP * _pop_streak) / pow(maxf(size, 0.5), 0.3)
+	play_cue(&"robot_pop", pitch)
+	if size >= 1.6:
+		play_cue(&"robot_pop", pitch * 0.5, 3.0)
 
 
 func _looped_stream(path: String) -> AudioStream:
@@ -207,7 +227,10 @@ func _on_siren_started(_wave: int, _lanes: PackedInt32Array) -> void:
 	play_cue(&"siren")
 
 
-func _on_robot_destroyed(_robot: Node3D, _killer: Node) -> void:
+func _on_robot_destroyed(robot: Node3D, _killer: Node) -> void:
+	# An exploding robot pops on its burst frame instead, in sync with the flash.
+	if robot is Robot and (robot as Robot).exploding:
+		return
 	play_cue(&"robot_pop")
 
 

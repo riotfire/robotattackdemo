@@ -18,6 +18,11 @@ const GOLD := Color(1.0, 0.8, 0.25)
 const DARK := Color(0.16, 0.15, 0.16)
 const METAL := Color(0.62, 0.64, 0.68)
 const BULB_COLOR := Color(1.0, 0.85, 0.35)
+const COPPER := Color(0.78, 0.45, 0.22)
+## Overcharged's electric blue (the coil core, the crackle and the blast's sparks).
+const SPARK_COLOR := Color(0.55, 0.85, 1.0)
+## Name of the Overcharged coil's glowing core under the kit.
+const SPARK_CORE := &"SparkCore"
 
 const PATTERN_IDS: Dictionary[StringName, int] = {
 	&"none": 0, &"stripes": 1, &"polka_dots": 2, &"checker": 3, &"rust_patches": 4, &"hazard_tape": 5,
@@ -304,6 +309,13 @@ static func _accessory(kit: Node3D, id: StringName, _primary: Color, secondary: 
 		&"armor_plates":
 			for x: float in [-0.3, 0.3]:
 				_part(kit, _box(Vector3(0.05, 0.3, 0.3)), METAL, BODY + Vector3(x, 0.0, 0.0))
+		&"spark_coil":
+			# Overcharged's tell: a copper coil on a mast with a glowing core that crackles (Robot._on_tick_12).
+			_part(kit, _cyl(0.025, 0.025, 0.3), METAL, BACK + Vector3(0.0, 0.3, 0.04))
+			for y: float in [0.36, 0.42, 0.48]:
+				_part(kit, _torus(0.05, 0.075), COPPER, BACK + Vector3(0.0, y, 0.04))
+			var core := _part(kit, _sphere(0.07, 0.14), SPARK_COLOR, BACK + Vector3(0.0, 0.58, 0.04), Vector3.ZERO, 3.0)
+			core.name = SPARK_CORE
 		&"gold_band":
 			_part(kit, _cyl(0.31, 0.31, 0.05), GOLD, BODY + Vector3(0.0, -0.17, 0.0), Vector3.ZERO, 0.3)
 		&"sack":

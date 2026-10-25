@@ -66,6 +66,24 @@ func _start_warm_up() -> void:
 	_warm_up.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	add_child(_warm_up)
 	_warm_up.add_child((ResourceLoader.load(WARM_UP_SCENE) as PackedScene).instantiate())
+	# Draw first-kill resources close to the camera, above the farm's roofs. Merely loading
+	# a shader (or hiding its sample behind the silo) does not warm its draw pipelines.
+	var effects := Node3D.new()
+	effects.name = "FirstKillWarmUp"
+	_warm_up.add_child(effects)
+	RobotExplosion.warm_up(effects)
+	var index := 0
+	for kind: StringName in [&"al", &"cu", &"au", &"pc"]:
+		var pickup := PickupVisuals.create(kind, Pickup.COLORS[kind])
+		effects.add_child(pickup)
+		pickup.position = Vector3((index - 1.5) * 3.0, 1.0, 4.0)
+		pickup.scale = Vector3.ONE * 4.0
+		index += 1
+	# A receiver makes the scorch decal and local-light variants actually render.
+	var floor_mesh := PlaneMesh.new()
+	floor_mesh.size = Vector2(20.0, 14.0)
+	Clay.part(effects, floor_mesh, Color(0.4, 0.5, 0.3), Transform3D.IDENTITY)
+	effects.position.y = 240.0
 	# Top-down over the whole farm so nothing is frustum-culled.
 	var camera := Camera3D.new()
 	camera.fov = 75.0

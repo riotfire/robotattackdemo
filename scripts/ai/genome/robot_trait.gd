@@ -10,6 +10,16 @@ extends Resource
 @export var gold_chance_multiplier: float = 1.0
 ## Any melee robot in the family may steal grain (Thieving).
 @export var thieving: bool = false
+@export var power_cell_chance_multiplier: float = 1.0
+## Overcharged: on death the robot detonates after a short fuse, hurting robots (and farmers) within this
+## radius in metres, scaled by the robot's size. Robots it kills that are Overcharged too go off in turn,
+## so the blast chains. 0 means no blast.
+@export var death_blast_radius: float = 0.0
+## Blast damage to robots at the centre (half at the edge), scaled by the wave's HP curve and robot size,
+## so a blast keeps killing the same robots at every wave.
+@export var death_blast_damage: float = 0.0
+## Blast damage to farmers, scaled by the wave's damage curve and robot size.
+@export var death_blast_farmer_damage: float = 0.0
 ## Accessory the factory adds as the visual tell.
 @export var tell: StringName = &""
 

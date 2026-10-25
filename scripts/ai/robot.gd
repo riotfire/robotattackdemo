@@ -27,6 +27,8 @@ const GENE_LIBRARY_PATH := "res://data/robots/gene_library.tres"
 ## Every antenna bulb in the wave blinks together (Factory DNA). The WaveDirector shortens the period
 ## (in 12 fps frames) when the wave is almost over.
 static var hive_period: int = 12
+## The chain depth of the death blast dealing damage right now (robots it kills are one deeper).
+static var _blast_depth: int = 0
 
 @export var gravity: float = 22.0
 
@@ -51,6 +53,15 @@ var target_kind: TargetKind = TargetKind.SILO
 var target_player: Node3D = null
 var ai_state: AiState = AiState.SEEK
 var look: RobotFactory.Look
+## True from the moment a destroyed robot starts its RobotExplosion; the explosion plays the pop sound.
+var exploding: bool = false
+## Overcharged (GDD 10.3): the death blast from the family's traits, sized for this robot and wave.
+## A radius of 0 means the robot doesn't blow up.
+var death_blast_radius: float = 0.0
+var death_blast_damage: float = 0.0
+var death_blast_farmer_damage: float = 0.0
+## How many death blasts in a row led to this robot's death: 0 when the player killed it directly.
+var chain_depth: int = 0
 
 var _attack_timer: float = 0.0
 var _first_attack: bool = true
@@ -61,9 +72,12 @@ var _escape_point: Vector3 = Vector3.ZERO
 var _vertical_velocity: float = 0.0
 var _knockback: Vector3 = Vector3.ZERO
 var _last_attacker: Node = null
+## Flat direction of the last hit, so the death explosion throws parts away from the attacker.
+var _last_hit_direction: Vector3 = Vector3.ZERO
 var _pose_frame: int = 0
 var _hit_pop_left: float = 0.0
 var _marker: Label3D = null
+var _spark_core: MeshInstance3D = null
 
 @onready var health: HealthComponent = $Health
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
@@ -84,9 +98,16 @@ func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyC
 	hp_multiplier = curve.hp_multiplier(wave) * (FOREMAN_HP_MULTIPLIER if foreman else 1.0)
 	damage_multiplier = curve.damage_multiplier(wave)
 	drop_multiplier = curve.drop_multiplier(wave)
+	var blast_size := sqrt(RobotFactory.TYPE_SCALES[int(archetype.robot_type)])
 	for robot_trait in all_traits():
 		hp_multiplier *= robot_trait.hp_multiplier
 		speed_multiplier *= robot_trait.speed_multiplier
+		if robot_trait.death_blast_radius > 0.0:
+			death_blast_radius = maxf(death_blast_radius, robot_trait.death_blast_radius * blast_size)
+			death_blast_damage = maxf(death_blast_damage,
+					robot_trait.death_blast_damage * blast_size * curve.hp_multiplier(wave))
+			death_blast_farmer_damage = maxf(death_blast_farmer_damage,
+					robot_trait.death_blast_farmer_damage * blast_size * damage_multiplier)
 	if foreman and family != null:
 		foreman_title = family.foreman_title(rng)
 
@@ -132,6 +153,7 @@ func _ready() -> void:
 	# default 15° move_and_slide() stops them dead there (tests/unit/test_robot_movement.gd).
 	wall_min_slide_angle = 0.0
 	look = RobotFactory.build(_pose, genome, archetype, RngService.stream(RngService.STREAM_COSMETIC), is_foreman, extra_traits)
+	_spark_core = _pose.find_child(RobotFactory.SPARK_CORE, true, false) as MeshInstance3D
 	if is_foreman:
 		_set_marker(foreman_title, Color(1.0, 0.82, 0.3), false, 1.0)
 	elif is_thief:
@@ -377,6 +399,11 @@ func take_damage(packet: DamagePacket) -> void:
 		return
 	_last_attacker = packet.source
 	_hit_pop_left = 0.08
+	var push := packet.knockback
+	if push == Vector3.ZERO and is_instance_valid(packet.source) and packet.source is Node3D:
+		push = global_position - (packet.source as Node3D).global_position
+	push.y = 0.0
+	_last_hit_direction = push.normalized() if push.length_squared() > 0.0001 else Vector3.ZERO
 	if packet.knockback != Vector3.ZERO and archetype.robot_type != RobotArchetype.RobotType.HEAVY:
 		_knockback = packet.knockback
 		_vertical_velocity = maxf(_vertical_velocity, packet.knockback.y)
@@ -393,7 +420,8 @@ func _on_died() -> void:
 	_die(_last_attacker, true)
 
 
-## Kills the robot. `award_drops` is false for debug clears, escapes and robots that fall off the world.
+## Kills the robot. `award_drops` is false for debug clears, escapes and robots that fall off the world;
+## only kills that award drops explode, so thieves slip quietly into the corn.
 func _die(killer: Node, award_drops: bool) -> void:
 	if ai_state == AiState.DEAD:
 		return
@@ -410,10 +438,28 @@ func _die(killer: Node, award_drops: bool) -> void:
 		Pickup.spawn_parts(self, drop_point, roll_drops())
 		if sack_amount > 0.0:
 			Pickup.spawn_grain(self, drop_point, sack_amount)
+	if _marker != null:
+		_marker.visible = false
+	exploding = award_drops
+	chain_depth = _blast_depth
+	if chain_depth >= 2:
+		EventBus.hud_message.emit("Chain reaction x%d!" % (chain_depth + 1), 1.2)
 	EventBus.robot_destroyed.emit(self, killer)
 	destroyed.emit(self, killer)
-	Fx.puff(self, drop_point, Color(0.95, 0.95, 0.9), 0.5 * type_scale(), 0.35)
 	var tween := create_tween()
+	if exploding:
+		# Anticipation: swell for one stop-motion frame, then the explosion takes the parts and bursts.
+		var fx := RobotExplosion.for_robot(self, _last_hit_direction, death_blast_radius)
+		tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+		# Uniform: Jolt can't scale the eye hurtbox under the model non-uniformly.
+		tween.tween_property(model, ^"scale", Vector3.ONE * 1.25, fx.fuse) \
+				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		if death_blast_radius > 0.0:
+			tween.tween_callback(_detonate)
+		tween.tween_interval(0.1)
+		tween.tween_callback(queue_free)
+		return
+	Fx.puff(self, drop_point, Color(0.95, 0.95, 0.9), 0.5 * type_scale(), 0.35)
 	tween.tween_property(model, ^"scale", Vector3.ONE * 1.3, 0.06)
 	# Not quite zero: Jolt rejects singular transforms on the eye hurtbox under the model.
 	tween.tween_property(model, ^"scale", Vector3.ONE * 0.01, 0.12)
@@ -422,6 +468,32 @@ func _die(killer: Node, award_drops: bool) -> void:
 
 func kill(award_drops: bool = false) -> void:
 	_die(null, award_drops)
+
+
+## Overcharged's death blast, on the explosion's burst frame. Robots it kills credit whoever killed this
+## one, so a chain started by the farmer pays the farmer; Overcharged victims go off in turn a fuse later.
+func _detonate() -> void:
+	var center := global_position + Vector3.UP * 0.5 * type_scale()
+	var source: Node = _last_attacker if is_instance_valid(_last_attacker) else null
+	_blast_depth = chain_depth + 1
+	AreaAttack.hit_robots(self, center, death_blast_radius, death_blast_damage, source, 6.0)
+	_blast_depth = 0
+	if death_blast_farmer_damage <= 0.0:
+		return
+	for node in get_tree().get_nodes_in_group(&"players"):
+		var farmer := node as Node3D
+		if farmer == null or not farmer.has_method(&"take_damage"):
+			continue
+		var offset := farmer.global_position + Vector3.UP * 0.9 - center
+		var distance := offset.length()
+		if distance > death_blast_radius:
+			continue
+		var packet := DamagePacket.create(death_blast_farmer_damage * maxf(0.5, 1.0 - distance / death_blast_radius),
+				self, farmer.global_position)
+		var outward := Vector3(offset.x, 0.0, offset.z)
+		packet.knockback = (outward.normalized() if outward.length_squared() > 0.0001 else Vector3.ZERO) * 7.0 \
+				+ Vector3.UP * 3.0
+		farmer.call(&"take_damage", packet)
 
 
 ## Parts dropped on death (GDD 12.2), scaled by the wave's drop multiplier, plus trait and upgrade luck.
@@ -438,8 +510,16 @@ func roll_drops() -> Dictionary[StringName, int]:
 		&"al": floori(al) + (1 if rng.randf() < al - floorf(al) else 0),
 		&"cu": _roll_part(rng, archetype.drop_cu_chance, archetype.drop_cu_min, archetype.drop_cu_max),
 		&"au": _roll_part(rng, archetype.drop_au_chance * gold * luck, archetype.drop_au_min, archetype.drop_au_max),
-		&"pc": _roll_part(rng, archetype.drop_pc_chance * luck, archetype.drop_pc_min, archetype.drop_pc_max),
+		&"pc": _roll_part(rng, power_cell_chance(), archetype.drop_pc_min, archetype.drop_pc_max),
 	}
+
+
+## Chance to drop Power Cells, with upgrade luck and traits (Overcharged doubles it).
+func power_cell_chance() -> float:
+	var chance := archetype.drop_pc_chance * StatService.get_stat(&"drops.rare_chance", 1.0)
+	for robot_trait in all_traits():
+		chance *= robot_trait.power_cell_chance_multiplier
+	return chance
 
 
 func _roll_part(rng: RandomNumberGenerator, chance: float, low: int, high: int) -> int:
@@ -478,6 +558,8 @@ func _on_tick_12(frame: int) -> void:
 	_pose_frame += 1
 	if look.bulb != null:
 		look.bulb.set_instance_shader_parameter(&"emission_strength", 3.0 if frame % maxi(2, hive_period) < 2 else 0.3)
+	if _spark_core != null:
+		_crackle(frame)
 	var speed := Vector2(velocity.x, velocity.z).length()
 	for wheel in look.wheels:
 		wheel.rotate_object_local(Vector3.UP, -speed * 0.08)
@@ -506,6 +588,16 @@ func _on_tick_12(frame: int) -> void:
 		_pose.scale = _windup_pose_scale()
 	else:
 		_pose.scale = Vector3.ONE * (1.15 if _hit_pop_left > 0.0 else 1.0)
+
+
+## Overcharged's tell: the coil core flickers and now and then throws a little arc.
+func _crackle(frame: int) -> void:
+	var beat := (frame * 7 + get_instance_id()) % 11
+	_spark_core.set_instance_shader_parameter(&"emission_strength", 6.0 if beat < 2 else (1.5 if beat < 6 else 3.0))
+	if beat == 0:
+		var from := _spark_core.global_position
+		var jitter := Vector3(randf_range(-0.3, 0.3), randf_range(-0.25, 0.1), randf_range(-0.3, 0.3)) * type_scale()
+		Fx.tracer(self, from, from + jitter, RobotFactory.SPARK_COLOR)
 
 
 ## Anticipation before a hit (GDD 15.4): a squash. Heavies rear up instead.
