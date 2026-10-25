@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://bcqt7on3ieyq6"]
+
+[ext_resource type="Script" uid="uid://ces1c2x0cwlpl" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"grenade"
+display_name = "Boiler Grenades"
+slot = 5
+unlock_flag = &"grenade.unlocked"
+damage = 90.0
+damage_stat = &"grenade.damage"
+fire_rate = 0.5
+max_range = 45.0
+magazine_size = 2
+reload_time = 2.2

@@ -1,11 +1,14 @@
 class_name WaveDirector
 extends Node
-## The wave loop (GDD 11.1): Intermission (120 s; the siren winds up for its last 3 s) -> Spawning -> Mop-up
+## The wave loop (GDD 11.1): Intermission (90 s; the siren winds up for its last 3 s) -> Spawning -> Mop-up
 ## -> Cleared -> next Intermission. Each wave's threat budget (GDD 11.4) is spent over its spawn window
 ## (GDD 11.3) in a ramp-peak-lull-peak shape, from 2-5 lanes picked by the wave seed (GDD 11.6).
 ## Each wave rolls one robot family (RobotGenome, GDD 10) at the siren. Spawns are bought by type weight
-## (Scout 55%, Grunt squads 35%, Heavy 10% with a per-wave cap, GDD 9.1), and every Big Haul wave adds a
-## Foreman (GDD 11.2).
+## (Scout 55%, Grunt 35%, Heavy 10% with a per-wave cap, GDD 9.1); each spawn then rolls its archetype's
+## trio chance (GDD 9.6) and costs its threat per robot x group size (GDD 11.4). Every Big Haul wave adds a
+## Foreman (GDD 11.2). From wave 6 the attack grid's columns (melee, ranged, flight) get their own spawn
+## shares (DifficultyCurve.column_weights); from wave 7 a share of small ground melee spawns come as
+## Spitters instead (DifficultyCurve.spitter_share, M2-B9, B10).
 ## Authoritative: in co-op this runs on the host only (GDD 18.8).
 ## A first run opens with Level 0 "Morning Chores" (TUTORIAL): no clock runs until the dinner bell is rung,
 ## and TutorialDirector teaches the farm with pictures in the meantime.
@@ -22,15 +25,18 @@ const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-
 ## The Heavy that debuts as the Big Haul Foreman. M1 only has the melee class, so it's always the
 ## Thumper; the Boiler and Longneck take over at waves 10 and 15 once they exist (GDD 11.2).
 @export var foreman_archetype: RobotArchetype
+## The Spitter: a role of the small ground melee robot, not picked on its own. A spawn that picks a small
+## melee archetype becomes a Spitter group with chance DifficultyCurve.spitter_share (M2-B9).
+@export var spitter_archetype: RobotArchetype
 @export var gene_library: GeneLibrary
 @export var robots_parent: Node3D
 ## Spawn-event weights by RobotArchetype.RobotType (GDD 9.1).
 @export var type_weights: PackedFloat32Array = [0.55, 0.35, 0.10]
 ## The Foreman arrives at this fraction of the spawn window.
 @export var foreman_spawn_at: float = 0.45
-## GDD target is 30 s (ROADMAP D1). Builds keep 120 s until the Hub pegboard and pinned-goals
+## GDD target is 30 s (ROADMAP D1). Builds keep 90 s until the Hub pegboard and pinned-goals
 ## quick-buy land (M2-H3, M2-G1). Try other lengths with the console's `intermission <s>`.
-@export var intermission_time: float = 120.0
+@export var intermission_time: float = 90.0
 @export var siren_lead_time: float = 3.0
 ## Pause on the "Cleared" jingle before the next intermission starts.
 @export var cleared_hold_time: float = 2.0
@@ -66,17 +72,22 @@ var _lanes: Dictionary[int, LaneMarker] = {}
 var _stragglers_marked: bool = false
 
 
-## One spawn: a single robot, a Grunt squad, or the Foreman.
+## One spawn: a single robot, a trio, or the Foreman. Authored waves can set the group size directly.
 class SpawnEvent:
 	var archetype: RobotArchetype
 	var foreman: bool
+	var group_size: int
 
-	func _init(robot_archetype: RobotArchetype, is_foreman: bool = false) -> void:
+	func _init(robot_archetype: RobotArchetype, is_foreman: bool = false, size: int = 1) -> void:
 		archetype = robot_archetype
 		foreman = is_foreman
+		group_size = size
 
 	func robot_count() -> int:
-		return 1 if foreman else maxi(1, archetype.squad_size)
+		return 1 if foreman else maxi(1, group_size)
+
+	func threat_cost() -> float:
+		return archetype.threat_cost() * robot_count()
 
 
 func _ready() -> void:
@@ -152,6 +163,9 @@ func _enter_tutorial() -> void:
 func finish_tutorial(bonus_al: int = 0) -> void:
 	if phase != Phase.TUTORIAL:
 		return
+	# Ringing the bell early skips the lesson but must still leave the farmer able to fight wave 1.
+	if not StatService.has_flag(&"wrench.owned"):
+		StatService.grant(&"attack.wrench")
 	if bonus_al > 0:
 		GameState.add_parts({&"al": bonus_al})
 	SaveManager.tutorial_completed = true
@@ -188,7 +202,7 @@ func _roll_family() -> void:
 func _enter_spawning() -> void:
 	spawn_window = curve.spawn_window(wave)
 	_events = _build_spawn_events(wave)
-	_schedule = curve.spawn_schedule(_events.size(), spawn_window)
+	_schedule = curve.spawn_schedule(_events.size(), spawn_window * curve.spawn_window_fraction)
 	if curve.is_big_haul(wave) and foreman_archetype != null:
 		var at := spawn_window * foreman_spawn_at
 		var index := _schedule.bsearch(at)
@@ -247,8 +261,8 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 	var drone_count := 0
 	# Give each new vertical threat a guaranteed introduction on its unlock wave.
 	for archetype in available:
-		if (wave_number == 4 and archetype.id == &"roof_lobber") \
-				or (wave_number == 6 and archetype.id == &"drone"):
+		if wave_number == archetype.unlock_wave \
+				and (archetype.id == &"roof_lobber" or archetype.id == &"drone"):
 			if archetype.threat_cost() <= budget:
 				events.append(SpawnEvent.new(archetype))
 				budget -= archetype.threat_cost()
@@ -261,29 +275,88 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 		var total_weight := 0.0
 		for archetype in available:
 			var is_heavy := archetype.robot_type == RobotArchetype.RobotType.HEAVY
-			var at_cap := (archetype.id == &"roof_lobber" and rooftop_count >= (1 if wave_number < 10 else 2)) \
+			var at_cap := (archetype.id == &"roof_lobber" and rooftop_count >= rooftop_cap_for(wave_number)) \
 					or (archetype.id == &"drone" and drone_count >= (1 if wave_number < 8 else 3))
 			if archetype.threat_cost() <= budget + 0.001 and not (is_heavy and heavies >= heavy_cap) and not at_cap:
 				options.append(archetype)
-				total_weight += type_weights[int(archetype.robot_type)] * archetype.spawn_weight
 		if options.is_empty():
 			break
+		var weights := option_weights(options, wave_number)
+		for weight in weights:
+			total_weight += weight
 		var roll := _wave_rng.randf() * total_weight
 		var pick := options[options.size() - 1]
-		for archetype in options:
-			roll -= type_weights[int(archetype.robot_type)] * archetype.spawn_weight
+		for i in options.size():
+			roll -= weights[i]
 			if roll <= 0.0:
-				pick = archetype
+				pick = options[i]
 				break
-		events.append(SpawnEvent.new(pick))
-		budget -= pick.threat_cost()
+		pick = roll_role(wave_number, pick, budget)
+		var event := SpawnEvent.new(pick, false, roll_group_size(wave_number, pick, budget))
+		events.append(event)
+		budget -= event.threat_cost()
 		if pick.robot_type == RobotArchetype.RobotType.HEAVY:
 			heavies += 1
 		if pick.id == &"roof_lobber":
-			rooftop_count += 1
+			rooftop_count += event.robot_count()
 		elif pick.id == &"drone":
-			drone_count += 1
+			drone_count += event.robot_count()
 	return events
+
+
+## Each option's pick weight: its type weight x spawn_weight (GDD 9.1). From wave 6 these are rescaled so
+## each attack-grid column present among the options gets its DifficultyCurve.column_weights share.
+func option_weights(options: Array[RobotArchetype], wave_number: int) -> PackedFloat32Array:
+	var weights := PackedFloat32Array()
+	var column_totals := PackedFloat32Array([0.0, 0.0, 0.0])
+	for archetype in options:
+		var weight := type_weights[int(archetype.robot_type)] * archetype.spawn_weight
+		weights.append(weight)
+		column_totals[int(archetype.robot_class)] += weight
+	var shares := curve.column_weights(wave_number)
+	if shares.size() < 3:
+		return weights
+	var present := 0.0
+	for column in 3:
+		if column_totals[column] > 0.0:
+			present += shares[column]
+	if present <= 0.0:
+		return weights
+	for i in options.size():
+		var column := int(options[i].robot_class)
+		weights[i] = weights[i] / column_totals[column] * shares[column] / present
+	return weights
+
+
+## A small ground melee pick becomes a Spitter with chance DifficultyCurve.spitter_share (from wave 7), if
+## the budget covers one. Rolled from the wave's spawn stream only when the share is above 0, so earlier
+## waves build the same spawns as before.
+func roll_role(wave_number: int, pick: RobotArchetype, budget: float) -> RobotArchetype:
+	if spitter_archetype == null or pick.robot_type != RobotArchetype.RobotType.SCOUT \
+			or pick.robot_class != RobotArchetype.RobotClass.MELEE:
+		return pick
+	var share := curve.spitter_share(wave_number)
+	if share <= 0.0 or _wave_rng.randf() >= share or spitter_archetype.threat_cost() > budget + 0.001:
+		return pick
+	return spitter_archetype
+
+
+## 3 when this spawn rolls a trio (GDD 9.6) and the budget still covers three, otherwise 1. Rolled from
+## the wave's spawn stream, so every peer builds the same groups.
+func roll_group_size(wave_number: int, archetype: RobotArchetype, budget: float) -> int:
+	var chance := curve.trio_chance(wave_number, archetype)
+	if chance <= 0.0:
+		return 1
+	var trio := _wave_rng.randf() < chance
+	return 3 if trio and archetype.threat_cost() * 3.0 <= budget + 0.001 else 1
+
+
+## Roof Lobbers per wave beyond their guaranteed debut. Wave 4 leans on the rooftops: each Lobber costs more
+## threat than a ground robot, so more of them means fewer robots on the ground in that wave.
+static func rooftop_cap_for(wave_number: int) -> int:
+	if wave_number == 4:
+		return 3
+	return 1 if wave_number < 10 else 2
 
 
 ## Regular Heavies per wave (the Foreman doesn't count): 1, plus 1 every 8 waves.

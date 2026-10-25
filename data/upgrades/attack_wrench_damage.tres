@@ -18,12 +18,18 @@ stat = &"wrench.damage"
 value = 0.12
 per_level = PackedFloat32Array()
 
+[sub_resource type="Resource" id="Resource_wrench_requirement"]
+script = ExtResource("3_ceseb")
+node_id = &"attack.wrench"
+
 [resource]
 script = ExtResource("4_isr8a")
 id = &"attack.wrench_damage"
 branch = 1
 display_name = "Swing Damage"
-description = "+12% wrench damage per level."
+description = "+12% wrench, maul and scythe damage per level."
 max_level = 10
+prerequisites = Array[ExtResource("3_ceseb")]([SubResource("Resource_wrench_requirement")])
 cost_curve = SubResource("Resource_3ptvg")
 effects = Array[ExtResource("2_h011q")]([SubResource("Resource_lumow")])
+board_position = Vector2i(0, 1)

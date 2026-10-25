@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_4y8bb"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_sdpj8"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_dtakq"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_xxwhq"]
+
+[sub_resource type="Resource" id="Resource_63lji"]
+script = ExtResource("1_4y8bb")
+parts = Array[StringName]([&"cu"])
+bases = PackedFloat32Array(8)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_2gi1n"]
+script = ExtResource("2_sdpj8")
+stat = &"jetpack.air_dash"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_mnq62"]
+script = ExtResource("3_dtakq")
+node_id = &"travel.jetpack"
+
+[resource]
+script = ExtResource("4_xxwhq")
+id = &"travel.air_dash"
+display_name = "Air Dash"
+description = "Press Shift or LB in the air to burst along your movement direction."
+prerequisites = Array[ExtResource("3_dtakq")]([SubResource("Resource_mnq62")])
+cost_curve = SubResource("Resource_63lji")
+effects = Array[ExtResource("2_sdpj8")]([SubResource("Resource_2gi1n")])
+board_position = Vector2i(3, 1)

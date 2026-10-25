@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="RobotArchetype" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/robot_archetype.gd" id="1_arch"]
+[ext_resource type="PackedScene" path="res://scenes/robots/spitter.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_arch")
+id = &"spitter"
+display_name = "Spitter"
+robot_type = 0
+robot_class = 1
+scene = ExtResource("2_scene")
+unlock_wave = 7
+spawn_weight = 1.0
+body_radius = 0.35
+base_hp = 30.0
+move_speed = 7.0
+silo_focus = 0.6
+steal_chance = 0.0
+trio_chance = 0.4
+trio_chance_late = 0.7
+distractibility = 0.6
+distract_triggers = Array[StringName]([&"hurt", &"near", &"repairing"])
+distract_range = 12.0
+commit_time = 2.0
+chase_time = 8.0
+leash_range = 30.0
+give_up_time = 0.0
+on_unreachable = 2
+ranged_attack_id = &"spitter_pea"
+front_guard = 0.0
+tells = Array[StringName]([&"pea_shooter"])
+drop_al_min = 1
+drop_al_max = 2
+drop_al_class_bonus = 0
+drop_cu_chance = 0.2
+drop_pc_chance = 0.01

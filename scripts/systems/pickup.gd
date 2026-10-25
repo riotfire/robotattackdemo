@@ -20,6 +20,8 @@ const GRAVITY: float = 18.0
 ## At most this many bits per part type; bigger drops stack into fewer, worth more.
 const MAX_BITS: int = 6
 
+signal collected(pickup: Pickup, collector: Node3D)
+
 const COLORS: Dictionary[StringName, Color] = {
 	&"al": Color(0.82, 0.84, 0.88), &"cu": Color(0.9, 0.5, 0.22), &"au": Color(1.0, 0.8, 0.2),
 	&"pc": Color(0.06, 0.38, 1.0), &"grain": Color(0.78, 0.62, 0.38),
@@ -27,6 +29,9 @@ const COLORS: Dictionary[StringName, Color] = {
 
 var kind: StringName = &"al"
 var amount: int = 1
+## Tutorial parts stay put until the player finds them.
+var lifetime: float = PART_LIFETIME
+var tutorial_display: bool = false
 
 var _velocity: Vector3 = Vector3.ZERO
 var _ground_y: float = 0.0
@@ -73,6 +78,8 @@ func _ready() -> void:
 	add_to_group(GROUP)
 	_visual = Node3D.new()
 	add_child(_visual)
+	if tutorial_display:
+		_visual.scale = Vector3.ONE * 1.8
 	var color := COLORS.get(kind, Color.WHITE) as Color
 	if kind in [&"al", &"cu", &"au", &"pc"]:
 		_visual.add_child(PickupVisuals.create(kind, color))
@@ -87,17 +94,19 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_age += delta
-	var lifetime := SACK_LIFETIME if kind == GRAIN else PART_LIFETIME
+	var expires_after := SACK_LIFETIME if kind == GRAIN else lifetime
 	if kind == GRAIN and _age >= SACK_AUTO_RETURN and StatService.has_flag(&"grain.sack_tracker"):
 		_return_grain()
 		return
-	if _age >= lifetime:
+	if _age >= expires_after:
 		if kind == GRAIN:
 			EventBus.hud_message.emit("A grain sack burst: %d bushels lost" % amount, 2.0)
 		queue_free()
 		return
-	_visual.visible = _age < lifetime - BLINK_TIME or int(_age * 8.0) % 2 == 0
-	if kind != GRAIN and _landed:
+	_visual.visible = _age < expires_after - BLINK_TIME or int(_age * 8.0) % 2 == 0
+	if tutorial_display:
+		_visual.position.y = 0.3 + sin(_age * 4.0) * 0.12
+	elif kind != GRAIN and _landed:
 		_visual.position.y = 0.16 + (sin(_age * 3.0) * 0.035 if StopMotionClock.enabled else 0.0)
 
 	if _target != null and is_instance_valid(_target):
@@ -140,6 +149,7 @@ func attract_to(who: Node3D) -> void:
 
 func _collect() -> void:
 	GameState.add_parts({kind: amount})
+	collected.emit(self, _target)
 	queue_free()
 
 

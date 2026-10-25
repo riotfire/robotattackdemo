@@ -101,4 +101,4 @@ func test_catalog_is_complete_and_consistent() -> void:
 		purchasable += 1
 		for level in range(1, node.max_level + 1):
 			assert_false(node.cost_curve.cost(level).is_empty(), "%s level %d has a cost" % [id, level])
-	assert_between(purchasable, 30, 40, "about 30 pegboard nodes for M1 (GDD 21)")
+	assert_gte(purchasable, 40, "the tool shed includes the new weapon and jetpack combat choices")

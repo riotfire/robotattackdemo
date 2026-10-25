@@ -35,6 +35,13 @@ signal landed(fall_speed: float)
 @export_group("Jetpack (GDD 13.4)")
 ## Hover Mode burns fuel at this fraction of the thrust rate.
 @export var hover_fuel_drain: float = 0.4
+@export var air_dash_speed: float = 28.0
+@export var air_dash_time: float = 0.22
+@export var air_dash_fuel: float = 0.3
+@export var air_dash_cooldown: float = 2.5
+@export var ground_pound_speed: float = 25.0
+@export var ground_pound_radius: float = 4.5
+@export var ground_pound_damage: float = 75.0
 
 var is_hovering: bool = false
 ## The ladder being climbed.
@@ -55,6 +62,10 @@ var _zip_distance: float = 0.0
 var _knockback: Vector3 = Vector3.ZERO
 var _was_on_floor: bool = true
 var _fall_peak: float = 0.0
+var _dash_left: float = 0.0
+var _dash_cooldown_left: float = 0.0
+var _dash_direction: Vector3 = Vector3.FORWARD
+var _pounding: bool = false
 
 
 func setup(owner_farmer: Farmer) -> void:
@@ -91,6 +102,14 @@ func _process_free_move(delta: float, wish: Vector3) -> void:
 	var jetpack := farmer.jetpack
 	var repairing := farmer.repair.is_repairing
 	var grounded := farmer.is_on_floor()
+	_dash_cooldown_left = maxf(0.0, _dash_cooldown_left - delta)
+	_dash_left = maxf(0.0, _dash_left - delta)
+	if grounded:
+		_dash_left = 0.0
+	if not grounded and input.is_just_pressed(&"air_dash"):
+		try_air_dash(wish)
+	if not grounded and input.is_just_pressed(&"ground_pound"):
+		try_ground_pound()
 	if grounded:
 		_coyote_left = coyote_time
 	else:
@@ -118,7 +137,7 @@ func _process_free_move(delta: float, wish: Vector3) -> void:
 	var climb_rate := jetpack.climb_rate()
 	var holding_jump := not grounded and input.is_pressed(&"jump")
 	is_hovering = holding_jump and farmer.is_aiming and StatService.has_flag(&"jetpack.hover")
-	var wants_thrust := holding_jump and (is_hovering or velocity.y <= climb_rate + 0.01)
+	var wants_thrust := not _pounding and holding_jump and (is_hovering or velocity.y <= climb_rate + 0.01)
 	var thrusting := jetpack.update(delta, grounded, wants_thrust, hover_fuel_drain if is_hovering else 1.0)
 	is_hovering = is_hovering and thrusting
 	if thrusting:
@@ -127,8 +146,14 @@ func _process_free_move(delta: float, wish: Vector3) -> void:
 		target_velocity = wish * jetpack.air_speed()
 	elif not grounded:
 		velocity.y = maxf(velocity.y - gravity * delta, -max_fall_speed)
+	if _pounding:
+		velocity.y = -ground_pound_speed
 
 	var horizontal := Vector3(velocity.x, 0.0, velocity.z).move_toward(target_velocity, accel * delta)
+	if _dash_left > 0.0:
+		horizontal = _dash_direction * air_dash_speed
+	elif _pounding:
+		horizontal = Vector3.ZERO
 	farmer.velocity = Vector3(horizontal.x, velocity.y, horizontal.z) + _knockback
 	_knockback = _knockback.move_toward(Vector3.ZERO, 30.0 * delta)
 	var falling_speed := -farmer.velocity.y
@@ -137,17 +162,52 @@ func _process_free_move(delta: float, wish: Vector3) -> void:
 	if farmer.is_on_floor():
 		if not _was_on_floor:
 			landed.emit(falling_speed)
+			if _pounding:
+				AreaAttack.hit_robots(farmer, farmer.global_position, ground_pound_radius,
+						ground_pound_damage * farmer.damage_multiplier(), farmer, 12.0)
+				Fx.puff(farmer, farmer.global_position + Vector3.UP * 0.2,
+						Color(0.95, 0.74, 0.3), ground_pound_radius * 0.25, 0.5)
 			# Judged by the lesser of the real drop and the drop that would give this impact speed, so
 			# braking with the jetpack (or hovering down) softens a landing.
 			var speed_height := falling_speed * falling_speed / (2.0 * gravity)
 			var drop := minf(_fall_peak - farmer.global_position.y, speed_height)
-			farmer.take_fall_damage(drop, safe_fall_height, lethal_fall_height, fall_curve)
+			if not _pounding:
+				farmer.take_fall_damage(drop, safe_fall_height, lethal_fall_height, fall_curve)
+		_pounding = false
 		_fall_peak = farmer.global_position.y
 		farmer.state = Farmer.State.GROUNDED
 	else:
 		_fall_peak = maxf(_fall_peak, farmer.global_position.y)
 		farmer.state = Farmer.State.JETPACKING if thrusting else Farmer.State.AIRBORNE
 	_was_on_floor = farmer.is_on_floor()
+
+
+func try_air_dash(wish: Vector3) -> bool:
+	if farmer.is_on_floor() or _pounding or not StatService.has_flag(&"jetpack.air_dash") \
+			or _dash_cooldown_left > 0.0 or farmer.jetpack.fuel < air_dash_fuel:
+		return false
+	_dash_direction = wish.normalized() if wish.length() > 0.1 else farmer.aim_forward_flat()
+	_dash_left = air_dash_time
+	_dash_cooldown_left = air_dash_cooldown
+	farmer.jetpack.fuel -= air_dash_fuel
+	Fx.puff(farmer, farmer.global_position + Vector3.UP, Color(0.6, 0.85, 1.0), 0.5)
+	return true
+
+
+func try_ground_pound() -> bool:
+	if farmer.is_on_floor() or not StatService.has_flag(&"jetpack.ground_pound") \
+			or _height_above_floor() < 2.0:
+		return false
+	_pounding = true
+	_dash_left = 0.0
+	return true
+
+
+func _height_above_floor() -> float:
+	var from := farmer.global_position + Vector3.UP * 0.1
+	var query := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 30.0, 1, [farmer.get_rid()])
+	var hit := farmer.get_world_3d().direct_space_state.intersect_ray(query)
+	return from.distance_to(hit["position"]) if not hit.is_empty() else 30.0
 
 
 # --- Ladders (GDD 4.5) ----------------------------------------------------------------------------

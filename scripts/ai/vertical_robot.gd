@@ -2,8 +2,9 @@ class_name VerticalRobot
 extends Robot
 ## Two ranged enemies that make the farm's height matter. Lobbers walk to a building, climb its outer
 ## wall, and throw from the roof. Drones rise above the farm and circle the silo while firing.
+## The shooting is a RangedAttack running the archetype's AttackProfile (M2-B7); who it shoots comes from
+## the shared RobotTargeting: the farmer while it is after them and within range, otherwise the silo.
 
-const PROJECTILE_MASK: int = 1 | 2
 const ROOF_GROUP: StringName = &"roof_lobbers"
 const ROOF_SITES: Array[Dictionary] = [
 	{"path": ^"Farm/NavRegion/ToolShed", "entry": Vector3(5.2, 0.0, 0.0), "wall": Vector3(4.55, 0.0, 0.0), "edge_y": 4.05, "top": Vector3(3.3, 4.05, 0.0)},
@@ -15,9 +16,8 @@ const ROOF_SITES: Array[Dictionary] = [
 @export var aerial: bool = false
 @export var climb_speed: float = 3.2
 @export var flight_speed: float = 9.0
-@export var projectile_speed: float = 20.0
-@export var projectile_gravity: float = 6.0
-@export var player_priority_range: float = 24.0
+## Drones stop shooting this far out from the silo (flat distance).
+@export var aerial_fire_radius: float = 36.0
 
 enum Travel { APPROACH, CLIMB, PERCHED, FLYING }
 
@@ -30,9 +30,9 @@ var _roof_top: Vector3
 var _climb_target: Vector3
 var _climb_stage: int = 0
 var _orbit_angle: float = 0.0
-var _shot_target: Node3D
 var _muzzle: MeshInstance3D
 var _rotor: Node3D
+var ranged: RangedAttack
 
 
 func _ready() -> void:
@@ -56,7 +56,15 @@ func _ready() -> void:
 		add_to_group(ROOF_GROUP)
 		_choose_roof()
 	_make_silhouette()
-	_make_muzzle()
+	_muzzle = make_muzzle(Vector3(0.0, 1.15, -0.55), Color(1.0, 0.45, 0.1) if aerial else Color(1.0, 0.84, 0.2))
+	var profile := archetype.ranged_attack()
+	if profile == null:
+		push_warning("%s has no attack profile; using the drone's." % archetype.id)
+		profile = load(AttackProfile.resource_path_for(&"drone_shot")) as AttackProfile
+	ranged = make_ranged_attack(profile, _muzzle)
+	if aerial:
+		# Drones fire volleys late in a run (DifficultyCurve.volley_size, M2-B10).
+		ranged.volley_override = volley_size
 
 
 func _choose_roof() -> void:
@@ -92,6 +100,7 @@ func _physics_process(delta: float) -> void:
 		_die(null, false)
 		return
 	_hit_pop_left = maxf(0.0, _hit_pop_left - delta)
+	_update_targeting(delta)
 	match travel:
 		Travel.APPROACH:
 			if Vector2(global_position.x - _entry.x, global_position.z - _entry.z).length() <= 2.0:
@@ -118,7 +127,9 @@ func _physics_process(delta: float) -> void:
 		Travel.PERCHED:
 			pass
 	if travel in [Travel.PERCHED, Travel.FLYING]:
-		_attack_step(delta)
+		ranged.step(delta)
+	else:
+		ranged.cancel()
 
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
@@ -151,94 +162,29 @@ func _fly(delta: float) -> void:
 	_face(center)
 
 
-func _attack_step(delta: float) -> void:
-	match ai_state:
-		AiState.SEEK:
-			_shot_target = _pick_target()
-			if _shot_target != null:
-				ai_state = AiState.WINDUP
-				_attack_timer = archetype.attack_windup
-				_muzzle.visible = true
-		AiState.WINDUP:
-			if _shot_target == null or not is_instance_valid(_shot_target):
-				ai_state = AiState.SEEK
-				_muzzle.visible = false
-				return
-			_face(_shot_target.global_position)
-			_attack_timer -= delta
-			_muzzle.scale = Vector3.ONE * (0.5 + 0.5 * (1.0 - maxf(0.0, _attack_timer) / archetype.attack_windup))
-			if _attack_timer <= 0.0:
-				_throw_projectile()
-				_muzzle.visible = false
-				ai_state = AiState.RECOVER
-				_attack_timer = maxf(0.0, archetype.attack_interval - archetype.attack_windup)
-		AiState.RECOVER:
-			_attack_timer -= delta
-			if _attack_timer <= 0.0:
-				ai_state = AiState.SEEK
-
-
-func _pick_target() -> Node3D:
+## What RangedAttack aims at next: the farmer while RobotTargeting is after them and they're within the
+## profile's range, otherwise the silo. Drones hold fire beyond aerial_fire_radius.
+func ranged_target() -> Node3D:
 	if aerial:
 		var flat := global_position - _silo_center()
 		flat.y = 0.0
-		if flat.length() > 36.0:
+		if flat.length() > aerial_fire_radius:
 			return null
-	var player := GameState.get_nearest_player(global_position)
-	if player != null and player.global_position.distance_to(global_position) <= player_priority_range:
-		return player
+	if target_kind == TargetKind.PLAYER and _is_living(target_player) \
+			and target_player.global_position.distance_to(global_position) <= ranged.profile.attack_range:
+		return target_player
 	return GameState.silo
 
 
-func _throw_projectile() -> void:
-	if _shot_target == null or not is_instance_valid(_shot_target):
-		return
-	var from := _muzzle.global_position
-	var target := _shot_target.global_position + Vector3.UP * (1.0 if _shot_target is Farmer else 8.0)
-	var delta := target - from
-	var horizontal := Vector2(delta.x, delta.z).length()
-	var flight_time := maxf(0.35, horizontal / projectile_speed)
-	var launch_velocity := delta / flight_time
-	var pull := 0.0 if aerial else projectile_gravity
-	launch_velocity.y += 0.5 * pull * flight_time
-	var color := Color(1.0, 0.45, 0.1) if aerial else Color(1.0, 0.84, 0.2)
-	var exclude: Array[RID] = [get_rid()]
-	ProjectilePool.of(self).launch(from, launch_velocity, pull, flight_time + 1.0, PROJECTILE_MASK,
-		exclude, _on_projectile_hit, color, 0.2 if aerial else 0.26)
-	Fx.puff(self, from, color, 0.3, 0.2)
-
-
-func _on_projectile_hit(hit: Dictionary) -> bool:
-	var collider := hit["collider"] as Node
-	var at: Vector3 = hit["position"]
-	if collider is Farmer:
-		(collider as Farmer).take_damage(DamagePacket.create(archetype.damage_vs_farmer * damage_multiplier, self, at))
-	elif collider is Silo:
-		(collider as Silo).take_damage(DamagePacket.create(archetype.damage_vs_silo * damage_multiplier, self, at))
-	Fx.puff(self, at, Color(1.0, 0.65, 0.2), 0.35, 0.2)
-	return false
+## A ranged robot can shoot a farmer on a roof or in the air.
+func can_reach(_farmer: Node3D) -> bool:
+	return true
 
 
 func _on_tick_12(frame: int) -> void:
 	super._on_tick_12(frame)
 	if aerial and _rotor != null and ai_state != AiState.DEAD:
 		_rotor.rotate_y(PI * 0.45)
-
-
-func _make_muzzle() -> void:
-	_muzzle = MeshInstance3D.new()
-	_muzzle.name = "ChargingProjectile"
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.24
-	sphere.height = 0.48
-	_muzzle.mesh = sphere
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = Color(1.0, 0.45, 0.1) if aerial else Color(1.0, 0.84, 0.2)
-	_muzzle.material_override = material
-	model.add_child(_muzzle)
-	_muzzle.position = Vector3(0.0, 1.15, -0.55)
-	_muzzle.visible = false
 
 
 func _make_silhouette() -> void:

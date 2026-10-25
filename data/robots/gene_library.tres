@@ -10,8 +10,9 @@
 [ext_resource type="Resource" path="res://data/robots/traits/armored.tres" id="8_elpgt"]
 [ext_resource type="Resource" path="res://data/robots/traits/gilded.tres" id="9_7a0g7"]
 [ext_resource type="Resource" path="res://data/robots/traits/thieving.tres" id="10_tbio2"]
+[ext_resource type="Resource" path="res://data/robots/traits/overcharged.tres" id="11_5feih"]
 
 [resource]
 script = ExtResource("1_jjmhr")
 themes = Array[ExtResource("2_5feih")]([ExtResource("3_q58m7"), ExtResource("4_nlkj4"), ExtResource("5_dj0sh")])
-traits = Array[ExtResource("6_bodba")]([ExtResource("7_ach8s"), ExtResource("8_elpgt"), ExtResource("9_7a0g7"), ExtResource("10_tbio2")])
+traits = Array[ExtResource("6_bodba")]([ExtResource("7_ach8s"), ExtResource("8_elpgt"), ExtResource("9_7a0g7"), ExtResource("10_tbio2"), ExtResource("11_5feih")])

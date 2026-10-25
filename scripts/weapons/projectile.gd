@@ -16,6 +16,8 @@ var time_left: float = 0.0
 ## Called as on_hit(hit: Dictionary) with an intersect_ray result. Returns true to fly on through.
 var on_hit: Callable
 var is_active: bool = false
+## Counts launches, so a holder can tell its shot from a later one that reuses this pooled node.
+var launches: int = 0
 
 var _exclude: Array[RID] = []
 var _pool: ProjectilePool = null
@@ -33,6 +35,7 @@ func _init() -> void:
 func launch(pool: ProjectilePool, from: Vector3, launch_velocity: Vector3, pull: float, lifetime: float, mask: int,
 		exclude: Array[RID], hit_callback: Callable, color: Color, radius: float) -> void:
 	_pool = pool
+	launches += 1
 	velocity = launch_velocity
 	gravity = pull
 	time_left = lifetime

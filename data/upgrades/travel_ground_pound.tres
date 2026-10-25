@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_gbw6f"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_d4phn"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_i84f3"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_li3c3"]
+
+[sub_resource type="Resource" id="Resource_mxv3g"]
+script = ExtResource("1_gbw6f")
+parts = Array[StringName]([&"cu"])
+bases = PackedFloat32Array(12)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_rw3v6"]
+script = ExtResource("2_d4phn")
+stat = &"jetpack.ground_pound"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_i0oe4"]
+script = ExtResource("3_i84f3")
+node_id = &"travel.jetpack"
+
+[resource]
+script = ExtResource("4_li3c3")
+id = &"travel.ground_pound"
+display_name = "Ground Pound"
+description = "Press Ctrl or RB in the air to slam down and blast nearby robots on landing."
+prerequisites = Array[ExtResource("3_i84f3")]([SubResource("Resource_i0oe4")])
+cost_curve = SubResource("Resource_mxv3g")
+effects = Array[ExtResource("2_d4phn")]([SubResource("Resource_rw3v6")])
+board_position = Vector2i(3, 2)

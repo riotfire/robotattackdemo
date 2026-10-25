@@ -12,6 +12,7 @@ var _status: Label
 var _wave_picker: SpinBox
 var _god_button: Button
 var _fps_button: Button
+var _model_button: Button
 var _time_row: HFlowContainer
 var _weather_row: HFlowContainer
 var _new_game: Button
@@ -178,6 +179,12 @@ func _build() -> void:
 	box.add_child(_fps_button)
 	_refresh_fps_button()
 
+	box.add_child(_section("PLAYER MODEL"))
+	_model_button = _button("", "Swap the clay farmer for the rigged Blender farmer (test)")
+	_model_button.pressed.connect(_toggle_rigged_model)
+	box.add_child(_model_button)
+	_refresh_model_button()
+
 	box.add_child(_section("TIME OF DAY"))
 	_time_row = _flow_row(box)
 	box.add_child(_section("WEATHER"))
@@ -328,6 +335,18 @@ func _toggle_fps() -> void:
 
 func _refresh_fps_button() -> void:
 	_fps_button.text = "Show FPS: %s" % ("ON" if SaveManager.settings.get("show_fps", false) else "OFF")
+
+
+func _toggle_rigged_model() -> void:
+	SaveManager.settings["rigged_farmer"] = not bool(SaveManager.settings.get("rigged_farmer", false))
+	SaveManager.save_settings()
+	for farmer in get_tree().get_nodes_in_group(&"players"):
+		(farmer as Farmer).set_rigged_model(bool(SaveManager.settings["rigged_farmer"]))
+	_refresh_model_button()
+
+
+func _refresh_model_button() -> void:
+	_model_button.text = "Player model: %s" % ("Rigged farmer (test)" if SaveManager.settings.get("rigged_farmer", false) else "Clay farmer")
 
 
 func _toggle_help() -> void:

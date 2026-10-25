@@ -27,7 +27,7 @@ func physics_step(delta: float) -> void:
 		previous.set_highlighted(false)
 	if target != null:
 		target.set_highlighted(true)
-	is_repairing = target != null and farmer.input.is_pressed(&"interact")
+	is_repairing = target != null and StatService.has_flag(&"wrench.owned") and farmer.input.is_pressed(&"interact")
 	if is_repairing:
 		var to_crack := target.global_position - farmer.global_position
 		farmer.facing_yaw = atan2(-to_crack.x, -to_crack.z)

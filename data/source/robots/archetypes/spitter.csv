@@ -1,0 +1,2 @@
+id,display_name,robot_type,robot_class,scene,unlock_wave,spawn_weight,body_radius,base_hp,move_speed,silo_focus,steal_chance,trio_chance,trio_chance_late,distractibility,distract_triggers,distract_range,commit_time,chase_time,leash_range,give_up_time,on_unreachable,ranged_attack_id,front_guard,tells,drop_al_min,drop_al_max,drop_al_class_bonus,drop_cu_chance,drop_pc_chance
+spitter,Spitter,scout,ranged,res://scenes/robots/spitter.tscn,7,1,0.35,30,7,0.6,0,0.4,0.7,0.6,hurt near repairing,12,2,8,30,0,relocate,spitter_pea,0,pea_shooter,1,2,0,0.2,0.01

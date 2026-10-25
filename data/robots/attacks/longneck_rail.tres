@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AttackProfile" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/attack_profile.gd" id="1_dljy0"]
+
+[resource]
+script = ExtResource("1_dljy0")
+id = &"longneck_rail"
+kind = 2
+charge_time = 2.0
+interval = 6.0
+damage_vs_farmer = 30.0
+damage_vs_silo = 80.0
+speed = 150.0
+attack_range = 60.0
+aim_height_silo = 6.0
+projectile_radius = 0.12
+color = Color(0.95, 0.12, 0.08, 1)

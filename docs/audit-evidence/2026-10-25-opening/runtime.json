@@ -1,0 +1,114 @@
+[
+  {
+    "counts": {
+      "nibbler": 9
+    },
+    "cracks": 7,
+    "family": "The Teal Pirate Tin Cans",
+    "first_silo_hit_s": 13.7833333333336,
+    "foremen": [],
+    "lanes": [
+      2,
+      4
+    ],
+    "last_scheduled_spawn": 32.4472389221191,
+    "leak_per_second": 6.20000016689301,
+    "observed_seconds": 50.0166666666651,
+    "peak_live": 9,
+    "unopposed_silo_damage": 702.0,
+    "wave": 1
+  },
+  {
+    "counts": {
+      "clanker": 9,
+      "nibbler": 4
+    },
+    "cracks": 5,
+    "family": "The Grape Disco Toasters",
+    "first_silo_hit_s": 29.6166666666663,
+    "foremen": [],
+    "lanes": [
+      6,
+      8
+    ],
+    "last_scheduled_spawn": 36.5879936218262,
+    "leak_per_second": 5.00000011920929,
+    "observed_seconds": 57.0166666666647,
+    "peak_live": 13,
+    "unopposed_silo_damage": 568.386,
+    "wave": 2
+  },
+  {
+    "counts": {
+      "clanker": 12,
+      "nibbler": 4,
+      "roof_lobber": 1
+    },
+    "cracks": 10,
+    "family": "The Mustard Junkyard Tin Cans",
+    "first_silo_hit_s": 22.3166666666667,
+    "foremen": [],
+    "lanes": [
+      1,
+      2
+    ],
+    "last_scheduled_spawn": 42.5419311523438,
+    "leak_per_second": 8.80000019073486,
+    "observed_seconds": 64.0166666666643,
+    "peak_live": 17,
+    "unopposed_silo_damage": 1047.144,
+    "wave": 3
+  },
+  {
+    "counts": {
+      "clanker": 9,
+      "nibbler": 13,
+      "roof_lobber": 1
+    },
+    "cracks": 10,
+    "family": "The Chrome Disco Toasters",
+    "first_silo_hit_s": 13.4333333333336,
+    "foremen": [],
+    "lanes": [
+      4,
+      8
+    ],
+    "last_scheduled_spawn": 49.8276634216309,
+    "leak_per_second": 13.0000001192093,
+    "observed_seconds": 71.0166666666639,
+    "peak_live": 23,
+    "unopposed_silo_damage": 3265.06799999997,
+    "wave": 4
+  },
+  {
+    "counts": {
+      "clanker": 27,
+      "drone": 1,
+      "nibbler": 9,
+      "roof_lobber": 1,
+      "thumper": 1
+    },
+    "cracks": 10,
+    "family": "The Cherry Pirate Eggs",
+    "first_silo_hit_s": 12.3333333333335,
+    "foremen": [
+      {
+        "hp": 1574.4,
+        "traits": [
+          "gilded"
+        ]
+      }
+    ],
+    "lanes": [
+      3,
+      4,
+      6
+    ],
+    "last_scheduled_spawn": 55.5764083862305,
+    "leak_per_second": 9.40000021457672,
+    "observed_seconds": 78.0166666666635,
+    "peak_live": 39,
+    "unopposed_silo_damage": 6505.63200000002,
+    "wave": 5
+  }
+]

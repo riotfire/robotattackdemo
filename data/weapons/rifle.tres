@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://bpgysyw8v3vdh"]
+
+[ext_resource type="Script" uid="uid://ces1c2x0cwlpl" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"rifle"
+display_name = "Longneck Rifle"
+slot = 4
+unlock_flag = &"rifle.unlocked"
+damage = 55.0
+damage_stat = &"rifle.damage"
+fire_rate = 0.8
+max_range = 100.0
+pierce = 1
+pierce_stat = &"rifle.pierce"
+magazine_size = 4
+reload_time = 1.9

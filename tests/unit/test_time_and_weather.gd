@@ -97,18 +97,18 @@ func test_morning_fog_shortens_only_long_range() -> void:
 	for weather in table.weathers:
 		Weather.current = weather
 		var fog := weather.id == &"morning_fog"
-		assert_almost_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.LONG_RANGE), 0.8 if fog else 1.0, 0.0001,
+		assert_almost_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.RANGED), 0.8 if fog else 1.0, 0.0001,
 				"%s: long-range multiplier" % weather.id)
 		assert_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.MELEE), 1.0, "%s: melee unchanged" % weather.id)
-		assert_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.SHORT_RANGE), 1.0, "%s: short-range unchanged" % weather.id)
+		assert_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.FLIGHT), 1.0, "%s: flyers unchanged" % weather.id)
 	Weather.current = table.weathers[WEATHER_IDS.find(&"morning_fog")]
-	assert_almost_eq(Weather.engagement_range(50.0, RobotArchetype.RobotClass.LONG_RANGE), 40.0, 0.001,
+	assert_almost_eq(Weather.engagement_range(50.0, RobotArchetype.RobotClass.RANGED), 40.0, 0.001,
 			"a Longneck's 50 m siege range becomes 40 m in fog")
 
 
 func test_no_weather_is_neutral() -> void:
 	Weather.current = null
-	assert_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.LONG_RANGE), 1.0)
+	assert_eq(Weather.engagement_range_multiplier(RobotArchetype.RobotClass.RANGED), 1.0)
 
 
 func test_every_preset_and_weather_composes_and_applies() -> void:

@@ -1,6 +1,6 @@
 class_name WeaponWheel
 extends Control
-## The weapon wheel (GDD 5.2), drawn while a WeaponHolder's wheel is open: six pegs round the crosshair,
+## The weapon wheel (GDD 5.2), drawn while a WeaponHolder's wheel is open: seven pegs round the crosshair,
 ## slot 1 at the top and clockwise, matching the number keys. Locked weapons show dimmed; the pointed-at
 ## one grows. Graybox drawing like the rest of the HUD; the cardboard look comes in M3-C.
 

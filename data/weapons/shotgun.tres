@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://cpf3idl8s63th"]
+
+[ext_resource type="Script" uid="uid://ces1c2x0cwlpl" path="res://scripts/weapons/weapon_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"shotgun"
+display_name = "Barn Blaster"
+slot = 3
+unlock_flag = &"shotgun.unlocked"
+damage_stat = &"shotgun.damage"
+max_range = 16.0
+knockback = 3.0
+magazine_size = 5
+reload_time = 1.8

@@ -7,6 +7,7 @@ script = ExtResource("1_melee")
 id = &"wrench"
 display_name = "Wrench"
 slot = 1
+unlock_flag = &"wrench.owned"
 trigger_mode = 1
 damage = 25.0
 damage_stat = &"wrench.damage"

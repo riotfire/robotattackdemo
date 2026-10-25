@@ -32,4 +32,4 @@ max_level = 10
 prerequisites = Array[ExtResource("3_0q6bu")]([SubResource("Resource_u5cc4")])
 cost_curve = SubResource("Resource_kdb80")
 effects = Array[ExtResource("2_2jr4e")]([SubResource("Resource_3bp87")])
-board_position = Vector2i(2, 1)
+board_position = Vector2i(1, 3)

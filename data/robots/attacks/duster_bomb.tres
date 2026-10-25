@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AttackProfile" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/attack_profile.gd" id="1_quylx"]
+
+[resource]
+script = ExtResource("1_quylx")
+id = &"duster_bomb"
+kind = 3
+charge_time = 1.0
+interval = 3.0
+damage_vs_farmer = 10.0
+damage_vs_silo = 15.0
+speed = 0.0
+gravity = 22.0
+attack_range = 18.0
+aim_height_silo = 16.0
+splash_radius = 2.0
+projectile_radius = 0.3
+color = Color(0.25, 0.22, 0.2, 1)

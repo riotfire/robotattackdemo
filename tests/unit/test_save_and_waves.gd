@@ -65,8 +65,11 @@ func test_spawn_buying_spends_the_budget_within_the_rules() -> void:
 		var spent := 0.0
 		var heavies := 0
 		for event: WaveDirector.SpawnEvent in events:
-			spent += event.archetype.threat_cost()
+			spent += event.threat_cost()
 			assert_lte(event.archetype.unlock_wave, wave, "wave %d: %s is unlocked" % [wave, event.archetype.id])
+			assert_true(event.robot_count() in [1, 3], "wave %d: groups are solo or trios" % wave)
+			if not event.archetype.can_form_trio():
+				assert_eq(event.robot_count(), 1, "wave %d: a %s is always solo" % [wave, event.archetype.id])
 			if event.archetype.robot_type == RobotArchetype.RobotType.HEAVY:
 				heavies += 1
 		var budget := director.curve.threat_budget(wave)
@@ -77,23 +80,28 @@ func test_spawn_buying_spends_the_budget_within_the_rules() -> void:
 	var first: Array = director.call(&"_build_spawn_events", 7)
 	director.set(&"_wave_rng", RngService.make_rng([99, 7]))
 	var second: Array = director.call(&"_build_spawn_events", 7)
-	assert_eq(first.map(func(e: WaveDirector.SpawnEvent) -> StringName: return e.archetype.id),
-			second.map(func(e: WaveDirector.SpawnEvent) -> StringName: return e.archetype.id), "same seed, same wave")
+	assert_eq(first.map(func(e: WaveDirector.SpawnEvent) -> String: return "%s x%d" % [e.archetype.id, e.robot_count()]),
+			second.map(func(e: WaveDirector.SpawnEvent) -> String: return "%s x%d" % [e.archetype.id, e.robot_count()]),
+			"same seed, same wave, same groups")
 	director.free()
 
 
 func test_tutorial_flag_defaults_by_history() -> void:
 	var path := SaveManager.profile_path
 	var done := SaveManager.tutorial_completed
+	var levels := StatService.levels.duplicate()
 	SaveManager.apply({})
 	assert_false(SaveManager.tutorial_completed, "a brand-new profile still has Level 0 to do")
+	assert_false(StatService.has_flag(&"wrench.owned"), "a new player collects parts for the wrench")
 	SaveManager.apply({"records": {"best_wave": 4}})
 	assert_true(SaveManager.tutorial_completed, "a profile from before Level 0 that has played skips it")
+	assert_true(StatService.has_flag(&"wrench.owned"), "an existing player keeps the starting wrench")
 	SaveManager.apply({"records": {"best_wave": 4}, "tutorial_completed": false})
 	assert_false(SaveManager.tutorial_completed, "an explicit flag wins")
 	SaveManager.tutorial_completed = true
 	assert_true(bool(SaveManager.to_dictionary()["tutorial_completed"]), "the flag is saved")
 	SaveManager.tutorial_completed = done
+	StatService.set_levels(levels)
 	SaveManager.profile_path = path
 
 

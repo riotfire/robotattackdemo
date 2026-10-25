@@ -4,24 +4,29 @@ extends Node
 ## chores that matter. The same HUD used during waves explains each action and shows its progress. A low floor
 ## ring and a trail of glowing pebbles lead the player to the next place without replacing the normal UI.
 ##
-##   1. SILO     A crack leaks grain. Hold Interact beside it with the wrench until it seals.
-##   2. DUMMY    Grandpa's spring-loaded Dummy-Bot pops up on a hay bale. Swing the wrench; it drops a little Aluminium
-##               and its spring bonks you for 20 (so you have a reason for the next step).
-##   3. PORCH    Stand on the Home porch until the normal HP bar is full: this is where you heal.
-##   4. PRACTICE Stop one slow Nibbler with the wrench. If it lands a hit, repair the resulting leak.
-##   5. CATWALK  Climb the silo ladder to the top. A short camera sweep lights up the chicken house,
+##   1. COLLECT  Pick up a cluster of Aluminium beside the tractor; the parts bank on contact.
+##   2. PEGBOARD Buy Grandpa's Wrench with the scraps. The real pegboard teaches its price and hold-to-buy action.
+##   3. DUMMY    Grandpa's spring-loaded Dummy-Bot pops up. Swing the new wrench; its spring bonks you for 20.
+##   4. PORCH    Stand on the Home porch until the normal HP bar is full: this is where you heal.
+##   5. PRACTICE Stop one slow Nibbler with the wrench. If it lands a hit, repair the resulting leak.
+##   6. CATWALK  Climb the silo ladder to the top. A short camera sweep lights up the chicken house,
 ##               the water tower and the 8 robot lanes in the corn.
-##   6. ZIPLINE  Already on top of the silo, ride the zipline down to the barn roof.
-##   7. BELL     Hold Interact on the dinner bell to start a melee-only wave 1. The shed opens after wave 1.
+##   7. ZIPLINE  Already on top of the silo, ride the zipline down to the barn roof.
+##   8. BELL     Hold Interact on the dinner bell to start a melee-only wave 1. The shed opens after wave 1.
 ## The bell works from the start, so a player who just wants to play can skip: no bonus, same siren.
 ## Runs only while WaveDirector is in its TUTORIAL phase (a profile that hasn't finished it yet).
 
-enum Step { INTRO, SILO, DUMMY, PORCH, PRACTICE, REPAIR, CATWALK, ZIPLINE, BELL, DONE }
+enum Step { INTRO, COLLECT, PEGBOARD, DUMMY, PORCH, PRACTICE, REPAIR, CATWALK, ZIPLINE, BELL, DONE }
 
 ## The ground-level silo socket facing the farmer's spawn.
 const CRACK_SOCKET: int = 0
-const CRACK_POOL: float = 100.0
 const DUMMY_POSITION := Vector3(-18.0, 0.0, 17.0)
+const STARTER_PART_OFFSETS := [
+	Vector3(-0.65, 0.3, -0.4), Vector3(0.0, 0.3, -0.75), Vector3(0.7, 0.3, -0.35),
+	Vector3(-0.7, 0.3, 0.4), Vector3(0.0, 0.3, 0.75), Vector3(0.7, 0.3, 0.35),
+]
+const STARTER_PART_VALUE: int = 1
+const WRENCH_UPGRADE: StringName = &"attack.wrench"
 const STARTER_AL: int = 5
 ## Standing on the silo's cap; the dome peaks at about 24 m.
 const SILO_TOP_HEIGHT: float = 23.0
@@ -42,6 +47,7 @@ var _director: WaveDirector
 var _hud: Hud
 var _silo: Silo
 var _shed: ToolShed
+var _pegboard: PegboardUI
 var _bell: DinnerBell
 var _zipline: Zipline
 var _zip_ridden: bool = false
@@ -52,7 +58,9 @@ var _marker: TutorialMarker
 var _retired: Array[TutorialMarker] = []
 var _vista_lessons: PackedStringArray = PackedStringArray()
 var _trail: TutorialTrail
-var _crack: SiloCrack
+var _starter_pickups: Array[Pickup] = []
+var _starter_collected: int = 0
+var _starter_cluster_center: Vector3 = Vector3.ZERO
 var _dummy: TutorialDummy
 var _practice_robot: Robot
 var _practice_crack: SiloCrack
@@ -81,7 +89,8 @@ func begin(main: Node) -> void:
 	_bell = _farm.get_node_or_null(^"DinnerBell") as DinnerBell
 	_zipline = _farm.get_node_or_null(^"Ziplines/Z1_SiloToBarn") as Zipline
 	_shed = get_tree().get_first_node_in_group(ToolShed.GROUP_SHED) as ToolShed
-	if _farmer == null or _silo == null or _shed == null or _bell == null or _heal_zone == null or _director == null:
+	_pegboard = main.get_node_or_null(^"Pegboard") as PegboardUI
+	if _farmer == null or _silo == null or _shed == null or _pegboard == null or _bell == null or _heal_zone == null or _director == null:
 		push_warning("TutorialDirector: the farm is missing a station; skipping Level 0.")
 		_director.finish_tutorial()
 		queue_free()
@@ -91,10 +100,12 @@ func begin(main: Node) -> void:
 	add_child(_trail)
 	_trail.setup(_farmer)
 	_shed.tutorial_locked = true
+	_shed.tutorial_lock_prompt = "The shed opens again after wave 1." if StatService.has_flag(&"wrench.owned") else "Collect the floating Aluminium by the tractor first."
 	EventBus.crack_closed.connect(_on_crack_closed)
 	EventBus.silo_damaged.connect(_on_silo_damaged)
 	EventBus.wave_phase_changed.connect(_on_phase_changed)
-	_go(Step.SILO)
+	EventBus.upgrade_purchased.connect(_on_upgrade_purchased)
+	_go(Step.DUMMY if StatService.has_flag(&"wrench.owned") else Step.COLLECT)
 
 
 func _exit_tree() -> void:
@@ -110,8 +121,10 @@ func _go(next: Step) -> void:
 	_retire_marker()
 	EventBus.tutorial_step_changed.emit(int(next))
 	match next:
-		Step.SILO:
-			_begin_silo()
+		Step.COLLECT:
+			_begin_collect()
+		Step.PEGBOARD:
+			_begin_pegboard()
 		Step.DUMMY:
 			_begin_dummy()
 		Step.PORCH:
@@ -128,21 +141,53 @@ func _go(next: Step) -> void:
 			_begin_bell()
 
 
-func _begin_silo() -> void:
-	_lesson("This silo holds the grain. A leak drains it.\nHold Interact at the crack to seal it.")
-	_action("Follow the trail to the silo leak")
-	_crack = _silo.open_tutorial_crack(CRACK_SOCKET, CRACK_POOL)
-	if _crack == null:
+func _begin_collect() -> void:
+	_lesson("A little pile of Aluminium is floating by the tractor.\nWalk through it to collect enough for Grandpa's Wrench.")
+	_starter_collected = 0
+	_action("Collect Aluminium  0 / 6")
+	var props := _farm.get_node_or_null(^"NavRegion/Props") as PropScatter
+	var tractor: StaticBody3D = null
+	if props != null:
+		for prop in props.placed:
+			if is_instance_valid(prop) and prop.name.begins_with("Tractor_"):
+				tractor = prop
+				break
+	var tractor_position := tractor.global_position if tractor != null else Vector3(-6.0, 0.0, 21.0)
+	var toward_shed := _shed.global_position - tractor_position
+	toward_shed.y = 0.0
+	_starter_cluster_center = tractor_position + toward_shed.normalized() * 3.6
+	for offset: Vector3 in STARTER_PART_OFFSETS:
+		var pickup := Pickup.new()
+		pickup.name = "StarterAluminium"
+		pickup.kind = &"al"
+		pickup.amount = STARTER_PART_VALUE
+		pickup.lifetime = INF
+		pickup.tutorial_display = true
+		pickup._landed = true
+		_main.add_child(pickup)
+		pickup.global_position = _starter_cluster_center + offset
+		pickup.collected.connect(_on_starter_collected)
+		_starter_pickups.append(pickup)
+	_trail.set_goal(_starter_cluster_center)
+	_show(TutorialMarker.create(Vector3(_starter_cluster_center.x, 0.0, _starter_cluster_center.z), SKY, 1.6))
+
+
+func _begin_pegboard() -> void:
+	if StatService.has_flag(&"wrench.owned"):
+		_shed.tutorial_lock_prompt = "The shed opens again after wave 1."
 		_go(Step.DUMMY)
 		return
-	var stand := _crack.global_position + _crack.global_basis.z * 1.5
-	stand.y = 0.0
-	_show(TutorialMarker.create(stand, GOLD, 1.4))
-	_trail.set_goal(stand)
+	_shed.tutorial_locked = false
+	_pegboard.set_opening_peg(WRENCH_UPGRADE)
+	_lesson("You found enough Aluminium for Grandpa's Wrench.\nOpen the pegboard, then hold the buy button on its gold-edged peg.")
+	_action("At the shed: Interact, then hold A / left click to buy the wrench")
+	var where := _shed.interaction_point()
+	_trail.set_goal(where)
+	_show(TutorialMarker.create(Vector3(where.x, 0.0, where.z), GOLD, 1.5))
 
 
 func _begin_dummy() -> void:
-	_lesson("Robots can be stopped with your wrench.\nBonk this practice bot three times.")
+	_lesson("Grandpa's Wrench is in your hands!\nTry three swings on his spring-loaded Dummy-Bot.")
 	_action("V / (R3): bonk the Dummy-Bot with your wrench")
 	var approach := DUMMY_POSITION + Vector3(0.0, 0.0, 2.0)
 	_trail.set_goal(approach)
@@ -197,6 +242,7 @@ func _begin_practice() -> void:
 	_practice_robot.name = "PracticeNibbler"
 	_practice_robot.setup(nibbler, 1, _director.curve, rng)
 	_practice_robot.target_kind = Robot.TargetKind.SILO
+	_practice_robot.targeting.can_be_distracted = false
 	_practice_robot.is_thief = false
 	_practice_robot.speed_multiplier = 0.35
 	var where := PRACTICE_POSITION
@@ -312,22 +358,35 @@ func _update_zipline() -> void:
 
 # --- Events ---------------------------------------------------------------------------------------
 
+func _on_starter_collected(pickup: Pickup, collector: Node3D) -> void:
+	if step != Step.COLLECT or collector != _farmer or pickup not in _starter_pickups:
+		return
+	_starter_pickups.erase(pickup)
+	_starter_collected += pickup.amount
+	Fx.puff(self, pickup.global_position + Vector3.UP * 0.4, SKY, 0.3, 0.2)
+	_action("Collect Aluminium  %d / 6" % _starter_collected)
+	if _starter_pickups.is_empty():
+		_go(Step.PEGBOARD)
+
+
+func _on_upgrade_purchased(id: StringName, _level: int) -> void:
+	if step == Step.PEGBOARD and id == WRENCH_UPGRADE:
+		_finish_wrench_purchase.call_deferred()
+
+
+func _finish_wrench_purchase() -> void:
+	if step != Step.PEGBOARD:
+		return
+	_pegboard.close()
+	_shed.tutorial_locked = true
+	_shed.tutorial_lock_prompt = "The shed opens again after wave 1."
+	Fx.puff(self, _farmer.global_position + Vector3.UP * 1.1, GOLD, 0.5, 0.35)
+	_go(Step.DUMMY)
+
+
 func _on_crack_closed(crack: Node3D) -> void:
 	if step == Step.REPAIR and crack == _practice_crack:
 		_go(Step.CATWALK)
-		return
-	if step != Step.SILO or crack != _crack:
-		return
-	# The Harvest Bonus: the leaked grain pours back in.
-	var refunded := _silo.add_grain(_silo.max_grain)
-	if refunded > 0.0:
-		Fx.puff(self, crack.global_position + Vector3(0, 1.0, 1.0), GOLD, 0.8, 0.5)
-	AudioDirector.play_cue(&"robot_pop")
-	_retire_marker()
-	_trail.clear_goal()
-	get_tree().create_timer(1.0).timeout.connect(func() -> void:
-		if step == Step.SILO:
-			_go(Step.DUMMY))
 
 
 func _on_dummy_destroyed(_dummy_bot: TutorialDummy) -> void:
@@ -369,6 +428,8 @@ func _finish() -> void:
 		return
 	_finished = true
 	step = Step.DONE
+	if _shed != null and is_instance_valid(_shed):
+		_shed.tutorial_lock_prompt = "The shed opens again after wave 1."
 	if _hud != null:
 		_hud.set_tutorial_lesson("")
 		_hud.set_tutorial_action("")
@@ -378,11 +439,14 @@ func _finish() -> void:
 	_retire_marker()
 	if _dummy != null and is_instance_valid(_dummy):
 		_dummy.queue_free()
+	for pickup in _starter_pickups:
+		if is_instance_valid(pickup):
+			pickup.queue_free()
+	_starter_pickups.clear()
 	if _practice_robot != null and is_instance_valid(_practice_robot):
 		_practice_robot.kill(false)
-	for tutorial_crack in [_crack, _practice_crack]:
-		if tutorial_crack != null and is_instance_valid(tutorial_crack):
-			_silo.repair_crack(tutorial_crack, INF)
+	if _practice_crack != null and is_instance_valid(_practice_crack):
+		_silo.repair_crack(_practice_crack, INF)
 	# Let the ground marker fade, then go.
 	get_tree().create_timer(1.5).timeout.connect(queue_free)
 

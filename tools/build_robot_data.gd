@@ -1,7 +1,7 @@
 extends SceneTree
 ## Writes the robot data in res://data/robots from the tables in res://data/source/robots (format:
-## data/source/README.md): the archetypes (GDD 9.3), palettes, themes and traits (GDD 10), and the
-## gene library's theme and trait lists. Files whose row is gone are deleted. Run from the project folder:
+## data/source/README.md): the archetypes (GDD 9.3), their attack profiles (M2-B7), palettes, themes and
+## traits (GDD 10), and the gene library's theme and trait lists. Files whose row is gone are deleted. Run from the project folder:
 ##   <godot> --headless --path . --script res://tools/build_robot_data.gd
 ## Edit the tables, not the .tres files: test_content_tables.gd fails when the two disagree. The gene
 ## library's other settings (farm color, novelty rules) aren't in a table; edit those in the inspector.
@@ -25,6 +25,7 @@ func _initialize() -> void:
 	var palettes := tables.palettes()
 	tables.themes(palettes) # Only to check the rows; the saved themes are built below.
 	var traits := tables.traits()
+	var attacks := tables.attacks()
 	if not tables.errors.is_empty():
 		for message in tables.errors:
 			printerr(message)
@@ -32,10 +33,10 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	for kind in ["palettes", "themes", "traits", "archetypes"]:
+	for kind in ["palettes", "themes", "traits", "archetypes", "attacks"]:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(ContentTables.ROBOT_DIR.path_join(kind)))
 	# Loading the old files tells every resource they reference its ext_resource id for that file.
-	for kind in ["palettes", "themes", "traits"]:
+	for kind in ["palettes", "themes", "traits", "attacks"]:
 		var dir := ContentTables.ROBOT_DIR.path_join(kind)
 		for file_name in DirAccess.get_files_at(dir):
 			if file_name.get_extension() == "tres":
@@ -54,6 +55,10 @@ func _initialize() -> void:
 	var saved_traits: Array[RobotTrait] = []
 	for robot_trait in traits:
 		saved_traits.append(_save(robot_trait, ContentTables.robot_path("traits", robot_trait.id)) as RobotTrait)
+	var attack_ids: Array[StringName] = []
+	for profile in attacks:
+		_save(profile, ContentTables.robot_path("attacks", profile.id))
+		attack_ids.append(profile.id)
 	library.themes = saved_themes
 	library.traits = saved_traits
 	_save(library, ContentTables.GENE_LIBRARY_PATH)
@@ -67,11 +72,13 @@ func _initialize() -> void:
 	_remove_stale("palettes", saved_palettes.keys())
 	_remove_stale("themes", saved_themes.map(func(theme: FamilyTheme) -> StringName: return theme.id))
 	_remove_stale("traits", saved_traits.map(func(robot_trait: RobotTrait) -> StringName: return robot_trait.id))
+	_remove_stale("attacks", attack_ids)
 	var removed := ContentTables.remove_stale(ContentTables.ROBOT_DIR.path_join("archetypes"), archetype_files)
 	if not removed.is_empty():
 		print("Removed archetypes/%s" % ", archetypes/".join(removed))
-	print("Wrote %d archetypes, %d palettes, %d themes, %d traits and the gene library to %s" % [archetype_files.size(),
-			saved_palettes.size(), saved_themes.size(), saved_traits.size(), ContentTables.ROBOT_DIR])
+	print("Wrote %d archetypes, %d attacks, %d palettes, %d themes, %d traits and the gene library to %s" % [
+			archetype_files.size(), attacks.size(), saved_palettes.size(), saved_themes.size(), saved_traits.size(),
+			ContentTables.ROBOT_DIR])
 	quit(0)
 
 

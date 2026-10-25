@@ -19,6 +19,7 @@ Then run the unit tests (`godot --headless --path . -s addons/gut/gut_cmdln.gd`)
 | `robots/palettes/` | `data/robots/palettes/<id>.tres` | `build_robot_data.gd` |
 | `robots/themes/` | `data/robots/themes/<id>.tres` | `build_robot_data.gd` |
 | `robots/traits/` | `data/robots/traits/<id>.tres` and the gene library's lists | `build_robot_data.gd` |
+| `robots/attacks/` | `data/robots/attacks/<id>.tres` | `build_robot_data.gd` |
 
 ## How the tables work
 
@@ -85,10 +86,20 @@ Every stat key in `effects` must be read by some system. The test counts a key a
 Each column is a `RobotArchetype` property with the same name; [scripts/ai/robot_archetype.gd](../../scripts/ai/robot_archetype.gd) explains each one.
 
 - `robot_type` is `scout`, `grunt` or `heavy`.
-- `robot_class` is `melee`, `short_range` or `long_range`.
+- `robot_class` is `melee`, `ranged` or `flight`: the attack grid's columns.
+- `distract_triggers` is a space-separated list of `hurt`, `near`, `repairing` and `airborne`.
+- `on_unreachable` is `give_up`, `throw` or `relocate`.
 - `scene` is a `res://` path.
 
-Every filled cell becomes a line in the `.tres` file, even when it equals the script default, and a blank cell leaves the line out. This matters because the script's defaults are the Nibbler's stats, so a blank cell silently follows any change to those defaults. M1 has one file per class (`melee.csv`), so the short-range and long-range work packages each add their own file.
+- `ranged_attack_id` names a row of `robots/attacks/` for ranged and flying robots. Those take their charge, interval and damage from the profile, so `vertical.csv` and `spitter.csv` have no `attack_*` or `damage_*` columns. A melee robot with `on_unreachable` `throw` names the profile it throws at an out-of-reach farmer (`clanker_bolt`, `thumper_clod`; M2-B9).
+- `front_guard` is the share of damage blocked from hits in front of the robot (the Clanker's arm guard, 0.5).
+- `tells` is a space-separated list of extra parts that show the robot's role: `arm_guard`, `pea_shooter`, `bolt_pouch`, `clod_scoop`.
+
+Every filled cell becomes a line in the `.tres` file, even when it equals the script default, and a blank cell leaves the line out. This matters because the script's defaults are the Nibbler's stats, so a blank cell silently follows any change to those defaults. Fill every behavior cell (`trio_chance_late` is `-1` for a flat trio chance). There is one file per group of archetypes (`melee.csv`, `vertical.csv`, `spitter.csv`), so new archetype work packages each add their own file.
+
+## `robots/attacks/` (M2-B7)
+
+Each column is an `AttackProfile` property with the same name; [scripts/ai/attack_profile.gd](../../scripts/ai/attack_profile.gd) explains each one. `kind` is `straight`, `lob`, `rail` or `bomb`, and picks the telegraph: lobs show a chalk circle, rails a red-yarn aim line, bombs a shadow circle, and every shot charges a glow. `charge_time` can't be under 0.45 s (the tool reports it), and an archetype naming a profile that isn't in the table is an error. `color` is `r g b`.
 
 ## `robots/palettes/`, `robots/themes/`, `robots/traits/` (GDD 10)
 

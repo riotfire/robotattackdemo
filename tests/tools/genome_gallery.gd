@@ -1,18 +1,20 @@
 extends Node3D
-## Genome gallery (GDD 18.9): rolls robot families and lines up each one's Nibbler, Clanker, Thumper and
-## Foreman side by side, to review variety and readability. Robots are posed but their AI is off.
+## Genome gallery (GDD 18.9): rolls robot families and lines up each one's Nibbler, Spitter, Clanker,
+## Thumper and Foreman side by side, to review variety and readability. Robots are posed but their AI is off.
 ## Run the scene (F6 in the editor). R rerolls with a new seed; arrow keys orbit; the family code and
 ## name sit under each row.
 
 const GENE_LIBRARY := "res://data/robots/gene_library.tres"
 const ARCHETYPES: Array[String] = [
 	"res://data/robots/archetypes/nibbler.tres",
+	"res://data/robots/archetypes/spitter.tres",
 	"res://data/robots/archetypes/clanker.tres",
 	"res://data/robots/archetypes/thumper.tres",
 ]
 
 @export var families: int = 4
-@export var start_wave: int = 6
+## Wave 7 on, so the sidearm tells (arm guard, pea-shooter, bolt pouch, clod scoop) all show (M2-B9).
+@export var start_wave: int = 7
 @export var run_seed: int = 1
 
 var _camera: Camera3D

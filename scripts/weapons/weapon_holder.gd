@@ -1,23 +1,26 @@
 class_name WeaponHolder
 extends Node3D
 ## The farmer's weapons (GDD 6.1: every unlocked weapon is carried at once). Its Weapon children are
-## found at setup and ordered by WeaponData.slot. Handles switching (number keys 1-6, the mouse wheel and
+## found at setup and ordered by WeaponData.slot. Handles switching (number keys 1-7, the mouse wheel and
 ## the weapon wheel), melee bonks, firing and reloading. The Farmer calls physics_step() each frame.
 ## Weapon wheel (GDD 5.2): tap Q / (Y) to swap to the last weapon; hold it to open the wheel, point with
 ## the mouse or left stick, and let go to equip. Look input steers the wheel instead of the camera while
-## it's open, and nothing fires; the farmer keeps moving (no slow-motion, so co-op stays fair).
+## it's open, and nothing fires. The wheel slows the game so stick-based selection does not leave the
+## farmer exposed while movement is reassigned to the pointer.
 
 signal equipped(weapon: Weapon)
 
 ## Holding the wheel button longer than this opens the wheel; a shorter tap swaps to the last weapon.
 const WHEEL_HOLD_TIME: float = 0.2
 ## Positions round the wheel: slot 1 at the top, then clockwise.
-const WHEEL_SLOTS: int = 6
+const WHEEL_SLOTS: int = 7
 ## Pointer deflection (0-1) needed to change the wheel's choice.
 const WHEEL_DEADZONE: float = 0.35
-const SLOT_ACTIONS: Array[StringName] = [&"weapon_1", &"weapon_2", &"weapon_3", &"weapon_4", &"weapon_5", &"weapon_6"]
+## Local single-player time scale while aiming in the weapon wheel.
+const WHEEL_TIME_SCALE: float = 0.2
+const SLOT_ACTIONS: Array[StringName] = [&"weapon_1", &"weapon_2", &"weapon_3", &"weapon_4", &"weapon_5", &"weapon_6", &"weapon_7"]
 
-## The weapon V / (R3) bonks with, whatever is equipped.
+## V / (R3) uses an equipped melee weapon, or the wrench quick bonk while a gun is equipped.
 @export var melee_weapon_id: StringName = &"wrench"
 
 var farmer: Farmer
@@ -31,6 +34,8 @@ var wheel_open: bool = false
 var wheel_choice: Weapon = null
 
 var _wheel_held: float = 0.0
+var _time_scale_before_wheel: float = 1.0
+var _wheel_scaled_time: bool = false
 var _was_available: Dictionary[Weapon, bool] = {}
 
 
@@ -47,6 +52,10 @@ func setup(owner_farmer: Farmer) -> void:
 		_was_available[weapon] = weapon.is_available()
 	_equip_now(_best_available())
 	StatService.stats_changed.connect(_on_stats_changed)
+
+
+func _exit_tree() -> void:
+	_restore_wheel_time_scale()
 
 
 func get_weapon(id: StringName) -> Weapon:
@@ -110,7 +119,7 @@ func physics_step(delta: float) -> void:
 
 	if not farmer.can_use_weapons():
 		return
-	var melee := get_weapon(melee_weapon_id)
+	var melee := current if current is Wrench or current is SweepWeapon else get_weapon(melee_weapon_id)
 	if input.is_just_pressed(&"melee") and melee != null and usable_now(melee):
 		if melee.attack():
 			farmer.face_combat(0.5)
@@ -129,6 +138,8 @@ func physics_step(delta: float) -> void:
 ## While ziplining only weapons marked usable_on_zipline work (the pistol), unless Zipline Grip 2 is
 ## owned (GDD 13.4).
 func usable_now(weapon: Weapon) -> bool:
+	if not weapon.is_available():
+		return false
 	if farmer.state != Farmer.State.ZIPLINING:
 		return true
 	return weapon.data.usable_on_zipline or StatService.has_flag(&"zipline.any_weapon")
@@ -166,6 +177,7 @@ func close_wheel(select: bool) -> void:
 		return
 	wheel_open = false
 	farmer.input.look_locked = false
+	_restore_wheel_time_scale()
 	if select and wheel_choice != null and wheel_choice != current:
 		equip(wheel_choice)
 	wheel_choice = null
@@ -176,9 +188,12 @@ func _update_wheel(delta: float) -> void:
 	if input.is_pressed(&"weapon_wheel"):
 		_wheel_held += delta
 		if not wheel_open and _wheel_held >= WHEEL_HOLD_TIME:
+			_time_scale_before_wheel = Hitstop.resting_time_scale()
 			wheel_open = true
 			wheel_choice = current
 			input.look_locked = true
+			Engine.time_scale = WHEEL_TIME_SCALE
+			_wheel_scaled_time = true
 		if wheel_open:
 			var pointed := weapon_at(input.wheel_pointer())
 			if pointed != null:
@@ -190,6 +205,12 @@ func _update_wheel(delta: float) -> void:
 	elif _wheel_held > 0.0 and input.enabled:
 		swap_to_previous()
 	_wheel_held = 0.0
+
+
+func _restore_wheel_time_scale() -> void:
+	if _wheel_scaled_time:
+		Engine.time_scale = _time_scale_before_wheel
+		_wheel_scaled_time = false
 
 
 # --- Internals ------------------------------------------------------------------------------------

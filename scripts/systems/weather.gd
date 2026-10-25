@@ -48,7 +48,7 @@ var _puddle_generation: int = 0
 ## robots' range by 20% (GDD 4.6); every other class and weather gives 1. The long-range class (M2-B2) scales
 ## its engagement and siege ranges by this.
 static func engagement_range_multiplier(robot_class: RobotArchetype.RobotClass) -> float:
-	if current == null or robot_class != RobotArchetype.RobotClass.LONG_RANGE:
+	if current == null or robot_class != RobotArchetype.RobotClass.RANGED:
 		return 1.0
 	return current.long_range_multiplier
 

@@ -10,6 +10,9 @@ signal player_unregistered(player: Node3D)
 
 signal robot_spawned(robot: Node3D)
 signal robot_destroyed(robot: Node3D, killer: Node)
+## A robot started charging a shot at a farmer (M2-B7): it lands in about `impact_time` seconds.
+## `off_screen` when the shooter is outside the camera's view, for the HUD's incoming-shot pip (M2-H5).
+signal robot_shot_incoming(robot: Node3D, farmer: Node3D, impact_time: float, off_screen: bool)
 
 signal silo_damaged(amount: float, at_position: Vector3)
 signal crack_opened(crack: Node3D)

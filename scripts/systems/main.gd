@@ -18,13 +18,15 @@ func _ready() -> void:
 			seed_value = arg.trim_prefix("--seed=").to_int()
 	GameState.start_run(seed_value)
 	print("Robot Attack! run seed: %d" % GameState.run_seed)
-	_spawner.spawn_players()
 	var tutorial := not SaveManager.tutorial_completed
 	for arg in OS.get_cmdline_user_args():
 		if arg == "--tutorial":
 			tutorial = true
 		elif arg == "--skip-tutorial":
 			tutorial = false
+	if not tutorial and not StatService.has_flag(&"wrench.owned"):
+		StatService.grant(&"attack.wrench")
+	_spawner.spawn_players()
 	_director.start_run(tutorial)
 	if tutorial:
 		var chores := TutorialDirector.new()

@@ -27,7 +27,7 @@ func test_weapon_data_matches_the_gdd_arsenal() -> void:
 	assert_not_null(wrench, "the wrench is a MeleeWeaponData")
 	assert_eq([wrench.slot, wrench.damage, wrench.fire_rate, wrench.max_range, wrench.combo_multiplier],
 			[1, 25.0, 1.6, 2.2, 1.5], "wrench: slot 1, 25 damage, 1.6 swings/s, 2.2 m, 3rd hit x1.5")
-	assert_eq(wrench.unlock_flag, &"", "the wrench is always carried")
+	assert_eq(wrench.unlock_flag, &"wrench.owned", "the wrench is bought in the first pegboard lesson")
 	assert_eq(wrench.trigger_mode, WeaponData.TriggerMode.AUTO, "holding fire keeps swinging")
 	var pistol := load("res://data/weapons/pistol.tres") as WeaponData
 	assert_eq([pistol.slot, pistol.damage, pistol.fire_rate, pistol.magazine_size, pistol.reload_time, pistol.max_range],
@@ -42,11 +42,12 @@ func test_weapon_data_matches_the_gdd_arsenal() -> void:
 
 func test_wheel_slots_go_clockwise_from_the_top() -> void:
 	assert_eq(WeaponHolder.slot_at(Vector2(0.0, -1.0)), 1, "up")
-	assert_eq(WeaponHolder.slot_at(Vector2(0.87, -0.5)), 2, "up-right")
-	assert_eq(WeaponHolder.slot_at(Vector2(0.87, 0.5)), 3, "down-right")
-	assert_eq(WeaponHolder.slot_at(Vector2(0.0, 1.0)), 4, "down")
-	assert_eq(WeaponHolder.slot_at(Vector2(-0.87, 0.5)), 5, "down-left")
-	assert_eq(WeaponHolder.slot_at(Vector2(-0.87, -0.5)), 6, "up-left")
+	assert_eq(WeaponHolder.slot_at(Vector2(0.78, -0.62)), 2, "upper right")
+	assert_eq(WeaponHolder.slot_at(Vector2(0.98, 0.22)), 3, "right")
+	assert_eq(WeaponHolder.slot_at(Vector2(0.43, 0.9)), 4, "lower right")
+	assert_eq(WeaponHolder.slot_at(Vector2(-0.43, 0.9)), 5, "lower left")
+	assert_eq(WeaponHolder.slot_at(Vector2(-0.98, 0.22)), 6, "left")
+	assert_eq(WeaponHolder.slot_at(Vector2(-0.78, -0.62)), 7, "upper left")
 	assert_eq(WeaponHolder.slot_at(Vector2(-0.2, -0.98)), 1, "a little left of up is still slot 1")
 	assert_eq(WeaponHolder.slot_at(Vector2(0.1, 0.1)), 0, "inside the deadzone")
 
@@ -56,8 +57,12 @@ func test_holder_switches_and_equips_new_unlocks() -> void:
 	var holder := farmer.weapons
 	var wrench := holder.get_weapon(&"wrench")
 	var pistol := holder.get_weapon(&"pistol")
-	assert_eq(holder.weapons, [wrench, pistol] as Array[Weapon], "ordered by slot")
-	assert_eq(holder.current, wrench, "a fresh profile starts with the wrench")
+	assert_eq(holder.weapons.map(func(w: Weapon) -> StringName: return w.data.id),
+			[&"wrench", &"pistol", &"shotgun", &"rifle", &"grenade", &"maul", &"scythe"], "ordered by slot")
+	assert_null(holder.current, "a fresh profile starts without a tool")
+	assert_false(holder.equip(wrench), "the wrench cannot be equipped before it is bought")
+	StatService.grant(&"attack.wrench")
+	assert_eq(holder.current, wrench, "buying the wrench equips it")
 	assert_false(holder.equip(pistol), "the pistol can't be equipped before it's bought")
 	assert_eq(holder.current, wrench)
 
@@ -74,12 +79,17 @@ func test_holder_switches_and_equips_new_unlocks() -> void:
 	holder.cycle(1)
 	assert_eq(holder.current, pistol, "the mouse wheel cycles to the next weapon")
 
-	assert_eq(holder.weapon_at(Vector2(0.0, 1.0)), pistol, "pointing at empty slot 4 picks the nearest weapon")
-	assert_eq(holder.weapon_at(Vector2(-0.87, -0.5)), wrench, "slot 6 is next to slot 1")
+	assert_eq(holder.weapon_at(Vector2(0.43, 0.9)).data.id, &"rifle", "the wheel reaches the long-range weapon")
+	assert_eq(holder.weapon_at(Vector2(-0.78, -0.62)).data.id, &"scythe", "the wheel reaches the 360-degree melee weapon")
 	assert_null(holder.weapon_at(Vector2.ZERO), "nothing inside the deadzone")
+	StatService.grant(&"attack.maul")
+	assert_eq(holder.current.data.id, &"maul", "buying a melee weapon equips it")
+	assert_eq(holder.melee_weapon_id, &"wrench", "the wrench remains the quick bonk")
+	assert_true(holder.equip(pistol))
+	assert_eq(holder.melee_weapon_id, &"wrench", "switching to a gun restores the wrench quick bonk")
 
 	StatService.set_levels({})
-	assert_eq(holder.current, wrench, "losing the pistol (profile reset) falls back to the wrench")
+	assert_null(holder.current, "a profile reset removes all tools")
 	assert_false(holder.swap_to_previous(), "no swapping back to a weapon you don't have")
 
 

@@ -1,0 +1,2 @@
+id,display_name,description,power_cell_chance_multiplier,death_blast_radius,death_blast_damage,death_blast_farmer_damage,tell
+overcharged,Overcharged,"x2 Power Cell chance. Explodes on death, hurting nearby robots and farmers; the blasts chain.",2,3.5,80,12,spark_coil

@@ -15,7 +15,7 @@ var records: Dictionary = {"best_wave": 0, "best_full_harvest_wave": 0, "robots_
 var almanac: Array[Dictionary] = []
 ## Level 0 "Morning Chores" has been finished (or skipped) once; later runs open on the normal intermission.
 var tutorial_completed: bool = false
-var settings: Dictionary = {"mouse_sensitivity": 0.0022, "invert_y": false, "reduce_motion": false, "show_fps": false}
+var settings: Dictionary = {"mouse_sensitivity": 0.0022, "invert_y": false, "reduce_motion": false, "show_fps": false, "rigged_farmer": false}
 
 
 func _ready() -> void:
@@ -96,6 +96,9 @@ func apply(data: Dictionary) -> void:
 	# Profiles from before Level 0 existed belong to someone who has already played.
 	var has_played := int((data.get("records", {}) as Dictionary).get("best_wave", 0)) > 0
 	tutorial_completed = bool(data.get("tutorial_completed", has_played))
+	# Existing profiles already started with a wrench before the first-tool peg was introduced.
+	if tutorial_completed and not StatService.has_flag(&"wrench.owned"):
+		StatService.grant(&"attack.wrench")
 	records = (data.get("records", {}) as Dictionary).duplicate(true)
 	for key: String in ["best_wave", "best_full_harvest_wave"]:
 		records[key] = int(records.get(key, 0))

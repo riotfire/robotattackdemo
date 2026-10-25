@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_gomui"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_xraaq"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_rfsvv"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_lgpw3"]
+
+[sub_resource type="Resource" id="Resource_j5psc"]
+script = ExtResource("1_gomui")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(35)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_nbiab"]
+script = ExtResource("2_xraaq")
+stat = &"shotgun.unlocked"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_g7qkh"]
+script = ExtResource("3_rfsvv")
+node_id = &"attack.pistol"
+
+[resource]
+script = ExtResource("4_lgpw3")
+id = &"attack.shotgun"
+branch = 1
+display_name = "Barn Blaster"
+description = "Seven pellets spread across a short cone and shove back nearby groups."
+prerequisites = Array[ExtResource("3_rfsvv")]([SubResource("Resource_g7qkh")])
+cost_curve = SubResource("Resource_j5psc")
+effects = Array[ExtResource("2_xraaq")]([SubResource("Resource_nbiab")])
+board_position = Vector2i(2, 0)

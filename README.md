@@ -7,10 +7,11 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 ## What's in M1
 
 - **Farm:** every building from GDD 4.4 with ladders, hay-bale stairs, the porch trellis and ziplines Z1 (silo dome → barn), Z2 (water tower → silo catwalk) and Z3 (barn → stables). Each run scatters seeded props (hay, crates, fences, scarecrows, a tractor) and rebakes the navmesh around them.
-- **Vertical threats:** Roof Lobbers join from wave 4, climb the barn, chicken house, stables or tool shed and throw arcing shots from the roof. Drones join from wave 6, fly around the silo and fire from above. Both telegraph shots with a glowing charge.
-- **Robots:** Nibblers (scouts; about 10% of the wave's spawns steal 20-bushel grain sacks in wave 1, rising 1.5 points each wave to a 40% cap; a Thieving family multiplies that by 1.5, up to 60%), Clanker squads of 3 hitting in a clank-clank-CLANK rhythm, and Thumpers whose slams send a shockwave ring you can jump over. Every Big Haul wave (5, 10, 15…) brings a crowned Foreman. Each wave is one procedural family (3 themes, 9 palettes, 4 traits) with a name card and a 6-character family code.
-- **Level 0 "Morning Chores" (first run):** an untimed prologue that teaches the defense loop with the wrench alone. Patch a silo leak, bonk Grandpa's Dummy-Bot, heal on the porch, then stop one slow, real Nibbler before it damages the silo. If it hits, finish it and repair the new leak. Climb the catwalk to see the robot lanes, then ring the bell for a melee-only wave 1. The practice Nibbler pauses after one hit, giving you time to respond. Details are in [docs/LEVEL_0_MORNING_CHORES.md](docs/LEVEL_0_MORNING_CHORES.md).
-- **Economy:** parts burst out of robots and magnetize to you; the Scrap Vac collects a share when a wave ends. The tool shed pegboard has 33 upgrades across Travel, Attack, Repair, Defend and Farmhand. After wave 1, spend parts to suit your play style: improve the wrench, build the Rivet Pistol for range (20 Al), strengthen repairs and defense, or move faster.
+- **Vertical threats:** Roof Lobbers join from wave 4, climb the barn, chicken house, stables or tool shed and throw arcing shots from the roof. Drones join from wave 6, fly around the silo and fire from above. Both telegraph shots with a glowing charge, and lobs mark where they will land with a chalk circle. Only a few robots shoot the farmer at once; the rest shoot the silo, and hits open cracks at the height they land.
+- **Sidearms:** from wave 7 some small robots come as pea-shooting Spitters that stand off, shoot at catwalk height and hop between shots, and Clankers and Thumpers throw bolts and dirt clods (twice, with a chalk circle) at a farmer they can't reach. From wave 6 a Clanker's arm guard halves hits from the front, so flank it. Later waves shorten charges, lead straight shots and fire volleys instead of only adding numbers.
+- **Robots:** Nibblers (scouts, usually in trios; about 10% of the wave's spawns steal 20-bushel grain sacks in wave 1, rising 1.5 points each wave to a 40% cap; a Thieving family multiplies that by 1.5, up to 60%), Clankers (now and then a trio) and Thumpers whose slams send a shockwave ring you can jump over. Trios hit in a 3-beat rhythm, and a thief trio is a heist crew whose two escorts guard the sack. Each robot has behavior variables (silo focus, distraction triggers, chase time, leash): a "!" pop shows when one turns on the farmer. Every Big Haul wave (5, 10, 15…) brings a crowned Foreman. Each wave is one procedural family (3 themes, 9 palettes, 4 traits) with a name card and a 6-character family code.
+- **Level 0 "Morning Chores" (first run):** an untimed prologue that starts with a cluster of floating Aluminium by the tractor. Collect it, buy Grandpa's Wrench on the pegboard, bonk the Dummy-Bot, and heal on the porch. Then stop one slow, real Nibbler. If it hits the silo, finish it and repair that leak. Climb the catwalk to see the robot lanes, then ring the bell for a melee-only wave 1. The practice Nibbler pauses after one hit, giving you time to respond. Details are in [docs/LEVEL_0_MORNING_CHORES.md](docs/LEVEL_0_MORNING_CHORES.md).
+- **Economy:** parts burst out of robots and magnetize to you; the Scrap Vac collects a share when a wave ends. The tool shed pegboard has 41 upgrades across Travel, Attack, Repair, Defend and Farmhand. As parts accumulate, buy the Rivet Pistol, short-range Barn Blaster, long-range rifle, group-clearing grenades, Haymaker Maul or 360-degree Harvest Scythe; later add air dash and ground pound to the jetpack.
 - **Silo warnings:** the first hit sounds a distinct alarm when you are away from the silo. A red banner shows its direction, distance and remaining Structure; if cracked grain is still leaking after the attack, an amber repair reminder remains until the leaks are sealed. Repeated hits share an alarm cooldown.
 - **Persistence:** parts, upgrades, the jetpack, records and the Robot Almanac save to `user://profile.json` (on macOS, `~/Library/Application Support/Godot/app_userdata/Robot Attack!/`). Autosaves happen at each intermission start, after each purchase and on game over.
 - **Look:** a clay shader (lumps, thumbprints, subsurface scattering, and a 12 fps surface "boil" driven by `StopMotionClock`). Robot poses step at 12 fps and the farmer's squash and stretch at 24 fps. The barn, water tower, well, windpump, fences, crates and plants are clayified CC0 models (see [CREDITS.md](CREDITS.md)); the ground is tinted felt, the sky a painted backdrop with cotton-ball clouds, and the corn wall hand-cut paper stalks. UI text is Fredoka SemiBold.
@@ -23,10 +24,11 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 | Move / look | WASD / mouse | Left stick / right stick |
 | Jump; hold in the air for the jetpack; hold while aiming to hover (Hover Mode) | Space | A |
 | Aim (zoom, walk) / fire | Right mouse / left mouse | LT / RT |
-| Wrench bonk | V | R3 |
+| Equipped melee attack; wrench quick bonk while holding a gun | V | R3 |
+| Air dash / ground pound after their shed unlocks | Shift / Ctrl in the air | LB / RB in the air |
 | Interact: repair (hold), shed pegboard, dinner bell (hold), zipline | E | X |
 | Reload | R | X |
-| Weapons: tap for the last weapon, hold for the weapon wheel (point at a weapon, let go to equip) | Q (point with the mouse); 1 wrench, 2 pistol (1–6 as more arrive); mouse wheel cycles | Y (point with the left stick) |
+| Weapons: tap for the last weapon, hold for the weapon wheel (point at a weapon, let go to equip) | Q (point with the mouse); 1–7 select wrench, pistol, shotgun, rifle, grenades, maul, scythe; mouse wheel cycles | Y (point with the left stick) |
 | Shoulder swap | Middle mouse | — |
 | Pegboard (shed open): move / buy / close | Mouse: hold click on a peg to buy | D-pad or left stick / hold A / B or Start |
 | Pause / development menu | Escape | Start |
@@ -34,7 +36,7 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 
 The pause menu freezes gameplay and includes a wave selector, next-wave and bell controls, plus debug tools for parts, god mode, the jetpack, clearing robots, and silo damage. Restart run is also available there, plus Restart, no parts (wave 1 with zero parts, saved to the profile) and New game (erases the whole profile and replays Level 0; click it twice).
 
-Intermissions run 2 minutes for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack becomes purchasable at the shed from wave 3 for 40 Al and 15 Cu. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
+Intermissions run 90 seconds for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack becomes purchasable at the shed from wave 3 for 40 Al and 15 Cu. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
 
 ## Debug keys (debug builds)
 
@@ -46,7 +48,7 @@ Pass `-- --tutorial` to replay Level 0 on a profile that has finished it, `-- --
 
 Replace `godot` with your Godot 4.7 binary (e.g. `~/Downloads/Godot.app/Contents/MacOS/Godot`).
 
-GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners, robots following the navmesh round the Home porch, the weapon framework (weapon data, switching and the wheel, mod hooks and slots, pooled projectiles), and time of day and weather (phase stepping, seeded rolls, the fog range hook, every preset under every weather):
+GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty curves, upgrade costs and stat stacking, genome determinism and novelty, factory readability locks, save migration, wave buying, robots sliding round building corners, robots following the navmesh round the Home porch, the weapon framework (weapon data, switching and the wheel, mod hooks and slots, pooled projectiles), time of day and weather (phase stepping, seeded rolls, the fog range hook, every preset under every weather), robot explosions (parts fly, land and clean up; quiet exits don't explode; freeze frames and screen shake always recover), and the Overcharged trait (x2 Power Cell chance; death blasts chain one fuse at a time through a pack, credit the farmer who started them, hurt farmers in range and skip robots that escape):
 
 ```bash
 godot --headless --path . -s addons/gut/gut_cmdln.gd
@@ -60,7 +62,7 @@ godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --
 
 The current 127-check version passed on seed 7 on 2026-10-24. The earlier 115-check version passed on seeds 1, 2, 3, 7, 42, 99, 1234, 2024, 31337 and 664607717 on 2026-10-18 (M2-A0's 93 checks passed on seeds 1–100 and 6 random seeds). Runs can go in parallel, even from different worktrees, since each run uses its own temp profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals it between sections. If a run ends early, the test stops with one failure that names the section and the reason.
 
-Level 0 test: plays the whole prologue headless on a fresh profile (crack, Dummy-Bot, porch, melee practice Nibbler, repair, catwalk, bell) and checks that wave 1 begins with only the wrench:
+Level 0 test: plays the whole prologue headless on a fresh profile (tractor parts, pegboard, Dummy-Bot, porch, melee practice Nibbler, repair after its hit, catwalk, bell) and checks that wave 1 begins with only the wrench:
 
 ```bash
 godot --headless --path . --fixed-fps 60 res://tests/smoke/tutorial_test.tscn -- --seed=7
@@ -71,6 +73,8 @@ The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four f
 The pickup gallery (`tests/tools/pickup_gallery.tscn`) shows the aluminum gear, copper spring, gold ring and blue power-cell battery at actual size on grass and dirt. N toggles day/night and Space freezes the spin. Add `-- --out=/tmp/pickup-gallery` to save both lighting previews and exit. Robot loot uses small emissive silhouettes, a gentle ground hover, and one cached mesh per resource type with a shared material and no shadow passes.
 
 The rendered first-kill regression (`tests/tools/first_kill_probe.tscn`) runs the real boot warm-up, then destroys two robots with all four loot types. It reports death CPU time, the slowest frame, and pipeline compilation counts; it fails if either kill compiles a new pipeline. Run with graphics enabled (not `--headless` or `--skip-boot`) and `-- --profile=/tmp/first-kill-profile.json`. Loading renders the loot and explosion samples above the farm, with a floor for the scorch decal, so their first-use rendering work finishes before Play.
+
+The explosion gallery (`tests/tools/explosion_gallery.tscn`) pops a Nibbler, Clanker, Thumper and Foreman one by one, grenades a fresh row, then sets off a pack of Overcharged robots to show the chain reaction, for tuning `RobotExplosion` and the death blast with the real camera shake and freeze frames. Space pops the next robot, G throws a grenade, R refills the row, C lines up the Overcharged pack.
 
 The atmosphere gallery (`tests/tools/atmosphere_gallery.tscn`) shows the farm with robot families in the crop rows at 10, 25 and 45 m, for checking that robots stay readable under every preset and weather. F9 and F10 step the time of day and weather, Tab switches the camera, G toggles grayscale. To save every view, preset and weather as PNGs plus color and grayscale contact sheets, run it in a window with an output folder:
 

@@ -12,8 +12,8 @@ enum TriggerMode {
 
 @export var id: StringName
 @export var display_name: String = "Weapon"
-## Number key and weapon-wheel position, 1-6 (GDD 5.2). Slot 1 is at the top of the wheel, then clockwise.
-@export_range(1, 6) var slot: int = 1
+## Number key and weapon-wheel position, 1-7. Slot 1 is at the top of the wheel, then clockwise.
+@export_range(1, 7) var slot: int = 1
 ## StatService flag that puts it in the farmer's hands (bought at the pegboard); empty = always carried.
 @export var unlock_flag: StringName
 ## Usable while riding a zipline without Zipline Grip 2 (GDD 13.4).
@@ -27,6 +27,11 @@ enum TriggerMode {
 @export var fire_rate: float = 1.0
 @export var fire_rate_stat: StringName
 @export var max_range: float = 40.0
+## Robots a gun's shot passes through after the first (the Longneck Rifle). 0 = stops at the first.
+@export var pierce: int = 0
+@export var pierce_stat: StringName
+## Shove each hit gives a robot along the shot (m/s). Heavies ignore it.
+@export var knockback: float = 0.0
 
 @export_group("Magazine")
 ## 0 = no magazine (melee).

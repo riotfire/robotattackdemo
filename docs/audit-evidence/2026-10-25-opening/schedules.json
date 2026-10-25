@@ -1,0 +1,7797 @@
+[
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 1,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 1,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 1,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 1,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 1,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 2,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 2,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 2,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 2,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 2,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 3,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 3,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 3,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 3,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 3,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 4,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 4,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 4,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 4,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 4,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 5,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 5,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 5,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 5,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 5,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 6,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 6,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 6,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 6,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 6,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 7,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 7,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 7,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 7,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 7,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 8,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 8,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 8,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 8,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 8,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 9,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 9,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 9,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 9,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 9,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 10,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 10,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 10,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 10,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 10,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 11,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 11,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 11,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 11,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 11,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 12,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 12,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 12,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 12,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 12,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 13,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 13,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 13,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 13,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 13,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 14,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 14,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 14,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 14,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 14,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 15,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 15,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 15,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 15,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 30,
+			"drone": 1,
+			"nibbler": 6,
+			"roof_lobber": 1
+		},
+		"events": 18,
+		"expected_al_pre_rounding": 125.44,
+		"expected_cu": 13.4,
+		"first_second_spawn_gap": 8.47255420684814,
+		"last_spawn": 55.2828636169434,
+		"seed": 15,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 16,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 16,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 16,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 16,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 16,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 17,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 17,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 17,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 17,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 17,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 18,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 18,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 18,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 18,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 18,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 19,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 19,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 19,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 19,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 19,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 20,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 20,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 20,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 20,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 20,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 21,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 21,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 21,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 21,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 21,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 22,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 22,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 22,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 22,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 22,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 23,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 23,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 23,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 23,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 23,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 24,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 24,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 24,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 24,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 24,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 25,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 25,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 25,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 25,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 25,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 26,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 26,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 26,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 26,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 30,
+			"drone": 1,
+			"nibbler": 6,
+			"roof_lobber": 1
+		},
+		"events": 18,
+		"expected_al_pre_rounding": 125.44,
+		"expected_cu": 13.4,
+		"first_second_spawn_gap": 8.47255420684814,
+		"last_spawn": 55.2828636169434,
+		"seed": 26,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 27,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 27,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 27,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 27,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 27,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 28,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 28,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 28,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 16,
+			"roof_lobber": 1
+		},
+		"events": 19,
+		"expected_al_pre_rounding": 67.035,
+		"expected_cu": 5.05,
+		"first_second_spawn_gap": 7.45410633087158,
+		"last_spawn": 50.1207160949707,
+		"seed": 28,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 28,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 29,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 29,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 29,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 12
+		},
+		"events": 16,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 6.6,
+		"first_second_spawn_gap": 8.13477230072021,
+		"last_spawn": 49.6559562683105,
+		"seed": 29,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 29,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 30,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 30,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 30,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 30,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 30,
+			"drone": 1,
+			"nibbler": 6,
+			"roof_lobber": 1
+		},
+		"events": 18,
+		"expected_al_pre_rounding": 125.44,
+		"expected_cu": 13.4,
+		"first_second_spawn_gap": 8.47255420684814,
+		"last_spawn": 55.2828636169434,
+		"seed": 30,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 31,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 31,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 31,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 31,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 31,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 32,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 32,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 32,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 32,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 32,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 33,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 33,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 33,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 33,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 33,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 34,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 34,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 34,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 34,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 30,
+			"drone": 1,
+			"nibbler": 6,
+			"roof_lobber": 1
+		},
+		"events": 18,
+		"expected_al_pre_rounding": 125.44,
+		"expected_cu": 13.4,
+		"first_second_spawn_gap": 8.47255420684814,
+		"last_spawn": 55.2828636169434,
+		"seed": 34,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 35,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 35,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 35,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 35,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 15,
+			"drone": 1,
+			"nibbler": 21,
+			"roof_lobber": 1
+		},
+		"events": 28,
+		"expected_al_pre_rounding": 117.04,
+		"expected_cu": 9.65,
+		"first_second_spawn_gap": 6.8133544921875,
+		"last_spawn": 56.3519287109375,
+		"seed": 35,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 36,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 36,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 36,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 36,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 36,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 37,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 37,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 37,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 37,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 37,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 38,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 38,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 38,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 38,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 38,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 39,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 39,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 39,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 39,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 39,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 40,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 40,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 40,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 40,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 40,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 41,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 41,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 41,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 41,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 41,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 42,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 42,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 42,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 42,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 42,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 43,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 43,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 43,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 43,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 43,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 44,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 44,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 44,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 44,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 44,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 45,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 45,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 45,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 45,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 45,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 46,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 46,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 1,
+			"roof_lobber": 1
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 54.06,
+		"expected_cu": 6.4,
+		"first_second_spawn_gap": 11.6887865066528,
+		"last_spawn": 41.513298034668,
+		"seed": 46,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 46,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 46,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 47,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 47,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 47.7,
+		"expected_cu": 3.4,
+		"first_second_spawn_gap": 7.52040386199951,
+		"last_spawn": 44.21826171875,
+		"seed": 47,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 47,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 30,
+			"drone": 1,
+			"nibbler": 6,
+			"roof_lobber": 1
+		},
+		"events": 18,
+		"expected_al_pre_rounding": 125.44,
+		"expected_cu": 13.4,
+		"first_second_spawn_gap": 8.47255420684814,
+		"last_spawn": 55.2828636169434,
+		"seed": 47,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 48,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 48,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 48,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 48,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 48,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 49,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 49,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 49,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 49,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 49,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 50,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 50,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 50,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 50,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 50,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 51,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 51,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 1,
+			"roof_lobber": 1
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 54.06,
+		"expected_cu": 6.4,
+		"first_second_spawn_gap": 11.6887865066528,
+		"last_spawn": 41.513298034668,
+		"seed": 51,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 51,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 15,
+			"drone": 1,
+			"nibbler": 21,
+			"roof_lobber": 1
+		},
+		"events": 28,
+		"expected_al_pre_rounding": 117.04,
+		"expected_cu": 9.65000000000001,
+		"first_second_spawn_gap": 6.8133544921875,
+		"last_spawn": 56.3519287109375,
+		"seed": 51,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 52,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 52,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 52,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 52,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 52,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 53,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 53,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 53,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 53,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 53,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 54,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 54,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 54,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 54,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 54,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 55,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 55,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 55,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 55,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 15,
+			"drone": 1,
+			"nibbler": 21,
+			"roof_lobber": 1
+		},
+		"events": 28,
+		"expected_al_pre_rounding": 117.04,
+		"expected_cu": 9.65000000000001,
+		"first_second_spawn_gap": 6.8133544921875,
+		"last_spawn": 56.3519287109375,
+		"seed": 55,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 56,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 56,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 56,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 56,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 56,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 57,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 57,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 57,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 57,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 57,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 58,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 58,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 58,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 12
+		},
+		"events": 16,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 6.6,
+		"first_second_spawn_gap": 8.13477230072021,
+		"last_spawn": 49.6559562683105,
+		"seed": 58,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 58,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 59,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 59,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 59,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 6
+		},
+		"events": 12,
+		"expected_al_pre_rounding": 75.21,
+		"expected_cu": 8.1,
+		"first_second_spawn_gap": 9.48167705535889,
+		"last_spawn": 48.7242774963379,
+		"seed": 59,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 59,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 60,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 60,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 60,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 60,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 60,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 61,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 61,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 61,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 61,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 61,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 62,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 62,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 62,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 16,
+			"roof_lobber": 1
+		},
+		"events": 19,
+		"expected_al_pre_rounding": 67.035,
+		"expected_cu": 5.05,
+		"first_second_spawn_gap": 7.45410633087158,
+		"last_spawn": 50.1207160949707,
+		"seed": 62,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 62,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 63,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 63,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 63,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 63,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 63,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 64,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 64,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 64,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 64,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 64,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 65,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 65,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 65,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 65,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 65,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 66,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 66,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 66,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 66,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 66,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 67,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 67,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 67,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 16,
+			"roof_lobber": 1
+		},
+		"events": 19,
+		"expected_al_pre_rounding": 67.035,
+		"expected_cu": 5.05,
+		"first_second_spawn_gap": 7.45410633087158,
+		"last_spawn": 50.1207160949707,
+		"seed": 67,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 67,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 68,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 68,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 68,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 68,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 68,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 69,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 69,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 69,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 69,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 69,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 70,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 70,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 70,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 70,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 70,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 71,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 71,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 71,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 71,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 71,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 72,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 72,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 72,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 72,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 72,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 73,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 1
+		},
+		"events": 5,
+		"expected_al_pre_rounding": 39.655,
+		"expected_cu": 4.95,
+		"first_second_spawn_gap": 13.3317747116089,
+		"last_spawn": 35.2182731628418,
+		"seed": 73,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 73,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 73,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 73,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 74,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 74,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 74,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 74,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 74,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 75,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 75,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 75,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 75,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 75,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 76,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 76,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 76,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 76,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 76,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 77,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 77,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 77,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 77,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 77,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 78,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 78,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 78,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 78,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 78,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 79,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 79,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 79,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 79,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 79,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 80,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 80,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 80,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 80,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 80,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 81,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 81,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 81,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 81,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 81,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 82,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 82,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 82,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 82,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 82,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 83,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 83,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 83,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 83,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 83,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 84,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 84,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 84,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 84,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 84,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 85,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 85,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 85,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 85,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 85,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 86,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 86,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 86,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 86,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 86,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 87,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 87,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 87,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 12
+		},
+		"events": 16,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 6.6,
+		"first_second_spawn_gap": 8.13477230072021,
+		"last_spawn": 49.6559562683105,
+		"seed": 87,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 87,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 88,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 88,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 88,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 88,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 18,
+			"drone": 1,
+			"nibbler": 18,
+			"roof_lobber": 1
+		},
+		"events": 26,
+		"expected_al_pre_rounding": 118.72,
+		"expected_cu": 10.4,
+		"first_second_spawn_gap": 7.06399488449097,
+		"last_spawn": 56.2009201049805,
+		"seed": 88,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 89,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 89,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 89,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 89,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 89,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 90,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 90,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 90,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 90,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 90,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 91,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 91,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 91,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 91,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 91,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 92,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 92,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 92,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 92,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 92,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 93,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 93,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"nibbler": 16,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 46.11,
+		"expected_cu": 2.65,
+		"first_second_spawn_gap": 7.04907321929932,
+		"last_spawn": 44.542911529541,
+		"seed": 93,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 93,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 93,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 94,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 94,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 94,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 15,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 71.94,
+		"expected_cu": 7.3,
+		"first_second_spawn_gap": 9.07724761962891,
+		"last_spawn": 49.0037612915039,
+		"seed": 94,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 30,
+			"drone": 1,
+			"nibbler": 6,
+			"roof_lobber": 1
+		},
+		"events": 18,
+		"expected_al_pre_rounding": 125.44,
+		"expected_cu": 13.4,
+		"first_second_spawn_gap": 8.47255420684814,
+		"last_spawn": 55.2828636169434,
+		"seed": 94,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 95,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 3,
+			"nibbler": 10
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 35.02,
+		"expected_cu": 2.7,
+		"first_second_spawn_gap": 7.83971643447876,
+		"last_spawn": 38.1352157592773,
+		"seed": 95,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 95,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 95,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 24,
+			"drone": 1,
+			"nibbler": 12,
+			"roof_lobber": 1
+		},
+		"events": 22,
+		"expected_al_pre_rounding": 122.08,
+		"expected_cu": 11.9,
+		"first_second_spawn_gap": 7.6658878326416,
+		"last_spawn": 55.8199119567871,
+		"seed": 95,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 96,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 96,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 96,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 96,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 96,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 97,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 97,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 13,
+		"expected_al_pre_rounding": 49.29,
+		"expected_cu": 4.15,
+		"first_second_spawn_gap": 8.11450958251953,
+		"last_spawn": 43.8063926696777,
+		"seed": 97,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 97,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 97,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 98,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 98,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 98,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 10,
+			"roof_lobber": 1
+		},
+		"events": 15,
+		"expected_al_pre_rounding": 70.305,
+		"expected_cu": 6.55,
+		"first_second_spawn_gap": 8.41265487670898,
+		"last_spawn": 49.4644927978516,
+		"seed": 98,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 27,
+			"drone": 1,
+			"nibbler": 9,
+			"roof_lobber": 1
+		},
+		"events": 20,
+		"expected_al_pre_rounding": 123.76,
+		"expected_cu": 12.65,
+		"first_second_spawn_gap": 8.03594017028809,
+		"last_spawn": 55.5764083862305,
+		"seed": 98,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 99,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 4
+		},
+		"events": 7,
+		"expected_al_pre_rounding": 38.11,
+		"expected_cu": 4.2,
+		"first_second_spawn_gap": 10.3019819259644,
+		"last_spawn": 36.5879936218262,
+		"seed": 99,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 7,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 50.88,
+		"expected_cu": 4.9,
+		"first_second_spawn_gap": 8.89506340026855,
+		"last_spawn": 43.2688026428223,
+		"seed": 99,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 18,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 11,
+		"expected_al_pre_rounding": 73.575,
+		"expected_cu": 8.05,
+		"first_second_spawn_gap": 9.95040988922119,
+		"last_spawn": 48.4023895263672,
+		"seed": 99,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 99,
+		"wave": 5,
+		"window": 73.0
+	},
+	{
+		"budget": 18.0,
+		"counts": {
+			"nibbler": 9
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 22.5,
+		"expected_cu": 1.35,
+		"first_second_spawn_gap": 7.61654233932495,
+		"last_spawn": 32.4472389221191,
+		"seed": 100,
+		"wave": 1,
+		"window": 45.0
+	},
+	{
+		"budget": 26.773732960139,
+		"counts": {
+			"clanker": 6,
+			"nibbler": 7
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 36.565,
+		"expected_cu": 3.45,
+		"first_second_spawn_gap": 8.80133819580078,
+		"last_spawn": 37.4945831298828,
+		"seed": 100,
+		"wave": 2,
+		"window": 52.0
+	},
+	{
+		"budget": 37.0270050656864,
+		"counts": {
+			"clanker": 12,
+			"nibbler": 4,
+			"roof_lobber": 1
+		},
+		"events": 9,
+		"expected_al_pre_rounding": 52.47,
+		"expected_cu": 5.65,
+		"first_second_spawn_gap": 9.98613357543945,
+		"last_spawn": 42.5419311523438,
+		"seed": 100,
+		"wave": 3,
+		"window": 59.0
+	},
+	{
+		"budget": 48.3771975962496,
+		"counts": {
+			"clanker": 9,
+			"nibbler": 13,
+			"roof_lobber": 1
+		},
+		"events": 17,
+		"expected_al_pre_rounding": 68.67,
+		"expected_cu": 5.8,
+		"first_second_spawn_gap": 7.88540410995483,
+		"last_spawn": 49.8276634216309,
+		"seed": 100,
+		"wave": 4,
+		"window": 66.0
+	},
+	{
+		"budget": 78.8056072710177,
+		"counts": {
+			"clanker": 21,
+			"drone": 1,
+			"nibbler": 15,
+			"roof_lobber": 1
+		},
+		"events": 24,
+		"expected_al_pre_rounding": 120.4,
+		"expected_cu": 11.15,
+		"first_second_spawn_gap": 7.34564447402954,
+		"last_spawn": 56.025276184082,
+		"seed": 100,
+		"wave": 5,
+		"window": 73.0
+	}
+]

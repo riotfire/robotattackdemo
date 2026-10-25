@@ -94,7 +94,11 @@ func _run() -> void:
 			"family logged in the Almanac")
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
 	_check(absf(t - _director.siren_lead_time) < 0.5, "spawning starts after the siren (%.2f s)" % t)
-	_check(_director.spawns_total == 9, "wave 1 buys 9 Nibblers with budget 18 (got %d)" % _director.spawns_total)
+	var wave_one_robots := 0
+	for event: WaveDirector.SpawnEvent in _director.get("_events"):
+		wave_one_robots += event.robot_count()
+	_check(wave_one_robots == 9, "wave 1 buys 9 Nibblers with budget 18, solo or in trios (got %d in %d groups)"
+			% [wave_one_robots, _director.spawns_total])
 	var first := await _first_robot(20.0)
 	if first != null:
 		var kit := first.get_node(^"Model/Pose/Kit")
@@ -113,9 +117,12 @@ func _run() -> void:
 		"an off-site hit raises a prominent silo warning")
 	_check("m away" in hud._silo_alert_detail.text and "Structure" in hud._silo_alert_detail.text,
 		"the warning gives distance and remaining Structure")
-	var alarm_player := AudioDirector.get_node("Sfx%d" % alarm_voice) as AudioStreamPlayer
-	_check(alarm_player.stream != null and alarm_player.stream.resource_path.ends_with("/silo_alarm.wav"),
-		"the first remote hit sounds a distinct alarm")
+	# Look at every voice from the one that was next: another sound (a robot nipping the farmer) can take it first.
+	var alarmed := false
+	for offset in AudioDirector.SFX_VOICES:
+		var voice := AudioDirector.get_node("Sfx%d" % ((alarm_voice + offset) % AudioDirector.SFX_VOICES)) as AudioStreamPlayer
+		alarmed = alarmed or (voice.playing and voice.stream != null and voice.stream.resource_path.ends_with("/silo_alarm.wav"))
+	_check(alarmed, "the first remote hit sounds a distinct alarm")
 	var voice_after_alarm: int = AudioDirector.get(&"_next_sfx")
 	var structure_after_alarm := silo.structure
 	await _wait_until(func() -> bool: return silo.structure < structure_after_alarm, 6.0)
@@ -141,9 +148,11 @@ func _run() -> void:
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(t >= 0.0 and _director.wave == 2, "back to intermission, now for wave 2")
 	_check(FileAccess.file_exists(_profile), "autosaved at the intermission start")
-	_check("pistol" in hud._tutorial_lesson.text.to_lower() and hud._silo_alert.visible,
-		"the repair warning takes priority over the first build choice")
+	# Away from the leaking silo, so the warning shows whether or not a robot hit it in the last moments.
 	_farmer.teleport_to(Vector3(-30.0, 0.3, 29.0))
+	await _frames(3)
+	_check("pistol" in hud._tutorial_lesson.text.to_lower() and hud._silo_alert.visible and not hud._tutorial_lesson.visible,
+		"the repair warning takes priority over the first build choice")
 	await _frames(360)
 	_check(hud._silo_alert.visible and hud._silo_alert_title.text == "SILO LEAKING GRAIN",
 		"the warning stays as a quieter repair reminder while cracks leak")
@@ -274,9 +283,9 @@ func _check_spawn_mix(wave: int) -> void:
 	var robots := 0
 	var kinds := PackedStringArray()
 	for event: WaveDirector.SpawnEvent in _director.get("_events"):
-		spent += event.archetype.threat_cost()
+		spent += event.threat_cost()
 		robots += event.robot_count()
-		kinds.append(String(event.archetype.id))
+		kinds.append(String(event.archetype.id) + (" x3" if event.robot_count() == 3 else ""))
 	_check(spent <= budget + 0.01 and budget - spent < 2.0,
 			"wave %d spends %.0f of its %.1f threat budget on %d robots (%s)" % [wave, spent, budget, robots, ", ".join(kinds)])
 
@@ -337,7 +346,9 @@ func _test_wrench_and_pickups() -> void:
 	var hp_before := robot.health.current
 	_wrench().swing()
 	_check(is_equal_approx(hp_before - robot.health.current, 25.0), "wrench bonk does 25 to a Nibbler (%.0f -> %.0f HP)" % [hp_before, robot.health.current])
-	_check(robot.target_kind == Robot.TargetKind.PLAYER, "a Nibbler hit from up close switches to the farmer")
+	# A hit rolls the Nibbler's distractibility (0.3), so whether it turns on the farmer depends on the seed.
+	_check(robot.targeting.is_hurt(), "a hit from up close arms the Nibbler's hurt trigger (now after the %s)"
+			% ("farmer" if robot.target_kind == Robot.TargetKind.PLAYER else "silo"))
 	var parts_before := GameState.parts.values().reduce(func(a: int, b: int) -> int: return a + b, 0) as int
 	robot.take_damage(DamagePacket.create(999.0, _farmer, robot.global_position))
 	await _frames(150)
@@ -387,18 +398,22 @@ func _test_squads() -> void:
 	await _wait_until(func() -> bool: return has_squad.call() or _director.spawns_done >= _director.spawns_total,
 			_director.spawn_window + 5.0)
 	if not has_squad.call():
-		print("  NOTE  wave 2 rolled no Clanker squad this run; squad checks skipped")
+		print("  NOTE  wave 2 rolled no trio this run; trio checks skipped")
 		return
 	for node in get_tree().get_nodes_in_group(Robot.GROUP):
 		if (node as Robot).squad != null:
 			clanker = node as Robot
 			break
 	var squad := clanker.squad
-	_check(squad.members.size() == 3, "Clankers arrive as a squad of 3")
-	_check(is_equal_approx(clanker.health.max_health, 60.0 * 1.072 * _trait_hp(clanker)),
-			"Clanker HP 60 x wave 2 scaling (%.1f)" % clanker.health.max_health)
-	var targets := squad.members.map(func(r: Robot) -> int: return r.target_kind)
-	_check(targets.count(targets[0]) == 3, "the squad shares one target")
+	var base_hp := clanker.archetype.base_hp
+	_check(squad.members.size() == 3, "%ss arrive as a trio" % clanker.archetype.display_name)
+	_check(is_equal_approx(clanker.health.max_health, base_hp * 1.072 * _trait_hp(clanker)),
+			"%s HP %.0f x wave 2 scaling (%.1f)" % [clanker.archetype.display_name, base_hp, clanker.health.max_health])
+	_check(squad.members.all(func(r: Robot) -> bool: return r.targeting == squad.targeting),
+			"the trio shares one set of rolls")
+	if squad.heist_leader == null:
+		var targets := squad.members.map(func(r: Robot) -> int: return r.target_kind)
+		_check(targets.count(targets[0]) == 3, "the trio shares one target")
 
 
 func _test_repair() -> void:
@@ -475,9 +490,9 @@ func _test_weapon_wheel() -> void:
 	var holder := _farmer.weapons
 	var wrench := _wrench()
 	var pistol := _pistol()
-	var expected: Array[Weapon] = [wrench, pistol]
-	_check(holder.weapons == expected and wrench.data.slot == 1 and pistol.data.slot == 2,
-			"the farmer carries the wrench (slot 1) and pistol (slot 2), set up from data/weapons")
+	var expected: Array[StringName] = [&"wrench", &"pistol", &"shotgun", &"rifle", &"grenade", &"maul", &"scythe"]
+	_check(holder.weapons.map(func(w: Weapon) -> StringName: return w.data.id) == expected,
+			"the farmer carries seven shed weapons in wheel order")
 	await _press_action(&"weapon_1")
 	_check(holder.current == wrench, "1 equips the wrench")
 	Input.action_press(&"weapon_wheel")
@@ -656,7 +671,7 @@ func _test_time_and_weather() -> void:
 			"the blend lands on %s after %.1f s" % [next.display_name, t])
 	EventBus.time_of_day_changed.disconnect(on_change)
 
-	var long_range := Weather.engagement_range_multiplier(RobotArchetype.RobotClass.LONG_RANGE)
+	var long_range := Weather.engagement_range_multiplier(RobotArchetype.RobotClass.RANGED)
 	_check(is_equal_approx(long_range, rolled.long_range_multiplier) and Weather.engagement_range_multiplier(RobotArchetype.RobotClass.MELEE) == 1.0,
 			"long-range robots get x%.2f range in %s, melee x1" % [long_range, rolled.display_name])
 

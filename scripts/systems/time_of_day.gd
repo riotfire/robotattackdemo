@@ -11,6 +11,10 @@ extends Node
 
 ## Only TimeOfDay rolls from this stream, once per run, so it never shifts spawn, genome or lane rolls.
 const STREAM: StringName = &"environment"
+## Every run, whatever its seed, opens on Dawn in Clear weather. The roll still runs and is overridden after,
+## so the stream advances exactly as before and the other per-run variation is unchanged.
+const START_PRESET: StringName = &"dawn"
+const START_WEATHER: StringName = &"clear"
 
 @export var table: EnvironmentTable
 @export var world_environment: WorldEnvironment
@@ -61,6 +65,8 @@ static func roll_for_run(environment_table: EnvironmentTable) -> EnvironmentTabl
 
 func _on_run_started(_run_seed: int) -> void:
 	run_roll = roll_for_run(table)
+	run_roll.start_index = table.preset_by_id(START_PRESET)
+	run_roll.weather_index = table.weather_by_id(START_WEATHER)
 	var forced_time := -1
 	var forced_weather := -1
 	for arg in OS.get_cmdline_user_args():

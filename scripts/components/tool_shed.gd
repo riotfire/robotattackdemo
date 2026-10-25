@@ -2,7 +2,7 @@ class_name ToolShed
 extends Interactable
 ## The tool shed door (GDD 3.5, 13.1): opens the pegboard during intermissions. Shuttered during waves:
 ## a roll-down steel shutter drops over the door whenever the shed is closed, so the rule is visible
-## without a sign. Level 0 keeps it shut until the first wave has been called.
+## without a sign. Level 0 opens it briefly for the first wrench purchase.
 
 signal pegboard_requested(farmer: Farmer)
 
@@ -12,8 +12,9 @@ const DOOR_WIDTH: float = 3.0
 const DOOR_HEIGHT: float = 2.2
 const DOOR_TOP: float = 2.5
 
-## Level 0 holds the shed shut through the melee lesson.
+## Level 0 controls when the first pegboard visit is available.
 var tutorial_locked: bool = false
+var tutorial_lock_prompt: String = "The shed opens after wave 1."
 
 var _slam_left: float = 0.0
 var _shutter: Node3D
@@ -50,7 +51,7 @@ func can_interact(_farmer: Farmer) -> bool:
 
 func prompt_text(_farmer: Farmer) -> String:
 	if tutorial_locked:
-		return "The shed opens after wave 1."
+		return tutorial_lock_prompt
 	return prompt if is_open() else "The shed is shuttered during the attack!"
 
 

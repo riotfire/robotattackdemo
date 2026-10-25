@@ -1,7 +1,18 @@
 id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,description
-attack.wrench_damage,attack,0,0,Swing Damage,10,,al_to_pc 12,wrench.damage add_pct 0.12,+12% wrench damage per level.
-attack.wrench_speed,attack,0,1,Swing Speed,5,,al_cu 15,wrench.swing_rate add_pct 0.08,+8% swing speed per level.
+attack.wrench,attack,0,0,Grandpa's Wrench,1,,al 6,wrench.owned flag,Your first tool: bonk robots and seal silo cracks.
+attack.wrench_damage,attack,0,1,Swing Damage,10,attack.wrench,al_to_pc 12,wrench.damage add_pct 0.12,"+12% wrench, maul and scythe damage per level."
+attack.wrench_speed,attack,0,2,Swing Speed,5,attack.wrench,al_cu 15,wrench.swing_rate add_pct 0.08,"+8% wrench, maul and scythe swing speed per level."
 attack.pistol,attack,1,0,Rivet Pistol,1,,al 20,pistol.unlocked flag,"A reliable rivet gun: 12 damage, 10 rounds, 40 m."
 attack.pistol_damage,attack,1,1,Pistol Damage,10,attack.pistol,al_to_pc 15,pistol.damage add_pct 0.12,+12% pistol damage per level.
-attack.pistol_rate,attack,2,1,Pistol Fire Rate,10,attack.pistol,al_to_pc 15,pistol.fire_rate add_pct 0.08,+8% pistol fire rate per level.
+attack.pistol_rate,attack,1,3,Pistol Fire Rate,10,attack.pistol,al_to_pc 15,pistol.fire_rate add_pct 0.08,+8% pistol fire rate per level.
 attack.pistol_handling,attack,1,2,Pistol Handling,5,attack.pistol,al_cu 20,pistol.magazine flat 2; pistol.reload_time add_pct -0.08,+2 magazine and -8% reload time per level.
+attack.shotgun,attack,2,0,Barn Blaster,1,attack.pistol,al 35,shotgun.unlocked flag,Seven pellets spread across a short cone and shove back nearby groups.
+attack.shotgun_damage,attack,2,1,Shotgun Damage,10,attack.shotgun,al_to_pc 15,shotgun.damage add_pct 0.12,+12% pellet damage per level.
+attack.rifle,attack,3,0,Longneck Rifle,1,attack.pistol,al 45; cu 3,rifle.unlocked flag,Slow precise shots reach across the farm and punch through a second robot.
+attack.rifle_damage,attack,3,1,Rifle Damage,10,attack.rifle,al_to_pc 18,rifle.damage add_pct 0.12,+12% rifle damage per level.
+attack.rifle_pierce,attack,3,2,Punch-Through,2,attack.rifle,cu 12; au 2 2-2,rifle.pierce flat 1,Each level lets a rifle round pass through one more robot.
+#attack.grenade,attack,4,0,Boiler Grenades,1,attack.pistol,al 60; cu 8,grenade.unlocked flag,Lob a shell onto the crosshair that bursts across a group of tough robots.
+#attack.grenade_damage,attack,4,1,Grenade Damage,10,attack.grenade,al_to_pc 20,grenade.damage add_pct 0.12,+12% blast damage per level.
+#attack.grenade_blast,attack,4,2,Bigger Boiler,3,attack.grenade,al_cu 20,grenade.blast_radius add_pct 0.15,+15% blast radius per level.
+#attack.maul,attack,0,3,Haymaker Maul,1,,al 30,maul.unlocked flag,A slow front-facing swing that crushes everything in front of you and shoves it back.
+#attack.scythe,attack,2,3,Harvest Scythe,1,,al 40; cu 5,scythe.unlocked flag,A 360-degree sweep that clears robots surrounding you.

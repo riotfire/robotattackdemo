@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AttackProfile" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/attack_profile.gd" id="1_akxnr"]
+
+[resource]
+script = ExtResource("1_akxnr")
+id = &"clanker_bolt"
+kind = 1
+charge_time = 0.8
+interval = 2.4
+damage_vs_farmer = 5.0
+speed = 14.0
+gravity = 8.0
+attack_range = 16.0
+aim_height_silo = 2.0
+projectile_radius = 0.15
+color = Color(0.72, 0.74, 0.78, 1)

@@ -1,0 +1,8 @@
+id,kind,charge_time,interval,damage_vs_farmer,damage_vs_silo,speed,gravity,attack_range,aim_height_farmer,aim_height_silo,splash_radius,volley,volley_gap,aim_lock_time,projectile_radius,color
+drone_shot,straight,0.9,2.8,4,8,20,0,32,1,8,0,1,0.25,0.4,0.2,1 0.45 0.1
+lobber_lob,lob,1.1,3.6,6,12,20,6,24,1,8,0,1,0.25,0.4,0.26,1 0.84 0.2
+longneck_rail,rail,2,6,30,80,150,0,60,1,6,0,1,0.25,0.4,0.12,0.95 0.12 0.08
+duster_bomb,bomb,1,3,10,15,0,22,18,1,16,2,1,0.25,0.4,0.3,0.25 0.22 0.2
+spitter_pea,straight,0.8,2.2,3,5,14,0,18,1,8.5,0,1,0.25,0.4,0.12,0.55 0.9 0.3
+clanker_bolt,lob,0.8,2.4,5,8,14,8,16,1,2,0,1,0.25,0.4,0.15,0.72 0.74 0.78
+thumper_clod,lob,1,3,15,20,12,9,18,1,2,2,1,0.25,0.4,0.35,0.5 0.36 0.22

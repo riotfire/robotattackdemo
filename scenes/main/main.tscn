@@ -14,6 +14,7 @@
 [ext_resource type="Resource" path="res://data/robots/archetypes/thumper.tres" id="12_thumper"]
 [ext_resource type="Resource" path="res://data/robots/archetypes/roof_lobber.tres" id="16_roof_lobber"]
 [ext_resource type="Resource" path="res://data/robots/archetypes/drone.tres" id="17_drone"]
+[ext_resource type="Resource" path="res://data/robots/archetypes/spitter.tres" id="18_spitter"]
 [ext_resource type="Resource" path="res://data/robots/gene_library.tres" id="13_genes"]
 [ext_resource type="Script" uid="uid://c4frj8vedthcc" path="res://scripts/ui/pegboard_ui.gd" id="14_pegboard"]
 [ext_resource type="Script" uid="uid://c3e06yt7nmnft" path="res://scripts/ui/pause_menu.gd" id="15_pause"]
@@ -37,6 +38,7 @@ script = ExtResource("5_director")
 curve = ExtResource("6_curve")
 archetypes = Array[ExtResource("7_archetype")]([ExtResource("8_nibbler"), ExtResource("11_clanker"), ExtResource("12_thumper"), ExtResource("16_roof_lobber"), ExtResource("17_drone")])
 foreman_archetype = ExtResource("12_thumper")
+spitter_archetype = ExtResource("18_spitter")
 gene_library = ExtResource("13_genes")
 robots_parent = NodePath("../Robots")
 

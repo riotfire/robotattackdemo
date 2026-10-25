@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_vdkrv"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_uc8xi"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_g7q84"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_h6uox"]
+
+[sub_resource type="Resource" id="Resource_cbtum"]
+script = ExtResource("1_vdkrv")
+parts = Array[StringName]([&"al", &"cu", &"au", &"pc"])
+bases = PackedFloat32Array(15, 8, 4, 2)
+first_levels = PackedInt32Array(1, 4, 7, 9)
+last_levels = PackedInt32Array(6, 10, 10, 10)
+
+[sub_resource type="Resource" id="Resource_lsrgn"]
+script = ExtResource("2_uc8xi")
+stat = &"shotgun.damage"
+value = 0.12
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_veq5a"]
+script = ExtResource("3_g7q84")
+node_id = &"attack.shotgun"
+
+[resource]
+script = ExtResource("4_h6uox")
+id = &"attack.shotgun_damage"
+branch = 1
+display_name = "Shotgun Damage"
+description = "+12% pellet damage per level."
+max_level = 10
+prerequisites = Array[ExtResource("3_g7q84")]([SubResource("Resource_veq5a")])
+cost_curve = SubResource("Resource_cbtum")
+effects = Array[ExtResource("2_uc8xi")]([SubResource("Resource_lsrgn")])
+board_position = Vector2i(2, 1)

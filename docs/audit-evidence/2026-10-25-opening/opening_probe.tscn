@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://docs/audit-evidence/2026-10-25-opening/opening_probe.gd" id="1"]
+
+[node name="OpeningProbe" type="Node"]
+script = ExtResource("1")

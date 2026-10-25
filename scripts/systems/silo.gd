@@ -18,8 +18,13 @@ const DAMAGE_STATES: PackedStringArray = ["Pristine", "Cracked", "Split", "Buste
 ## Nearby hits needed to grow Small -> Medium and Medium -> Large.
 @export var hits_to_grow: PackedInt32Array = [3, 4]
 @export var nearby_hit_radius: float = 2.5
-## Chance a new crack opens at ground level, catwalk 1, catwalk 2.
+## Chance a new crack opens in the height band the hit landed in (GDD 3.3, decision R-D3), so ground robots
+## open low cracks and ranged and flying robots open high ones.
+@export_range(0.0, 1.0) var hit_band_weight: float = 0.7
+## How the rest is shared between the other bands: ground level, catwalk 1, catwalk 2.
 @export var band_weights: PackedFloat32Array = [0.5, 0.3, 0.2]
+## New cracks stay at ground level up to this wave while the player learns to repair (the opening plan).
+@export var ground_only_until_wave: int = 2
 @export var radius: float = 4.0
 ## Bushels per wave cleared (GDD 3.3); Harvest Helpers add to it.
 @export var harvest_bonus: float = 40.0
@@ -33,6 +38,8 @@ var _crack_counter: float = 0.0
 var _cracks: Array[SiloCrack] = []
 var _sockets: Array[Marker3D] = []
 var _occupied: Dictionary[int, SiloCrack] = {}
+## Average socket height of each band above the silo base; -1 for a band with no sockets.
+var _band_heights: PackedFloat32Array = [-1.0, -1.0, -1.0]
 var _body_material: ShaderMaterial
 
 @onready var _cracks_root: Node3D = $Cracks
@@ -52,6 +59,7 @@ func _ready() -> void:
 	for child in _sockets_root.get_children():
 		if child is Marker3D:
 			_sockets.append(child)
+	_measure_bands()
 	# Its own clay copy so the paint can darken with damage (GDD 3.3 damage states).
 	_body_material = Clay.shared().duplicate() as ShaderMaterial
 	_body_material.set_shader_parameter(&"albedo_color", pristine_color)
@@ -96,8 +104,7 @@ func take_damage(packet: DamagePacket) -> void:
 		# Crack Stoppers: the Structure still goes into an existing crack's pool, just without a new leak.
 		var stopped := not _cracks.is_empty() and stop_chance > 0.0 \
 				and RngService.stream(RngService.STREAM_SILO).randf() < stop_chance
-		if not stopped and _cracks.size() < max_active_cracks and _occupied.size() < _sockets.size():
-			_open_crack(packet.position, threshold)
+		if not stopped and _cracks.size() < max_active_cracks and _open_crack(packet.position, threshold):
 			_crack_counter -= threshold
 		else:
 			var target := near if near != null else nearest_crack(packet.position, INF)
@@ -223,8 +230,11 @@ func distance_to_wall(from: Vector3) -> float:
 	return flat.length() - radius
 
 
-func _open_crack(hit_position: Vector3, pool_amount: float) -> void:
-	_open_crack_at(_pick_socket(hit_position), pool_amount)
+## Returns false when no socket may take a new crack (all full, or no free ground socket early on).
+func _open_crack(hit_position: Vector3, pool_amount: float) -> bool:
+	var socket_index := _pick_socket(hit_position)
+	_open_crack_at(socket_index, pool_amount)
+	return socket_index >= 0
 
 
 func _open_crack_at(socket_index: int, pool_amount: float) -> void:
@@ -248,28 +258,59 @@ func _close_crack(crack: SiloCrack) -> void:
 	crack.queue_free()
 
 
-## Picks a band by weight (only bands with a free socket), then the free socket in that band
-## that faces the hit most directly.
+## The height band (0 ground, 1 catwalk 1, 2 catwalk 2) whose sockets are nearest the height of `at`.
+func hit_band(at: Vector3) -> int:
+	var height := at.y - global_position.y
+	var best := 0
+	var best_gap := INF
+	for band in 3:
+		if _band_heights[band] >= 0.0 and absf(height - _band_heights[band]) < best_gap:
+			best_gap = absf(height - _band_heights[band])
+			best = band
+	return best
+
+
+## Picks a band by weight, then the free socket in that band that faces the hit most directly. The hit's
+## own band gets hit_band_weight and the other bands share the rest by band_weights; only bands with a
+## free socket count. Up to ground_only_until_wave, only ground sockets do. -1 when none is free.
 func _pick_socket(hit_position: Vector3) -> int:
 	var free_by_band: Array[Array] = [[], [], []]
 	for i in _sockets.size():
 		if not _occupied.has(i):
 			var band := clampi(int(_sockets[i].get_meta(&"band", 0)), 0, 2)
 			free_by_band[band].append(i)
+	var bands := [0] if GameState.wave <= ground_only_until_wave else [0, 1, 2]
+	var hit := hit_band(hit_position)
+	var others := 0.0
+	for band: int in bands:
+		if band != hit and not free_by_band[band].is_empty():
+			others += band_weights[band]
+	var weights := PackedFloat32Array([0.0, 0.0, 0.0])
 	var total_weight := 0.0
-	for band in 3:
-		if not free_by_band[band].is_empty():
-			total_weight += band_weights[band]
-	if total_weight <= 0.0:
-		return -1
-	var rng := RngService.stream(RngService.STREAM_SILO)
-	var roll := rng.randf() * total_weight
-	var chosen_band := 0
-	for band in 3:
+	for band: int in bands:
 		if free_by_band[band].is_empty():
 			continue
+		if band == hit:
+			weights[band] = hit_band_weight
+		elif others > 0.0:
+			weights[band] = (1.0 - hit_band_weight) * band_weights[band] / others
+		total_weight += weights[band]
+	if total_weight <= 0.0:
+		# Only the hit's band is free and its weight is 0, or nothing is free.
+		for band: int in bands:
+			if not free_by_band[band].is_empty():
+				weights[band] = 1.0
+				total_weight += 1.0
+		if total_weight <= 0.0:
+			return -1
+	var rng := RngService.stream(RngService.STREAM_SILO)
+	var roll := rng.randf() * total_weight
+	var chosen_band := -1
+	for band: int in bands:
+		if weights[band] <= 0.0:
+			continue
 		chosen_band = band
-		roll -= band_weights[band]
+		roll -= weights[band]
 		if roll <= 0.0:
 			break
 	var hit_dir := hit_position - global_position
@@ -284,6 +325,17 @@ func _pick_socket(hit_position: Vector3) -> int:
 			best_dot = d
 			best = i
 	return best
+
+
+func _measure_bands() -> void:
+	var sums := PackedFloat32Array([0.0, 0.0, 0.0])
+	var counts := PackedInt32Array([0, 0, 0])
+	for socket in _sockets:
+		var band := clampi(int(socket.get_meta(&"band", 0)), 0, 2)
+		sums[band] += socket.global_position.y - global_position.y
+		counts[band] += 1
+	for band in 3:
+		_band_heights[band] = sums[band] / counts[band] if counts[band] > 0 else -1.0
 
 
 func _update_damage_visual() -> void:

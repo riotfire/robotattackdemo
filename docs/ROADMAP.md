@@ -5,7 +5,7 @@
 | **Status** | Draft v0.1 |
 | **Date** | 2026-10-17 |
 | **Source of truth** | [Robot_Attack_GDD.md](../Robot_Attack_GDD.md). This roadmap breaks GDD section 21 into work packages. When the two disagree, the GDD wins once the decisions in section 2 are made. |
-| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17; M2-A1, M2-A0, M2-A2 and M2-J1 are done (section 2.4, section 4.1, section 4.9). Batch 2 (section 4.11) is under way. |
+| **Current state** | M0 and M1 are built (see section 1). Decisions D1–D9 were made on 2026-10-17; M2-A1, M2-A0, M2-A2 and M2-J1 are done (section 2.4, section 4.1, section 4.9). Batch 2 (section 4.11) is under way. Robot attack variety decisions R-D1–R-D6 were made and batch 2a (M2-B6, B7, B8) and M2-B9, B10 were done on 2026-10-25. **Next step:** M2-B11 and M2-B12 (section 4.2, [plan](ROBOT_ATTACK_VARIETY_PLAN.md)). |
 
 ---
 
@@ -31,7 +31,7 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Area | Built in M1 | Full game (GDD) | Lands in |
 |---|---|---|---|
 | Robot archetypes | 3 (Nibbler, Clanker, Thumper: the melee class) | 9 (3 types × 3 classes) | M2 |
-| Weapons | 2 (wrench, Rivet Pistol) | 6 (+ Stun Gun, Shotgun, Machine Gun, Egg Grenades) + 2 mods each | M2 |
+| Weapons | 2 (wrench, Rivet Pistol) | 7 total: three melee, pistol, shotgun, long-range rifle, grenade launcher | M2 |
 | Repair tools | 1 (wrench) | 3 (+ Auto Wrench, Welder) | M2 |
 | Pegboard | 33 nodes + free jetpack | ~350 purchasable levels | M2 |
 | Robot families | 3 themes, 9 palettes, 4 traits | 12 themes, 24 palettes, 10 traits | M2 |
@@ -67,9 +67,9 @@ M1 (vertical slice) is a playable graybox: primitive shapes with the clay shader
 | Gap in M1 | Planned in |
 |---|---|
 | Short-range and long-range robot classes (6 archetypes); Foreman rotation | M2-B |
-| Stun Gun, Shotgun, Machine Gun, Egg Grenades, mods (the weapon wheel and mod hooks arrived in M2-A2) | M2-C |
+| Shotgun, long-range rifle, grenade launcher, heavy maul, 360-degree scythe, and their combat polish | M2-C |
 | Auto Wrench, Welder, armor tiers past Padded Vest, silo plating past Aluminium, Scarecrow, capstones | M2-D |
-| Air-combat jetpack upgrades (Air Dash, Ground Pound, ...) | M2-E |
+| Air-combat jetpack upgrades: Air Dash and Ground Pound prototypes, followed by combat polish | M2-E |
 | The remaining ~300 pegboard levels | M2-G |
 | 9 more themes, 15 more palettes, 6 more traits, most of the part library | M2-F |
 | Time of day, weather, crop wedges, trample trails | M2-H1, M2-H2 |
@@ -134,8 +134,8 @@ WPs that touch different files can run in separate sessions at the same time, ea
 | Hotspot | Lines | Why it's hot | Plan |
 |---|---|---|---|
 | `scripts/player/farmer.gd` | 247 | State chart, health, armor, aiming, presentation | Split by M2-A2: movement (`farmer_movement.gd`, M2-E1), repair (`farmer_repair.gd`, M2-D1/D2), interaction and weapons (`scripts/weapons/`, M2-C) now have their own files |
-| `scripts/ai/robot.gd` | 507 | All robot behavior | M2-A3 restructures it (LimboAI or per-class components) |
-| `scripts/systems/wave_director.gd` | 380 | Spawning, the wave loop and Foreman logic | Only M2-B5 and M2-H3 touch it, one after the other |
+| `scripts/ai/robot.gd` | 921 | All robot behavior | M2-A3 restructures it (LimboAI or per-class components). M2-B6, B7, B9 and B12 also touch it: never in parallel with A3 or each other |
+| `scripts/systems/wave_director.gd` | 497 | Spawning, the wave loop and Foreman logic | M2-B6, M2-B11 (replaces B5), M2-H3 and the opening plan's authored waves ([first five waves plan](FIRST_FIVE_WAVES_FUN_PLAN.md)) touch it, one after the other |
 | `scripts/ui/pegboard_ui.gd` | 558 | The whole upgrade UI | Only M2-G1 touches it |
 | `scripts/ui/hud.gd` | 376 | All HUD elements | Only M2-H5 touches it; other WPs emit `EventBus` signals instead |
 | `tools/build_upgrade_catalog.gd` | 193 | Every pegboard node | M2-A5 moves the catalog to a data table so many WPs can add nodes without conflicts |
@@ -156,7 +156,7 @@ WPs that touch different files can run in separate sessions at the same time, ea
 | ~~M2-A0~~ | **Done 2026-10-17.** Fixed the seed-dependent smoke test. Root cause: the test's god-mode farmer doesn't defend the silo, and on seeds without a wave-1 thief it waited 40 s for one while Nibblers destroyed the silo (about 40 s from full), which ended the run. The test now sends a silo attacker to the chute instead, reseals the silo between sections, clears the pistol's line of fire, uses one profile per process and fails once with the reason when a run ends early. **Game bug found and fixed:** robots stopped dead at building corners (a 2 s+ stall on 21 of 62 seeds; `wall_min_slide_angle`, regression test in `test_robot_movement.gd`). **Porch stall fixed 2026-10-18:** robots were also pinned for good against the Home porch's 0.2 m floor and the sides of its ramp (3 of 102 seeds). The navmesh joined steps up to 0.25 m, but a capsule only steps up about a third of its radius (Nibbler 0.10 m, Clanker 0.18 m, Thumper 0.24 m). The bake now uses `cell_height` and `agent_max_climb` 0.05 m, so it never joins a step of 0.1 m or more, and robots reach the porch up its ramp (`tools/build_graybox_farm.gd`, rebaked `farm_navmesh.res`, `navigation/3d/default_cell_height`; regression test in `test_robot_movement.gd`). | — | M | Smoke test passes on seeds 1–100, 1234, 2024, 31337, 664607717 and 6 random seeds; 36/36 unit tests pass; no robot pinned for 2 s on seeds 1–100 |
 | ~~M2-A2~~ | **Done 2026-10-18.** Farmer refactor + weapon framework. `farmer.gd` (589 lines) is now a coordinator that ticks `FarmerMovement`, `FarmerRepair`, `FarmerInteraction` and `WeaponHolder` in a fixed order. `WeaponData` resources (`data/weapons/wrench.tres`, a `MeleeWeaponData`, and `pistol.tres`) hold base stats, slot, unlock flag and the stat keys each pegboard track modifies. Weapon wheel: tap Q / Y for the last weapon, hold to open it (mouse or right stick points, release equips; the camera holds still and nothing fires, the farmer keeps moving, no slow-motion); number keys 1–6; the mouse wheel cycles. `WeaponMod` hooks (`on_fire` can change the shot, `on_hit` the packet before it lands, `on_kill` after) with 1 slot per weapon plus a Gold Mod Slot flag; `Hurtbox.hit()` now reports kills. `ProjectilePool` + `Projectile` (ray-swept, piercing, gravity) for any weapon with `projectile_speed` > 0, and for robot projectiles in M2-A4. A newly bought weapon is equipped; other purchases no longer swap the wrench for the pistol. Mods aren't saved yet (M2-C5 adds the loadout UI). | A1 | L | 42/42 unit tests pass (6 new in `test_weapons.gd`); smoke test (104 checks, 11 new: wheel tap/hold/stick/number keys, mod slots and hooks) passes on seeds 1–10, 42, 1234, 2024, 31337, 664607717 and 2 random seeds |
 | **M2-A3** | **Robot AI restructure.** Vendor the LimboAI v1.8.1 GDExtension (D6) and migrate `robot.gd`'s state machine to behavior trees (one per class). Add perch-aware positioning and a squad blackboard. Add LimboAI to `CREDITS.md`. | A1 | L | The 3 melee archetypes behave as in M1 on the new structure; tests pass |
-| **M2-A4** | **Telegraphs and enemy projectiles.** Pooled slow clay projectiles, red-yarn aim lines, chalk landing circles. | A3 | M | A test robot can fire each projectile type with its telegraph |
+| ~~M2-A4~~ | **Done 2026-10-25, delivered by M2-B7** (section 4.2). Telegraphs and enemy projectiles: pooled projectiles, red-yarn aim lines, chalk landing circles. | A3 | M | A test robot can fire each projectile type with its telegraph |
 | ~~M2-A5~~ | **Done 2026-10-18.** Content tables: the pegboard, archetype stats and genome data are CSV tables in `data/source/` (format in `data/source/README.md`; why CSV in the README). Each table is a folder with one row per item, and M1 ships one file per branch or class, so parallel WPs add rows or their own files without touching the same lines. `tools/build_upgrade_catalog.gd` and `tools/build_robot_data.gd` generate the `.tres` files through a shared reader (`tools/content_tables.gd`) and keep resource ids, so regenerating reproduces M1's `data/` byte for byte (even from empty folders) and a table edit only changes its own lines. New `test_content_tables.gd`: the `.tres` files match the tables, bad cells are reported with file and line, the GDD 12.4 recipes hold, and the orphan-stat rule (every `StatModifier` key appears in a system's script, scene or data; `PENDING_STATS` holds keys whose feature WP is still open, empty now). **One orphan found and fixed:** `jetpack.owned` was never read (`GameState.jetpack_unlocked` checked the node's level), so the getter now reads the flag. No orphans remain. `StatService` is unchanged: the catalog is plain data and a profile is just a levels dictionary, so the Daily Kit (M5a-2) and per-player pegboards (M5b-5) can fold another set of levels without touching the tables. | A1 | M | Regenerating from the tables reproduces M1's data exactly (`git diff data/` empty); 42/42 unit tests pass, including the orphan test; smoke test passes on seeds 1–10 and 1234 |
 
 A2 and A3 touch different files, so they can run in parallel after A1.
@@ -171,16 +171,49 @@ A2 and A3 touch different files, so they can run in parallel after A1.
 | **M2-B4** | **Foreman rotation.** Melee → short → long by phase; Boiler debuts at wave 10 and Longneck at wave 15. | B1, B2 | S | Waves 5, 10 and 15 spawn the right Foreman |
 | **M2-B5** | **Spawn director update.** Class weights 60/28/12, the GDD 9.5 unlock schedule, Longnecks always on lanes facing the silo. | B1, B2 | M | A unit test checks the archetype mix over 1,000 simulated waves |
 
+B1, B2, B4 and B5 follow the GDD's 3 × 3 type-and-class grid. The robot attack variety plan below proposes replacing them (decision R-D1). Until those decisions are made, don't start B1, B2, B4 or B5. B3 stands either way.
+
+#### Robot attack variety
+
+**Source:** [docs/ROBOT_ATTACK_VARIETY_PLAN.md](ROBOT_ATTACK_VARIETY_PLAN.md), proposed 2026-10-25. **Decisions R-D1 to R-D6 were made on 2026-10-25, as recommended.** It holds the design: the size × attack grid, group rules, behavior variables, scaling, battle plans and decisions R-D1 to R-D6.
+
+**The new grid:**
+
+- **Sizes and attacks:** small, medium and large robots, each fighting with melee, ranged or flight attacks.
+- **Groups:**
+  - small ground robots usually come in threes;
+  - medium ground robots rarely do;
+  - large robots, flyers and Foremen are always solo.
+- **Shared behavior variables:** every robot uses the same set (silo focus, thief chance, trio chance, distraction, return-to-silo rules), with defaults per archetype.
+
+**Constraints from the other plans:**
+
+- **Opening:** waves 1–5 stay as the [first five waves plan](FIRST_FIVE_WAVES_FUN_PLAN.md) authors them. New attack variety starts at wave 6.
+- **Flight:** every enemy can be beaten without the jetpack. The flying archetypes wait for stage 3 of the [jetpack plan](JETPACK_GAMEPLAY_AND_REWARD_PLAN.md).
+
+| ID | Work package | Needs | Size | Done when |
+|---|---|---|---|---|
+| ~~M2-B6~~ | **Done 2026-10-25.** `RobotArchetype` has the behavior variables (`silo_focus`, `trio_chance` and `trio_chance_late`, `distractibility`, `distract_triggers`, `distract_range`, `commit_time`, `chase_time`, `leash_range`, `give_up_time`, `on_unreachable`); `farmer_target_chance`, `squad_size`, `aggro_range` and `unreachable_give_up_time` are gone. The size × attack grid replaced the class enum: `RobotClass` is now `MELEE`, `RANGED`, `FLIGHT` (R-D4: the Drone flies, the Roof Lobber is ranged), and per-robot costs are Small 2, Medium 4, Large 14. New `RobotTargeting` (plain logic, shared by a trio through `RobotSquad`) holds the spawn roll, the once-a-second distraction rolls and the return rules; `Robot` and `VerticalRobot` feed it what they sense. `WaveDirector.roll_group_size` rolls trios from the wave's spawn stream (`DifficultyCurve.trio_chance`: small ground 40% → 60% → 70% by wave 15), and `SpawnEvent` takes an explicit group size for authored waves. Heist crews: the leader carries the sack, the escorts fight a farmer near either of them, the crew counts as one thief. A switch to the farmer shows a "!" pop and an angry eye. `on_unreachable` `throw` and `relocate` act like `give_up` until B9 and B12. GDD 9.1, 9.2, 9.6, 11.4, 11.6 and 11.7 updated. Smoke checks that assumed M1 targeting (a hit always switches; Clankers always come in threes; a fixed alarm voice) now check the new rules. | A5; decisions R-D1, R-D5 | M | `test_robot_targeting.gd` (16 tests) covers distraction, every return rule, M1 values behaving as before, the heist crew, the thief share per group and trio rates over 1,000 seeds; large robots, flyers and Foremen never form trios |
+| ~~M2-B7~~ | **Done 2026-10-25.** `AttackProfile` (kind straight / lob / rail / bomb, charge, interval, damage, speed, gravity, range, aim heights, splash, volley) generated from `data/source/robots/attacks/` into `data/robots/attacks/` (`drone_shot`, `lobber_lob`, plus `longneck_rail` and `duster_bomb` ready for B12 and B13); archetypes name theirs in `ranged_attack_id`. `RangedAttack` (charge → fire → recover) replaces `VerticalRobot`'s own attack, with the M1 trajectory and timing. `AttackTelegraph`: chalk landing circle (follows the target while a lob charges, then stays put), red-yarn aim line (locks 0.4 s before a rail fires), bomb shadow; every shot also charges the muzzle glow, never under 0.45 s. `AttackTokens`: 2 per farmer in waves 1–5, 3 after (`DifficultyCurve.farmer_attack_tokens`; B10 adds 4 and 5); without one a robot shoots the silo. At most 24 robot shots in flight. `EventBus.robot_shot_incoming(robot, farmer, impact_time, off_screen)` for M2-H5. Who a ranged robot shoots now comes from B6's targeting (the farmer while it is after them and within range, otherwise the silo) instead of "always the nearest farmer within range". | B6 | L | `test_ranged_attack.gd` (12 tests): the Drone and Roof Lobber keep their M1 numbers, trajectory and timing; a test robot fires every profile with its telegraph; no more than N robots shoot the farmer at once; the wave-3 Lobber's circle sits under the farmer. A real-farm probe of waves 6–7 saw lobbers reach roofs and fire with their circles, and no script errors |
+| ~~M2-B8~~ | **Done 2026-10-25.** `Silo` measures each band's height from its sockets; `hit_band()` picks the nearest. A new crack goes to the hit's band with `hit_band_weight` 0.7, the rest by `band_weights`. Up to `ground_only_until_wave` (2) only ground sockets open; a full ground band then folds the damage into an open crack's pool instead of losing it. GDD 3.3 updated. | Decision R-D3 | S | `test_silo_cracks.gd` (4 tests): ground hits crack low ~70%, catwalk and top hits crack high ~70%, waves 1–2 never open a catwalk crack, and no Structure is lost when the ground band is full |
+| ~~M2-B9~~ | **Done 2026-10-25.** **Spitter:** `SpitterRobot` (`scenes/robots/spitter.tscn`, row in `data/source/robots/archetypes/spitter.csv`) fires `spitter_pea` (straight, 0.8 s charge, 3 / 5 every 2.2 s at 14 m/s, aimed at catwalk height so it opens high cracks). It is a role, not a pick of its own: `WaveDirector.roll_role` turns a small ground melee pick into a Spitter group with `DifficultyCurve.spitter_share` from wave 7 (`spitter_archetype` on the director). It stands 12–16 m off its target, holds still while it charges, hops 35° around the target every 3 shots, backs off 4 m once from a farmer within 5 m, can shoot a farmer up high, and a trio fires a staggered 3-beat volley. **Throws:** Clanker and Thumper have `on_unreachable = throw` with `clanker_bolt` (lob, 5 / 8) and `thumper_clod` (lob, 15 / 20, 2 m splash). From wave 7 (`DifficultyCurve.throws_at_unreachable`) a farmer out of reach for 0.5 s and within range draws up to two throws through a second `RangedAttack` (glow plus chalk circle); `RobotTargeting.hold_give_up()` holds the give-up clock while each is under way, and after the second the robot goes back to the silo unless the farmer came back within reach. A throw needs a farmer token and never falls back to the silo (`RangedAttack.silo_fallback`). Out-of-reach farmers still never distract. **Arm guard:** the Clanker's `front_guard` 0.5 halves hits from within 60° of its facing, from wave 6 (`DifficultyCurve.arm_guard_up`; the opening keeps the M1 Clanker). New archetype columns `front_guard` and `tells`; `RobotFactory` builds each tell (guard plate, pea-shooter, bolt pouch, clod scoop) under its own node, and a robot hides a tell that isn't live yet in its wave. The genome gallery shows the Spitter and starts at wave 7. GDD 9.3, 9.4, 9.5 and 9.6 updated. | B7; decision R-D2 | M | `test_sidearms.gd` (14 tests): the Spitter's numbers, role share and built waves, stand-off and hop, one back-off, the trio beat and shooting up high; bolt and clod throws (telegraph, two then back, the wave-7 gate, no token no throw); a hovering farmer is neither immune nor a lure; the arm guard from the front, flank and back, its wave gate, Clanker only |
+| ~~M2-B10~~ | **Done 2026-10-25.** `DifficultyCurve.attack_phase` (opening 1–5, early 6–15, middle 16–30, late 31+) drives the knobs: `farmer_attack_tokens` 2 / 3 / 4 / 5 (`farmer_tokens_by_phase` replaces `farmer_tokens_opening` and `farmer_tokens`); `charge_multiplier` 1.0 / 0.9 / 0.8 / 0.7, with `AttackProfile`'s 0.45 s floor; `aim_lead` 0 until wave 10, 0.3, then 0.6 from wave 16, for straight shots only (`RangedAttack.aim_point` leads by the farmer's velocity × flight time × lead); `volley_size` 1, then 2 from wave 16 and 3 from wave 24 (the plan's "2–3"), for Drones and Spitter trios through `RangedAttack.volley_override`; `spitter_share` 10% at wave 7, +2 points a wave, up to 40%; `column_weights` 60/28/12, 52/30/18, 45/33/22, which `WaveDirector.option_weights` applies by rescaling the type weights so each column among the options gets its share (measured before the Spitter role roll). B9's wave gates (`throws_at_unreachable`, `arm_guard_up`) live here too. `Robot.setup` reads them and `Robot.make_ranged_attack` hands them to every `RangedAttack`. Waves 1–5 get the M1 value of every knob and build the same spawns. GDD 9.6, 11.4 and the new 11.8 updated. | B7 | S | `test_difficulty_curve.gd` +11 tests: every knob, waves 1–5 at their M1 values, the director's column shares, and waves 1–6 building the same spawns with or without the Spitter role. `test_ranged_attack.gd` +4: the wave sets charge, lead, tokens and volley; a shorter charge; straight shots lead and lobs don't; volleys |
+| **M2-B11** | **Battle plans** (replaces M2-B5). Plan data in `data/source/robots/battle_plans/` (Rush, Rooftop, Heist, Sky Raid, Barrage, Swarm, Pincer, Siege) replaces the director's `roof_lobber` and `drone` id checks and caps. Plans start at wave 6, never repeat within 3 waves, show on the family name card, and stack two at a time from wave 31. Retune the spawn type weights for trios. | B6, B10; the opening plan's authored waves (same file) | M | A unit test checks the mix and plan rules over 1,000 simulated waves; waves 1–5 still follow the authored opening |
+| **M2-B12** | **Ground archetype changes.** Longneck (large ranged: siege spot 45–55 m out, yarn telegraph, body-blockable rail, top hatch ×3). The Roof Lobber moves to medium size and gets rare trios. Splash from wave 12. | B7, B9, B3 | L | Longnecks find a valid siege spot on every lane. The Roof Lobber's stats and cost match the plan |
+| **M2-B13** | **Flying archetypes.** Crop Duster (solo bombing passes with shadow circles, belly plate). Harvester Blimp (grain siphon, hose that can be cut, Nibbler drops, belly turret, flees at 30% with its grain). | B7, B12; decision R-D6; [jetpack plan](JETPACK_GAMEPLAY_AND_REWARD_PLAN.md) stage 3 | L | Both can be beaten without flight (tested with the jetpack disabled). Grain from a downed Blimp can be recovered |
+| **M2-B14** | **Foreman rotation by column** (replaces M2-B4). Melee (Thumper, wave 5) → ranged (Longneck, wave 10) → flight (Blimp, wave 15; the Longneck again if B13 isn't ready). A ranged phase at 50% HP from the second Foreman on. The wave-5 Foreman keeps the opening plan's fixed behavior. | B12; B13 for flight | S | Waves 5, 10 and 15 spawn the right Foreman. The wave-5 Foreman has no random trait and no ranged phase |
+| **M2-B15** | **Ranged traits:** Sharpshooter, Scattershot, Sticky and Spotter join the M2-F2 trait pool. | B7, F2 | M | Every trait's effect has a test and a visual tell |
+
 ### 4.3 Track C: Arsenal
 
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
-| **M2-C1** | **Stun Gun ("Zap-Fork"):** beam, stun after 0.6 s of contact, chain, battery. | A2 | M | Stuns work on every archetype; Overload and Static Field mods work |
-| **M2-C2** | **Shotgun ("Barn Blaster"):** pellets, spread, per-shell reload. | A2 | M | Slug and Barn Door mods work; knockback sends robots tumbling |
-| **M2-C3** | **Machine Gun ("Rivet Repeater"):** spin-up, heat, cooldown. | A2 | M | Hot Rivets and Twin Barrel mods work |
-| **M2-C4** | **Egg Grenades + Chicken House.** Throw arc, coop egg laying and collection, Sticky, Shock, Cluster and Golden eggs, Happy Hens. | A2 | L | Eggs restock at the coop at the GDD rates; all egg types work |
-| **M2-C5** | **Remaining mods + Gold Mod Slot,** plus the mod loadout UI at the shed. | C1–C3 | M | Every weapon has 2 mods; the second slot unlocks at Damage 8 + Fire Rate 8 |
-| **M2-C6** | **Wrench extras:** Bonk!, Wide Swing, Spin-to-Win. | A2 | S | All three work |
+| **M2-C1** | **Barn Blaster shotgun:** seven-pellet short cone. Prototype implemented; finish audio, recoil and encounter tuning. | A2 | M | Nearby groups reward the spread; distant targets reward another weapon |
+| **M2-C2** | **Longneck Rifle:** slow 100 m precision shot. Prototype implemented; finish sight picture and weak-point feedback. | A2 | M | Long-range threats are engaging to intercept without trivializing close defense |
+| **M2-C3** | **Boiler Grenades:** lobbed shell with a 5 m blast. Prototype implemented; finish blast telegraph and encounter tuning. | A2 | M | The blast hits each robot once and gives clustered tough enemies a clear counter |
+| **M2-C4** | **Haymaker Maul and Harvest Scythe:** slow front swing versus 360-degree sweep. Prototypes implemented; finish animations and hit feedback. | A2 | M | Each melee weapon solves a different spacing problem |
+| **M2-C5** | **Shed build depth:** add only firing modes or mods whose tactical role survives playtests; provide a loadout UI if needed. | C1–C4 | M | Each choice has an identified target situation and visible effect; no ricochet |
+| **M2-C6** | **Seven-weapon balance and controls:** measure pick rates, hits to kill, access timing and gamepad wheel use. | C1–C4 | M | All seven are useful across the first ten waves without one choice dominating |
 
 ### 4.4 Track D: Repair and Defend
 
@@ -195,14 +228,14 @@ A2 and A3 touch different files, so they can run in parallel after A1.
 
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
-| **M2-E1** | **Air combat:** Steady Hands, Air Dash, Fuel Siphon, Ground Pound, Afterburner, Sky Farmer Overdrive. | A2 | L | Each upgrade works and feels distinct in a playtest |
+| **M2-E1** | **Air combat:** Air Dash and Ground Pound prototypes implemented; tune fuel cost, landing safety, VFX, and encounter value before adding further abilities. | A2 | L | Both moves work and feel distinct in a playtest |
 
 ### 4.6 Track F: Procedural robot families
 
 | ID | Work package | Needs | Size | Done when |
 |---|---|---|---|---|
 | **M2-F1** | **Part library to target counts:** 18 bodies, 6 heads, 5 eyes, 6 antennas, 9 weapon arms (adds short- and long-range arms), 9 locomotion sets (adds hover), ~48 accessories. | A3 | L | The genome gallery shows every part on every type size |
-| **M2-F2** | **Families to target counts:** 12 themes, 24 palettes, 10 traits (adds Bouncy, Magnetic, Overcharged, Shielded, Splitter, Medic, with Thieving per D4). | F1, A5 | L | Every trait's gameplay effect has a test; every theme has names and accessories |
+| **M2-F2** | **Families to target counts:** 12 themes, 24 palettes, 10 traits (adds Bouncy, Magnetic, Overcharged, Shielded, Splitter, Medic, with Thieving per D4). **Overcharged done 2026-10-24:** a fused death blast (radius, robot and farmer damage tuned in `data/source/robots/traits/m2_overcharged.csv`) that chains through Overcharged packs; spark-coil tell; tests in `test_overcharged.gd`. | F1, A5 | L | Every trait's gameplay effect has a test; every theme has names and accessories |
 | **M2-F3** | **Novelty and readability rules:** palette OKLab ΔE > 0.15 against the previous wave; contrast against each time-of-day preset; at most 2 of 5 shape genes repeated. | F2, H1 | M | Determinism and novelty tests pass over 1,000 seeds |
 
 ### 4.7 Track G: Pegboard and economy
@@ -220,7 +253,7 @@ A2 and A3 touch different files, so they can run in parallel after A1.
 | **M2-H2** | **Crop variation.** Seeded crop-wedge arrangement and trample trails that last the whole run. | A1 | M | Crops differ per seed; trails appear where robots walk |
 | **M2-H3** | **Farmhouse Hub + flow.** Title screen → Hub (pegboard, Almanac, settings stub, Start Run) → run → Harvest Report → Hub. Start-phase checkpoints; Full Harvest and checkpoint records tracked separately. Save schema v2 with a migration from v1. | A1 | L | A v1 profile migrates cleanly (tested); checkpoints follow GDD 14.2; once G1's pinned goals also exist, the intermission default drops to 30 s (D1) |
 | **M2-H4** | **Robot Almanac UI.** SubViewport photo of each family, family codes (view and enter), milestone cosmetics (hats). | H3, F2 | M | Entering a family code rebuilds that family's look |
-| **M2-H5** | **HUD pass.** Compass with lanes and threat pips, off-screen arrows (silo attackers, thieves, Longnecks), Foreman stinger, egg count, deployables. | B2, C4, D1 | M | All GDD 17.2 elements are present |
+| **M2-H5** | **HUD pass.** Compass with lanes and threat pips, off-screen arrows (silo attackers, thieves, Longnecks), Foreman stinger, weapon ammo, deployables. | B2, C4, D1 | M | All GDD 17.2 elements are present |
 
 ### 4.9 Track J: Art and audio groundwork (D8: runs in parallel with the rest of M2)
 
@@ -263,7 +296,22 @@ flowchart LR
     A1 --> H3[H3 Hub + flow]
     H3 --> H4[H4 Almanac UI]
     F2 --> H4
+    A5 --> B6[B6 Behavior vars + groups]
+    B6 --> B7[B7 Shared ranged attack]
+    B7 --> B9[B9 Sidearms]
+    B7 --> B10[B10 Attack scaling]
+    B6 --> B11[B11 Battle plans]
+    B10 --> B11
+    B7 --> B12[B12 Ground archetypes]
+    B9 --> B12
+    B12 --> B13[B13 Flying archetypes]
+    JP[Jetpack plan stage 3] --> B13
+    B12 --> B14[B14 Foreman by column]
+    B7 --> B15[B15 Ranged traits]
+    F2 --> B15
 ```
+
+B8 (hit-height cracks) only needs decision R-D3 and touches `silo.gd` alone, so it can run alongside anything.
 
 ### 4.11 Suggested batches of parallel sessions
 
@@ -272,6 +320,7 @@ flowchart LR
 | ~~0~~ | D9 (git init), D6 spike: **done** | Prerequisites |
 | ~~1~~ | A1 · A0: **done** | A0 before parallel work, so every session can trust the smoke test |
 | **2** | A2 · A3 · A5 · H1 · J1 | Disjoint files: player, AI, data tools, lighting, Blender |
+| ~~2a~~ | B6 → B7 (one session, AI files) · B8 (silo), then B9 + B10 (one session): **done 2026-10-25** | Robot attack variety framework. B6 and B7 share `robot.gd` with A3, so finish or pause A3 first. Coordinate B6's `wave_director.gd` work with the opening plan's authored waves |
 | **3** | A4 → B1 and B2 (one session, AI files) · C1–C3 (weapons) · D1–D2 (repair) · H3 (hub) · F1 (robot parts) | Each owns its own folder |
 | **4** | B3–B5 · C4–C6 · D3–D4 · E1 · F2 · H2 · J2–J5 | Feature fill |
 | **5** | G1 · F3 · H4 · H5 · G2 | Integration: pegboard, HUD and Almanac read everything else |
@@ -279,8 +328,8 @@ flowchart LR
 
 ### 4.12 M2 exit criteria
 
-- [ ] All 9 archetypes spawn on the GDD 9.5 schedule; Foremen rotate by class.
-- [ ] All 6 weapons and all mods work; the weapon wheel works on keyboard and gamepad.
+- [ ] All 9 archetypes spawn on schedule and Foremen rotate. That means the attack variety plan's grid and Foreman order (melee → ranged → flight) if R-D1 is accepted, otherwise the GDD 9.5 schedule.
+- [ ] All 7 weapons feel distinct and the weapon wheel works on keyboard and gamepad.
 - [ ] Auto Wrench, Welder, every armor and plating tier, Scarecrow and the capstones work.
 - [ ] The pegboard has ~350 levels and the orphan-stat test passes.
 - [ ] 12 themes, 24 palettes and 10 traits; novelty and determinism tests pass over 1,000 seeds; the genome gallery passes a readability review.
@@ -409,10 +458,14 @@ Re-plan at each milestone gate using the actual pace of the previous milestone.
 | 40 robots plus the clay shader are too heavy for Steam Deck | Missed Deck target | Baseline at M2 exit; Deck preset work in M3-F; shared material with instance uniforms |
 | Co-op exposes hidden single-player assumptions | M5b balloons | Co-op readiness in the Definition of Done from M2 on; determinism audit in M5a-1 |
 | The 30 s intermission (D1) feels too short with a big pegboard | Frustration | Hub pegboard, pinned-goals quick-buy and the Relaxed Intermission option |
+| Ranged and flying robots stack into damage the farmer can't avoid | Deaths that feel unfair; flight feels punished | Attack tokens, telegraphs on every shot, a projectile cap and no aim lead on lobs (M2-B7, B10); every enemy beatable without flight (M2-B13) |
 
 ---
 
 ## 10. Next steps
 
 1. **You:** playtest M1 and note feel and balance (economy, theft pressure, Nibbler speed vs. farmer speed, Thumper telegraphs, ziplines, Hover Mode). The run button is gone (D2); `intermission 30` in the console lets you try the 30 s target.
-2. **Next:** batch 2 (section 4.11) in parallel sessions, each in its own git worktree.
+2. **Next: robot attack variety** ([plan](ROBOT_ATTACK_VARIETY_PLAN.md), section 4.2). R-D1 to R-D6 are decided and batch 2a (B6, B7, B8) is done.
+   - B9 (sidearms) and B10 (attack scaling) are done too. Next: B11 (battle plans) and B12 (ground archetypes).
+   - B13 (flying robots) waits for the jetpack plan's combat proof.
+3. **Then:** the rest of batch 2 (section 4.11) in parallel sessions, each in its own git worktree.

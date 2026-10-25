@@ -7,10 +7,13 @@ extends RefCounted
 ## Readability locks (never broken by the genome): type sets the scale and locomotion family; class sets
 ## the weapon arm, eye glow color and chest icon; weak points get hazard trim and a glow. Every robot
 ## carries the Factory DNA: the BOLT Co. cog on its chest and an antenna bulb that blinks with its wave.
+## An archetype's tells (M2-B9: the Clanker's arm guard, the Spitter's pea-shooter, the throwers' ammo) are
+## built under a node named after the tell, so the robot can hide one that isn't live yet this wave.
 ## Parts are authored at Scout size; the kit node is scaled per type.
 
 ## Eye glow by class: melee red, short-range amber, long-range blue.
-const CLASS_EYE_COLORS: Array[Color] = [Color(1.0, 0.16, 0.1), Color(1.0, 0.62, 0.1), Color(0.3, 0.6, 1.0)]
+## By RobotArchetype.RobotClass: melee red, ranged blue, flight amber (GDD 9.2).
+const CLASS_EYE_COLORS: Array[Color] = [Color(1.0, 0.16, 0.1), Color(0.3, 0.6, 1.0), Color(1.0, 0.62, 0.1)]
 ## Scout 0.8 m, Grunt 1.4 m, Heavy 2.6 m (GDD 9.1), relative to the Scout layout.
 const TYPE_SCALES: PackedFloat32Array = [1.0, 1.75, 2.8]
 const HAZARD := Color(1.0, 0.82, 0.12)
@@ -93,6 +96,11 @@ static func build(pose: Node3D, genome: RobotGenome, archetype: RobotArchetype, 
 		_accessory(kit, robot_trait.tell, primary, secondary, trim)
 	if is_foreman:
 		_accessory(kit, &"crown", primary, secondary, GOLD)
+	for tell in archetype.tells:
+		var holder := Node3D.new()
+		holder.name = String(tell)
+		kit.add_child(holder)
+		_accessory(holder, tell, primary, secondary, trim)
 	if archetype.robot_type == RobotArchetype.RobotType.HEAVY:
 		# Weak point on the back (Thumper's vent): hazard-striped and glowing (readability lock).
 		_part(kit, _box(Vector3(0.24, 0.2, 0.06)), HAZARD, BACK + Vector3(0.0, 0.04, 0.02), Vector3.ZERO, 0.6, 5, DARK)
@@ -321,6 +329,27 @@ static func _accessory(kit: Node3D, id: StringName, _primary: Color, secondary: 
 		&"sack":
 			_part(kit, _sphere(0.13, 0.22), Color(0.72, 0.58, 0.38), BACK + Vector3(0.0, 0.0, 0.08))
 			_part(kit, _cyl(0.03, 0.05, 0.06), Color(0.55, 0.42, 0.28), BACK + Vector3(0.0, 0.12, 0.08))
+		&"arm_guard":
+			# The Clanker's guard: a riveted plate on the off arm, angled across its front.
+			_part(kit, _box(Vector3(0.3, 0.34, 0.04)), METAL, ARM_OFF + Vector3(0.08, 0.0, -0.24), Vector3(0.0, 0.45, 0.0),
+					0.0, 5, trim)
+			for y: float in [-0.12, 0.12]:
+				_part(kit, _sphere(0.02, 0.04), DARK, ARM_OFF + Vector3(0.07, y, -0.27))
+		&"pea_shooter":
+			# The Spitter's long barrel with a pea hopper on top.
+			var along := Vector3(PI * 0.5, 0.0, 0.0)
+			_part(kit, _cyl(0.035, 0.04, 0.34), METAL, ARM_WEAPON + Vector3(0.0, 0.0, -0.34), along)
+			_part(kit, _torus(0.03, 0.05), trim, ARM_WEAPON + Vector3(0.0, 0.0, -0.5), along)
+			_part(kit, _sphere(0.075, 0.15), Color(0.55, 0.9, 0.3), ARM_WEAPON + Vector3(0.0, 0.11, -0.12), Vector3.ZERO, 0.3)
+		&"bolt_pouch":
+			# Bolts to throw at a farmer out of reach.
+			_part(kit, _box(Vector3(0.14, 0.12, 0.1)), Color(0.5, 0.36, 0.22), BODY + Vector3(0.3, -0.14, 0.1))
+			for x: float in [-0.03, 0.03]:
+				_part(kit, _cyl(0.018, 0.018, 0.1), METAL, BODY + Vector3(0.3 + x, -0.05, 0.1))
+		&"clod_scoop":
+			# A scoop of farm dirt to lob at a farmer out of reach.
+			_part(kit, _cyl(0.12, 0.08, 0.12), METAL, BODY + Vector3(-0.3, 0.12, 0.08))
+			_part(kit, _sphere(0.1, 0.16), Color(0.5, 0.36, 0.22), BODY + Vector3(-0.3, 0.2, 0.08))
 		&"crown":
 			_part(kit, _cyl(0.15, 0.17, 0.08), trim, HEAD + Vector3(0.0, 0.22, 0.0), Vector3.ZERO, 0.4)
 			for i in 5:

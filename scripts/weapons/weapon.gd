@@ -13,12 +13,19 @@ signal killed(target: Node, packet: DamagePacket)
 ## Collision layers a shot can hit: World, RobotHurtbox, Silo (GDD 18.6).
 const SHOT_MASK: int = 1 | (1 << 4) | (1 << 5)
 const ROBOT_HURTBOX_MASK: int = 1 << 4
+## A semi-auto press made this long before the weapon is ready still fires once it is, so quick clicks
+## during the cooldown aren't lost.
+const PRESS_BUFFER: float = 0.15
+## Most hurtboxes one hitscan ray checks before giving up (a piercing round meets eyes and bodies).
+const MAX_RAY_HITS: int = 16
 
 @export var data: WeaponData
 
 var farmer: Farmer
 ## Installed mods, in the order their hooks run.
 var mods: Array[WeaponMod] = []
+
+var _press_buffer: float = 0.0
 
 var display_name: String:
 	get:
@@ -29,15 +36,21 @@ func setup(owner_farmer: Farmer) -> void:
 	farmer = owner_farmer
 
 
-## Carried right now: always for the wrench, after the pegboard unlock for the guns.
+## Carried right now after its pegboard unlock (or always when unlock_flag is empty).
 func is_available() -> bool:
 	return data.unlock_flag == &"" or StatService.has_flag(data.unlock_flag)
 
 
 ## Called every physics step while this weapon is equipped and usable.
 func trigger(just_pressed: bool, held: bool) -> void:
-	if held if data.trigger_mode == WeaponData.TriggerMode.AUTO else just_pressed:
-		attack()
+	if data.trigger_mode == WeaponData.TriggerMode.AUTO:
+		if held:
+			attack()
+		return
+	if just_pressed:
+		_press_buffer = PRESS_BUFFER
+	if _press_buffer > 0.0:
+		_press_buffer = 0.0 if attack() else _press_buffer - get_physics_process_delta_time()
 
 
 ## One shot or swing, if the weapon is ready. Returns true if it happened.
@@ -55,6 +68,7 @@ func ammo_text() -> String:
 
 func set_equipped(equipped: bool) -> void:
 	visible = equipped
+	_press_buffer = 0.0
 
 
 # --- Stats ----------------------------------------------------------------------------------------
@@ -106,6 +120,8 @@ func begin_shot(origin: Vector3, direction: Vector3) -> WeaponShot:
 	shot.direction = direction.normalized()
 	shot.damage = damage_now()
 	shot.max_range = data.max_range
+	shot.pierce_left = roundi(stat(data.pierce_stat, data.pierce))
+	shot.knockback = data.knockback
 	for mod in mods:
 		mod.on_fire(self, shot)
 	fired.emit(shot)
@@ -120,12 +136,20 @@ func resolve_shot(shot: WeaponShot) -> void:
 				data.projectile_color, data.projectile_radius)
 		return
 	var end := shot.origin + shot.direction * shot.max_range
-	var query := PhysicsRayQueryParameters3D.create(shot.origin, end, SHOT_MASK, _shot_exclusions())
-	query.collide_with_areas = true
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	if not hit.is_empty():
-		end = hit["position"]
-		_on_shot_hit(hit, shot)
+	var from := shot.origin
+	var exclude := _shot_exclusions()
+	var space := get_world_3d().direct_space_state
+	for i in MAX_RAY_HITS:
+		var query := PhysicsRayQueryParameters3D.create(from, end, SHOT_MASK, exclude)
+		query.collide_with_areas = true
+		var hit := space.intersect_ray(query)
+		if hit.is_empty():
+			break
+		if not _on_shot_hit(hit, shot):
+			end = hit["position"]
+			break
+		exclude.append(hit["rid"])
+		from = hit["position"]
 	Fx.tracer(self, shot.origin, end)
 
 
@@ -145,15 +169,28 @@ func deliver_hit(hurtbox: Hurtbox, packet: DamagePacket) -> bool:
 	return was_kill
 
 
-## A ray or projectile from `shot` hit something. Returns true to let a projectile fly on through it.
+## A ray or projectile from `shot` hit something. Returns true to let the shot fly on through it: past a
+## second hurtbox of a robot it already hit, or into the next robot while it has pierce left.
 func _on_shot_hit(hit: Dictionary, shot: WeaponShot) -> bool:
 	var at: Vector3 = hit["position"]
 	var hurtbox := hit["collider"] as Hurtbox
-	if hurtbox != null:
-		deliver_hit(hurtbox, DamagePacket.create(shot.damage, farmer, at))
-		Fx.puff(self, at, Color(1.0, 0.95, 0.6) if not hurtbox.is_weak_point else Color(1.0, 0.3, 0.2), 0.15, 0.15)
-	else:
+	if hurtbox == null:
 		Fx.puff(self, at, Color(0.8, 0.75, 0.65), 0.1, 0.2)
+		return false
+	var target := hurtbox.receiver()
+	if target != null:
+		if target in shot.hit_targets:
+			return true
+		shot.hit_targets.append(target)
+	var packet := DamagePacket.create(shot.damage, farmer, at)
+	if shot.knockback > 0.0:
+		packet.knockback = Vector3(shot.direction.x, 0.0, shot.direction.z).normalized() * shot.knockback \
+				+ Vector3.UP * shot.knockback * 0.3
+	deliver_hit(hurtbox, packet)
+	Fx.puff(self, at, Color(1.0, 0.95, 0.6) if not hurtbox.is_weak_point else Color(1.0, 0.3, 0.2), 0.15, 0.15)
+	if shot.pierce_left > 0:
+		shot.pierce_left -= 1
+		return true
 	return false
 
 

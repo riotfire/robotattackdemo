@@ -1,6 +1,6 @@
 extends Node
 ## Plays Level 0 "Morning Chores" headless on a fresh profile, doing what a new player does at each station:
-## patch the silo crack, wrench the Dummy-Bot, heal on the porch, stop a real Nibbler with the wrench,
+## collect Aluminium by the tractor, buy the wrench, bonk the Dummy-Bot, heal, stop a real Nibbler,
 ## repair its damage, climb the catwalk and ring the dinner bell. The pistol stays a later build choice.
 ## Run from the project folder:
 ##   <godot> --headless --path . --fixed-fps 60 res://tests/smoke/tutorial_test.tscn
@@ -43,43 +43,63 @@ func _run() -> void:
 		_finish()
 		return
 	_check(_director.phase == WaveDirector.Phase.TUTORIAL, "the wave director waits in TUTORIAL (%s)" % _director.phase_name())
-	_check(hud._hint_label.visible and "V bonk" in hud._hint_label.text,
-		"the normal weapon and control hint stays visible")
+	_check(hud._hint_label.visible and "E use" in hud._hint_label.text,
+		"the normal control hint stays visible before the first weapon")
 	_check(hud._phase_label.text == "MORNING CHORES" and hud._weapon_label.visible,
 		"the normal phase and weapon HUD remains during Level 0")
-	_check(hud._tutorial_lesson.visible and "silo" in hud._tutorial_lesson.text.to_lower(),
-		"the first lesson explains what the silo protects")
+	_check(hud._tutorial_lesson.visible and "aluminium" in hud._tutorial_lesson.text.to_lower(),
+		"the first lesson explains how to collect parts")
 	_check(_tutorial._marker.get_node_or_null(^"GroundRim") != null
 			and _tutorial._marker.get_node_or_null(^"Bubble") == null,
 		"a low ground ring guides the player without a floating icon")
 	var shed := get_tree().get_first_node_in_group(ToolShed.GROUP_SHED) as ToolShed
-	_check(not shed.is_open(), "the tool shed is shuttered throughout the melee lesson")
-	_check(not _farmer.weapons.get_weapon(&"pistol").is_available(), "a new player starts with melee only")
+	_check(not shed.is_open(), "the shed waits until the starter parts are collected")
+	_check(_farmer.weapons.current == null and not _farmer.weapons.get_weapon(&"wrench").is_available(),
+		"a fresh player starts without the wrench")
+	_check(not _farmer.weapons.get_weapon(&"pistol").is_available(), "a new player starts without the pistol")
 	await _frames(300)
 	_check(_director.phase == WaveDirector.Phase.TUTORIAL and _director.wave == 1, "no clock runs while the chores wait")
 
-	_section("1 Silo")
-	_check(_tutorial.step == TutorialDirector.Step.SILO, "starts on the silo step")
-	var cracks := silo.get_cracks()
-	_check(cracks.size() == 1, "the silo has sprung one leak")
-	_check(is_equal_approx(silo.structure, silo.max_structure - TutorialDirector.CRACK_POOL), "Structure is down to 900 / 1000")
-	var crack: SiloCrack = cracks[0]
-	var stand := crack.global_position + crack.global_basis.z * 1.5
-	stand.y = 0.2
-	_farmer.teleport_to(stand)
-	await _frames(5)
-	Input.action_press(&"interact")
-	await _frames(5)
-	_check(hud._repair_bar.visible and "repair" in hud._prompt_label.text.to_lower(),
-		"the normal repair prompt and progress bar teach sealing")
-	var sealed := await _wait_until(func() -> bool: return silo.get_cracks().is_empty(), 12.0)
-	Input.action_release(&"interact")
-	_check(sealed > 0.0, "holding Interact seals the crack (%.1f s)" % sealed)
-	_check(sealed > 0.9 and sealed < 1.5, "a Small crack takes about 1.2 s with the wrench (%.1f s)" % sealed)
-	_check(is_equal_approx(silo.structure, silo.max_structure), "Structure is back to full")
-	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.DUMMY, 4.0)
+	_section("1 Aluminium")
+	_check(_tutorial.step == TutorialDirector.Step.COLLECT, "starts with the parts cluster")
+	var props := _main.get_node(^"Farm/NavRegion/Props") as PropScatter
+	var tractor: StaticBody3D = null
+	for prop in props.placed:
+		if is_instance_valid(prop) and prop.name.begins_with("Tractor_"):
+			tractor = prop
+			break
+	_check(tractor != null, "the first run places a tractor beside the starter parts")
+	_check(_tutorial._starter_pickups.size() == 6, "six floating bits form one pickup cluster")
+	var cluster := _tutorial._starter_cluster_center
+	_check(tractor != null and cluster.distance_to(tractor.global_position) < 4.0,
+		"the cluster sits near the tractor")
+	var grouped := true
+	for pickup in _tutorial._starter_pickups:
+		grouped = grouped and pickup.global_position.distance_to(cluster) < 1.2
+	_check(grouped, "all starter bits stay together instead of forming a trail")
+	_check(silo.get_cracks().is_empty(), "the silo starts intact")
+	_farmer.teleport_to(cluster + Vector3.UP * 0.2)
+	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.PEGBOARD, 4.0)
+	_check(_tutorial.step == TutorialDirector.Step.PEGBOARD, "collecting the cluster opens the shed lesson")
+	_check(GameState.parts[&"al"] == 6, "the cluster banks exactly 6 Aluminium")
+	_check(shed.is_open(), "the shed opens for the first purchase")
 
-	_section("2 Dummy-Bot")
+	_section("2 Pegboard")
+	var board := _main.get_node(^"Pegboard") as PegboardUI
+	_farmer.teleport_to(shed.interaction_point() + Vector3.UP * 0.2)
+	await _frames(5)
+	shed.interact(_farmer)
+	await _frames(2)
+	_check(board.is_open and board._focus_id == &"attack.wrench", "the pegboard opens focused on Grandpa's Wrench")
+	_check(board.peg_button(&"attack.wrench") != null and StatService.can_purchase(&"attack.wrench"),
+		"the collected parts pay for the highlighted wrench peg")
+	_check(board.buy(&"attack.wrench"), "the normal pegboard purchase buys the wrench")
+	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.DUMMY, 2.0)
+	_check(not board.is_open and _farmer.weapons.current == _farmer.weapons.get_weapon(&"wrench"),
+		"the board closes and the bought wrench appears in hand")
+	_check(GameState.parts[&"al"] == 0, "the wrench spent the starter parts")
+
+	_section("3 Dummy-Bot")
 	_check(_tutorial.step == TutorialDirector.Step.DUMMY, "the Dummy-Bot step follows")
 	var dummy := _main.get_node_or_null(^"TutorialDummy") as TutorialDummy
 	_check(dummy != null, "the Dummy-Bot popped up")
@@ -102,16 +122,17 @@ func _run() -> void:
 		"the dummy drops only a starter handful of Aluminium (%d -> %d)" % [al_before, GameState.parts[&"al"]])
 	_check(_farmer.health.current <= 80.01 and _farmer.health.current > 50.0, "its spring bonked Pip for 20 (HP %.0f)" % _farmer.health.current)
 
-	_section("3 Porch")
+	_section("4 Porch")
 	_check(_tutorial.step == TutorialDirector.Step.PORCH, "the Porch step follows")
 	var zone := _main.get_node(^"Farm/PorchHealZone") as HealZone
 	_farmer.teleport_to(Vector3(zone.global_position.x, 0.6, zone.global_position.z))
 	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.PRACTICE, 8.0)
 	_check(_farmer.health.current >= _farmer.health.max_health - 0.01, "standing on the porch heals to full (HP %.0f)" % _farmer.health.current)
-	_check(_tutorial.step == TutorialDirector.Step.PRACTICE, "healing leads straight into melee defense")
+	_check(_tutorial.step == TutorialDirector.Step.PRACTICE, "healing leads straight to the Nibbler")
+	_check(silo.get_cracks().is_empty(), "no silo repair is required before the Nibbler")
 	_check(not shed.is_open(), "the shed stays shut during melee training")
 
-	_section("4 Practice defense")
+	_section("5 Practice defense")
 	var practice := _main.get_node_or_null(^"Robots/PracticeNibbler") as Robot
 	_check(practice != null, "one Nibbler approaches the silo before wave 1")
 	_check(_director.phase == WaveDirector.Phase.TUTORIAL, "practice does not start the wave clock")
@@ -151,23 +172,26 @@ func _run() -> void:
 	_check(silo.get_cracks().is_empty(), "patching the new leak completes the defense loop")
 	_check(_tutorial.step == TutorialDirector.Step.CATWALK, "the catwalk follows the melee defense loop")
 
-	_section("5 Catwalk")
+	_section("6 Catwalk")
 	var ladder := silo.get_node(^"Ladder") as Node3D
 	_farmer.teleport_to(ladder.global_position + Vector3(0.0, 0.3, 0.5))
 	await _frames(5)
 	Input.action_press(&"move_forward")
 	await _wait_until(func() -> bool: return _farmer.state == Farmer.State.CLIMBING, 3.0)
 	await _wait_until(func() -> bool: return _farmer.global_position.y >= 7.6, 6.0)
-	Input.action_release(&"move_forward")
 	_check(_farmer.state == Farmer.State.CLIMBING, "Pip climbs the silo ladder (y %.1f)" % _farmer.global_position.y)
-	await _press_action(&"jump")
-	await _wait_until(func() -> bool: return not _farmer.input.enabled, 4.0)
+	await _wait_until(func() -> bool: return not _farmer.input.enabled, 10.0)
+	Input.action_release(&"move_forward")
 	_check(not _farmer.input.enabled, "the vista sweep holds Pip still on the catwalk")
-	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.BELL, 12.0)
-	_check(_tutorial.step == TutorialDirector.Step.BELL, "the sweep ends at the dinner bell")
+	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.ZIPLINE, 12.0)
+	_check(_tutorial.step == TutorialDirector.Step.ZIPLINE, "the vista leads to the zipline")
 	_check(_farmer.input.enabled, "control returns after the sweep")
+	var zipline := _main.get_node(^"Farm/Ziplines/Z1_SiloToBarn") as Zipline
+	zipline.interact(_farmer)
+	await _wait_until(func() -> bool: return _tutorial.step == TutorialDirector.Step.BELL, 12.0)
+	_check(_tutorial.step == TutorialDirector.Step.BELL, "riding the zipline leads to the dinner bell")
 
-	_section("6 Dinner bell")
+	_section("7 Dinner bell")
 	var bell := _main.get_node(^"Farm/DinnerBell") as DinnerBell
 	_farmer.teleport_to(bell.global_position + Vector3(0.0, 0.2, 1.0))
 	await _frames(5)

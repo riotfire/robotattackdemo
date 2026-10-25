@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Metal 3.2 - Forward+ - Using Device #0: Apple - Apple M4 Pro (Apple9)
+
+Robot Attack! run seed: 7
+OPENING_AUDIT {"counts":{"nibbler":9},"cracks":6,"family":"The Teal Pirate Tin Cans","first_silo_hit_s":13.8666666666666,"foremen":[],"lanes":[2,4],"last_scheduled_spawn":32.4472389221191,"leak_per_second":5.00000011920929,"observed_seconds":50.0000000000008,"peak_live":9,"unopposed_silo_damage":636.0,"wave":1}
+OPENING_AUDIT {"counts":{"clanker":9,"nibbler":4},"cracks":5,"family":"The Grape Disco Toasters","first_silo_hit_s":29.6666666666666,"foremen":[],"lanes":[6,8],"last_scheduled_spawn":36.5879936218262,"leak_per_second":4.40000009536743,"observed_seconds":57.0000000000012,"peak_live":13,"unopposed_silo_damage":518.418,"wave":2}
+OPENING_AUDIT {"counts":{"clanker":12,"nibbler":4,"roof_lobber":1},"cracks":10,"family":"The Mustard Junkyard Tin Cans","first_silo_hit_s":22.5333333333333,"foremen":[],"lanes":[1,2],"last_scheduled_spawn":42.5419311523438,"leak_per_second":8.80000019073486,"observed_seconds":64.0000000000015,"peak_live":17,"unopposed_silo_damage":962.592000000001,"wave":3}
+OPENING_AUDIT {"counts":{"clanker":9,"nibbler":13,"roof_lobber":1},"cracks":10,"family":"The Chrome Disco Toasters","first_silo_hit_s":13.5333333333333,"foremen":[],"lanes":[4,8],"last_scheduled_spawn":49.8276634216309,"leak_per_second":14.4000000953674,"observed_seconds":71.0000000000011,"peak_live":23,"unopposed_silo_damage":3021.20399999998,"wave":4}
+OPENING_AUDIT {"counts":{"clanker":27,"drone":1,"nibbler":9,"roof_lobber":1,"thumper":1},"cracks":10,"family":"The Cherry Pirate Eggs","first_silo_hit_s":12.5333333333333,"foremen":[{"hp":1574.4,"traits":["gilded"]}],"lanes":[3,4,6],"last_scheduled_spawn":55.5764083862305,"leak_per_second":12.200000166893,"observed_seconds":78.0000000000007,"peak_live":39,"unopposed_silo_damage":6141.07200000002,"wave":5}

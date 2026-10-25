@@ -14,6 +14,7 @@ const C_DARK := Color(0.18, 0.16, 0.15)
 const C_CLOTH := Color(0.55, 0.3, 0.25)
 const C_STRAW := Color(0.93, 0.8, 0.45)
 const C_TWINE := Color(0.62, 0.48, 0.25)
+const TUTORIAL_TRACTOR_SLOT: StringName = &"Slot05"
 
 # Clayified CC0 models (tools/clayify, CREDITS.md).
 const CRATE_MODEL := preload("res://assets/models/props/prop_crate_02.glb")
@@ -39,16 +40,26 @@ func scatter() -> void:
 	placed.clear()
 	var rng := RngService.stream(RngService.STREAM_FARM)
 	var tractor_placed := false
+	var tutorial_run := not SaveManager.tutorial_completed
+	for arg in OS.get_cmdline_user_args():
+		if arg == "--tutorial":
+			tutorial_run = true
+		elif arg == "--skip-tutorial":
+			tutorial_run = false
 	for child in get_children():
 		var slot := child as Marker3D
-		if slot == null or rng.randf() > fill_chance:
+		if slot == null:
+			continue
+		var is_tutorial_tractor := tutorial_run and slot.name == TUTORIAL_TRACTOR_SLOT
+		if rng.randf() > fill_chance and not is_tutorial_tractor:
 			continue
 		var kinds: PackedStringArray = slot.get_meta(&"kinds", PackedStringArray(["hay"]))
-		var kind := kinds[rng.randi_range(0, kinds.size() - 1)]
+		var kind := "tractor" if is_tutorial_tractor else kinds[rng.randi_range(0, kinds.size() - 1)]
 		if kind == "tractor":
-			if tractor_placed:
+			if tractor_placed or (tutorial_run and not is_tutorial_tractor):
 				kind = "hay"
-			tractor_placed = true
+			else:
+				tractor_placed = true
 		var prop := _build(kind, rng)
 		prop.name = "%s_%s" % [kind.capitalize(), slot.name]
 		add_child(prop)

@@ -9,6 +9,9 @@ extends CharacterBody3D
 
 enum State { GROUNDED, AIRBORNE, JETPACKING, CLIMBING, MANTLING, ZIPLINING, DEAD }
 
+## Emitted when damage lands (armor or health) and when a fall hurts. The rigged model reacts to it.
+signal hurt
+
 ## Collision layers the aim ray can hit: World, RobotHurtbox, Silo.
 const HURT_FLASH_SECONDS: float = 0.3
 const HURT_TINT := Color(1.0, 0.12, 0.1)
@@ -35,6 +38,7 @@ var _combat_facing_left: float = 0.0
 var _hurt_flash_left: float = 0.0
 var _model_rest_position: Vector3
 var _rest_tints: Dictionary = {}
+var _clay_visible: Dictionary = {}
 var _since_damage: float = 99.0
 var _land_squash_left: float = 0.0
 var _pose_frame: int = 0
@@ -46,9 +50,11 @@ var _pose_frame: int = 0
 @onready var repair: FarmerRepair = $Repair
 @onready var interaction: FarmerInteraction = $Interaction
 @onready var weapons: WeaponHolder = $Model/WeaponHolder
+@onready var _weapons_rest_position: Vector3 = weapons.position
 @onready var camera_rig: FarmerCamera = $CameraRig
 @onready var model: Node3D = $Model
 @onready var _pose: Node3D = $Model/Pose
+@onready var _rigged_model: RiggedFarmerModel = $Model/Pose/RiggedFarmer
 @onready var _jetpack_can: Node3D = $Model/JetpackCan
 @onready var _jet_flame: Node3D = $Model/JetpackCan/Flame
 @onready var _body_mesh: MeshInstance3D = $Model/Pose/Body
@@ -62,10 +68,15 @@ func _ready() -> void:
 		if rest is Color:
 			_rest_tints[mesh] = rest
 	add_to_group(&"players")
+	for part: Node3D in _pose.get_children():
+		if part != _rigged_model:
+			_clay_visible[part] = part.visible
+	set_rigged_model(bool(SaveManager.settings.get("rigged_farmer", false)))
 	movement.setup(self)
 	repair.setup(self)
 	interaction.setup(self)
 	weapons.setup(self)
+	_rigged_model.setup(self)
 	movement.landed.connect(_on_landed)
 	health.reset(StatService.get_stat(&"player.max_hp", max_health))
 	max_armor = StatService.get_stat(&"player.armor", 0.0)
@@ -171,6 +182,7 @@ func take_damage(packet: DamagePacket) -> void:
 	amount -= absorbed
 	if health.apply_damage(amount) > 0.0 or absorbed > 0.0:
 		_hurt_flash_left = HURT_FLASH_SECONDS
+		hurt.emit()
 	if packet.knockback != Vector3.ZERO and state in [State.GROUNDED, State.AIRBORNE, State.JETPACKING]:
 		movement.add_knockback(packet.knockback)
 
@@ -183,6 +195,7 @@ func take_fall_damage(height: float, safe: float, lethal: float, curve: float) -
 	_since_damage = 0.0
 	if health.apply_damage(health.max_health * fraction) > 0.0:
 		_hurt_flash_left = HURT_FLASH_SECONDS
+		hurt.emit()
 
 
 func heal(amount: float) -> void:
@@ -242,6 +255,16 @@ func _update_model(delta: float, wish: Vector3) -> void:
 	_update_hurt_feedback()
 
 
+## Swaps the clay body for the rigged Blender farmer. The pause menu's player model option calls this on every farmer.
+func set_rigged_model(enabled: bool) -> void:
+	_rigged_model.visible = enabled
+	if not enabled:
+		weapons.position = _weapons_rest_position
+		weapons.rotation = Vector3.ZERO
+	for part: Node3D in _clay_visible:
+		part.visible = _clay_visible[part] and not enabled
+
+
 ## Taking a hit flashes the body red and shakes the model, both fading over HURT_FLASH_SECONDS.
 func _update_hurt_feedback() -> void:
 	var hurt := _hurt_flash_left > 0.0
@@ -265,7 +288,13 @@ func _on_landed(fall_speed: float) -> void:
 func _on_tick_24(_frame: int) -> void:
 	if state == State.DEAD:
 		return
+	_rigged_model.step_pose(self)
 	_pose_frame += 1
+	if _rigged_model.visible:
+		# The rig has legs and feet, so the clay body's squash and run bob would just make it hop.
+		_pose.scale = Vector3.ONE
+		_pose.position.y = 0.0
+		return
 	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
 	if _land_squash_left > 0.0:
 		_pose.scale = Vector3(1.18, 0.82, 1.18)

@@ -8,3 +8,5 @@ travel.quick_refill,travel,2,1,Quick Refill,8,travel.jetpack,al_to_au 12,jetpack
 travel.thrusters,travel,1,2,Thrusters,5,travel.fuel_tank 2,al_cu 20,jetpack.climb_rate add_pct 0.08; jetpack.air_speed add_pct 0.08,+8% jetpack climb rate and air speed per level.
 travel.hover_mode,travel,2,2,Hover Mode,1,travel.fuel_tank 3,cu 25,jetpack.hover flag,"Hold Jump while aiming to hover, burning fuel at 40%."
 travel.death_from_above,travel,2,3,Death From Above,5,travel.hover_mode,cu 15; au 3 3-5; pc 1 5-5,combat.airborne_damage add_pct 0.10,+10% damage while airborne per level.
+travel.air_dash,travel,3,1,Air Dash,1,travel.jetpack,cu 8,jetpack.air_dash flag,Press Shift or LB in the air to burst along your movement direction.
+travel.ground_pound,travel,3,2,Ground Pound,1,travel.jetpack,cu 12,jetpack.ground_pound flag,Press Ctrl or RB in the air to slam down and blast nearby robots on landing.

@@ -18,13 +18,18 @@ stat = &"wrench.swing_rate"
 value = 0.08
 per_level = PackedFloat32Array()
 
+[sub_resource type="Resource" id="Resource_wrench_requirement"]
+script = ExtResource("3_6f3je")
+node_id = &"attack.wrench"
+
 [resource]
 script = ExtResource("4_k6p6a")
 id = &"attack.wrench_speed"
 branch = 1
 display_name = "Swing Speed"
-description = "+8% swing speed per level."
+description = "+8% wrench, maul and scythe swing speed per level."
 max_level = 5
+prerequisites = Array[ExtResource("3_6f3je")]([SubResource("Resource_wrench_requirement")])
 cost_curve = SubResource("Resource_ey8r3")
 effects = Array[ExtResource("2_52e72")]([SubResource("Resource_yu6wh")])
-board_position = Vector2i(0, 1)
+board_position = Vector2i(0, 2)

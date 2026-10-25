@@ -62,7 +62,7 @@
 
 ### 1.3 Player fantasy
 
-You are the scrappy last line of defense for a cozy farm. You start with nothing but a wrench and stubbornness, and over many runs become a jet-powered, egg-grenade-lobbing, welder-wielding farm guardian who rains rivets down from the top of the silo.
+You are the scrappy last line of defense for a cozy farm. You begin by gathering parts for Grandpa's wrench, and over many runs become a jet-powered, grenade-lobbing, welder-wielding farm guardian who rains rivets down from the top of the silo.
 
 ### 1.4 Story setup (one paragraph, delivered on the title screen)
 
@@ -125,7 +125,7 @@ flowchart TD
 
 ### 2.4 The first 10 minutes (onboarding)
 
-1. **Morning Chores (first-run tutorial, untimed):** patch a silo leak, bonk a practice Dummy-Bot with the wrench, and heal on the porch. Then intercept one slow, real Nibbler with the wrench; if it reaches the silo, stop it and repair the crack it caused. Climb the silo catwalk to see the attack lanes, then ring the bell. Short cues explain why each action matters.
+1. **Morning Chores (first-run tutorial, untimed):** collect a cluster of six floating Aluminium bits beside the tractor, then buy Grandpa's Wrench for 6 Al on the real pegboard. The Dummy-Bot then pops up for three satisfying swings; its spring bonks the farmer, leading to the porch heal. Intercept one slow Nibbler, repair the crack if it hits the silo, climb the catwalk, then ring the bell. Short cues explain why each action matters.
 2. **Siren:** the hand-cranked siren on the water tower winds up. The HUD shows "INCOMING" with the first family's name card.
 3. **Wave 1 (45 s):** only Scout melee robots (Nibblers). The wrench is enough.
 4. **Intermission 1:** the shed pegboard opens for the first build choice. Spend earned parts on a stronger wrench, the **Rivet Pistol** for range, repair and defense, or movement. The player is free to follow their play style; the pistol is built later rather than handed out in the prologue.
@@ -159,7 +159,8 @@ The silo has two meters:
 **Cracks and leaks**
 
 - Every 10% of Structure lost opens a new **crack** at one of 16 crack sockets on the silo (maximum 10 active cracks). Each crack holds that 10% of max Structure as its **repair pool**: repairing drains the pool back into Structure, and the crack closes when the pool is empty.
-- New cracks pick a height band by weight (**ground 50%, catwalk 1 30%, catwalk 2 20%**), then the free socket in that band that faces the hit most directly.
+- **Hits open cracks near where they land** (decision R-D3). A new crack goes to the hit's own height band 70% of the time; the other 30% is shared by the other bands by weight (**ground 50%, catwalk 1 30%, catwalk 2 20%**). It then takes the free socket in that band that faces the hit most directly. Ground robots open low cracks and ranged and flying robots open high ones, so more ranged robots later means more catwalk repairs.
+- **Waves 1–2 open ground cracks only**, while the player learns to repair. If every ground socket is taken, the damage goes into an open crack's pool instead.
 - When all 10 crack slots are full, further damage is added to the nearest crack's pool, so it stays repairable.
 - Sockets are spread across three heights: **ground level (0–4 m)**, **first catwalk (8 m)** and **upper catwalk (16 m)**. High cracks need the ladder, a zipline or the jetpack to reach. This ties repair to vertical traversal.
 - Each crack is a visible grain spout (golden clay pellets pouring out and piling on the ground).
@@ -276,7 +277,7 @@ Positions are in meters from the silo (x = east, y = north).
 | **Tool Shed** (upgrades) | (−20, 2) | Roof 4 m | The pegboard upgrade UI. Shuttered during waves. | Rain barrel + crate step-up; easy jetpack hop. |
 | **Barn** | (−32, 28) | Hayloft door 7 m, roof ridge 13 m | Big cover; the hayloft is a sheltered sniper nest facing the north lanes. | Side ladder to the hayloft. Zipline Z1 end; Z3 start. |
 | **Stables** | (20, 34) | Roof 6 m | Long, flat roof for running along the north edge. | Hay-bale stairs. Zipline Z3 end. |
-| **Chicken House** | (34, 6) | Roof 3.5 m | Hens lay **Egg Grenades**: walk through the coop to collect them. Chickens panic comically during waves. | Hay-bale stairs; low jetpack hop. |
+| **Chicken House** | (34, 6) | Roof 3.5 m | Chickens panic comically during waves; a future gameplay role remains to be designed. | Hay-bale stairs; low jetpack hop. |
 | **Water Tower** | (28, −24) | Deck 15 m, tank top 19 m | Covers the south-east lanes. The wave siren is mounted on top. | Long ladder. Zipline Z2 start. |
 | **Garden** | (0, −34) | Greenhouse roof 3 m, trellises 1.8 m | Low cover maze; good for melee kiting. | Step-ups. |
 | **Well** | (14, −8) | Roof 2.8 m | Low cover right next to the silo. | Jump. |
@@ -300,8 +301,8 @@ Each run rolls a **Farm Seed** that sets:
 
 | Variable | Options |
 |---|---|
-| Starting time of day | Dawn, Morning, Noon, Golden Hour, Dusk, Moonlit Night. Advances one step each phase. |
-| Weather | Clear, Breezy (corn sways, drones drift), Drizzle (wet, shinier clay, puddles), Morning Fog (shorter visibility; robot eye glows boosted for readability) |
+| Starting time of day | Always Dawn. Advances one step each phase (Morning, Noon, Golden Hour, Dusk, Moonlit Night). |
+| Weather | Always Clear at run start. Breezy (corn sways, drones drift), Drizzle (wet, shinier clay, puddles) and Morning Fog (shorter visibility; robot eye glows boosted for readability) are rolled but currently unused on a normal run (debug `--weather=` / F10 still reach them). |
 | Crop ring arrangement | Which crop fills each wedge of the crop ring (wheat, sunflowers, pumpkins, cabbages, strawberries). Tall sunflowers block sight lines; pumpkins give low cover. |
 | Prop scatter | Tractor position, hay bale stacks, crate piles, fence segments, scarecrows |
 | Active spawn lanes | Which 2–5 of the 8 lanes each wave uses |
@@ -311,7 +312,7 @@ Weather is mostly cosmetic. The one gameplay effect is that Morning Fog reduces 
 
 How the time of day and weather work (M2-H1):
 
-- The starting time of day and the weather come from the Farm Seed through their own `environment` RNG stream, so they never shift spawn, lane or genome rolls. Weather weights: Clear 40%, Breezy 25%, Drizzle 20%, Morning Fog 15%. The weather lasts the whole run.
+- Every run starts at Dawn in Clear weather, whatever the seed. The seed still rolls the `environment` RNG stream (kept for the per-run sky variation: sun bearing, clouds, wind direction, puddles), so it never shifts spawn, lane or genome rolls. Weather weights, used by that roll and the weather table, are Clear 40%, Breezy 25%, Drizzle 20%, Morning Fog 15%; the start override means the rolled weather is not used on a normal run. The weather lasts the whole run.
 - The time of day steps when the next phase's first intermission begins, right after the Big Haul, and blends over about 6 s in 12 fps steps. A checkpoint run (14.2) opens on its rolled preset.
 - Fog distances belong to the weather, not the time of day, so every preset keeps the 4.7 boundary fog. Morning Fog's boosted eye glows are a stronger bloom on emissive parts (eyes, weak points), not brighter emission.
 - Long-range robots scale their engagement range by `Weather.engagement_range_multiplier()` (0.8 in Morning Fog, 1 otherwise). Breezy also exposes `Weather.wind` for drifting flyers.
@@ -338,19 +339,21 @@ A stubby clay farmer in patched overalls, a straw hat and welding goggles (worki
 | Move | WASD | Left stick |
 | Look / aim | Mouse | Right stick |
 | Jump / Jetpack (hold in the air) | Space | A / Cross |
-| Air Dash / dodge | Shift | B / Circle |
+| Air Dash (upgrade; airborne) | Shift | LB / L1 |
+| Ground Pound (upgrade; airborne) | Ctrl | RB / R1 |
 | Aim (zoom) | Right mouse | LT / L2 |
 | Fire | Left mouse | RT / R2 |
-| Melee bonk (wrench) | V | R3 |
-| Throw egg grenade | G | RB / R1 |
+| Equipped melee attack; wrench quick bonk while holding a gun | V | R3 |
 | Reload (tap) / Interact, repair (hold) | R / E | X / Square |
-| Weapon wheel (hold) / last weapon (tap) | Q, or 1–6, mouse wheel | Y / Triangle |
-| Deploy (Auto Wrench, Scarecrow) | F | LB / L1 |
+| Weapon wheel (hold) / last weapon (tap) | Q, or 1–7, mouse wheel | Y / Triangle |
+| Deploy (future Auto Wrench, Scarecrow) | F | TBD |
 | Eat pie | C | D-pad left |
 | Overdrive (jetpack capstone) | X | LB + RB |
 | Shoulder swap | Middle mouse | — |
 | Wave info / map | Tab | View / Select |
 | Pause | Esc | Start / Options |
+
+Holding the weapon-wheel input slows time to 20% while the wheel is open, giving the player time to aim the selection stick without leaving the farmer fully exposed. Releasing it equips the highlighted weapon and restores normal time.
 
 All bindings are remappable. Gamepad gets aim assist (slowdown plus light magnetism, adjustable). Steam Deck gyro aiming works through Steam Input.
 
@@ -406,7 +409,7 @@ Thruster upgrades (+8% climb rate per level) let players reach perches earlier, 
 
 ### 6.1 Combat rules
 
-- **Ammo:** unlimited reserve. Guns use magazines (or heat) and reloads. Only **Egg Grenades** are limited, restocked at the Chicken House.
+- **Ammo:** unlimited reserve. Guns and the grenade launcher use magazines and reloads.
 - **Weak points (×2 damage):** every robot's eye. Heavies also have a back weak point (Thumper's **vent**, Boiler's **fuel tank**) or a **top hatch** (Longneck), and these reward flanking and vertical angles.
 - **Hit feedback:** dents appear on the robot, bolts fly off, its eye expression changes (angry, dizzy spirals when stunned, X_X on death), and it pops into clay parts in a cotton-wool puff.
 - **Robot projectiles** are slow, chunky and dodgeable: clay blobs, popcorn kernels, bolts. Long-range attacks are telegraphed (red-yarn aiming lines, chalk landing circles).
@@ -418,23 +421,22 @@ Thruster upgrades (+8% climb rate per level) let players reach perches earlier, 
 |---|---|---|---|---|---|---|---|---|
 | **Wrench** | Grandpa's big red wrench. Melee weapon **and** repair tool. | 25 (3rd hit ×1.5 + knockback) | 1.6 swings/s | — | — | 2.2 m | Starting | — |
 | **Pistol** ("Rivet Pistol") | Reliable rivet gun | 12 | 4 shots/s (semi) | 10 | 1.1 s | 40 m | 20 Al | — |
-| **Stun Gun** ("Zap-Fork") | A pitchfork wired to a car battery | 6 dps beam; stuns for 1.5 s after 0.6 s of contact | Continuous | 5 s battery | 2 s recharge | 12 m | 40 Al + 10 Cu | Pistol Damage 2 |
-| **Shotgun** ("Barn Blaster") | Duct-taped double barrel firing washers | 8 pellets × 7 | 1.2 shots/s | 6 | 0.5 s per shell | 12 m | 60 Al + 20 Cu | Pistol Fire Rate 2 |
-| **Machine Gun** ("Rivet Repeater") | Hand-crank rivet repeater | 9 | 12 shots/s after 0.4 s spin-up | 4 s of heat | 2 s cooldown | 30 m | 80 Al + 40 Cu + 5 Au | Stun Gun or Shotgun at any track level 3 |
-| **Egg Grenade** | Fresh from the coop | 120 in a 5 m radius | Throw | Carry 2 | Restock at coop | 25 m throw | 30 Cu + 3 PC | Any weapon at any track level 3 |
-
-**Chicken House egg lay rate:** 1 egg per 15 s during intermission and 1 per 30 s during waves (upgradable with *Happy Hens*). Walk through the coop to collect eggs, up to your carry limit.
+| **Shotgun** ("Barn Blaster") | Short cone of washers for nearby groups; a center pellet plus inner and outer rings of three, each with a light shove | 7 pellets × 10 | 1 shot/s | 5 | 1.8 s | 16 m | 35 Al | Pistol |
+| **Longneck Rifle** | Slow precision shot across the farm that punches through one robot into the next | 55 | 0.8 shots/s | 4 | 1.9 s | 100 m | 45 Al + 3 Cu | Pistol |
+| **Boiler Grenades** | Shell lobbed onto the crosshair for clustered tough robots | 90 at center, falling to 50% at edge; 5 m radius | 0.5 shots/s | 2 | 2.2 s | 45 m | 60 Al + 8 Cu | Pistol |
+| **Haymaker Maul** | Heavy overhead front swing | 105 + knockback | 0.55 swings/s | — | — | 2.8 m | 30 Al | — |
+| **Harvest Scythe** | Full-circle close-range sweep | 40 + knockback | 0.8 sweeps/s | — | — | 2.9 m | 40 Al + 5 Cu | — |
 
 ### 6.3 Weapon upgrade structure
 
-Every gun follows the same readable pattern, which keeps the tree long without making it confusing:
+The first priority is a new combat role: short spread, long precision, explosive area damage, heavy melee, or a full-circle melee escape. Those unlocks are one-off purchases. The pistol retains its damage, rate and handling tracks; future tracks should change how a weapon is used before adding more repeated percentage levels.
 
 | Track | Levels | Effect per level |
 |---|---|---|
 | **Damage** | 10 | +12% base damage (additive, so +120% at level 10) |
 | **Fire Rate** | 10 | +8% rate of fire (additive, so +80% at level 10) |
 | **Handling** | 5 | Weapon-specific: magazine size, reload speed, spread, heat capacity |
-| **Mods** | 2 per weapon | Unlocked at Damage 4 and Fire Rate 4. Each weapon has **1 mod slot**; a **Gold Mod Slot** unlocks at Damage 8 + Fire Rate 8. Mods are swapped freely at the shed. |
+| **Mods** | Future | The framework has 1 slot per weapon. Add specific mods only after playtests establish a tactical reason for them; ricochet is excluded. |
 
 Weapon-specific details are in the Attack branch (13.5).
 
@@ -488,11 +490,13 @@ Progression in this branch improves **how much** each repair restores and **how 
 
 ### 9.1 Types (size, speed, toughness)
 
-| Type | Size | HP (wave 1) | Speed | Group | Frequency |
+| Type (size) | Size | HP (wave 1) | Speed | Group | Frequency |
 |---|---|---|---|---|---|
-| **Scout** | 0.8 m | 30 | 8.0 m/s (faster than the farmer) | Alone | Most frequent (about 55% of spawn events) |
-| **Grunt** | 1.4 m | 60 each | 4.5 m/s | Squads of 3 | Medium (about 35%) |
-| **Heavy** | 2.6 m | 400 | 2.5 m/s | Alone | Rare (about 10%, with a per-wave cap) |
+| **Scout** (small) | 0.8 m | 30 | 8.0 m/s (faster than the farmer) | On the ground, usually a trio: 40% in waves 1–2, 60% from wave 3, rising to 70% by wave 15. Flyers are solo | Most frequent (about 55% of spawn events) |
+| **Grunt** (medium) | 1.4 m | 60 | 4.5 m/s | Rarely a trio (15%) | Medium (about 35%) |
+| **Heavy** (large) | 2.6 m | 400 | 2.5 m/s | Always solo | Rare (about 10%, with a per-wave cap) |
+
+Each archetype has its own `trio_chance` (see 9.6). Foremen are always solo.
 
 ### 9.2 Classes (attack style)
 
@@ -502,7 +506,9 @@ Progression in this branch improves **how much** each repair restores and **how 
 | **Short-range** | 8 m | Medium (28%) | Farmer 60% / silo 40% | Nozzle or funnel arm. **Amber** eye glow. Spray icon. |
 | **Long-range** | 25–55 m | Least common (12%) | Varies by type | Long barrel plus a dish or scope antenna. **Blue** eye glow. Crosshair icon. |
 
-Robots switch targets when the farmer damages them from within 10 m (melee) or stays in their line of sight for 3 s (ranged).
+**Attack grid (robot attack variety plan, decisions R-D1 and R-D4):** the classes become three attack styles, the grid's columns: **melee** (close up), **ranged** (a long-distance projectile) and **flight** (a projectile from above). The Drone is the Buzzer and flies; the Roof Lobber is ranged. The short-range Spritzer, Popper and Boiler are out of M2 and are revisited after the M2 playtest. Eye colors follow the column: melee red, ranged blue, flight amber.
+
+Who a robot goes after comes from its behavior variables (see 9.6), not a fixed rule. The "Default target" column above is replaced by each archetype's `silo_focus`.
 
 ### 9.3 The nine archetypes
 
@@ -512,6 +518,12 @@ Robots switch targets when the farmer damages them from within 10 m (melee) or s
 | **Grunt** (×3) | **Clanker** — a waddling trio that punches the silo in rhythm. | **Popper** — sprays popcorn-kernel buckshot (8 m). | **Lobber** — lobs bolts in arcs from 30 m. Chalk circles mark where they will land. |
 | **Heavy** | **Thumper** — a tracked brute. Ground slam with a shockwave ring (jump over it). **Back vent** weak point. | **Boiler** — a steam and cellophane-flame cannon cone. **Back fuel tank** weak point. | **Longneck** — parks in the crop ring 45–55 m out and fires a telescoping rail cannon at the silo every 6 s after a 2 s red-yarn aim line. **Top hatch** weak point (×3), best hit from high perches or the jetpack. |
 
+**Sidearms (M2-B9, robot attack variety plan):**
+
+- **Spitter:** the small ranged robot of the attack grid. It is a role of the small ground robot, not an archetype the director picks on its own: from wave 7 a share of small ground melee spawns come as Spitters (11.8). It carries a long pea-shooter and has blue eyes. It stops 12–16 m from its target, stands still while each pea charges (0.8 s glow; the moment to rush it), and hops about 35° around its target every 3 shots. Once, it backs off 4 m from a farmer who gets within 5 m. Peas aim at catwalk height, so they open high cracks. A Spitter trio fires a staggered 3-beat volley. 30 HP, 7 m/s.
+- **Out-of-reach throws:** from wave 7, a Clanker throws bolts and a Thumper lobs dirt clods at a farmer it can't reach (up on a roof, a ladder, a zipline or the jetpack): up to two throws, each with a charge glow and a chalk circle where it will land, then it goes back to the silo. Its bolt pouch or clod scoop shows that it can.
+- **Arm guard:** from wave 6, a Clanker holds a riveted plate across its front that halves damage from hits within 60° of where it faces. Flank it.
+
 ### 9.4 Damage table (wave 1 values)
 
 | Archetype | Vs farmer | Vs silo | Notes |
@@ -519,10 +531,11 @@ Robots switch targets when the farmer damages them from within 10 m (melee) or s
 | Nibbler | 4 / hit, 1 hit/s | 6 / hit | May steal 20 bushels instead |
 | Spritzer | 6 dps in cone | 4 dps | |
 | Buzzer | 5 / shot every 1.2 s | — | Targets the farmer only |
-| Clanker | 8 / hit every 1.2 s | 12 / hit | |
+| Clanker | 8 / hit every 1.2 s | 12 / hit | Arm guard halves frontal damage (wave 6+). Up to 2 thrown bolts (5 / 8) at an out-of-reach farmer (wave 7+) |
 | Popper | 7 / burst every 1.5 s | 8 / burst | |
 | Lobber | 15 splash (2 m) | 15 splash | Telegraphed |
-| Thumper | 25 slam + 10 shockwave | 60 / slam every 2.5 s | |
+| Thumper | 25 slam + 10 shockwave | 60 / slam every 2.5 s | Up to 2 lobbed clods (15, 2 m splash / 20) at an out-of-reach farmer (wave 7+) |
+| Spitter (M2-B9) | 3 / pea every 2.2 s | 5 / pea | 0.8 s charge, 14 m/s; aims at catwalk height |
 | Boiler | 14 dps in cone | 18 dps | |
 | Longneck | 30 (if the farmer blocks the shot) | 80 / shot every 6 s | Top priority threat |
 
@@ -542,6 +555,8 @@ Robots switch targets when the farmer damages them from within 10 m (melee) or s
 
 Heavies debut as a Foreman, then join regular spawns from the next wave. From wave 16 on, all nine archetypes can appear and the director's weights decide the mix.
 
+**Built so far (robot attack variety plan):** Nibbler (1), Clanker (2), Roof Lobber (3), Drone (5), Thumper (Foreman at 5, regular spawns from 6), and at wave 7 Spitters and out-of-reach throwing.
+
 ### 9.6 AI behavior summary
 
 Each class runs one behavior tree (built with LimboAI, see 18.4), parameterized by type stats and family traits:
@@ -549,7 +564,39 @@ Each class runs one behavior tree (built with LimboAI, see 18.4), parameterized 
 - **Melee:** Approach the target → circle-strafe if blocked → attack → retarget on aggro. Nibblers may branch into *Steal grain → Flee to lane*.
 - **Short-range:** Approach to 6–8 m → strafe and spray → back off if the farmer closes to melee range (except Boilers).
 - **Long-range:** Find a firing position (perch-aware: prefers line of sight to rooftops) → telegraph → fire → reposition every 2–3 shots. Buzzers use 3D steering, not the navmesh.
-- **Squads (Grunts):** Shared blackboard. They move in a loose triangle and attack in a 3-beat rhythm, which gives a readable "clank-clank-CLANK" pattern.
+- **Trios:** any small or medium ground robot can come as a trio (see 9.1). A trio shares one blackboard: the leader rolls the target, role and any distraction, and the other two follow. They move in a loose triangle behind the leader and attack in a 3-beat rhythm (*nip-nip-NIP*, *clank-clank-CLANK*). If the leader falls, the next one leads.
+- **Heist crews:** in a thief trio only the leader carries a sack. The other two escort it and fight a farmer who comes near either of them. The crew counts as one thief toward the thief share (11.7). If the thief is destroyed, the escorts carry on as an ordinary pair; if it escapes, they slip into the corn too.
+- **Ranged attacks:** every ranged and flying robot fires through one shared attack (an attack profile per archetype: charge time, interval, damage, speed, arc, range). **Telegraphs:** every shot charges a glow for at least 0.45 s; lobs show a chalk circle where they will land (it follows the target while the lob charges, then stays put); rails show a red-yarn aim line; bombs show a shadow circle. Lobs never lead their target.
+- **Attack tokens:** only N robots may shoot at one farmer at once (2 in waves 1–5, then 3 / 4 / 5 by phase, see 11.8). The rest shoot the silo. At most 24 robot shots fly at once.
+- **Scaling (11.8):** from wave 6 charges get shorter (never under 0.45 s), straight shots lead a moving farmer from wave 10 (lobs, rails and bombs never do), and Drones and Spitter trios fire volleys from wave 16.
+- **Spitter:** approach to 12–16 m → stand still and charge → fire → hop around the target every 3 shots; back off 4 m once from a close farmer. It can shoot a farmer up high, so it never gives up on one.
+- **Out-of-reach throws** (`on_unreachable` = throw): once the farmer has been out of reach for 0.5 s and is within throwing range, the robot stops and throws (charge glow and chalk circle), at most twice, then goes back to the silo. The give-up clock holds while a throw is under way. A throw needs one of the farmer's attack tokens; with none free the robot doesn't throw at the silo instead, it gives up as usual. In a trio each robot throws for itself and the first to finish sends the trio back.
+
+**Behavior variables.** Every robot has the same set, with defaults per archetype. Family traits and battle plans can change them later.
+
+| Variable | What it does |
+|---|---|
+| `silo_focus` | Chance at spawn to go for the silo; otherwise it hunts the farmer |
+| `trio_chance` | Chance a spawn is a trio (0 for large robots, flyers and Foremen) |
+| `distractibility` | Once a second while attacking the silo, the chance to switch to the farmer when a trigger is active. A farmer's hit also rolls at once |
+| `distract_triggers` | **hurt** (the farmer damaged it), **near** (within range), **repairing** (repairing within range), **airborne** (jetpacking or on a perch) |
+| `distract_range` | How close the farmer must be for a trigger to count |
+| `commit_time` | Seconds after a switch before it can be distracted again |
+| `chase_time` | Goes back to the silo after chasing this long |
+| `leash_range` | Goes back to the silo if the farmer leads it this far from the silo |
+| `give_up_time` | Goes back to the silo if the farmer stays out of reach this long |
+| `on_unreachable` | What it does when it can't reach the farmer: give up; throw (up to two throws, then back to the silo; from wave 7); or relocate (M2-B12) |
+
+Rules for every robot: it goes back to the silo when **any** return condition is met, or when the farmer goes down. Chase time and the leash start counting once it is within `distract_range` of the farmer, so a hunter walking in from the corn isn't recalled on the way. Thieves are never distracted. A farmer out of reach is no lure: hovering is neither immune nor bait. Hits from out of reach never pull a robot off the silo, and a thrower gets two throws at a hovering farmer before it goes back. A robot that switches to the farmer shows a "!" pop and an angry eye.
+
+| Robot | silo_focus | trio_chance | distractibility | triggers | range | chase / leash / give-up | out of reach |
+|---|---|---|---|---|---|---|---|
+| Nibbler | 0.7 | 0.4 → 0.7 | 0.3 | hurt, near | 8 m | 6 s / 25 m / 3 s | give up |
+| Spitter | 0.6 | 0.4 → 0.7 | 0.6 | hurt, near, repairing | 12 m | 8 s / 30 m / — | shoots (relocate with M2-B12) |
+| Clanker | 0.7 | 0.15 | 0.5 | hurt | 10 m | 8 s / 30 m / 3 s | throws 2 bolts |
+| Thumper | 0.8 | 0 | 0.2 | hurt | 10 m | 10 s / 20 m / 4 s | throws 2 clods |
+| Roof Lobber | 0.5 | 0 (rare trios with M2-B12) | 0.7 | near, repairing | 24 m | stays on its roof | shoots |
+| Drone | 0.6 | 0 | 0.8 | airborne, near | 24 m | 8 s / 36 m from the silo / — | shoots |
 - **Stragglers:** if mop-up lasts longer than 20 s, remaining robots are outlined and shown on the compass so the player can find them.
 
 ---
@@ -674,7 +721,7 @@ stateDiagram-v2
 
 | Phase of a wave | Rules |
 |---|---|
-| **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. (Builds use 120 s until the Hub pegboard and pinned-goals quick-buy exist; see `docs/ROADMAP.md`, decision D1.) |
+| **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. (Builds use 90 s until the Hub pegboard and pinned-goals quick-buy exist; see `docs/ROADMAP.md`, decision D1.) |
 | **Siren (last 3 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. |
 | **Ring the bell early** | Hold Interact on the dinner bell (by the porch) or press the "Ready" button to jump straight to the siren. **Early Bird bonus:** +1 Aluminium per second skipped × (1 + wave/10). |
 | **Spawning** | The director spends the wave's threat budget over the spawn window. |
@@ -703,11 +750,15 @@ After wave 25 the window stops growing, but the budget keeps rising, so waves ge
 
 **Budget B(w) = 12 + 6 × w^1.3** (× 1.3 on Big Haul waves; the table below shows the base value before that multiplier)
 
-| Spawn | Base cost | Class multiplier |
+Threat cost is **per robot × group size**. Per robot it is the size cost × the attack-style multiplier, so a trio costs three robots and a solo Clanker costs twice a Nibbler, matching its double HP.
+
+| Size | Cost per robot | Attack style multiplier |
 |---|---|---|
-| Scout | 2 | Melee ×1.0 |
-| Grunt squad (3) | 6 | Short ×1.25 |
-| Heavy | 14 | Long ×1.6 |
+| Scout (small) | 2 | Melee ×1.0 |
+| Grunt (medium) | 4 | Ranged ×1.25 |
+| Heavy (large) | 14 | Flight ×1.6 |
+
+A spawn picks its archetype by type weight, then rolls the archetype's trio chance from the wave's spawn stream. A trio only forms if the budget still covers all three. From wave 6 the type weights are rescaled so the attack grid's columns (melee, ranged, flight) get their shares from 11.8. From wave 7 a small ground melee pick becomes a Spitter group with the Spitter share from 11.8, if the budget covers it (a Spitter costs 2.5).
 
 | Wave | 1 | 2 | 5 | 10 | 15 | 20 | 30 | 40 | 60 |
 |---|---|---|---|---|---|---|---|---|---|
@@ -734,14 +785,29 @@ After wave 25 the window stops growing, but the budget keeps rising, so waves ge
 
 - 8 lanes at the compass points, emerging from the corn at about 110 m.
 - Waves 1–4 use 2 lanes; waves 5–14 use 3; waves 15–29 use 4; wave 30 and later use 5. The active lanes are chosen per wave from the wave seed.
-- Grunt squads always share a lane. Longnecks always take a lane that gives them a siege position facing the silo.
+- Trios always share a lane and start in a triangle. Longnecks always take a lane that gives them a siege position facing the silo.
 
 ### 11.7 Grain thieves
 
-- **Thief share:** the fraction of a wave's spawns that are thieves. **10% in wave 1, +1.5 points per wave, capped at 40%.** Only Scout melee robots (Nibblers) steal; Grunt squads never do, so formations stay readable.
+- **Thief share:** the fraction of a wave's spawns that are thieves. **10% in wave 1, +1.5 points per wave, capped at 40%.** Only Scout melee robots (Nibblers) steal. A thief trio is a **heist crew** (9.6) and counts as one thief.
 - **Thieving trait:** multiplies the share by **1.5**, up to **60%**.
-- **How it's rolled:** each Nibbler first rolls whether to target the farmer (30%). If it doesn't, the steal roll is scaled so the overall share of thieves matches the thief share above.
+- **How it's rolled:** each Nibbler spawn (a solo or a trio's leader) first rolls its silo focus (70%). If it goes for the silo, the steal roll is scaled so the overall share of thieves matches the thief share above.
 - **Foremen** never steal.
+
+### 11.8 Attack scaling (from wave 6)
+
+The stat curves (11.5) raise raw numbers. These knobs make later waves harder through how robots attack instead (robot attack variety plan; `DifficultyCurve`, M2-B10). Waves 1–5 keep the first value of every knob.
+
+| Knob | Waves 1–5 | 6–15 | 16–30 | 31+ |
+|---|---|---|---|---|
+| Farmer attack tokens (9.6) | 2 | 3 | 4 | 5 |
+| Charge-time multiplier (never under 0.45 s) | 1.0 | 0.9 | 0.8 | 0.7 |
+| Aim lead, straight shots only (share of the farmer's travel during the shot's flight) | 0 | 0 until wave 10, then 0.3 | 0.6 | 0.6 |
+| Shots per volley (Drones, Spitter trios) | 1 | 1 | 2 (3 from wave 24) | 3 |
+| Spitter share of small ground melee spawns | 0 | 10% at wave 7, +2 points a wave | up to 40% (reached at wave 22) | 40% |
+| Column shares, melee / ranged / flight | type weights only | 60 / 28 / 12 | 52 / 30 / 18 | 45 / 33 / 22 |
+
+Melee robots start throwing at out-of-reach farmers at wave 7, and the Clanker's arm guard is up from wave 6 (9.3).
 
 ---
 
@@ -798,7 +864,7 @@ Each upgrade track's recipe changes as levels climb:
 | Au | — | — | — | — | — | — | 4 | 5 | 7 | 10 |
 | PC | — | — | — | — | — | — | — | — | 2 | 4 |
 
-Each weapon or system has a base multiplier (Pistol ×1.0, Stun Gun ×1.3, Shotgun ×1.5, Machine Gun ×2.0, Eggs ×1.8).
+Later weapon tracks can have their own cost bases after their combat roles are playtested.
 
 ### 12.5 Economy targets
 
@@ -806,7 +872,7 @@ Each weapon or system has a base multiplier (Pistol ×1.0, Stun Gun ×1.3, Shotg
 |---|---|
 | First build choice (melee, range, repair/defense, or speed) | After wave 1 of run 1 |
 | Something affordable in the shed | After almost every wave |
-| All 6 weapons unlocked | About 3–4 hours |
+| All 7 weapons unlocked | Set after playtesting the new arsenal |
 | About 50% of pegboard levels | About 10–12 hours |
 | About 80% of total power | About 15 hours |
 | Every node maxed | About 30–35 hours |
@@ -838,12 +904,11 @@ flowchart LR
 
     A --> A1[Wrench]
     A --> A2[Pistol]
-    A2 --> A3[Stun Gun]
-    A2 --> A4[Shotgun]
-    A3 --> A5[Machine Gun]
-    A4 --> A5
-    A --> A6[Egg Grenades]
-    A5 --> AC{{Overclocked Arsenal}}
+    A2 --> A3[Barn Blaster shotgun]
+    A2 --> A4[Longneck Rifle]
+    A2 --> A5[Boiler Grenades]
+    A --> A6[Haymaker Maul]
+    A --> A7[Harvest Scythe]
 
     R --> R1[Wrench repair]
     R1 --> R2[Auto Wrench]
@@ -884,90 +949,38 @@ About **350 purchasable levels** in total, so the tree is long. With full persis
 | Thrusters | 5 | +8% climb rate and air speed | Fuel Tank 2 | Al / Cu |
 | Hover Mode | Unlock | Hold Jump while aiming to hover at 40% fuel drain | Fuel Tank 3 | Cu |
 | Steady Hands | 3 | −20% weapon spread while airborne | Hover Mode | Cu / Au |
-| Air Dash | Unlock + 3 | 8 m burst in any direction; cooldown 4 s → 2.5 s; level 3 adds brief invulnerability | Thrusters 3 | Cu / Au |
+| Air Dash | 1 | Short airborne burst along movement or aim direction; costs 0.3 s of fuel, 2.5 s cooldown | Jetpack | 8 Cu |
 | Death From Above | 5 | +10% damage while airborne (+50% at max) | Hover Mode | Cu → PC |
 | Fuel Siphon | 3 | Airborne kills refund 8 / 12 / 16% fuel | Death From Above 2 | Au / PC |
-| Ground Pound | Unlock + 4 | Slam from at least 4 m high: 40 AoE damage + 1 s stun; +25% damage and radius per level | Thrusters 5 | Au / PC |
+| Ground Pound | 1 | From at least 2 m high, slam down and blast robots within 4.5 m for up to 75 damage | Jetpack | 12 Cu |
 | Afterburner | 5 | Jet flame damages robots below you (6 dps per level) | Fuel Tank 6 | Au / PC |
-| **Sky Farmer** (capstone) | 1 | **Overdrive:** 6 s of unlimited fuel + 25% damage; 45 s cooldown | Fuel Tank 10, Hover, Air Dash 3, Death From Above 5 | 20 Au + 10 PC |
+| **Sky Farmer** (future capstone) | 1 | Overdrive concept pending playtest | Fuel Tank 10, Hover, Air Dash, Death From Above 5 | TBD |
 
 ### 13.5 ATTACK branch
 
-**Wrench (starting weapon)**
+The wrench is the first balanced melee weapon, bought in Morning Chores. The other two melee purchases and three new ranged purchases each add a distinct action or target role. Owning the pistol opens the three ranged alternatives; the melee alternatives can be bought independently. All seven weapons fit on the weapon wheel.
 
-| Node | Lvls | Effect | Requires | Recipe |
+| Node | Lvls | Gameplay role | Requires | Cost |
 |---|---|---|---|---|
-| Swing Damage | 10 | +12% damage | — | Al → PC |
-| Swing Speed | 5 | +8% swing speed | — | Al / Cu |
-| Mod: **Bonk!** | Mod | 3rd combo hit stuns for 1 s | Swing Damage 4 | Cu |
-| Mod: **Wide Swing** | Mod | Swings hit a 120° arc | Swing Speed 3 | Cu |
-| Spin-to-Win | Unlock | Hold melee to charge a spinning AoE attack | Swing Damage 8 | Au + PC |
+| Grandpa's Wrench | 1 | First melee and repair tool | — | 6 Al |
+| Swing Damage | 10 | +12% wrench, maul and scythe damage per level | Grandpa's Wrench | Al → PC |
+| Swing Speed | 5 | +8% wrench, maul and scythe swing rate per level | Grandpa's Wrench | Al / Cu |
+| Rivet Pistol | 1 | Reliable mid-range shot | — | 20 Al |
+| Pistol Damage | 10 | +12% pistol damage per level | Pistol | Al → PC |
+| Pistol Fire Rate | 10 | +8% pistol fire rate per level | Pistol | Al → PC |
+| Pistol Handling | 5 | +2 rounds and −8% reload time per level | Pistol | Al / Cu |
+| **Barn Blaster** | 1 | Seven-pellet cone that shoves back nearby groups | Pistol | 35 Al |
+| Shotgun Damage | 10 | +12% pellet damage per level | Barn Blaster | Al → PC |
+| **Longneck Rifle** | 1 | Slow precision shot at 100 m that passes through one robot | Pistol | 45 Al + 3 Cu |
+| Rifle Damage | 10 | +12% rifle damage per level | Longneck Rifle | Al → PC |
+| Punch-Through | 2 | The round passes through one more robot per level | Longneck Rifle | 12 Cu (+2 Au at level 2) |
+| **Boiler Grenades** | 1 | 5 m blast lobbed onto the crosshair for clustered tough robots | Pistol | 60 Al + 8 Cu |
+| Grenade Damage | 10 | +12% blast damage per level | Boiler Grenades | Al → PC |
+| Bigger Boiler | 3 | +15% blast radius per level | Boiler Grenades | Al / Cu |
+| **Haymaker Maul** | 1 | Slow, powerful frontal swing with knockback | — | 30 Al |
+| **Harvest Scythe** | 1 | 360° sweep against robots surrounding the farmer | — | 40 Al + 5 Cu |
 
-**Pistol**
-
-| Node | Lvls | Effect | Requires | Recipe |
-|---|---|---|---|---|
-| Unlock | — | — | — | 20 Al |
-| Damage | 10 | +12% | Pistol | Al → PC |
-| Fire Rate | 10 | +8% | Pistol | Al → PC |
-| Handling | 5 | +2 magazine, −8% reload time | Pistol | Al / Cu |
-| Mod: **Ricochet Rivets** | Mod | Shots bounce to 1 nearby robot for 50% damage | Damage 4 | Cu |
-| Mod: **Charge Shot** | Mod | Hold fire for a 3× piercing shot | Fire Rate 4 | Cu |
-
-**Stun Gun ("Zap-Fork")**
-
-| Node | Lvls | Effect | Requires | Recipe |
-|---|---|---|---|---|
-| Unlock | — | — | Pistol Damage 2 | 40 Al + 10 Cu |
-| Damage | 10 | +12% beam damage | Stun Gun | Al → PC |
-| Stun Duration | 5 | +0.2 s stun | Stun Gun | Cu / Au |
-| Chain | 3 | Beam arcs to +1 extra robot | Stun Duration 2 | Cu / Au |
-| Battery | 5 | +15% battery, −10% recharge time | Stun Gun | Al / Cu |
-| Mod: **Overload** | Mod | Stunned robots take +25% damage from all sources | Damage 4 | Au |
-| Mod: **Static Field** | Mod | Stuns leave a 3 m field that slows robots for 2 s | Chain 2 | Au |
-
-**Shotgun ("Barn Blaster")**
-
-| Node | Lvls | Effect | Requires | Recipe |
-|---|---|---|---|---|
-| Unlock | — | — | Pistol Fire Rate 2 | 60 Al + 20 Cu |
-| Damage | 10 | +12% pellet damage | Shotgun | Al → PC |
-| Fire Rate | 10 | +8% | Shotgun | Al → PC |
-| Handling | 5 | +1 shell, −10% spread | Shotgun | Al / Cu |
-| Mod: **Slug** | Mod | Single 50-damage piercing slug | Damage 4 | Cu / Au |
-| Mod: **Barn Door** | Mod | Massive knockback that sends robots tumbling into the corn | Fire Rate 4 | Cu / Au |
-
-**Machine Gun ("Rivet Repeater")**
-
-| Node | Lvls | Effect | Requires | Recipe |
-|---|---|---|---|---|
-| Unlock | — | — | Stun Gun or Shotgun at any track level 3 | 80 Al + 40 Cu + 5 Au |
-| Damage | 10 | +12% | Machine Gun | Cu → PC |
-| Fire Rate | 10 | +8% | Machine Gun | Cu → PC |
-| Cooling | 5 | +15% heat capacity, −10% cooldown time | Machine Gun | Cu / Au |
-| Spin-Up | 3 | −0.1 s spin-up | Machine Gun | Cu |
-| Mod: **Hot Rivets** | Mod | Hits apply a burn (20% of damage over 2 s) | Damage 4 | Au |
-| Mod: **Twin Barrel** | Mod | +1 projectile per shot, +30% heat per shot | Fire Rate 4 | Au |
-
-**Egg Grenades**
-
-| Node | Lvls | Effect | Requires | Recipe |
-|---|---|---|---|---|
-| Unlock | — | — | Any weapon at any track level 3 | 30 Cu + 3 PC |
-| Blast Damage | 10 | +12% | Eggs | Cu → PC |
-| Blast Radius | 5 | +8% radius | Eggs | Cu / Au |
-| Egg Carton | 4 | +1 carry capacity (2 → 6) | Eggs | Cu / Au |
-| Happy Hens | 3 | Lay interval: 15 s → 11 s → 8 s → 6 s (intermission); wave rate scales the same way | Eggs | Al / Cu |
-| Sticky Egg | Unlock | Eggs stick to robots | Blast Damage 3 | Au |
-| Shock Egg | Unlock | Eggs stun for 2 s in the radius | Stun Gun + Blast Radius 2 | Au + PC |
-| Cluster Egg | Unlock | Egg splits into 4 mini-eggs | Blast Damage 6 | Au + PC |
-| **Golden Egg** | Unlock | Once per wave: a huge blast (3× damage, 2× radius) | Cluster Egg + Egg Carton 4 | 15 Au + 8 PC |
-
-**Attack capstone**
-
-| Node | Effect | Requires | Recipe |
-|---|---|---|---|
-| **Overclocked Arsenal** | +15% damage and +10% fire rate for all weapons | Every weapon's Damage track at 5 or higher | 30 Au + 15 PC |
+A bought weapon is immediately usable. Future refinements should improve these distinct jobs or add a specific new move. Do not add a firing-style modifier without a target or tactical situation that makes it useful.
 
 ### 13.6 REPAIR branch
 
@@ -1168,7 +1181,7 @@ Implementation: a `StopMotionClock` autoload emits a `tick` signal at 12 Hz and 
 | Muzzle flash | 2-frame cut-paper star |
 | Rivet tracer | Short yellow clay streak |
 | Stun beam | Wiggly blue pipe-cleaner arcs |
-| Egg grenade | Yolk-yellow cellophane burst + feathers |
+| Boiler grenade | Amber cellophane burst + scrap fragments |
 | Jetpack flame | Cellophane flame + cotton puffs, stepped |
 | Welder | Bright spark stars + glowing seam |
 | Longneck aim | Red yarn line pulled taut |
@@ -1485,7 +1498,7 @@ static func roll(run_seed: int, wave: int, lib: GeneLibrary,
   "schema_version": 1,
   "parts": { "al": 1240, "cu": 212, "au": 31, "pc": 6 },
   "upgrades": { "travel.fuel_tank": 4, "attack.pistol.unlock": 1, "attack.pistol.damage": 6 },
-  "mods": { "pistol": ["ricochet_rivets"], "shotgun": [] },
+  "mods": { "pistol": [], "shotgun": [] },
   "records": { "best_wave": 23, "best_full_harvest_wave": 19, "robots_popped": { "nibbler": 1532 } },
   "almanac": [ { "code": "K7Q2ZP", "name": "The Minty Pirate Teapots", "wave": 7, "kills": 41 } ],
   "cosmetics": { "hat": "straw", "unlocked": ["straw", "pirate_bandana"] }
@@ -1553,7 +1566,7 @@ static func roll(run_seed: int, wave: int, lib: GeneLibrary,
 | Nature | **Quaternius – Stylized Nature MegaKit** (68 free models) | [OpenGameArt](https://opengameart.org/content/stylized-nature-megakit) | CC0 | Trees, bushes, rocks, flowers, grass |
 | Nature props | **Kenney – Nature Kit** (330+ models) | [OpenGameArt](https://opengameart.org/content/nature-kit) | CC0 | Fences, logs, rocks, plants |
 | Survival props | **Kenney – Survival Kit** (70+ models) | [itch.io](https://kenney-assets.itch.io/survival-kit) | CC0 | Tools, crates, barrels, workbench props for the shed |
-| Weapons | **Kenney – Blaster Kit** (blasters, targets, magazines, crates) | [itch.io](https://kenney-assets.itch.io/blaster-kit) | CC0 | Base meshes for the pistol, shotgun and machine gun (re-themed as farm tools) |
+| Weapons | **Kenney – Blaster Kit** (blasters, targets, magazines, crates) | [itch.io](https://kenney-assets.itch.io/blaster-kit) | CC0 | Candidate base meshes for the pistol, shotgun, rifle and grenade launcher (re-themed as farm tools) |
 | Robot kit-bash parts | **KayKit – Space Base Bits** | [GitHub](https://github.com/KayKit-Game-Assets/KayKit-Space-Base-Bits-1.0) | CC0 (license file verified) | Pipes, panels, dishes and antennas for robot parts |
 | Prototyping | **KayKit – Prototype Bits** | [GitHub](https://github.com/KayKit-Game-Assets/KayKit-Prototype-Bits-1.0) | CC0 | Graybox blocks for M0/M1 |
 | Character base | **KayKit – Character Pack: Adventurers** | [GitHub](https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0) | CC0 | Chibi proportion reference / base for the farmer |
@@ -1660,7 +1673,7 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 
 1. **"Phase" = 5 waves.** The score is waves survived, displayed as Phase.Wave, and every 5th wave is a Big Haul with a Foreman.
 2. **The jetpack is a shed purchase from wave 3 onward**, costing 40 Al + 15 Cu.
-3. **The Chicken House restocks Egg Grenades.** This gives the coop a gameplay role beyond elevation.
+3. **The Chicken House needs a gameplay role beyond elevation.** Choose one after the new grenade launcher has been playtested.
 4. **Harvest Bonus grain** (+40 per wave cleared) exists so grain is a slow-burning threat rather than a guaranteed end to every run.
 5. **A small fifth branch, FARMHAND** (magnet, scrap vac, luck, early bird, almanac), was added alongside Travel, Attack, Repair and Defend.
 6. **Scarecrow Decoy** was added to the Defend branch as a farm-themed silo defense.
@@ -1681,7 +1694,7 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 
 | Constant | Value | Section |
 |---|---|---|
-| Intermission length | 30 s (builds use 120 s until M2-H3 and M2-G1; ROADMAP D1) | 11.1 |
+| Intermission length | 30 s (builds use 90 s until M2-H3 and M2-G1; ROADMAP D1) | 11.1 |
 | Siren lead time | 3 s | 11.1 |
 | Spawn window | min(45 + 7(w−1), 210) s | 11.3 |
 | Threat budget | 12 + 6·w^1.3 (×1.3 on Big Haul) | 11.4 |

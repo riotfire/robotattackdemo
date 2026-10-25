@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RobotTrait" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/genome/robot_trait.gd" id="1_ehqkm"]
+
+[resource]
+script = ExtResource("1_ehqkm")
+id = &"overcharged"
+display_name = "Overcharged"
+description = "x2 Power Cell chance. Explodes on death, hurting nearby robots and farmers; the blasts chain."
+power_cell_chance_multiplier = 2.0
+death_blast_radius = 3.5
+death_blast_damage = 80.0
+death_blast_farmer_damage = 12.0
+tell = &"spark_coil"

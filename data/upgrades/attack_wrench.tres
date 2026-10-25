@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_cost"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_effect"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="3_node"]
+
+[sub_resource type="Resource" id="Resource_cost"]
+script = ExtResource("1_cost")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(6)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_effect"]
+script = ExtResource("2_effect")
+stat = &"wrench.owned"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("3_node")
+id = &"attack.wrench"
+branch = 1
+display_name = "Grandpa's Wrench"
+description = "Your first tool: bonk robots and seal silo cracks."
+cost_curve = SubResource("Resource_cost")
+effects = Array[ExtResource("2_effect")]([SubResource("Resource_effect")])
+board_position = Vector2i(0, 0)

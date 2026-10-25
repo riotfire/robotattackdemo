@@ -10,15 +10,16 @@ extends CanvasLayer
 var _player: Farmer = null
 
 var _wave_label: Label
+var _phase_number_label: Label
 var _phase_label: Label
+var _phase_pill: StyleBoxFlat
 var _robots_label: Label
 var _structure_bar: ProgressBar
-var _structure_label: Label
 var _grain_bar: ProgressBar
-var _grain_label: Label
+var _leak_label: Label
 var _hp_bar: ProgressBar
-var _hp_label: Label
 var _armor_bar: ProgressBar
+var _god_label: Label
 var _family_label: Label
 var _name_card: PanelContainer
 var _name_card_title: Label
@@ -26,7 +27,13 @@ var _name_card_detail: Label
 var _name_card_left: float = 0.0
 var _hint_label: Label
 var _weapon_label: Label
-var _parts_label: Label
+var _ammo_label: Label
+var _magazine_label: Label
+var _slot_row: HBoxContainer
+var _slot_chips: Dictionary[int, Label] = {}
+var _part_labels: Dictionary[StringName, Label] = {}
+var _chip_on: StyleBoxFlat
+var _chip_off: StyleBoxFlat
 var _prompt_label: Label
 var _toast_label: Label
 var _toast_left: float = 0.0
@@ -53,6 +60,15 @@ var _build_choice_prompted: bool = false
 const SILO_HIT_HOLD: float = 5.0
 const SILO_ALARM_COOLDOWN: float = 9.0
 const SILO_REMOTE_DISTANCE: float = 15.0
+## HUD palette: warm cream text on translucent dark-clay cards.
+const INK := Color(1.0, 0.96, 0.86)
+const INK_DIM := Color(0.93, 0.87, 0.74, 0.8)
+const CARD := Color(0.13, 0.09, 0.06, 0.55)
+const PART_COLORS: Dictionary[StringName, Color] = {
+	&"al": Color(0.78, 0.82, 0.86), &"cu": Color(0.86, 0.5, 0.3), &"au": Color(1.0, 0.8, 0.28), &"pc": Color(0.45, 0.88, 1.0)}
+const PART_SHORT: Dictionary[StringName, String] = {&"al": "Al", &"cu": "Cu", &"au": "Au", &"pc": "PC"}
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build()
@@ -124,7 +140,7 @@ func _on_silo_damaged(_amount: float, _at_position: Vector3) -> void:
 func _on_wave_phase_changed(phase: int, wave: int) -> void:
 	if phase == WaveDirector.Phase.INTERMISSION and wave == 2 and not _build_choice_prompted:
 		_build_choice_prompted = true
-		set_tutorial_lesson("The shed is open. Spend robot parts on what you need:\nwrench power, a pistol for range, repairs/defense, or speed.")
+		set_tutorial_lesson("The shed is open. Spend robot parts on what you need:\na pistol, a heavy melee swing, repairs/defense, or speed.")
 	elif wave >= 2 and phase != WaveDirector.Phase.INTERMISSION and _build_choice_prompted:
 		set_tutorial_lesson("")
 
@@ -161,8 +177,8 @@ func _process(delta: float) -> void:
 	_toast_label.visible = _toast_left > 0.0
 	_name_card_left -= delta
 	_name_card.visible = _name_card_left > 0.0
-	_parts_label.text = "Al %d\nCu %d\nAu %d\nPC %d" % [
-		GameState.parts[&"al"], GameState.parts[&"cu"], GameState.parts[&"au"], GameState.parts[&"pc"]]
+	for key: StringName in _part_labels:
+		_part_labels[key].text = str(GameState.parts[key])
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -179,47 +195,61 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _update_wave() -> void:
 	var wave := maxi(1, GameState.wave)
-	_wave_label.text = "PHASE %d  ·  WAVE %d" % [GameState.phase_of(wave), GameState.wave_in_phase(wave)]
+	_wave_label.text = "WAVE %d" % GameState.wave_in_phase(wave)
+	_phase_number_label.text = "PHASE %d" % GameState.phase_of(wave)
 	if director == null:
 		return
+	var pill := Color(0.35, 0.3, 0.22)
 	match director.phase:
 		WaveDirector.Phase.INTERMISSION:
 			_phase_label.text = "INTERMISSION  %s" % _clock(director.time_left)
+			pill = Color(0.3, 0.5, 0.25)
 		WaveDirector.Phase.SIREN:
-			_phase_label.text = "SIREN!  Robots in %s" % _clock(director.time_left)
+			_phase_label.text = "SIREN!  %s" % _clock(director.time_left)
+			pill = Color(0.75, 0.45, 0.1) if int(Time.get_ticks_msec() / 400.0) % 2 == 0 else Color(0.6, 0.3, 0.08)
 		WaveDirector.Phase.SPAWNING:
 			_phase_label.text = "ATTACK  %s" % _clock(director.spawn_window - director.spawn_clock)
+			pill = Color(0.7, 0.2, 0.15)
 		WaveDirector.Phase.MOP_UP:
 			_phase_label.text = "MOP-UP"
+			pill = Color(0.6, 0.28, 0.15)
 		WaveDirector.Phase.CLEARED:
 			_phase_label.text = "CLEARED!"
+			pill = Color(0.25, 0.55, 0.35)
 		WaveDirector.Phase.GAME_OVER:
 			_phase_label.text = "GAME OVER"
+			pill = Color(0.3, 0.1, 0.1)
 		WaveDirector.Phase.TUTORIAL:
 			_phase_label.text = "MORNING CHORES"
-	if director.phase == WaveDirector.Phase.TUTORIAL:
-		_wave_label.text = "PREPARE FOR WAVE 1"
-		_robots_label.text = "Defend the silo"
-		_family_label.text = ""
-		return
-	var to_come := director.robots_to_come()
+			pill = Color(0.35, 0.45, 0.6)
+	_phase_pill.bg_color = Color(pill, 0.85)
+	var to_come := director.robots_to_come() if director.phase != WaveDirector.Phase.TUTORIAL else 0
+	var live := director.live_robot_count() if director.phase != WaveDirector.Phase.TUTORIAL else 0
 	var thieves := get_tree().get_nodes_in_group(Robot.THIEF_GROUP).size()
-	_robots_label.text = "Robots %d%s%s" % [director.live_robot_count(), "  +%d coming" % to_come if to_come > 0 else "",
-			"   THIEVES %d!" % thieves if thieves > 0 else ""]
-	_family_label.text = director.genome.family_name if director.genome != null else ""
+	var parts := PackedStringArray()
+	if live > 0 or to_come > 0:
+		parts.append("%d robot%s" % [live, "" if live == 1 else "s"] + ("  ·  %d coming" % to_come if to_come > 0 else ""))
+	if thieves > 0:
+		parts.append("%d THIE%s!" % [thieves, "F" if thieves == 1 else "VES"])
+	_robots_label.text = "  ·  ".join(parts)
+	_robots_label.visible = not parts.is_empty()
+	_robots_label.add_theme_color_override(&"font_color", Color(1.0, 0.55, 0.45) if thieves > 0 else INK)
+	var in_fight := director.phase in [WaveDirector.Phase.SIREN, WaveDirector.Phase.SPAWNING, WaveDirector.Phase.MOP_UP]
+	_family_label.text = director.genome.family_name if director.genome != null and in_fight else ""
+	_family_label.visible = not _family_label.text.is_empty()
 
 
 func _update_silo() -> void:
 	var silo := GameState.silo
 	if silo == null:
 		return
-	_structure_bar.value = silo.structure_fraction() * 100.0
-	_structure_label.text = "STRUCTURE  %d / %d   %s" % [ceili(silo.structure), roundi(silo.max_structure),
-			Silo.DAMAGE_STATES[silo.damage_state()]]
+	var structure := silo.structure_fraction()
+	_structure_bar.value = structure * 100.0
+	_set_bar_color(_structure_bar, Color(0.95, 0.35, 0.25).lerp(Color(0.55, 0.78, 0.9), clampf((structure - 0.2) / 0.6, 0.0, 1.0)))
 	_grain_bar.value = silo.grain_fraction() * 100.0
-	var cracks := silo.get_cracks().size()
 	var leak := silo.total_leak_rate()
-	_grain_label.text = "GRAIN  %d bu" % ceili(silo.grain) + ("   leaking %.1f/s  (%d crack%s)" % [leak, cracks, "" if cracks == 1 else "s"] if cracks > 0 else "")
+	_leak_label.visible = silo.get_cracks().size() > 0
+	_leak_label.text = "Leaking grain  %.1f/s" % leak
 	var warning := silo.damage_state() == 4 or _silo_hit_left > 0.0
 	_structure_bar.modulate = Color(1.0, 0.6, 0.6) if warning and int(Time.get_ticks_msec() / 250.0) % 2 == 0 else Color.WHITE
 
@@ -268,19 +298,42 @@ func _update_player() -> void:
 	if _player == null or not is_instance_valid(_player):
 		_player = null
 		return
-	_hp_bar.value = _player.health.fraction() * 100.0
-	_hp_label.text = "HP  %d / %d%s%s" % [ceili(_player.health.current), roundi(_player.health.max_health),
-			"   ARMOR %d" % ceili(_player.armor) if _player.max_armor > 0.0 else "", "   (GOD MODE)" if GameState.god_mode else ""]
+	var hp := _player.health.fraction()
+	_hp_bar.value = hp * 100.0
+	_set_bar_color(_hp_bar, Color(0.95, 0.3, 0.25).lerp(Color(0.45, 0.85, 0.4), clampf((hp - 0.2) / 0.4, 0.0, 1.0)))
+	_hp_bar.modulate = Color(1.0, 0.7, 0.7) if hp < 0.3 and int(Time.get_ticks_msec() / 300.0) % 2 == 0 else Color.WHITE
 	_armor_bar.visible = _player.max_armor > 0.0
 	_armor_bar.value = _player.armor / _player.max_armor * 100.0 if _player.max_armor > 0.0 else 0.0
-	var slots := PackedStringArray()
-	for carried in _player.weapons.weapons:
-		slots.append("%d %s%s" % [carried.data.slot, carried.display_name, "" if carried.is_available() else " (buy at the shed)"])
-	_hint_label.text = "%s   hold Q wheel   V bonk   R reload   E use   F1 debug" % "  ".join(slots)
+	_god_label.visible = GameState.god_mode
 	var weapon := _player.weapons.current
+	for carried in _player.weapons.weapons:
+		var chip: Label = _slot_chips.get(carried.data.slot)
+		if chip == null:
+			chip = _label(_slot_row, 15)
+			chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			chip.custom_minimum_size = Vector2(28, 0)
+			chip.add_theme_constant_override(&"outline_size", 0)
+			chip.text = str(carried.data.slot)
+			_slot_chips[carried.data.slot] = chip
+		chip.visible = carried.is_available()
+		var current := carried == weapon
+		chip.add_theme_stylebox_override(&"normal", _chip_on if current else _chip_off)
+		chip.add_theme_color_override(&"font_color", Color(0.2, 0.12, 0.05) if current else INK_DIM)
+	_hint_label.visible = GameState.wave <= 1
+	_hint_label.text = "E use" if weapon == null else "Q wheel   V melee   R reload   E use" + ("   Shift dash   Ctrl pound" if GameState.jetpack_unlocked else "")
 	if weapon != null:
+		_weapon_label.text = weapon.display_name.to_upper()
 		var ammo := weapon.ammo_text()
-		_weapon_label.text = weapon.display_name + ("   " + ammo if ammo != "" else "")
+		var split := ammo.split(" / ")
+		_ammo_label.text = split[0]
+		_ammo_label.add_theme_font_size_override(&"font_size", 40 if split.size() == 2 else 20)
+		_magazine_label.text = "/ " + split[1] if split.size() == 2 else ""
+		_ammo_label.visible = not ammo.is_empty()
+		_magazine_label.visible = split.size() == 2
+	else:
+		_weapon_label.text = "NO TOOL"
+		_ammo_label.visible = false
+		_magazine_label.visible = false
 	_crosshair.fuel = _player.jetpack.fuel_fraction() if GameState.jetpack_unlocked else -1.0
 	_crosshair.queue_redraw()
 
@@ -307,6 +360,7 @@ func _update_player() -> void:
 	if prompt.is_empty():
 		prompt = _tutorial_action
 	_prompt_label.text = prompt
+	_prompt_label.visible = not prompt.is_empty()
 
 
 func _on_game_over(reason: StringName) -> void:
@@ -367,41 +421,87 @@ func _build() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
 
+	# Top left: the wave card, then the silo card.
 	var top_left := _vbox(root, Control.PRESET_TOP_LEFT, Vector2(24, 20))
-	_wave_label = _label(top_left, 30)
-	_phase_label = _label(top_left, 24, Color(1.0, 0.85, 0.4))
-	_robots_label = _label(top_left, 18)
-	_family_label = _label(top_left, 15, Color(0.85, 0.9, 1.0))
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, 14)
-	top_left.add_child(spacer)
-	_label(top_left, 18, Color(0.9, 0.9, 0.9)).text = "SILO"
-	_structure_bar = _bar(top_left, Color(0.85, 0.3, 0.25), 340)
-	_structure_label = _label(top_left, 15)
-	_grain_bar = _bar(top_left, Color(0.95, 0.78, 0.3), 340)
-	_grain_label = _label(top_left, 15)
+	top_left.add_theme_constant_override(&"separation", 10)
+	var wave_card := _card(top_left)
+	var wave_row := HBoxContainer.new()
+	wave_row.add_theme_constant_override(&"separation", 10)
+	wave_card.add_child(wave_row)
+	_wave_label = _label(wave_row, 30)
+	_phase_number_label = _label(wave_row, 16, INK_DIM)
+	_phase_number_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_phase_label = _label(wave_card, 17)
+	_phase_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_phase_label.add_theme_constant_override(&"outline_size", 0)
+	_phase_pill = _pill(Color(0.3, 0.5, 0.25), 8, Vector2(10, 3))
+	_phase_label.add_theme_stylebox_override(&"normal", _phase_pill)
+	_robots_label = _label(wave_card, 16)
+	_family_label = _label(wave_card, 14, Color(0.8, 0.88, 1.0))
 
+	var silo_card := _card(top_left)
+	_structure_bar = _labeled_bar(silo_card, "SILO", Color(0.55, 0.78, 0.9))
+	_grain_bar = _labeled_bar(silo_card, "GRAIN", Color(0.98, 0.8, 0.32))
+	_leak_label = _label(silo_card, 14, Color(1.0, 0.7, 0.35))
+	_leak_label.visible = false
+
+	# Bottom left: health, with armor as a slim bar above it.
 	var bottom_left := _vbox(root, Control.PRESET_BOTTOM_LEFT, Vector2(24, -24))
 	bottom_left.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_hp_label = _label(bottom_left, 16)
-	_hp_bar = _bar(bottom_left, Color(0.4, 0.85, 0.4), 300)
-	_armor_bar = _bar(bottom_left, Color(0.55, 0.75, 1.0), 300)
+	var health_card := _card(bottom_left)
+	_god_label = _label(health_card, 13, Color(1.0, 0.85, 0.4))
+	_god_label.text = "GOD MODE"
+	_god_label.visible = false
+	_armor_bar = _bar(health_card, Color(0.55, 0.75, 1.0), 260, 8)
 	_armor_bar.visible = false
+	_hp_bar = _labeled_bar(health_card, "HP", Color(0.45, 0.85, 0.4), 260, 18)
 
+	# Bottom right: weapon name, big ammo count, owned weapon slots.
 	var bottom_right := _vbox(root, Control.PRESET_BOTTOM_RIGHT, Vector2(-24, -24))
 	bottom_right.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	bottom_right.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_weapon_label = _label(bottom_right, 24)
+	var weapon_card := _card(bottom_right)
+	(weapon_card.get_parent() as Control).size_flags_horizontal = Control.SIZE_SHRINK_END
+	weapon_card.alignment = BoxContainer.ALIGNMENT_END
+	_weapon_label = _label(weapon_card, 16, INK_DIM)
 	_weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_hint_label = _label(bottom_right, 13, Color(0.85, 0.85, 0.85))
+	var ammo_row := HBoxContainer.new()
+	ammo_row.alignment = BoxContainer.ALIGNMENT_END
+	ammo_row.add_theme_constant_override(&"separation", 6)
+	weapon_card.add_child(ammo_row)
+	_ammo_label = _label(ammo_row, 40)
+	_magazine_label = _label(ammo_row, 20, INK_DIM)
+	_magazine_label.size_flags_vertical = Control.SIZE_SHRINK_END
+	_chip_on = _pill(Color(1.0, 0.8, 0.35, 0.95), 6, Vector2(6, 2))
+	_chip_off = _pill(Color(0.0, 0.0, 0.0, 0.3), 6, Vector2(6, 2))
+	_slot_row = HBoxContainer.new()
+	_slot_row.alignment = BoxContainer.ALIGNMENT_END
+	_slot_row.add_theme_constant_override(&"separation", 4)
+	weapon_card.add_child(_slot_row)
+	_hint_label = _label(bottom_right, 13, INK_DIM)
 	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
+	# Top right: banked parts as coins.
 	var top_right := _vbox(root, Control.PRESET_TOP_RIGHT, Vector2(-24, 20))
 	top_right.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_fps_label = _label(top_right, 16, Color(0.7, 0.95, 0.7))
+	_fps_label = _label(top_right, 14, Color(0.7, 0.95, 0.7))
+	_fps_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_fps_label.visible = bool(SaveManager.settings.get("show_fps", false))
-	_parts_label = _label(top_right, 18)
-	_parts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var parts_card := _card(top_right)
+	var parts_row := HBoxContainer.new()
+	parts_row.add_theme_constant_override(&"separation", 14)
+	parts_card.add_child(parts_row)
+	for key in GameState.PART_KEYS:
+		var part := HBoxContainer.new()
+		part.add_theme_constant_override(&"separation", 5)
+		part.tooltip_text = GameState.PART_NAMES[key]
+		parts_row.add_child(part)
+		var coin := PartCoin.new()
+		coin.color = PART_COLORS[key]
+		coin.short = PART_SHORT[key]
+		coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		part.add_child(coin)
+		_part_labels[key] = _label(part, 18)
 
 	_crosshair = Crosshair.new()
 	_crosshair.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -416,13 +516,14 @@ func _build() -> void:
 	_place(_repair_bar, Control.PRESET_CENTER, Rect2(-80, 44, 160, 16))
 	_repair_bar.visible = false
 
-	_prompt_label = _label(root, 20, Color(1.0, 0.95, 0.75))
-	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_place(_prompt_label, Control.PRESET_CENTER_BOTTOM, Rect2(-400, -160, 800, 30))
+	_prompt_label = _label(root, 19, INK)
+	_prompt_label.add_theme_stylebox_override(&"normal", _pill(CARD, 10, Vector2(14, 6)))
+	_hug(_prompt_label, Control.PRESET_CENTER_BOTTOM, -150)
+	_prompt_label.visible = false
 
-	_toast_label = _label(root, 30, Color(1.0, 0.9, 0.45))
-	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_place(_toast_label, Control.PRESET_CENTER_TOP, Rect2(-600, 130, 1200, 40))
+	_toast_label = _label(root, 26, Color(1.0, 0.9, 0.45))
+	_toast_label.add_theme_stylebox_override(&"normal", _pill(CARD, 12, Vector2(18, 6)))
+	_hug(_toast_label, Control.PRESET_CENTER_TOP, 130)
 	_toast_label.visible = false
 
 	_tutorial_lesson = _label(root, 22, Color(1.0, 0.96, 0.82))
@@ -493,6 +594,59 @@ func _place(control: Control, preset: Control.LayoutPreset, rect: Rect2) -> void
 	control.offset_bottom = rect.position.y + rect.size.y
 
 
+## Centers `control` horizontally on the preset's anchor so it grows around its own text.
+func _hug(control: Control, preset: Control.LayoutPreset, y: float) -> void:
+	control.set_anchors_preset(preset)
+	control.offset_left = 0.0
+	control.offset_right = 0.0
+	control.offset_top = y
+	control.offset_bottom = y
+	control.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	control.grow_vertical = Control.GROW_DIRECTION_BOTH
+
+
+## A translucent rounded card holding a vertical stack.
+func _card(parent: Control) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override(&"panel", _pill(CARD, 12, Vector2(14, 10)))
+	parent.add_child(panel)
+	var box := VBoxContainer.new()
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_theme_constant_override(&"separation", 6)
+	panel.add_child(box)
+	return box
+
+
+static func _pill(color: Color, radius: int, margin: Vector2) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.set_corner_radius_all(radius)
+	style.content_margin_left = margin.x
+	style.content_margin_right = margin.x
+	style.content_margin_top = margin.y
+	style.content_margin_bottom = margin.y
+	return style
+
+
+## A short caption in a fixed column, then the bar.
+func _labeled_bar(parent: Control, caption: String, color: Color, width: float = 240, height: float = 14) -> ProgressBar:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override(&"separation", 10)
+	parent.add_child(row)
+	var label := _label(row, 13, INK_DIM)
+	label.text = caption
+	label.custom_minimum_size = Vector2(44, 0)
+	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var bar := _bar(row, color, width, height)
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return bar
+
+
+func _set_bar_color(bar: ProgressBar, color: Color) -> void:
+	(bar.get_theme_stylebox(&"fill") as StyleBoxFlat).bg_color = color
+
+
 func _vbox(parent: Control, preset: Control.LayoutPreset, nudge: Vector2) -> VBoxContainer:
 	var box := VBoxContainer.new()
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -503,35 +657,62 @@ func _vbox(parent: Control, preset: Control.LayoutPreset, nudge: Vector2) -> VBo
 	return box
 
 
-func _label(parent: Control, font_size: int, color: Color = Color.WHITE) -> Label:
+func _label(parent: Control, font_size: int, color: Color = INK) -> Label:
 	var label := Label.new()
 	label.add_theme_font_size_override(&"font_size", font_size)
 	label.add_theme_color_override(&"font_color", color)
 	label.add_theme_color_override(&"font_outline_color", Color(0.1, 0.07, 0.05))
-	label.add_theme_constant_override(&"outline_size", 6)
+	label.add_theme_constant_override(&"outline_size", 5 if font_size >= 18 else 3)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(label)
 	return label
 
 
-func _bar(parent: Control, color: Color, width: float) -> ProgressBar:
+func _bar(parent: Control, color: Color, width: float, height: float = 16) -> ProgressBar:
 	var bar := ProgressBar.new()
-	bar.custom_minimum_size = Vector2(width, 16)
+	bar.custom_minimum_size = Vector2(width, height)
 	bar.size = bar.custom_minimum_size
 	bar.show_percentage = false
 	bar.max_value = 100.0
 	bar.value = 100.0
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var radius := int(height * 0.5)
 	var fill := StyleBoxFlat.new()
 	fill.bg_color = color
-	fill.set_corner_radius_all(5)
+	fill.set_corner_radius_all(radius)
+	fill.border_color = Color(1.0, 1.0, 1.0, 0.25)
+	fill.border_width_top = 2 if height >= 12 else 0
 	var background := StyleBoxFlat.new()
-	background.bg_color = Color(0.0, 0.0, 0.0, 0.5)
-	background.set_corner_radius_all(5)
+	background.bg_color = Color(0.0, 0.0, 0.0, 0.45)
+	background.set_corner_radius_all(radius)
+	background.border_color = Color(0.0, 0.0, 0.0, 0.35)
+	background.set_border_width_all(1)
 	bar.add_theme_stylebox_override(&"fill", fill)
 	bar.add_theme_stylebox_override(&"background", background)
 	parent.add_child(bar)
 	return bar
+
+
+## A small colored coin with the part's symbol, beside its count.
+class PartCoin:
+	extends Control
+
+	var color: Color = Color.WHITE
+	var short: String = ""
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(26, 26)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var center := size * 0.5
+		draw_circle(center, 13.0, color.darkened(0.45))
+		draw_circle(center + Vector2(0, -1), 11.0, color)
+		draw_arc(center + Vector2(0, -1), 8.5, PI * 1.1, PI * 1.6, 8, Color(1, 1, 1, 0.5), 1.5, true)
+		var font := get_theme_default_font()
+		var text_size := font.get_string_size(short, HORIZONTAL_ALIGNMENT_LEFT, -1, 10)
+		draw_string(font, center + Vector2(-text_size.x * 0.5, font.get_ascent(10) * 0.5 - 2), short,
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.15, 0.1, 0.05, 0.9))
 
 
 ## Crosshair plus the jetpack fuel arc beside it (GDD 17.2). fuel < 0 hides the arc.

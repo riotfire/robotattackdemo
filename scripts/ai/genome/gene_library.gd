@@ -1,7 +1,7 @@
 class_name GeneLibrary
 extends Resource
 ## Every gene option the genome roller can use (GDD 10.1) plus the novelty rules (GDD 10.2).
-## M1 ships 3 themes (data/robots/themes) and 4 traits (data/robots/traits).
+## M1 ships 3 themes (data/robots/themes) and 4 traits (data/robots/traits); M2-F2 has added Overcharged.
 
 const BODY_PLURALS: Dictionary[StringName, String] = {
 	&"tin_can": "Tin Cans", &"gumdrop": "Gumdrops", &"toaster": "Toasters",

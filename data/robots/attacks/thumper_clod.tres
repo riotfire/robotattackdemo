@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AttackProfile" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/attack_profile.gd" id="1_tdbrf"]
+
+[resource]
+script = ExtResource("1_tdbrf")
+id = &"thumper_clod"
+kind = 1
+charge_time = 1.0
+interval = 3.0
+damage_vs_farmer = 15.0
+damage_vs_silo = 20.0
+speed = 12.0
+gravity = 9.0
+attack_range = 18.0
+aim_height_silo = 2.0
+splash_radius = 2.0
+projectile_radius = 0.35
+color = Color(0.5, 0.36, 0.22, 1)

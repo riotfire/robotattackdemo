@@ -13,6 +13,7 @@ const ARCHETYPES := "robots/archetypes"
 const PALETTES := "robots/palettes"
 const THEMES := "robots/themes"
 const TRAITS := "robots/traits"
+const ATTACKS := "robots/attacks"
 
 const UPGRADE_DIR := "res://data/upgrades"
 const ROBOT_DIR := "res://data/robots"
@@ -398,6 +399,25 @@ func archetypes() -> Array[RobotArchetype]:
 
 func archetype_rows() -> Array[Dictionary]:
 	return _unique_rows(ARCHETYPES)
+
+
+## The robot attack profiles (M2-B7): one column per AttackProfile property. Reports archetypes that name
+## a profile the table doesn't have.
+func attacks() -> Array[AttackProfile]:
+	var result: Array[AttackProfile] = []
+	var ids: Array[StringName] = []
+	for row in _unique_rows(ATTACKS):
+		var profile := AttackProfile.new()
+		fill(profile, row)
+		if profile.charge_time < AttackProfile.MIN_CHARGE_TIME:
+			_error(row, "charge_time can't be under %.2f s (fairness rule)" % AttackProfile.MIN_CHARGE_TIME)
+		result.append(profile)
+		ids.append(profile.id)
+	for row in archetype_rows():
+		var attack := StringName(cell(row, "ranged_attack_id"))
+		if not attack.is_empty() and attack not in ids:
+			_error(row, "ranged_attack_id \"%s\" isn't in %s" % [attack, ATTACKS])
+	return result
 
 
 ## Palettes by id (the file name; GDD 10.1), in table order.
