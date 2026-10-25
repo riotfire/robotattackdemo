@@ -22,7 +22,7 @@ const MAX_BITS: int = 6
 
 const COLORS: Dictionary[StringName, Color] = {
 	&"al": Color(0.82, 0.84, 0.88), &"cu": Color(0.9, 0.5, 0.22), &"au": Color(1.0, 0.8, 0.2),
-	&"pc": Color(0.3, 0.75, 0.35), &"grain": Color(0.78, 0.62, 0.38),
+	&"pc": Color(0.06, 0.38, 1.0), &"grain": Color(0.78, 0.62, 0.38),
 }
 
 var kind: StringName = &"al"
@@ -74,25 +74,14 @@ func _ready() -> void:
 	_visual = Node3D.new()
 	add_child(_visual)
 	var color := COLORS.get(kind, Color.WHITE) as Color
-	match kind:
-		&"al":  # a nut
-			Clay.part(_visual, _cylinder(0.12, 0.07, 6), color, Transform3D.IDENTITY)
-		&"cu":  # a coil
-			var coil := TorusMesh.new()
-			coil.inner_radius = 0.06
-			coil.outer_radius = 0.12
-			Clay.part(_visual, coil, color, Transform3D(Basis(Vector3.RIGHT, PI * 0.5), Vector3.ZERO))
-		&"au":  # a gear
-			Clay.part(_visual, _cylinder(0.13, 0.05, 8), color, Transform3D.IDENTITY, 0.6)
-		&"pc":  # a chunky battery
-			var cell := BoxMesh.new()
-			cell.size = Vector3(0.14, 0.24, 0.14)
-			Clay.part(_visual, cell, color, Transform3D.IDENTITY, 0.4)
-		_:  # a grain sack
-			var sack := SphereMesh.new()
-			sack.radius = 0.32
-			sack.height = 0.5
-			Clay.part(_visual, sack, color, Transform3D(Basis(), Vector3(0.0, 0.25, 0.0)))
+	if kind in [&"al", &"cu", &"au", &"pc"]:
+		_visual.add_child(PickupVisuals.create(kind, color))
+		_visual.position.y = 0.16
+	else:  # a grain sack
+		var sack := SphereMesh.new()
+		sack.radius = 0.32
+		sack.height = 0.5
+		Clay.part(_visual, sack, color, Transform3D(Basis(), Vector3(0.0, 0.25, 0.0)))
 	_ground_y = _find_ground(global_position)
 
 
@@ -108,6 +97,8 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 	_visual.visible = _age < lifetime - BLINK_TIME or int(_age * 8.0) % 2 == 0
+	if kind != GRAIN and _landed:
+		_visual.position.y = 0.16 + (sin(_age * 3.0) * 0.035 if StopMotionClock.enabled else 0.0)
 
 	if _target != null and is_instance_valid(_target):
 		_magnet_speed += 30.0 * delta
@@ -177,13 +168,3 @@ func _find_ground(from: Vector3) -> float:
 	var query := PhysicsRayQueryParameters3D.create(from + Vector3.UP * 0.5, from + Vector3.DOWN * 40.0, 1)
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	return (hit["position"] as Vector3).y + 0.12 if not hit.is_empty() else 0.12
-
-
-static func _cylinder(radius: float, height: float, segments: int) -> CylinderMesh:
-	var mesh := CylinderMesh.new()
-	mesh.top_radius = radius
-	mesh.bottom_radius = radius
-	mesh.height = height
-	mesh.radial_segments = segments
-	mesh.rings = 1
-	return mesh

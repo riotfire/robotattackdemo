@@ -68,6 +68,8 @@ godot --headless --path . --fixed-fps 60 res://tests/smoke/tutorial_test.tscn --
 
 The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four families' robots for art review. Press R to reroll and the arrow keys to orbit.
 
+The pickup gallery (`tests/tools/pickup_gallery.tscn`) shows the aluminum gear, copper spring, gold ring and blue power-cell battery at actual size on grass and dirt. N toggles day/night and Space freezes the spin. Add `-- --out=/tmp/pickup-gallery` to save both lighting previews and exit. Robot loot uses small emissive silhouettes, a gentle ground hover, and one cached mesh per resource type with a shared material and no shadow passes.
+
 The atmosphere gallery (`tests/tools/atmosphere_gallery.tscn`) shows the farm with robot families in the crop rows at 10, 25 and 45 m, for checking that robots stay readable under every preset and weather. F9 and F10 step the time of day and weather, Tab switches the camera, G toggles grayscale. To save every view, preset and weather as PNGs plus color and grayscale contact sheets, run it in a window with an output folder:
 
 ```bash
