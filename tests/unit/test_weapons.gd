@@ -108,6 +108,22 @@ func test_holder_switches_and_equips_new_unlocks() -> void:
 	assert_false(holder.swap_to_previous(), "no swapping back to a weapon you don't have")
 
 
+func test_shots_and_swings_play_their_cue_only_when_they_happen() -> void:
+	var holder := _spawn_farmer().weapons
+	StatService.grant(&"attack.pistol")
+	for weapon: Weapon in [holder.get_weapon(&"pistol"), holder.get_weapon(&"wrench")]:
+		var cue := weapon.data.fire_cue
+		assert_true(AudioDirector.CUES.has(cue), "%s's fire cue %s is an AudioDirector cue" % [weapon.display_name, cue])
+		var voice: int = AudioDirector.get(&"_next_sfx")
+		assert_true(weapon.attack(), "%s is ready" % weapon.display_name)
+		var player := AudioDirector.get_node("Sfx%d" % voice) as AudioStreamPlayer
+		var played := player.stream.resource_path if player.stream != null else ""
+		assert_eq(played, AudioDirector.CUES.get(cue), "%s plays its cue" % weapon.display_name)
+		assert_false(weapon.attack(), "%s is on cooldown right after" % weapon.display_name)
+		assert_eq(AudioDirector.get(&"_next_sfx"), (voice + 1) % AudioDirector.SFX_VOICES,
+				"%s: an attack that doesn't happen plays nothing" % weapon.display_name)
+
+
 func test_mod_hooks_run_in_order_and_report_kills() -> void:
 	var weapon := autofree(_bare_weapon()) as Weapon
 	var target := _Target.new()

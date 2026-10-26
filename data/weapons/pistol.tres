@@ -10,6 +10,7 @@ slot = 2
 unlock_flag = &"pistol.unlocked"
 usable_on_zipline = true
 trigger_mode = 0
+fire_cue = &"pistol"
 damage = 12.0
 damage_stat = &"pistol.damage"
 fire_rate = 4.0

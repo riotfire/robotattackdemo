@@ -19,6 +19,8 @@ enum TriggerMode {
 ## Usable while riding a zipline without Zipline Grip 2 (GDD 13.4).
 @export var usable_on_zipline: bool = false
 @export var trigger_mode: TriggerMode = TriggerMode.SEMI
+## AudioDirector cue (a key of AudioDirector.CUES) played once per shot or swing that happens; empty = silent.
+@export var fire_cue: StringName
 
 @export_group("Damage and rate")
 @export var damage: float = 10.0

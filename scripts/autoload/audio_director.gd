@@ -84,6 +84,19 @@ func _ready() -> void:
 	EventBus.run_started.connect(_on_run_started)
 
 
+## Quitting frees the players mid-sound. The AudioServer drops a stopped playback only on its next mix step, on the
+## audio thread, and any it still lists when it shuts down leak along with the WAVs they hold. So stop every player,
+## then wait (at most half a second) for a mix that started after the stop to finish.
+func _exit_tree() -> void:
+	for player: AudioStreamPlayer in _music_players + _sfx_players + [_leak_player]:
+		player.stop()
+	var stopped_at := Time.get_ticks_usec()
+	while Time.get_ticks_usec() - stopped_at < 500000 and _last_mix_usec() <= stopped_at:
+		OS.delay_msec(1)
+	AudioServer.lock()  # Blocks until a mix in progress is done.
+	AudioServer.unlock()
+
+
 func _process(delta: float) -> void:
 	if _attack_wait >= 0.0:
 		_attack_wait -= delta
@@ -144,7 +157,8 @@ func set_music_state(state: StringName, fade_seconds: float = MUSIC_FADE_SECONDS
 	_music_active = incoming
 
 
-## Weapon framework integration point: call only after a shot or swing actually starts.
+## Weapons play their WeaponData.fire_cue through here from Weapon.begin_shot(), which runs only once a shot or
+## swing actually starts.
 ## The fixed voice pool bounds SFX cost during crowded waves.
 func play_cue(cue: StringName, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	if not CUES.has(cue):
@@ -170,6 +184,11 @@ func play_pop(size: float = 1.0) -> void:
 	play_cue(&"robot_pop", pitch)
 	if size >= 1.6:
 		play_cue(&"robot_pop", pitch * 0.5, 3.0)
+
+
+## When the latest mix step started, on the Time.get_ticks_usec() clock.
+func _last_mix_usec() -> int:
+	return Time.get_ticks_usec() - roundi(AudioServer.get_time_since_last_mix() * 1000000.0)
 
 
 func _looped_stream(path: String) -> AudioStream:

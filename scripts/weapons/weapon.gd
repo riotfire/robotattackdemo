@@ -3,8 +3,9 @@ extends Node3D
 ## Base for everything in the farmer's WeaponHolder (GDD 6, 18.4). Base stats come from a WeaponData
 ## resource and upgrades from StatService; the holder forwards trigger input. Weapons aim along the farmer's
 ## camera-center ray (GDD 5.3).
-## Every shot goes down one path so mods see all of it: begin_shot() runs on_fire, resolve_shot() fires a
-## hitscan ray or a pooled projectile, and deliver_hit() runs on_hit, lands the damage, then on_kill.
+## Every shot goes down one path so mods see all of it: begin_shot() runs on_fire and plays the fire cue,
+## resolve_shot() fires a hitscan ray or a pooled projectile, and deliver_hit() runs on_hit, lands the damage,
+## then on_kill.
 
 signal fired(shot: WeaponShot)
 signal hit_landed(target: Node, packet: DamagePacket)
@@ -112,7 +113,8 @@ func remove_mod(mod: WeaponMod) -> void:
 
 # --- Shots ----------------------------------------------------------------------------------------
 
-## Starts a shot or swing from `origin` along `direction` and lets on_fire mods change it.
+## Starts a shot or swing from `origin` along `direction` and lets on_fire mods change it. Weapons call it only once
+## the shot or swing really happens (ammo spent, cooldown passed), so this is also where data.fire_cue plays.
 func begin_shot(origin: Vector3, direction: Vector3) -> WeaponShot:
 	var shot := WeaponShot.new()
 	shot.weapon = self
@@ -124,6 +126,8 @@ func begin_shot(origin: Vector3, direction: Vector3) -> WeaponShot:
 	shot.knockback = data.knockback
 	for mod in mods:
 		mod.on_fire(self, shot)
+	if data.fire_cue != &"":
+		AudioDirector.play_cue(data.fire_cue)
 	fired.emit(shot)
 	return shot
 
