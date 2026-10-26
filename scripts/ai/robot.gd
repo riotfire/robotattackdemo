@@ -25,6 +25,8 @@ const SACK_SIZE: float = 20.0
 const FOREMAN_HP_MULTIPLIER: float = 3.0
 ## Foreman drops are fixed (GDD 12.2).
 const FOREMAN_DROPS: Dictionary[StringName, int] = {&"al": 10, &"cu": 6, &"au": 2, &"pc": 3}
+## A legitimate Foreman defeat banks its rare reward immediately; physical parts contain only the rest.
+const FOREMAN_BOUNTY: Dictionary[StringName, int] = {&"au": 2, &"pc": 3}
 ## Distance from the silo at which a fleeing thief is gone into the corn.
 const ESCAPE_RADIUS: float = 102.0
 ## A ground robot can't reach a farmer standing more than this far above it.
@@ -745,7 +747,9 @@ func _die(killer: Node, award_drops: bool) -> void:
 		hurtbox.set_deferred(&"collision_layer", 0)
 	var drop_point := global_position + Vector3.UP * 0.5 * type_scale()
 	if award_drops:
-		Pickup.spawn_parts(self, drop_point, roll_drops())
+		var parts := roll_drops()
+		bank_guaranteed_parts(parts)
+		Pickup.spawn_parts(self, drop_point, parts)
 		if sack_amount > 0.0:
 			Pickup.spawn_grain(self, drop_point, sack_amount)
 	if _marker != null:
@@ -822,6 +826,23 @@ func roll_drops() -> Dictionary[StringName, int]:
 		&"au": _roll_part(rng, archetype.drop_au_chance * gold * luck, archetype.drop_au_min, archetype.drop_au_max),
 		&"pc": _roll_part(rng, power_cell_chance(), archetype.drop_pc_min, archetype.drop_pc_max),
 	}
+
+
+## Removes the guaranteed bounty from a rolled burst before banking it. Consumes the passed values,
+## so a second settlement of the same burst cannot award another bounty. Quiet/debug kills skip it.
+func bank_guaranteed_parts(parts: Dictionary[StringName, int]) -> void:
+	if not is_foreman:
+		return
+	var banked: Dictionary[StringName, int] = {}
+	for part: StringName in FOREMAN_BOUNTY:
+		var amount := mini(parts.get(part, 0), FOREMAN_BOUNTY[part])
+		if amount > 0:
+			banked[part] = amount
+			parts[part] -= amount
+	if not banked.is_empty():
+		GameState.add_parts(banked)
+		SaveManager.save_profile()
+		EventBus.hud_message.emit("Foreman bounty banked: +2 Gold, +3 Power Cells", 3.0)
 
 
 ## Chance to drop Power Cells, with upgrade luck and traits (Overcharged doubles it).

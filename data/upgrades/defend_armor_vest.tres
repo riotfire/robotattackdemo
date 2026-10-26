@@ -8,7 +8,7 @@
 [sub_resource type="Resource" id="Resource_dle6o"]
 script = ExtResource("1_h1pic")
 parts = Array[StringName]([&"al", &"cu"])
-bases = PackedFloat32Array(60, 20)
+bases = PackedFloat32Array(60, 8)
 first_levels = PackedInt32Array(1, 1)
 last_levels = PackedInt32Array(1, 1)
 

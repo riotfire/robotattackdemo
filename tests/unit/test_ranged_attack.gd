@@ -10,10 +10,12 @@ const STEP := 1.0 / 60.0
 var _world: Node3D
 var _silo: Silo
 var _silo_before: Silo
+var _scene_before: Node
 
 
 func before_each() -> void:
 	_silo_before = GameState.silo
+	_scene_before = get_tree().current_scene
 	AttackTokens.clear()
 	_world = Node3D.new()
 	add_child_autofree(_world)
@@ -32,6 +34,7 @@ func before_each() -> void:
 func after_each() -> void:
 	AttackTokens.clear()
 	GameState.silo = _silo_before
+	get_tree().current_scene = _scene_before
 
 
 ## A drone parked at `where` with physics off, so the test drives its RangedAttack frame by frame. Wave 5
@@ -72,6 +75,70 @@ func test_drone_and_lobber_profiles_keep_their_m1_numbers() -> void:
 	assert_eq(lobber.kind, AttackProfile.Kind.LOB)
 	assert_eq([lobber.charge_time, lobber.interval, lobber.damage_vs_farmer, lobber.damage_vs_silo, lobber.speed,
 			lobber.gravity, lobber.attack_range], [1.1, 3.6, 6.0, 12.0, 20.0, 6.0, 24.0], "the lobber's lob")
+
+
+func test_lobber_finds_and_climbs_a_roof_when_gameplay_is_nested_under_another_scene() -> void:
+	_world.reparent(get_tree().root)
+	get_tree().current_scene = _world
+	var main := Node3D.new()
+	main.name = "NestedMain"
+	main.position = Vector3(35.0, 2.0, -20.0)
+	main.rotation.y = 0.4
+	_world.add_child(main)
+	var farm := Node3D.new()
+	farm.name = "Farm"
+	main.add_child(farm)
+	var region := Node3D.new()
+	region.name = "NavRegion"
+	farm.add_child(region)
+	_silo.reparent(region)
+	GameState.silo = _silo
+	var building := Node3D.new()
+	building.name = "ToolShed"
+	building.position = Vector3(12.0, 0.0, 5.0)
+	region.add_child(building)
+	var archetype := load(LOBBER) as RobotArchetype
+	var robot := archetype.scene.instantiate() as VerticalRobot
+	robot.setup(archetype, 3, DifficultyCurve.new(), RngService.make_rng([31]))
+	var entry := building.to_global(Vector3(5.2, 0.0, 0.0))
+	robot.position = main.to_local(entry)
+	main.add_child(robot)
+	robot.set_physics_process(false)
+	assert_eq(robot.travel, VerticalRobot.Travel.APPROACH, "a wrapper must not trigger the ground-combat fallback")
+	assert_eq(robot.get(&"_roof_index"), 0, "the silo's farm supplies the ToolShed roof")
+	var chosen_entry: Vector3 = robot.get(&"_entry")
+	assert_almost_eq(chosen_entry.distance_to(entry), 0.0, 0.001, "roof approach uses the nested building's global transform")
+	robot._physics_process(STEP)
+	assert_eq(robot.travel, VerticalRobot.Travel.CLIMB, "arriving at the selected building starts climbing")
+	for i in 1200:
+		if robot.travel == VerticalRobot.Travel.PERCHED:
+			break
+		robot._physics_process(STEP)
+	assert_eq(robot.travel, VerticalRobot.Travel.PERCHED)
+	var roof_top := building.to_global(Vector3(3.3, 4.05, 0.0))
+	assert_almost_eq(robot.global_position.distance_to(roof_top), 0.0, 0.05, "it reaches the actual elevated roof instead of parking on the ground")
+
+
+func test_lobber_retains_standalone_scene_roof_lookup_without_a_registered_silo() -> void:
+	_world.reparent(get_tree().root)
+	get_tree().current_scene = _world
+	GameState.silo = null
+	var farm := Node3D.new()
+	farm.name = "Farm"
+	_world.add_child(farm)
+	var region := Node3D.new()
+	region.name = "NavRegion"
+	farm.add_child(region)
+	var building := Node3D.new()
+	building.name = "ToolShed"
+	region.add_child(building)
+	var archetype := load(LOBBER) as RobotArchetype
+	var robot := archetype.scene.instantiate() as VerticalRobot
+	robot.setup(archetype, 3, DifficultyCurve.new(), RngService.make_rng([32]))
+	_world.add_child(robot)
+	robot.set_physics_process(false)
+	assert_eq(robot.travel, VerticalRobot.Travel.APPROACH)
+	assert_eq(robot.get(&"_roof_index"), 0, "standalone scene roots still supply their farm roofs")
 
 
 func test_launch_matches_the_m1_trajectory() -> void:

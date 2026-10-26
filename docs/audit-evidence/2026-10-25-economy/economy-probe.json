@@ -1,0 +1,813 @@
+{
+  "assumptions": {
+    "difficulty": "Composition/economy model only; not evidence of player survival or fun.",
+    "drops": "Analytical expectations from current archetype resources; no luck or traits.",
+    "excluded": "Tutorial, optional bell bonuses, defense spending, defeat losses, and purchases.",
+    "kills": "All individual robots legitimately killed; all waves cleared.",
+    "optional_ready_base_al_per_clear": 5.0,
+    "recovery": "Full collection versus 50%-Vac-only; banked guarantees unaffected.",
+    "seed_range": "0..255",
+    "seeds": 256,
+    "sweep_timing": "Vac-only includes the battle-start sweep following every sampled wave, including the final wave.",
+    "waves": 6
+  },
+  "catalog": {
+    "total": {
+      "al": 6321.0,
+      "au": 63.0,
+      "cu": 765.0,
+      "pc": 19.0
+    },
+    "tracks": {
+      "attack.pistol": {
+        "max_rank": 1,
+        "total": {
+          "al": 20.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "attack.pistol_damage": {
+        "max_rank": 10,
+        "total": {
+          "al": 499.0,
+          "au": 6.0,
+          "cu": 45.0,
+          "pc": 3.0
+        }
+      },
+      "attack.pistol_handling": {
+        "max_rank": 5,
+        "total": {
+          "al": 164.0,
+          "au": 0.0,
+          "cu": 9.0,
+          "pc": 0.0
+        }
+      },
+      "attack.pistol_rate": {
+        "max_rank": 10,
+        "total": {
+          "al": 499.0,
+          "au": 6.0,
+          "cu": 45.0,
+          "pc": 3.0
+        }
+      },
+      "attack.rifle": {
+        "max_rank": 1,
+        "total": {
+          "al": 45.0,
+          "au": 0.0,
+          "cu": 3.0,
+          "pc": 0.0
+        }
+      },
+      "attack.rifle_damage": {
+        "max_rank": 10,
+        "total": {
+          "al": 599.0,
+          "au": 6.0,
+          "cu": 60.0,
+          "pc": 3.0
+        }
+      },
+      "attack.rifle_pierce": {
+        "max_rank": 2,
+        "total": {
+          "al": 0.0,
+          "au": 2.0,
+          "cu": 27.0,
+          "pc": 0.0
+        }
+      },
+      "attack.shotgun": {
+        "max_rank": 1,
+        "total": {
+          "al": 35.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "attack.shotgun_damage": {
+        "max_rank": 10,
+        "total": {
+          "al": 499.0,
+          "au": 6.0,
+          "cu": 45.0,
+          "pc": 3.0
+        }
+      },
+      "attack.wrench": {
+        "max_rank": 1,
+        "total": {
+          "al": 6.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "attack.wrench_damage": {
+        "max_rank": 10,
+        "total": {
+          "al": 399.0,
+          "au": 6.0,
+          "cu": 31.0,
+          "pc": 3.0
+        }
+      },
+      "attack.wrench_speed": {
+        "max_rank": 5,
+        "total": {
+          "al": 123.0,
+          "au": 0.0,
+          "cu": 7.0,
+          "pc": 0.0
+        }
+      },
+      "defend.armor_overalls": {
+        "max_rank": 1,
+        "total": {
+          "al": 30.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "defend.armor_regen": {
+        "max_rank": 5,
+        "total": {
+          "al": 198.0,
+          "au": 2.0,
+          "cu": 25.0,
+          "pc": 0.0
+        }
+      },
+      "defend.armor_vest": {
+        "max_rank": 1,
+        "total": {
+          "al": 60.0,
+          "au": 0.0,
+          "cu": 8.0,
+          "pc": 0.0
+        }
+      },
+      "defend.crack_stoppers": {
+        "max_rank": 3,
+        "total": {
+          "al": 115.0,
+          "au": 1.0,
+          "cu": 15.0,
+          "pc": 0.0
+        }
+      },
+      "defend.hearty_breakfast": {
+        "max_rank": 5,
+        "total": {
+          "al": 123.0,
+          "au": 0.0,
+          "cu": 7.0,
+          "pc": 0.0
+        }
+      },
+      "defend.plating_aluminium": {
+        "max_rank": 1,
+        "total": {
+          "al": 100.0,
+          "au": 0.0,
+          "cu": 8.0,
+          "pc": 0.0
+        }
+      },
+      "defend.plating_tin": {
+        "max_rank": 1,
+        "total": {
+          "al": 40.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "defend.porch_swing": {
+        "max_rank": 5,
+        "total": {
+          "al": 98.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "defend.rivet_count": {
+        "max_rank": 5,
+        "total": {
+          "al": 164.0,
+          "au": 0.0,
+          "cu": 9.0,
+          "pc": 0.0
+        }
+      },
+      "farmhand.early_bird": {
+        "max_rank": 3,
+        "total": {
+          "al": 46.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "farmhand.lucky_horseshoe": {
+        "max_rank": 5,
+        "total": {
+          "al": 247.0,
+          "au": 2.0,
+          "cu": 33.0,
+          "pc": 0.0
+        }
+      },
+      "farmhand.scrap_magnet": {
+        "max_rank": 5,
+        "total": {
+          "al": 83.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "farmhand.scrap_vac": {
+        "max_rank": 5,
+        "total": {
+          "al": 98.0,
+          "au": 0.0,
+          "cu": 5.0,
+          "pc": 0.0
+        }
+      },
+      "repair.bigger_patches": {
+        "max_rank": 5,
+        "total": {
+          "al": 148.0,
+          "au": 0.0,
+          "cu": 9.0,
+          "pc": 0.0
+        }
+      },
+      "repair.bigger_silo": {
+        "max_rank": 5,
+        "total": {
+          "al": 247.0,
+          "au": 2.0,
+          "cu": 33.0,
+          "pc": 0.0
+        }
+      },
+      "repair.elbow_grease": {
+        "max_rank": 8,
+        "total": {
+          "al": 238.0,
+          "au": 2.0,
+          "cu": 17.0,
+          "pc": 0.0
+        }
+      },
+      "repair.harvest_helpers": {
+        "max_rank": 5,
+        "total": {
+          "al": 123.0,
+          "au": 2.0,
+          "cu": 23.0,
+          "pc": 0.0
+        }
+      },
+      "repair.leak_plugs": {
+        "max_rank": 5,
+        "total": {
+          "al": 123.0,
+          "au": 0.0,
+          "cu": 7.0,
+          "pc": 0.0
+        }
+      },
+      "repair.sack_tracker": {
+        "max_rank": 1,
+        "total": {
+          "al": 0.0,
+          "au": 0.0,
+          "cu": 25.0,
+          "pc": 0.0
+        }
+      },
+      "travel.air_dash": {
+        "max_rank": 1,
+        "total": {
+          "al": 0.0,
+          "au": 0.0,
+          "cu": 8.0,
+          "pc": 0.0
+        }
+      },
+      "travel.comfy_boots": {
+        "max_rank": 5,
+        "total": {
+          "al": 98.0,
+          "au": 0.0,
+          "cu": 5.0,
+          "pc": 0.0
+        }
+      },
+      "travel.death_from_above": {
+        "max_rank": 5,
+        "total": {
+          "al": 0.0,
+          "au": 12.0,
+          "cu": 123.0,
+          "pc": 1.0
+        }
+      },
+      "travel.fuel_tank": {
+        "max_rank": 10,
+        "total": {
+          "al": 499.0,
+          "au": 6.0,
+          "cu": 45.0,
+          "pc": 3.0
+        }
+      },
+      "travel.ground_pound": {
+        "max_rank": 1,
+        "total": {
+          "al": 0.0,
+          "au": 0.0,
+          "cu": 12.0,
+          "pc": 0.0
+        }
+      },
+      "travel.hover_mode": {
+        "max_rank": 1,
+        "total": {
+          "al": 0.0,
+          "au": 0.0,
+          "cu": 25.0,
+          "pc": 0.0
+        }
+      },
+      "travel.jetpack": {
+        "max_rank": 1,
+        "total": {
+          "al": 40.0,
+          "au": 0.0,
+          "cu": 15.0,
+          "pc": 0.0
+        }
+      },
+      "travel.quick_refill": {
+        "max_rank": 8,
+        "total": {
+          "al": 238.0,
+          "au": 2.0,
+          "cu": 17.0,
+          "pc": 0.0
+        }
+      },
+      "travel.springy_soles": {
+        "max_rank": 3,
+        "total": {
+          "al": 57.0,
+          "au": 0.0,
+          "cu": 0.0,
+          "pc": 0.0
+        }
+      },
+      "travel.thrusters": {
+        "max_rank": 5,
+        "total": {
+          "al": 164.0,
+          "au": 0.0,
+          "cu": 9.0,
+          "pc": 0.0
+        }
+      },
+      "travel.zipline_grip": {
+        "max_rank": 2,
+        "total": {
+          "al": 56.0,
+          "au": 0.0,
+          "cu": 10.0,
+          "pc": 0.0
+        }
+      }
+    }
+  },
+  "totals": {
+    "climber_share_all_waves": 0.2041,
+    "climber_share_waves_with_climbers": 0.2476,
+    "expected_banked_rewards": {
+      "al": 0.0,
+      "au": 5.0,
+      "cu": 6.0,
+      "pc": 6.0
+    },
+    "expected_physical_parts": {
+      "al": 344.355,
+      "au": 5.925,
+      "cu": 52.639,
+      "pc": 3.825
+    },
+    "full_collection": {
+      "al": 344.355,
+      "au": 10.925,
+      "cu": 58.639,
+      "pc": 9.825
+    },
+    "mean_climbers": 22.141,
+    "mean_individual_robots": 108.461,
+    "vac_only_50_percent": {
+      "al": 172.177,
+      "au": 7.963,
+      "cu": 32.319,
+      "pc": 7.912
+    }
+  },
+  "waves": [
+    {
+      "climber_count_range": [
+        0,
+        0
+      ],
+      "climber_share": 0.0,
+      "climber_share_range": [
+        0.0,
+        0.0
+      ],
+      "cumulative_full_collection": {
+        "al": 22.5,
+        "au": 0.18,
+        "cu": 2.25,
+        "pc": 0.09
+      },
+      "cumulative_vac_only_50_percent": {
+        "al": 11.25,
+        "au": 0.09,
+        "cu": 1.125,
+        "pc": 0.045
+      },
+      "drone_count_range": [
+        0,
+        0
+      ],
+      "expected_banked_rewards": {
+        "al": 0.0,
+        "au": 0.0,
+        "cu": 0.0,
+        "pc": 0.0
+      },
+      "expected_physical_parts": {
+        "al": 22.5,
+        "au": 0.18,
+        "cu": 2.25,
+        "pc": 0.09
+      },
+      "full_collection": {
+        "al": 22.5,
+        "au": 0.18,
+        "cu": 2.25,
+        "pc": 0.09
+      },
+      "individual_robot_count_range": [
+        9,
+        9
+      ],
+      "mean_climbers": 0.0,
+      "mean_counts_by_archetype": {
+        "nibbler": 9.0
+      },
+      "mean_individual_robots": 9.0,
+      "vac_only_50_percent": {
+        "al": 11.25,
+        "au": 0.09,
+        "cu": 1.125,
+        "pc": 0.045
+      },
+      "wave": 1
+    },
+    {
+      "climber_count_range": [
+        0,
+        0
+      ],
+      "climber_share": 0.0,
+      "climber_share_range": [
+        0.0,
+        0.0
+      ],
+      "cumulative_full_collection": {
+        "al": 49.884,
+        "au": 1.499,
+        "cu": 7.796,
+        "pc": 1.25
+      },
+      "cumulative_vac_only_50_percent": {
+        "al": 24.942,
+        "au": 1.25,
+        "cu": 4.898,
+        "pc": 1.125
+      },
+      "drone_count_range": [
+        0,
+        0
+      ],
+      "expected_banked_rewards": {
+        "al": 0.0,
+        "au": 1.0,
+        "cu": 2.0,
+        "pc": 1.0
+      },
+      "expected_physical_parts": {
+        "al": 27.384,
+        "au": 0.319,
+        "cu": 3.546,
+        "pc": 0.16
+      },
+      "full_collection": {
+        "al": 27.384,
+        "au": 1.319,
+        "cu": 5.546,
+        "pc": 1.16
+      },
+      "individual_robot_count_range": [
+        7,
+        13
+      ],
+      "mean_climbers": 0.0,
+      "mean_counts_by_archetype": {
+        "clanker": 2.957,
+        "nibbler": 7.086
+      },
+      "mean_individual_robots": 10.04296875,
+      "vac_only_50_percent": {
+        "al": 13.692,
+        "au": 1.16,
+        "cu": 3.773,
+        "pc": 1.08
+      },
+      "wave": 2
+    },
+    {
+      "climber_count_range": [
+        2,
+        4
+      ],
+      "climber_share": 0.2468,
+      "climber_share_range": [
+        0.2222,
+        0.2727
+      ],
+      "cumulative_full_collection": {
+        "al": 92.526,
+        "au": 2.238,
+        "cu": 14.011,
+        "pc": 1.689
+      },
+      "cumulative_vac_only_50_percent": {
+        "al": 46.263,
+        "au": 1.619,
+        "cu": 8.005,
+        "pc": 1.345
+      },
+      "drone_count_range": [
+        0,
+        0
+      ],
+      "expected_banked_rewards": {
+        "al": 0.0,
+        "au": 0.0,
+        "cu": 0.0,
+        "pc": 0.0
+      },
+      "expected_physical_parts": {
+        "al": 42.642,
+        "au": 0.739,
+        "cu": 6.215,
+        "pc": 0.439
+      },
+      "full_collection": {
+        "al": 42.642,
+        "au": 0.739,
+        "cu": 6.215,
+        "pc": 0.439
+      },
+      "individual_robot_count_range": [
+        9,
+        17
+      ],
+      "mean_climbers": 3.49609375,
+      "mean_counts_by_archetype": {
+        "clanker": 2.645,
+        "nibbler": 8.023,
+        "roof_lobber": 3.496
+      },
+      "mean_individual_robots": 14.1640625,
+      "vac_only_50_percent": {
+        "al": 21.321,
+        "au": 0.369,
+        "cu": 3.107,
+        "pc": 0.22
+      },
+      "wave": 3
+    },
+    {
+      "climber_count_range": [
+        4,
+        5
+      ],
+      "climber_share": 0.2462,
+      "climber_share_range": [
+        0.2353,
+        0.2667
+      ],
+      "cumulative_full_collection": {
+        "al": 149.777,
+        "au": 4.204,
+        "cu": 24.141,
+        "pc": 3.263
+      },
+      "cumulative_vac_only_50_percent": {
+        "al": 74.888,
+        "au": 3.102,
+        "cu": 14.07,
+        "pc": 2.632
+      },
+      "drone_count_range": [
+        0,
+        0
+      ],
+      "expected_banked_rewards": {
+        "al": 0.0,
+        "au": 1.0,
+        "cu": 2.0,
+        "pc": 1.0
+      },
+      "expected_physical_parts": {
+        "al": 57.251,
+        "au": 0.966,
+        "cu": 8.13,
+        "pc": 0.574
+      },
+      "full_collection": {
+        "al": 57.251,
+        "au": 1.966,
+        "cu": 10.13,
+        "pc": 1.574
+      },
+      "individual_robot_count_range": [
+        15,
+        21
+      ],
+      "mean_climbers": 4.55078125,
+      "mean_counts_by_archetype": {
+        "clanker": 3.523,
+        "nibbler": 10.41,
+        "roof_lobber": 4.551
+      },
+      "mean_individual_robots": 18.484375,
+      "vac_only_50_percent": {
+        "al": 28.625,
+        "au": 1.483,
+        "cu": 6.065,
+        "pc": 1.287
+      },
+      "wave": 4
+    },
+    {
+      "climber_count_range": [
+        6,
+        9
+      ],
+      "climber_share": 0.2477,
+      "climber_share_range": [
+        0.2414,
+        0.2593
+      ],
+      "cumulative_full_collection": {
+        "al": 257.101,
+        "au": 7.889,
+        "cu": 43.807,
+        "pc": 7.31
+      },
+      "cumulative_vac_only_50_percent": {
+        "al": 128.55,
+        "au": 5.945,
+        "cu": 23.903,
+        "pc": 6.155
+      },
+      "drone_count_range": [
+        1,
+        1
+      ],
+      "expected_banked_rewards": {
+        "al": 0.0,
+        "au": 2.0,
+        "cu": 0.0,
+        "pc": 3.0
+      },
+      "expected_physical_parts": {
+        "al": 107.324,
+        "au": 1.685,
+        "cu": 19.666,
+        "pc": 1.047
+      },
+      "full_collection": {
+        "al": 107.324,
+        "au": 3.685,
+        "cu": 19.666,
+        "pc": 4.047
+      },
+      "individual_robot_count_range": [
+        24,
+        36
+      ],
+      "mean_climbers": 7.70703125,
+      "mean_counts_by_archetype": {
+        "clanker": 5.813,
+        "drone": 1.0,
+        "foreman": 1.0,
+        "nibbler": 15.594,
+        "roof_lobber": 7.707
+      },
+      "mean_individual_robots": 31.11328125,
+      "vac_only_50_percent": {
+        "al": 53.662,
+        "au": 2.843,
+        "cu": 9.833,
+        "pc": 3.523
+      },
+      "wave": 5
+    },
+    {
+      "climber_count_range": [
+        5,
+        8
+      ],
+      "climber_share": 0.2489,
+      "climber_share_range": [
+        0.2381,
+        0.2609
+      ],
+      "cumulative_full_collection": {
+        "al": 344.355,
+        "au": 10.925,
+        "cu": 58.639,
+        "pc": 9.825
+      },
+      "cumulative_vac_only_50_percent": {
+        "al": 172.177,
+        "au": 7.963,
+        "cu": 32.319,
+        "pc": 7.912
+      },
+      "drone_count_range": [
+        0,
+        1
+      ],
+      "expected_banked_rewards": {
+        "al": 0.0,
+        "au": 1.0,
+        "cu": 2.0,
+        "pc": 1.0
+      },
+      "expected_physical_parts": {
+        "al": 87.254,
+        "au": 2.036,
+        "cu": 12.832,
+        "pc": 1.515
+      },
+      "full_collection": {
+        "al": 87.254,
+        "au": 3.036,
+        "cu": 14.832,
+        "pc": 2.515
+      },
+      "individual_robot_count_range": [
+        20,
+        33
+      ],
+      "mean_climbers": 6.38671875,
+      "mean_counts_by_archetype": {
+        "clanker": 4.406,
+        "drone": 0.859,
+        "nibbler": 13.352,
+        "roof_lobber": 6.387,
+        "thumper": 0.652
+      },
+      "mean_individual_robots": 25.65625,
+      "vac_only_50_percent": {
+        "al": 43.627,
+        "au": 2.018,
+        "cu": 8.416,
+        "pc": 1.757
+      },
+      "wave": 6
+    }
+  ]
+}

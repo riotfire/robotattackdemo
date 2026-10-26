@@ -52,16 +52,17 @@ M1 has one file per branch. Keep rows near related nodes rather than appending a
 | `effects` | `<stat> <kind> <value>` items (see below) | `player.run_speed add_pct 0.03` |
 | `description` | Text shown on the pegboard | `+3% run speed per level.` |
 
-**Cost.** Each part costs base × 1.35^(level − the part's first level), rounded (GDD 12.4). You can give a cost in two ways, and mix them in one cell (`al_cu 12; pc 1 5-5`):
+**Cost.** Each part costs base × 1.25^(level − the part's first level), rounded (GDD 12.4). You can give a cost in two ways, and mix them in one cell (`al_cu 12; pc 1 5-5`):
 
 - **A recipe and its base**, named after the GDD 13 "Recipe" column. The other parts' bases are fixed shares of it, and a part that would start above the node's last level is left out.
 
   | Recipe | GDD 13 | Parts |
   |---|---|---|
-  | `al_to_pc <base>` | Al → PC | Al for levels 1–6; Cu (0.53 × base) from level 4; Au (0.27 ×) from level 7; Power Cells (0.13 ×) from level 9. Pistol Damage is `al_to_pc 15`. |
+  | `al_to_pc <base>` | Al → PC | Al at every level; Cu (0.20 × base) from level 4; Au (0.067 ×) from level 7; one Power Cell at level 9 and two at level 10. Pistol Damage is `al_to_pc 15`. |
   | `al_to_au <base>` | Al → Au | The same, without Power Cells |
-  | `al_cu <base>` | Al / Cu, Al → Cu | Al at every level; Cu (0.53 ×) from level 4 |
-  | `cu_au <base>` | Cu / Au | Cu at every level; Au (0.3 ×) for the upper half of the levels |
+  | `al_cu <base>` | Al / Cu, Al → Cu | Al at every level; Cu (0.20 ×) from level 4 |
+  | `al_cu_au <base>` | Mixed support | Al at every level; Cu (0.125 × base) at every level; Au (0.04 ×) in the upper half. Used for formerly Copper-only support tracks. |
+  | `cu_au <base>` | Legacy Cu / Au | Cu at every level; Au (0.3 ×) in the upper half. Still accepted for custom tables. |
 
 - **Explicit parts:** `<part> <base> [first-last]`, where the part is `al`, `cu`, `au` or `pc`. The levels default to all of the node's levels. For example, `al 60; cu 20` is a one-off price for an unlock, and `al 15; cu 6 3-5; au 2 5-5` is a hand-tuned track.
 

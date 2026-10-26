@@ -22,7 +22,7 @@ const GENE_LIBRARY_PATH := "res://data/robots/gene_library.tres"
 const UPGRADE_COLUMNS: PackedStringArray = ["id", "branch", "board_col", "board_row", "display_name", "max_level",
 		"prerequisites", "cost", "effects", "description"]
 ## Cost recipes named after the GDD 13 "Recipe" column ("Al -> PC" is al_to_pc). See _add_recipe.
-const RECIPES: PackedStringArray = ["al_to_pc", "al_to_au", "al_cu", "cu_au"]
+const RECIPES: PackedStringArray = ["al_to_pc", "al_to_au", "al_cu", "cu_au", "al_cu_au"]
 const PARTS: PackedStringArray = ["al", "cu", "au", "pc"]
 
 ## Added to every row: "file.csv:line", for error messages.
@@ -310,24 +310,27 @@ func _cost_curve(row: Dictionary, levels: int) -> CostCurve:
 	return curve
 
 
-## GDD 12.4 recipes from an Aluminium (or, for cu_au, Copper) base, over the node's levels:
-##   al_to_pc  Al for levels 1-6, Cu from 4, Au from 7, Power Cells from 9 (Pistol Damage is al_to_pc 15)
-##   al_to_au  the same without Power Cells
-##   al_cu     Al throughout, Cu from level 4 ("Al / Cu" and "Al -> Cu")
-##   cu_au     Cu throughout, Au for the upper half
-## Later parts start at a fixed share of the base (Pistol Damage: Al 15, Cu 8, Au 4, PC 2). Parts that
-## would start above the node's last level are left out.
+## Keep Aluminium useful at every rank; rare materials supplement the common-metal investment.
+## Copper starts at 20% of the Al base, Gold at 6.7%; each grows only after its first charged rank.
+## Power Cells are deliberate finishers: one at rank 9 and two at rank 10, rather than a growing tax.
+## al_cu_au brings formerly Copper-only support tracks into the same mixed-material economy.
+## cu_au remains supported for older/custom tables; the live catalog uses al_cu_au instead.
 func _add_recipe(curve: CostCurve, recipe: String, base: float, levels: int) -> void:
 	match recipe:
 		"al_to_pc", "al_to_au":
-			curve.add_part(&"al", base, 1, mini(6, levels))
-			_add_part_from(curve, &"cu", _whole(base * 0.53), 4, levels)
-			_add_part_from(curve, &"au", _whole(base * 0.27), 7, levels)
+			curve.add_part(&"al", base, 1, levels)
+			_add_part_from(curve, &"cu", _whole(base * 0.2), 4, levels)
+			_add_part_from(curve, &"au", _whole(base * 0.067), 7, levels)
 			if recipe == "al_to_pc":
-				_add_part_from(curve, &"pc", _whole(base * 0.13), 9, levels)
+				_add_part_from(curve, &"pc", 1.0, 9, mini(9, levels))
+				_add_part_from(curve, &"pc", 2.0, 10, levels)
 		"al_cu":
 			curve.add_part(&"al", base, 1, levels)
-			_add_part_from(curve, &"cu", _whole(base * 0.53), 4, levels)
+			_add_part_from(curve, &"cu", _whole(base * 0.2), 4, levels)
+		"al_cu_au":
+			curve.add_part(&"al", base, 1, levels)
+			curve.add_part(&"cu", _whole(base * 0.125), 1, levels)
+			_add_part_from(curve, &"au", _whole(base * 0.04), ceili(levels / 2.0) + 1, levels)
 		"cu_au":
 			curve.add_part(&"cu", base, 1, levels)
 			_add_part_from(curve, &"au", _whole(base * 0.3), ceili(levels / 2.0) + 1, levels)

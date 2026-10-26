@@ -42,5 +42,5 @@ drop_al_class_bonus = 1
 drop_cu_chance = 1.0
 drop_cu_min = 2
 drop_cu_max = 3
-drop_au_chance = 0.3
+drop_au_chance = 1.0
 drop_pc_chance = 1.0

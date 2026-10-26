@@ -1,17 +1,17 @@
 extends GutTest
 ## Pegboard data and stat stacking (GDD 12.4, 13, 18.4).
 
-const TEMP_PROFILE := "user://gut_upgrades_profile.json"
-
 var _saved_levels: Dictionary = {}
 var _saved_parts: Dictionary = {}
 var _saved_profile_path: String = ""
+var _test_profile_path: String = ""
 
 
 func before_each() -> void:
 	# Purchases autosave, so point SaveManager at a throwaway file instead of the player's profile.
 	_saved_profile_path = SaveManager.profile_path
-	SaveManager.profile_path = TEMP_PROFILE
+	_test_profile_path = OS.get_temp_dir().path_join("gut_upgrades_%d.json" % OS.get_process_id())
+	SaveManager.profile_path = _test_profile_path
 	_saved_levels = StatService.levels.duplicate()
 	_saved_parts = GameState.parts.duplicate()
 	StatService.set_levels({})
@@ -22,22 +22,21 @@ func after_each() -> void:
 	for key: StringName in _saved_parts:
 		GameState.parts[key] = _saved_parts[key]
 	SaveManager.profile_path = _saved_profile_path
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEMP_PROFILE))
+	DirAccess.remove_absolute(_test_profile_path)
 
 
-func test_pistol_damage_costs_match_gdd_table() -> void:
+func test_pistol_damage_uses_aluminium_throughout_with_reachable_rare_finishers() -> void:
 	var curve := (StatService.catalog[&"attack.pistol_damage"] as UpgradeNode).cost_curve
-	var al: Array[int] = [15, 20, 27, 37, 50, 67]
-	var cu: Array[int] = [8, 11, 15, 20, 27, 36, 48]
-	var au: Array[int] = [4, 5, 7, 10]
+	var al: Array[int] = [15, 19, 23, 29, 37, 46, 57, 72, 89, 112]
+	var cu: Array[int] = [3, 4, 5, 6, 7, 9, 11]
+	var au: Array[int] = [1, 1, 2, 2]
 	for level in range(1, 11):
 		var cost := curve.cost(level)
-		assert_eq(cost.get(&"al", 0), al[level - 1] if level <= 6 else 0, "Al at level %d" % level)
+		assert_eq(cost.get(&"al", 0), al[level - 1], "Al at level %d" % level)
 		assert_eq(cost.get(&"cu", 0), cu[level - 4] if level >= 4 else 0, "Cu at level %d" % level)
 		assert_eq(cost.get(&"au", 0), au[level - 7] if level >= 7 else 0, "Au at level %d" % level)
-	# The GDD table lists 2 and 4 Power Cells, but its own x1.35 rule gives 2 and 3.
-	assert_eq(curve.cost(9).get(&"pc", 0), 2)
-	assert_eq(curve.cost(10).get(&"pc", 0), 3)
+	assert_eq(curve.cost(9).get(&"pc", 0), 1)
+	assert_eq(curve.cost(10).get(&"pc", 0), 2)
 
 
 func test_modifier_kinds() -> void:

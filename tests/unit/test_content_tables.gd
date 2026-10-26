@@ -89,18 +89,22 @@ func test_tables_report_bad_cells() -> void:
 	assert_true(messages.begins_with("test.csv:2: "), "errors say where the row is")
 
 
-func test_cost_recipes_follow_gdd_12_4() -> void:
+func test_cost_recipes_keep_common_materials_useful_and_rare_costs_bounded() -> void:
 	var tables := ContentTables.new()
 	var row := {ContentTables.WHERE: "test.csv:2", "cost": "al_to_pc 15"}
 	var curve := tables._cost_curve(row, 10)
-	assert_eq(curve.parts, [&"al", &"cu", &"au", &"pc"] as Array[StringName])
-	assert_eq(Array(curve.bases), [15.0, 8.0, 4.0, 2.0], "Pistol Damage: Al 15, Cu 8, Au 4, PC 2")
-	assert_eq(Array(curve.first_levels), [1, 4, 7, 9])
-	assert_eq(Array(curve.last_levels), [6, 10, 10, 10])
+	assert_eq(curve.parts, [&"al", &"cu", &"au", &"pc", &"pc"] as Array[StringName])
+	assert_eq(Array(curve.bases), [15.0, 3.0, 1.0, 1.0, 2.0])
+	assert_eq(Array(curve.first_levels), [1, 4, 7, 9, 10])
+	assert_eq(Array(curve.last_levels), [10, 10, 10, 9, 10])
 	row["cost"] = "al_cu 12"
 	assert_eq(tables._cost_curve(row, 3).parts, [&"al"] as Array[StringName], "no Copper on a 3-level track")
 	row["cost"] = "cu_au 15"
 	assert_eq(Array(tables._cost_curve(row, 5).first_levels), [1, 4], "Gold for the upper half")
+	row["cost"] = "al_cu_au 24"
+	var support := tables._cost_curve(row, 5)
+	assert_eq(support.cost(1), {&"al": 24, &"cu": 3} as Dictionary[StringName, int])
+	assert_eq(support.cost(5).get(&"pc", 0), 0, "support ranks never require Power Cells")
 	row["cost"] = "al 60; cu 20"
 	var unlock := tables._cost_curve(row, 1)
 	assert_eq(unlock.cost(1), {&"al": 60, &"cu": 20} as Dictionary[StringName, int])

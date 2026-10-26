@@ -7,11 +7,11 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 ## What's in M1
 
 - **Farm:** every building from GDD 4.4 with ladders, hay-bale stairs, the porch trellis and ziplines Z1 (silo dome → barn), Z2 (water tower → silo catwalk) and Z3 (barn → stables). Each run scatters seeded props (hay, crates, fences, scarecrows, a tractor) and rebakes the navmesh around them.
-- **Vertical threats:** Roof Lobbers join from wave 4, climb the barn, chicken house, stables or tool shed and throw arcing shots from the roof. Drones join from wave 6, fly around the silo and fire from above. Both telegraph shots with a glowing charge, and lobs mark where they will land with a chalk circle. Only a few robots shoot the farmer at once; the rest shoot the silo, and hits open cracks at the height they land.
+- **Vertical threats:** Roof Lobbers join from wave 3 and make up about 25% of individual robots from then onward. They climb the barn, chicken house, stables or tool shed and throw arcing shots from the roof. Drones join from wave 5 (at most one per wave through wave 7), fly around the silo and fire from above. Both telegraph shots with a glowing charge, and lobs mark where they will land with a chalk circle. Only a few robots shoot the farmer at once; the rest shoot the silo, and hits open cracks at the height they land.
 - **Sidearms:** from wave 7 some small robots come as pea-shooting Spitters that stand off, shoot at catwalk height and hop between shots, and Clankers and Thumpers throw bolts and dirt clods (twice, with a chalk circle) at a farmer they can't reach. From wave 6 a Clanker's arm guard halves hits from the front, so flank it. Later waves shorten charges, lead straight shots and fire volleys instead of only adding numbers.
 - **Robots:** Nibblers (scouts, usually in trios; about 10% of the wave's spawns steal 20-bushel grain sacks in wave 1, rising 1.5 points each wave to a 40% cap; a Thieving family multiplies that by 1.5, up to 60%), Clankers (now and then a trio) and Thumpers whose slams send a shockwave ring you can jump over. Trios hit in a 3-beat rhythm, and a thief trio is a heist crew whose two escorts guard the sack. Each robot has behavior variables (silo focus, distraction triggers, chase time, leash): a "!" pop shows when one turns on the farmer. Every Big Haul wave (5, 10, 15…) brings a crowned Foreman. Each wave is one procedural family (3 themes, 9 palettes, 4 traits) with a name card and a 6-character family code.
 - **Level 0 "Morning Chores" (first run):** an untimed prologue that starts with a cluster of floating Aluminium by the tractor. Collect it, buy Grandpa's Wrench on the pegboard, bonk the Dummy-Bot, and heal on the porch. Then stop one slow, real Nibbler. If it hits the silo, finish it and repair that leak. Climb the catwalk to see the robot lanes, then ring the bell for a melee-only wave 1. The practice Nibbler pauses after one hit, giving you time to respond. Details are in [docs/LEVEL_0_MORNING_CHORES.md](docs/LEVEL_0_MORNING_CHORES.md).
-- **Economy:** parts burst out of robots and magnetize to you; the Scrap Vac collects a share when a wave ends. The tool shed pegboard has 41 upgrades across Travel, Attack, Repair, Defend and Farmhand. As parts accumulate, buy the Rivet Pistol, short-range Barn Blaster, long-range rifle, group-clearing grenades, Haymaker Maul or 360-degree Harvest Scythe; later add air dash and ground pound to the jetpack.
+- **Economy:** parts burst out of robots and magnetize to you; parts remain through the following intermission and Scrap Vac sweeps leftovers when the next battle starts. Even-wave clears bank 2 Copper, 1 Gold and 1 Power Cell; Foreman rare bounties bank immediately. Upgrade prices retain Aluminium at high ranks and lower scarce-material costs. The tool shed pegboard has 42 upgrades across Travel, Attack, Repair, Defend and Farmhand. As parts accumulate, buy the Rivet Pistol, short-range Barn Blaster, long-range rifle, group-clearing grenades, Haymaker Maul or 360-degree Harvest Scythe; later add air dash and ground pound to the jetpack.
 - **Silo warnings:** the first hit sounds a distinct alarm when you are away from the silo. A red banner shows its direction, distance and remaining Structure; if cracked grain is still leaking after the attack, an amber repair reminder remains until the leaks are sealed. Repeated hits share an alarm cooldown.
 - **Persistence:** parts, upgrades, the jetpack, records and the Robot Almanac save to `user://profile.json` (on macOS, `~/Library/Application Support/Godot/app_userdata/Robot Attack!/`). Autosaves happen at each intermission start, after each purchase and on game over.
 - **Look:** a clay shader (lumps, thumbprints, subsurface scattering, and a 12 fps surface "boil" driven by `StopMotionClock`). Robot poses step at 12 fps and the farmer's squash and stretch at 24 fps. The barn, water tower, well, windpump, fences, crates and plants are clayified CC0 models (see [CREDITS.md](CREDITS.md)); the ground is tinted felt, the sky a painted backdrop with cotton-ball clouds, and the corn wall hand-cut paper stalks. UI text is Fredoka SemiBold.
@@ -36,13 +36,15 @@ Open the folder in Godot 4.7 and press Play (main scene: `scenes/main/main.tscn`
 
 The pause menu freezes gameplay and includes a wave selector, next-wave and bell controls, plus debug tools for parts, god mode, the jetpack, clearing robots, and silo damage. Restart run is also available there, plus Restart, no parts (wave 1 with zero parts, saved to the profile) and New game (erases the whole profile and replays Level 0; click it twice).
 
-Intermissions run 90 seconds for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack becomes purchasable at the shed from wave 3 for 40 Al and 15 Cu. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early and earn the Early Bird bonus.
+Intermissions run 90 seconds for now, long enough to browse the pegboard; the design target is 30 s once the Hub pegboard lands (see [docs/ROADMAP.md](docs/ROADMAP.md), D1). Try other lengths with the console's `intermission <seconds>`. The jetpack becomes purchasable at the shed from wave 3 for 40 Al and 15 Cu. The Home porch heals 15 HP/s. Ring the dinner bell by the porch to start a wave early; its five-Al base Early Bird bonus is paid only after that wave clears.
 
 ## Debug keys (debug builds)
 
 Escape opens the pause / development menu. F1 help · F2 ring the bell · F3 give parts · F4 clear robots · F5 next wave · F6 god mode · F7 jetpack · F8 damage silo 100 · F9 next time of day · F10 next weather · `` ` `` console: `wave <n>`, `give <al|cu|au|pc|all> <n>`, `godmode`, `jetpack`, `silo <dmg>`, `grain <n>`, `kill`, `bell`, `buy <upgrade id>`, `intermission <seconds>`, `reset` (wipe the profile).
 
 Pass `-- --tutorial` to replay Level 0 on a profile that has finished it, `-- --skip-tutorial` to skip it, `-- --seed=1234` for a fixed run seed, or `-- --profile=user://other.json` for a separate profile. `--time=<preset>` (`dawn`, `morning`, `noon`, `golden_hour`, `dusk`, `moonlit_night`) and `--weather=<type>` (`clear`, `breezy`, `drizzle`, `morning_fog`) force the run's starting time of day and weather.
+
+The existing silo-ladder → dome → barn cable route is retained based on gameplay testing. Decoys, barricades, spring traps and dedicated silo-ladder attackers remain design work; see [the defense proposal](docs/DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md).
 
 ## Tests and tools
 
@@ -54,13 +56,13 @@ GUT unit tests (GUT 9.7.1 is vendored in `addons/gut`). They cover difficulty cu
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
 
-End-to-end smoke test (127 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
+End-to-end smoke test (132 checks) that plays the real game headless on its own throwaway profile. Each run rolls a random seed and prints it; add `-- --seed=<n>` to replay one:
 
 ```bash
 godot --headless --path . --fixed-fps 60 res://tests/smoke/smoke_test.tscn -- --seed=1234
 ```
 
-The current 127-check version passed on seed 7 on 2026-10-24. The earlier 115-check version passed on seeds 1, 2, 3, 7, 42, 99, 1234, 2024, 31337 and 664607717 on 2026-10-18 (M2-A0's 93 checks passed on seeds 1–100 and 6 random seeds). Runs can go in parallel, even from different worktrees, since each run uses its own temp profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals it between sections. If a run ends early, the test stops with one failure that names the section and the reason.
+The updated 132-check version passed on seed 7 on 2026-10-25; the full 168-test unit suite and 67-check tutorial also passed ([climber/economy evidence](docs/audit-evidence/2026-10-25-economy/README.md)). The earlier 115-check version passed on seeds 1, 2, 3, 7, 42, 99, 1234, 2024, 31337 and 664607717 on 2026-10-18 (M2-A0's 93 checks passed on seeds 1–100 and 6 random seeds). Runs can go in parallel, even from different worktrees, since each run uses its own temp profile file. The smoke-test farmer has god mode but doesn't defend the silo, so the test reseals it between sections. If a run ends early, the test stops with one failure that names the section and the reason.
 
 Level 0 test: plays the whole prologue headless on a fresh profile (tractor parts, pegboard, Dummy-Bot, porch, melee practice Nibbler, repair after its hit, catwalk, bell) and checks that wave 1 begins with only the wrench:
 
@@ -80,6 +82,12 @@ The atmosphere gallery (`tests/tools/atmosphere_gallery.tscn`) shows the farm wi
 
 ```bash
 godot --path . res://tests/tools/atmosphere_gallery.tscn -- --out=/tmp/atmosphere
+```
+
+The reproducible economy probe uses the real roster generator and catalog to report seeded composition and expected income (including guaranteed rewards), with full-collection and 50%-Vac models. These are economy estimates, not player survival tests:
+
+```bash
+godot --headless --path . --script res://tools/economy_probe.gd -- --probe-seeds=256 --probe-last-wave=6
 ```
 
 Generated content. The pegboard, the robot archetypes and the robot family genes are edited as CSV tables in `data/source/` (format: [data/source/README.md](data/source/README.md)). Two tools turn them into the `.tres` files the game loads. Edit a table, regenerate, then run the unit tests: `test_content_tables.gd` fails if a `.tres` no longer matches its table, or if an upgrade modifies a stat that no system reads (the orphan-stat rule).

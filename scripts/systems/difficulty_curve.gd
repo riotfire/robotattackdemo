@@ -43,6 +43,11 @@ extends Resource
 @export_range(0.0, 1.0) var trio_step_share: float = 0.6667
 @export var trio_full_wave: int = 15
 
+@export_group("Vertical threats")
+## Keep the first two melee teaching waves; then reserve roughly one climber per three other robots.
+@export var climber_first_wave: int = 3
+@export_range(0.0, 0.5) var climber_target_share: float = 0.25
+
 @export_group("Attack scaling (9.6, M2-B10)")
 ## The authored opening (waves 1 to this) keeps the M1 values of every knob below; scaling starts after it.
 @export var opening_last_wave: int = 5
@@ -66,8 +71,8 @@ extends Resource
 @export var spitter_share_base: float = 0.10
 @export var spitter_share_per_wave: float = 0.02
 @export var spitter_share_cap: float = 0.4
-## Spawn shares of the attack grid's columns (melee, ranged, flight) by phase after the opening. The
-## opening has none: it keeps the plain type weights.
+## Weighted-pick shares of the attack grid's columns (melee, ranged, flight) by phase after the opening.
+## The climber reservation and per-wave caps determine final composition. The opening keeps plain weights.
 @export var column_weights_early: PackedFloat32Array = [0.60, 0.28, 0.12]
 @export var column_weights_mid: PackedFloat32Array = [0.52, 0.30, 0.18]
 @export var column_weights_late: PackedFloat32Array = [0.45, 0.33, 0.22]
@@ -196,8 +201,8 @@ func spitter_share(wave: int) -> float:
 	return minf(spitter_share_cap, spitter_share_base + spitter_share_per_wave * float(wave - spitter_first_wave))
 
 
-## Spawn shares of the melee, ranged and flight columns in this wave; empty in the opening, which keeps the
-## plain type weights.
+## Weighted-pick shares of the melee, ranged and flight columns; empty in the opening, which keeps plain
+## type weights. The director reserves climbers separately and limits drones before using these weights.
 func column_weights(wave: int) -> PackedFloat32Array:
 	match attack_phase(wave):
 		0:
@@ -230,6 +235,14 @@ func trio_chance(wave: int, archetype: RobotArchetype, foreman: bool = false) ->
 	var step := early + (late - early) * trio_step_share
 	var t := clampf(float(wave - trio_step_wave) / maxf(1.0, float(trio_full_wave - trio_step_wave)), 0.0, 1.0)
 	return lerpf(step, late, t)
+
+
+## Number of individual climbers to reserve for this many other robots. The Foreman, when present,
+## counts among the other robots; a three-robot squad counts as three, rather than one spawn event.
+func climber_count(wave: int, other_robots: int) -> int:
+	if wave < climber_first_wave or climber_target_share <= 0.0:
+		return 0
+	return roundi(float(other_robots) * climber_target_share / maxf(0.01, 1.0 - climber_target_share))
 
 
 ## Relative spawn intensity at normalized time t in [0, 1].

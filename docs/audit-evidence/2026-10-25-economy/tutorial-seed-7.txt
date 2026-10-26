@@ -1,0 +1,92 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+  PASS  a fresh profile hasn't done Level 0
+Robot Attack! run seed: 7
+
+== Start ==
+  PASS  a TutorialDirector runs on a fresh profile
+  PASS  the wave director waits in TUTORIAL (Morning chores)
+  PASS  the normal control hint stays visible before the first weapon
+  PASS  the normal phase and weapon HUD remains during Level 0
+  PASS  the first lesson explains how to collect parts
+  PASS  a low ground ring guides the player without a floating icon
+  PASS  the shed waits until the starter parts are collected
+  PASS  a fresh player starts without the wrench
+  PASS  a new player starts without the pistol
+  PASS  no clock runs while the chores wait
+
+== 1 Aluminium ==
+  PASS  starts with the parts cluster
+  PASS  the first run places a tractor beside the starter parts
+  PASS  six floating bits form one pickup cluster
+  PASS  the cluster sits near the tractor
+  PASS  all starter bits stay together instead of forming a trail
+  PASS  the silo starts intact
+  PASS  collecting the cluster opens the shed lesson
+  PASS  the cluster banks exactly 6 Aluminium
+  PASS  the shed opens for the first purchase
+
+== 2 Pegboard ==
+  PASS  the pegboard opens focused on Grandpa's Wrench
+  PASS  the collected parts pay for the highlighted wrench peg
+  PASS  the normal pegboard purchase buys the wrench
+  PASS  the board closes and the bought wrench appears in hand
+  PASS  the wrench spent the starter parts
+
+== 3 Dummy-Bot ==
+  PASS  the Dummy-Bot step follows
+  PASS  the Dummy-Bot popped up
+  PASS  the normal action prompt teaches the wrench attack
+  PASS  a wrench hit hurts the dummy (75 -> 50)
+  PASS  three swings pop it (75 HP: 25, 25, then the x1.5 finisher)
+  PASS  the dummy drops only a starter handful of Aluminium (0 -> 5)
+  PASS  its spring bonked Pip for 20 (HP 80)
+
+== 4 Porch ==
+  PASS  the Porch step follows
+  PASS  standing on the porch heals to full (HP 100)
+  PASS  healing leads straight to the Nibbler
+  PASS  no silo repair is required before the Nibbler
+  PASS  the shed stays shut during melee training
+
+== 5 Practice defense ==
+  PASS  one Nibbler approaches the silo before wave 1
+  PASS  practice does not start the wave clock
+  PASS  the Nibbler demonstrates silo damage
+  PASS  the practice hit keeps the tutorial lesson in focus
+  PASS  practice Nibbler pauses after one hit
+  PASS  the hit opens a repairable leak
+  PASS  the wrench is the only available weapon for the live rehearsal
+  PASS  wrench swings damage the live Nibbler
+  PASS  stopping the Nibbler completes defense practice
+  PASS  the lesson asks for repair after the attack
+  PASS  patching the new leak completes the defense loop
+  PASS  the catwalk follows the melee defense loop
+
+== 6 Catwalk ==
+  PASS  Pip climbs the silo ladder (y 7.6)
+  PASS  the vista sweep holds Pip still on the catwalk
+  PASS  the vista leads to the zipline
+  PASS  control returns after the sweep
+  PASS  riding the zipline leads to the dinner bell
+
+== 7 Dinner bell ==
+  PASS  the bell starts wave 1's siren (Siren)
+  PASS  finishing the chores pays the Early Bird +5 Al
+  PASS  wave 1 begins without a pistol
+  PASS  the shed stays shut through wave 1's siren
+  PASS  the starter payout cannot buy the pistol before wave 1
+  PASS  Level 0 is saved as done
+  PASS  the normal HUD continues after the tutorial action clears
+  PASS  the lesson clears for normal play
+  PASS  wave 1 attacks after the siren
+  PASS  the shed stays shut while wave 1 attacks
+  PASS  the tutorial cleans itself up
+  PASS  and so does the Dummy-Bot
+
+== Profile ==
+  PASS  the finished flag survives a save and reload
+
+TUTORIAL TEST PASSED (67 checks)

@@ -1,15 +1,15 @@
 class_name Pickup
 extends Node3D
 ## Parts and grain sacks on the ground (GDD 12.3, 3.3). Parts burst out as springy clay bits, then
-## magnetize to a farmer within 3 m (Scrap Magnet adds range) and bank instantly. Uncollected parts blink
-## and vanish after 25 s; the Scrap Vac takes a share of them when a wave is cleared.
+## magnetize to a farmer within 3 m (Scrap Magnet adds range) and bank instantly. Parts remain through
+## battle and intermission; Scrap Vac takes a share and clears leftovers when the next battle starts.
 ## Grain sacks don't magnetize: walk over one to return its grain. Unclaimed sacks burst after 20 s
 ## (Sack Tracker: they roll home on their own after 5 s).
 ## Lightweight scripted nodes, not rigid bodies (GDD 18.4).
 
 const GROUP: StringName = &"pickups"
 const GRAIN: StringName = &"grain"
-const PART_LIFETIME: float = 25.0
+const PART_LIFETIME: float = INF
 const SACK_LIFETIME: float = 20.0
 const SACK_AUTO_RETURN: float = 5.0
 const BLINK_TIME: float = 5.0
@@ -40,6 +40,8 @@ var _landed: bool = false
 var _magnet_speed: float = 0.0
 var _target: Node3D = null
 var _visual: Node3D
+var _sweep_warning: bool = false
+var _settled: bool = false
 
 
 static func spawn_parts(context: Node, at: Vector3, parts: Dictionary) -> void:
@@ -76,6 +78,8 @@ static func _add(context: Node, pickup: Pickup, at: Vector3) -> void:
 
 func _ready() -> void:
 	add_to_group(GROUP)
+	if kind != GRAIN:
+		EventBus.siren_started.connect(_on_siren_started)
 	_visual = Node3D.new()
 	add_child(_visual)
 	if tutorial_display:
@@ -103,7 +107,7 @@ func _physics_process(delta: float) -> void:
 			EventBus.hud_message.emit("A grain sack burst: %d bushels lost" % amount, 2.0)
 		queue_free()
 		return
-	_visual.visible = _age < expires_after - BLINK_TIME or int(_age * 8.0) % 2 == 0
+	_visual.visible = (not _sweep_warning and _age < expires_after - BLINK_TIME) or int(_age * 8.0) % 2 == 0
 	if tutorial_display:
 		_visual.position.y = 0.3 + sin(_age * 4.0) * 0.12
 	elif kind != GRAIN and _landed:
@@ -148,12 +152,20 @@ func attract_to(who: Node3D) -> void:
 
 
 func _collect() -> void:
+	if _settled or is_queued_for_deletion():
+		return
+	_settled = true
+	remove_from_group(GROUP)
 	GameState.add_parts({kind: amount})
 	collected.emit(self, _target)
 	queue_free()
 
 
 func _return_grain() -> void:
+	if _settled or is_queued_for_deletion():
+		return
+	_settled = true
+	remove_from_group(GROUP)
 	var silo := GameState.silo
 	if silo != null:
 		var added := silo.add_grain(float(amount))
@@ -162,16 +174,22 @@ func _return_grain() -> void:
 	queue_free()
 
 
-## Scrap Vac (GDD 11.1): banks a share of this pickup at wave end and removes it. Returns parts banked.
+## Scrap Vac: banks a share at the next battle's start and removes it. Returns parts banked.
 func vacuum(fraction: float, rng: RandomNumberGenerator) -> int:
-	if kind == GRAIN:
+	if kind == GRAIN or _settled or is_queued_for_deletion():
 		return 0
+	_settled = true
+	remove_from_group(GROUP)
 	var exact := amount * clampf(fraction, 0.0, 1.0)
 	var banked := floori(exact) + (1 if rng.randf() < exact - floorf(exact) else 0)
 	if banked > 0:
 		GameState.add_parts({kind: banked})
 	queue_free()
 	return banked
+
+
+func _on_siren_started(_wave: int, _lanes: PackedInt32Array) -> void:
+	_sweep_warning = true
 
 
 func _find_ground(from: Vector3) -> float:

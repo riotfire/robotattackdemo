@@ -67,7 +67,7 @@ func _run() -> void:
 	_section("Start")
 	_check(silo != null, "silo registered")
 	_check(_director.phase == WaveDirector.Phase.INTERMISSION and _director.wave == 1, "starts in the wave 1 intermission")
-	_check(absf(_director.time_left - 120.0) < 0.5, "intermission is 120 s (%.2f left)" % _director.time_left)
+	_check(absf(_director.time_left - 90.0) < 0.5, "intermission is 90 s (%.2f left)" % _director.time_left)
 	# The rest of this test was written around a 30 s intermission, so run it at 30 s; the default is checked above.
 	_director.intermission_time = 30.0
 	_director.time_left = 30.0
@@ -136,14 +136,19 @@ func _run() -> void:
 	await _wait_until(func() -> bool: return silo.get_cracks().size() >= 3, 25.0)
 	var grain_before := silo.grain
 	var parts_before := GameState.parts[&"al"]
+	var intermission_loot := Pickup.new()
+	intermission_loot.kind = &"al"
+	intermission_loot.amount = 11
+	intermission_loot.position = Vector3(80.0, 0.3, 80.0)
+	_main.add_child(intermission_loot)
 	_kill_all_robots()
 	await _frames(30)
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.CLEARED, 60.0)
 	_check(t >= 0.0, "wave 1 cleared after the last robot")
 	_check(silo.grain > grain_before or is_equal_approx(silo.grain, silo.max_grain), "harvest bonus adds grain (%.1f -> %.1f)" % [grain_before, silo.grain])
-	_check(GameState.parts[&"al"] > parts_before, "Scrap Vac banks leftover parts (%d -> %d Al)" % [parts_before, GameState.parts[&"al"]])
-	_check(get_tree().get_nodes_in_group(Pickup.GROUP).all(func(p: Node) -> bool: return (p as Pickup).kind == Pickup.GRAIN or p.is_queued_for_deletion()),
-			"Scrap Vac clears the parts off the field")
+	_check(GameState.parts[&"al"] >= parts_before, "collected parts remain banked (%d -> %d Al)" % [parts_before, GameState.parts[&"al"]])
+	_check(is_instance_valid(intermission_loot) and not intermission_loot.is_queued_for_deletion(),
+			"wave clear leaves uncollected parts available for intermission")
 	_al_from_wave_1 = GameState.parts[&"al"]
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(t >= 0.0 and _director.wave == 2, "back to intermission, now for wave 2")
@@ -172,16 +177,23 @@ func _run() -> void:
 
 	_section("Wave 2")
 	await _test_dinner_bell()
+	_check(is_instance_valid(intermission_loot), "old parts survive until the next battle, including the siren")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
+	await _frames(1)
+	_check(not is_instance_valid(intermission_loot), "the next battle sweeps the previous round's parts")
 	_check_spawn_mix(2)
 	_check(_director.genome != family, "wave 2 rolls a new family: %s" % _director.genome.family_name)
 	_check(_director.genome.theme != family.theme, "no theme repeats back to back (%s -> %s)" % [family.theme.theme_word, _director.genome.theme.theme_word])
 	await _test_squads()
 	await _test_pistol()
 	await _wait_until(func() -> bool: return _director.spawns_done >= _director.spawns_total, 70.0)
+	var al_before_clear := GameState.parts[&"al"]
+	var cells_before_clear := GameState.parts[&"pc"]
 	_kill_all_robots()
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.CLEARED, 40.0)
 	_check(t >= 0.0, "wave 2 cleared")
+	_check(GameState.parts[&"al"] >= al_before_clear + 5, "Early Bird is paid after earning the clear")
+	_check(GameState.parts[&"pc"] >= cells_before_clear + 1, "wave two guarantees a banked Power Cell")
 	_check(not GameState.jetpack_unlocked, "the jetpack is still a later build choice after wave 2")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(_director.wave == 3, "intermission for wave 3")
@@ -530,7 +542,7 @@ func _test_dinner_bell() -> void:
 	var t := await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SIREN, 3.0)
 	Input.action_release(&"interact")
 	_check(t > 0.9 and t < 1.3, "holding Interact for 1 s rings the bell and starts the siren (%.2f s)" % t)
-	_check(GameState.parts[&"al"] > al_before, "Early Bird bonus paid (%d -> %d Al)" % [al_before, GameState.parts[&"al"]])
+	_check(GameState.parts[&"al"] == al_before, "ringing the bell defers its reward until the wave clears")
 	_farmer.teleport_to(Vector3(0.0, 0.2, 14.0))
 
 
@@ -650,6 +662,14 @@ func _test_time_and_weather() -> void:
 	var table := time_of_day.table
 	var count := table.presets.size()
 	var expected := table.roll(RngService.make_rng([GameState.run_seed, TimeOfDay.STREAM]))
+	# Runtime keeps seeded visual variation but deliberately starts each run at Dawn/Clear.
+	expected.start_index = table.preset_by_id(TimeOfDay.START_PRESET)
+	expected.weather_index = table.weather_by_id(TimeOfDay.START_WEATHER)
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--time="):
+			expected.start_index = table.preset_by_id(StringName(arg.trim_prefix("--time=")))
+		elif arg.begins_with("--weather="):
+			expected.weather_index = table.weather_by_id(StringName(arg.trim_prefix("--weather=")))
 	var start := table.presets[expected.start_index]
 	var rolled := table.weathers[expected.weather_index]
 	_check(time_of_day.run_roll != null and time_of_day.run_roll.equals(expected),

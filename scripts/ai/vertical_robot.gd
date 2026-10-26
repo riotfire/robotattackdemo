@@ -6,11 +6,12 @@ extends Robot
 ## the shared RobotTargeting: the farmer while it is after them and within range, otherwise the silo.
 
 const ROOF_GROUP: StringName = &"roof_lobbers"
+## Building paths relative to the farm's navigation region, independent of the scene wrapper.
 const ROOF_SITES: Array[Dictionary] = [
-	{"path": ^"Farm/NavRegion/ToolShed", "entry": Vector3(5.2, 0.0, 0.0), "wall": Vector3(4.55, 0.0, 0.0), "edge_y": 4.05, "top": Vector3(3.3, 4.05, 0.0)},
-	{"path": ^"Farm/NavRegion/Barn", "entry": Vector3(10.4, 0.0, 0.0), "wall": Vector3(9.55, 0.0, 0.0), "edge_y": 9.15, "top": Vector3(0.0, 13.1, 0.0)},
-	{"path": ^"Farm/NavRegion/Stables", "entry": Vector3(0.0, 0.0, 5.4), "wall": Vector3(0.0, 0.0, 4.55), "edge_y": 6.1, "top": Vector3(0.0, 6.1, 2.6)},
-	{"path": ^"Farm/NavRegion/ChickenHouse", "entry": Vector3(-6.3, 0.0, 0.0), "wall": Vector3(-5.55, 0.0, 0.0), "edge_y": 3.6, "top": Vector3(-3.2, 3.6, 0.0)},
+	{"path": ^"ToolShed", "entry": Vector3(5.2, 0.0, 0.0), "wall": Vector3(4.55, 0.0, 0.0), "edge_y": 4.05, "top": Vector3(3.3, 4.05, 0.0)},
+	{"path": ^"Barn", "entry": Vector3(10.4, 0.0, 0.0), "wall": Vector3(9.55, 0.0, 0.0), "edge_y": 9.15, "top": Vector3(0.0, 13.1, 0.0)},
+	{"path": ^"Stables", "entry": Vector3(0.0, 0.0, 5.4), "wall": Vector3(0.0, 0.0, 4.55), "edge_y": 6.1, "top": Vector3(0.0, 6.1, 2.6)},
+	{"path": ^"ChickenHouse", "entry": Vector3(-6.3, 0.0, 0.0), "wall": Vector3(-5.55, 0.0, 0.0), "edge_y": 3.6, "top": Vector3(-3.2, 3.6, 0.0)},
 ]
 
 @export var aerial: bool = false
@@ -68,11 +69,11 @@ func _ready() -> void:
 
 
 func _choose_roof() -> void:
-	var scene := get_tree().current_scene
+	var region := _roof_navigation_region()
 	var best_score := INF
 	for i in ROOF_SITES.size():
 		var site := ROOF_SITES[i]
-		var building := scene.get_node_or_null(site["path"] as NodePath) as Node3D
+		var building := region.get_node_or_null(site["path"] as NodePath) as Node3D if region != null else null
 		if building == null:
 			continue
 		var entry := building.to_global(site["entry"] as Vector3)
@@ -91,6 +92,22 @@ func _choose_roof() -> void:
 		push_warning("Roof lobber found no farm roofs; falling back to ground combat.")
 		travel = Travel.PERCHED
 		_roof_top = global_position
+
+
+## Main may be instanced below a smoke/test scene or another game root. Prefer the registered silo's
+## farm, then the robot's ancestors and standalone current scene, rather than assuming current_scene is Main.
+func _roof_navigation_region() -> Node3D:
+	for origin: Node in [GameState.silo, self, get_tree().current_scene]:
+		if not is_instance_valid(origin):
+			continue
+		var context := origin
+		while context != null:
+			for path: NodePath in [^"Farm/NavRegion", ^"NavRegion"]:
+				var region := context.get_node_or_null(path) as Node3D
+				if region != null:
+					return region
+			context = context.get_parent()
+	return null
 
 
 func _physics_process(delta: float) -> void:

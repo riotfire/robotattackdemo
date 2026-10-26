@@ -6,9 +6,9 @@ extends Node
 ## Each wave rolls one robot family (RobotGenome, GDD 10) at the siren. Spawns are bought by type weight
 ## (Scout 55%, Grunt 35%, Heavy 10% with a per-wave cap, GDD 9.1); each spawn then rolls its archetype's
 ## trio chance (GDD 9.6) and costs its threat per robot x group size (GDD 11.4). Every Big Haul wave adds a
-## Foreman (GDD 11.2). From wave 6 the attack grid's columns (melee, ranged, flight) get their own spawn
-## shares (DifficultyCurve.column_weights); from wave 7 a share of small ground melee spawns come as
-## Spitters instead (DifficultyCurve.spitter_share, M2-B9, B10).
+## Foreman (GDD 11.2). From wave 3, budget reservation makes roughly 25% of individual robots Roof
+## Lobbers. From wave 6 the other weighted picks use the attack grid's column weights; caps keep drones
+## scarce. From wave 7 a share of small ground melee spawns come as Spitters instead (M2-B9, B10).
 ## Authoritative: in co-op this runs on the host only (GDD 18.8).
 ## A first run opens with Level 0 "Morning Chores" (TUTORIAL): no clock runs until the dinner bell is rung,
 ## and TutorialDirector teaches the farm with pictures in the meantime.
@@ -44,9 +44,11 @@ const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-
 @export var straggler_time: float = 20.0
 ## Live robot cap; extra spawns wait in the queue (GDD 11.4: 60 on PC, 40 on Steam Deck).
 @export var live_robot_cap: int = 60
-## Wave progression and early-bird settings (GDD 2.4, 5.4).
-## Early Bird bonus for ringing the bell early: Al per second skipped x (1 + wave / 10) (GDD 11.1).
-@export var early_bird_al_per_second: float = 1.0
+## Ready is a small reward for clearing the wave, independent of skipped time or timer settings.
+@export var early_bird_base_al: float = 5.0
+## Predictable rare progress before the wave-five wall. Legitimate repeat attempts can earn it again.
+@export var salvage_reward_interval: int = 2
+@export var salvage_clear_parts: Dictionary[StringName, int] = {&"cu": 2, &"au": 1, &"pc": 1}
 
 var phase: Phase = Phase.INTERMISSION
 ## Aluminium the dinner bell pays for finishing Level 0's chores (set by TutorialDirector).
@@ -70,6 +72,8 @@ var _events: Array[SpawnEvent] = []
 var _wave_rng: RandomNumberGenerator
 var _lanes: Dictionary[int, LaneMarker] = {}
 var _stragglers_marked: bool = false
+var _ready_bonus_wave: int = 0
+var _settled_clear_waves: Dictionary[int, bool] = {}
 
 
 ## One spawn: a single robot, a trio, or the Foreman. Authored waves can set the group size directly.
@@ -97,6 +101,8 @@ func _ready() -> void:
 
 ## `tutorial` opens with Level 0 instead of the first intermission.
 func start_run(tutorial: bool = false) -> void:
+	_ready_bonus_wave = 0
+	_settled_clear_waves.clear()
 	_lanes.clear()
 	for node in get_tree().get_nodes_in_group(LaneMarker.GROUP):
 		var lane := node as LaneMarker
@@ -200,6 +206,13 @@ func _roll_family() -> void:
 
 
 func _enter_spawning() -> void:
+	# Sweep only the previous battle's pickups, after the whole collection intermission and before
+	# emitting wave_started or creating anything belonging to the new battle.
+	var vacuumed := _scrap_vac()
+	# The intermission autosave happened before manual collection and this sweep. Persist both now.
+	SaveManager.save_profile()
+	if vacuumed > 0:
+		EventBus.hud_message.emit("Scrap Vac banked +%d leftover parts" % vacuumed, 2.0)
 	spawn_window = curve.spawn_window(wave)
 	_events = _build_spawn_events(wave)
 	_schedule = curve.spawn_schedule(_events.size(), spawn_window * curve.spawn_window_fraction)
@@ -223,12 +236,38 @@ func _enter_cleared() -> void:
 	var grain_added := 0.0
 	if GameState.silo != null:
 		grain_added = GameState.silo.add_grain(GameState.silo.harvest_bonus_amount())
-	var vacuumed := _scrap_vac()
+	var rewards := _settle_clear_parts()
 	_set_lanes_active(false)
 	_set_phase(Phase.CLEARED)
 	EventBus.wave_cleared.emit(wave)
-	var vac_text := "   Scrap Vac +%d parts" % vacuumed if vacuumed > 0 else ""
-	EventBus.hud_message.emit("Wave %d cleared!  Harvest +%d grain%s" % [wave, roundi(grain_added), vac_text], 3.0)
+	var reward_text := PackedStringArray()
+	for part: StringName in rewards:
+		reward_text.append("+%d %s" % [rewards[part], String(part).to_upper()])
+	var salvage := "   Salvage " + ", ".join(reward_text) if not reward_text.is_empty() else ""
+	EventBus.hud_message.emit("Wave %d cleared!  Harvest +%d grain%s" % [wave, roundi(grain_added), salvage], 3.0)
+
+
+func clear_rewards_for(wave_number: int) -> Dictionary[StringName, int]:
+	if wave_number <= 0 or salvage_reward_interval <= 0 or wave_number % salvage_reward_interval != 0:
+		return {}
+	return salvage_clear_parts.duplicate()
+
+
+## A repeated phase callback cannot pay twice, and ringing then losing/restarting pays nothing.
+func _settle_clear_parts() -> Dictionary[StringName, int]:
+	if _settled_clear_waves.has(wave):
+		return {}
+	_settled_clear_waves[wave] = true
+	var rewards := clear_rewards_for(wave)
+	if _ready_bonus_wave == wave:
+		rewards[&"al"] = floori(early_bird_base_al * StatService.get_stat(&"economy.early_bird", 1.0))
+	_ready_bonus_wave = 0
+	if not rewards.is_empty():
+		GameState.add_parts(rewards)
+		SaveManager.save_profile()
+	return rewards
+
+
 func _on_game_over(_reason: StringName) -> void:
 	_running = false
 	_set_phase(Phase.GAME_OVER)
@@ -246,38 +285,42 @@ func _set_wave(new_wave: int) -> void:
 
 # --- Spawning -------------------------------------------------------------------------------------
 
-## Buys spawn events with the wave's threat budget: unlocked, affordable archetypes picked by type
-## weight, with a per-wave cap on Heavies. Seeded, so every peer builds the same list.
+## Buys spawn events with the wave's threat budget. From wave 3, reserve the cost of enough Roof Lobbers
+## to make roughly 25% of individual robots climbers, including the bonus Foreman in the denominator.
+## This replaces ground purchases inside the regular budget; it never adds a second vertical budget.
+## All other archetypes retain their weighted picks, group rolls and caps. Seeded on every peer.
 func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 	var available: Array[RobotArchetype] = []
+	var climber: RobotArchetype = null
 	for archetype in archetypes:
 		if archetype != null and archetype.unlock_wave <= wave_number:
-			available.append(archetype)
+			if archetype.id == &"roof_lobber" and wave_number >= curve.climber_first_wave \
+					and curve.climber_target_share > 0.0:
+				climber = archetype
+			else:
+				available.append(archetype)
 	var events: Array[SpawnEvent] = []
 	var budget := curve.threat_budget(wave_number)
 	var heavies := 0
 	var heavy_cap := heavy_cap_for(wave_number)
-	var rooftop_count := 0
 	var drone_count := 0
-	# Give each new vertical threat a guaranteed introduction on its unlock wave.
+	var other_robots := 1 if curve.is_big_haul(wave_number) and foreman_archetype != null else 0
+	# The Drone still has a guaranteed solo introduction; climbers use the reserved share instead.
 	for archetype in available:
-		if wave_number == archetype.unlock_wave \
-				and (archetype.id == &"roof_lobber" or archetype.id == &"drone"):
-			if archetype.threat_cost() <= budget:
+		if wave_number == archetype.unlock_wave and archetype.id == &"drone":
+			if archetype.threat_cost() + _climber_reserve(wave_number, other_robots + 1, climber) <= budget:
 				events.append(SpawnEvent.new(archetype))
 				budget -= archetype.threat_cost()
-				if archetype.id == &"roof_lobber":
-					rooftop_count += 1
-				else:
-					drone_count += 1
+				other_robots += 1
+				drone_count += 1
 	while not available.is_empty():
 		var options: Array[RobotArchetype] = []
 		var total_weight := 0.0
+		var single_budget := budget - _climber_reserve(wave_number, other_robots + 1, climber)
 		for archetype in available:
 			var is_heavy := archetype.robot_type == RobotArchetype.RobotType.HEAVY
-			var at_cap := (archetype.id == &"roof_lobber" and rooftop_count >= rooftop_cap_for(wave_number)) \
-					or (archetype.id == &"drone" and drone_count >= (1 if wave_number < 8 else 3))
-			if archetype.threat_cost() <= budget + 0.001 and not (is_heavy and heavies >= heavy_cap) and not at_cap:
+			var at_cap := archetype.id == &"drone" and drone_count >= drone_cap_for(wave_number)
+			if archetype.threat_cost() <= single_budget + 0.001 and not (is_heavy and heavies >= heavy_cap) and not at_cap:
 				options.append(archetype)
 		if options.is_empty():
 			break
@@ -291,21 +334,42 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 			if roll <= 0.0:
 				pick = options[i]
 				break
-		pick = roll_role(wave_number, pick, budget)
-		var event := SpawnEvent.new(pick, false, roll_group_size(wave_number, pick, budget))
+		pick = roll_role(wave_number, pick, single_budget)
+		var trio_budget := budget - _climber_reserve(wave_number, other_robots + 3, climber)
+		var event := SpawnEvent.new(pick, false, roll_group_size(wave_number, pick, trio_budget))
 		events.append(event)
 		budget -= event.threat_cost()
+		other_robots += event.robot_count()
 		if pick.robot_type == RobotArchetype.RobotType.HEAVY:
 			heavies += 1
-		if pick.id == &"roof_lobber":
-			rooftop_count += event.robot_count()
-		elif pick.id == &"drone":
+		if pick.id == &"drone":
 			drone_count += event.robot_count()
+	if climber != null:
+		var count := mini(maxi(1, curve.climber_count(wave_number, other_robots)), floori(budget / climber.threat_cost()))
+		events = _interleave_climbers(events, climber, count)
 	return events
 
 
+func _climber_reserve(wave_number: int, other_robots: int, climber: RobotArchetype) -> float:
+	return 0.0 if climber == null else float(maxi(1, curve.climber_count(wave_number, other_robots))) * climber.threat_cost()
+
+
+## Spread solo climbers over the existing attack rather than putting a new cluster at its start or end.
+func _interleave_climbers(events: Array[SpawnEvent], climber: RobotArchetype, count: int) -> Array[SpawnEvent]:
+	var mixed: Array[SpawnEvent] = []
+	var inserted := 0
+	for i in range(events.size() + 1):
+		while inserted < count and float(i) >= (float(inserted) + 0.5) * events.size() / maxi(1, count):
+			mixed.append(SpawnEvent.new(climber))
+			inserted += 1
+		if i < events.size():
+			mixed.append(events[i])
+	return mixed
+
+
 ## Each option's pick weight: its type weight x spawn_weight (GDD 9.1). From wave 6 these are rescaled so
-## each attack-grid column present among the options gets its DifficultyCurve.column_weights share.
+## each present column gets its DifficultyCurve.column_weights share of weighted picks. The climber
+## reservation and drone/Heavy caps determine the final roster, rather than these being final robot shares.
 func option_weights(options: Array[RobotArchetype], wave_number: int) -> PackedFloat32Array:
 	var weights := PackedFloat32Array()
 	var column_totals := PackedFloat32Array([0.0, 0.0, 0.0])
@@ -351,12 +415,23 @@ func roll_group_size(wave_number: int, archetype: RobotArchetype, budget: float)
 	return 3 if trio and archetype.threat_cost() * 3.0 <= budget + 0.001 else 1
 
 
-## Roof Lobbers per wave beyond their guaranteed debut. Wave 4 leans on the rooftops: each Lobber costs more
-## threat than a ground robot, so more of them means fewer robots on the ground in that wave.
-static func rooftop_cap_for(wave_number: int) -> int:
-	if wave_number == 4:
+## A quarter of the wave may climb, but only a few Roof Lobbers may be alive at once. The rest wait while
+## due ground events proceed, so the new composition cannot create an opening pile-up or jam all lanes.
+static func rooftop_live_cap_for(wave_number: int) -> int:
+	if wave_number <= 5:
+		return 2
+	if wave_number <= 15:
 		return 3
-	return 1 if wave_number < 10 else 2
+	return 4 if wave_number <= 30 else 5
+
+
+## Keep flight as a rare supporting threat, including when later column weights would buy many drones.
+static func drone_cap_for(wave_number: int) -> int:
+	if wave_number < 5:
+		return 0
+	if wave_number < 8:
+		return 1
+	return 2 if wave_number < 16 else 3
 
 
 ## Regular Heavies per wave (the Foreman doesn't count): 1, plus 1 every 8 waves.
@@ -380,8 +455,30 @@ func _pick_lanes(count: int) -> PackedInt32Array:
 
 func _spawn_due() -> void:
 	while spawns_done < spawns_total and _schedule[spawns_done] <= spawn_clock and live_robot_count() < live_robot_cap:
+		var rooftop_live := 0
+		for node in get_tree().get_nodes_in_group(Robot.GROUP):
+			var robot := node as Robot
+			if robot.archetype != null and robot.archetype.id == &"roof_lobber":
+				rooftop_live += 1
+		var index := _next_due_event_index(rooftop_live)
+		if index < 0:
+			break
+		if index != spawns_done:
+			var waiting := _events[spawns_done]
+			_events[spawns_done] = _events[index]
+			_events[index] = waiting
 		_spawn_event(_events[spawns_done])
 		spawns_done += 1
+
+
+## A capped climber can wait without preventing another already-due ground event from entering.
+func _next_due_event_index(rooftop_live: int) -> int:
+	for i in range(spawns_done, spawns_total):
+		if _schedule[i] > spawn_clock:
+			break
+		if _events[i].archetype.id != &"roof_lobber" or rooftop_live < rooftop_live_cap_for(wave):
+			return i
+	return -1
 
 
 ## Spawns one event in one lane. Squads share a lane and start in a triangle (GDD 11.6).
@@ -422,7 +519,7 @@ func _last_foreman_title() -> String:
 	return "the Foreman"
 
 
-## Scrap Vac (GDD 11.1, 13.8): banks a share of the parts left lying around and clears them.
+## Scrap Vac: banks a share of leftover parts at the next battle's start and clears the remainder.
 func _scrap_vac() -> int:
 	var fraction := minf(1.0, StatService.get_stat(&"pickups.scrap_vac", 0.5))
 	var rng := RngService.stream(RngService.STREAM_DROPS)
@@ -459,17 +556,13 @@ func robots_to_come() -> int:
 
 # --- Debug and "ring the bell" ----------------------------------------------------------------------
 
-## Skips the rest of the intermission (GDD 11.1 "Ring the bell early"), paying the Early Bird bonus.
+## Skips preparation and records readiness; the small Early Bird bonus is paid after this wave clears.
 func ring_bell() -> void:
 	if phase == Phase.TUTORIAL:
 		finish_tutorial(tutorial_bonus_al)
 	elif phase == Phase.INTERMISSION:
-		var skipped := maxf(0.0, time_left - siren_lead_time)
-		var bonus := floori(skipped * early_bird_al_per_second * (1.0 + wave / 10.0)
-				* StatService.get_stat(&"economy.early_bird", 1.0))
-		if bonus > 0:
-			GameState.add_parts({&"al": bonus})
-			EventBus.hud_message.emit("Early Bird! +%d Aluminium" % bonus, 2.0)
+		_ready_bonus_wave = wave
+		EventBus.hud_message.emit("Early Bird bonus on wave clear", 2.0)
 		_enter_siren(siren_lead_time)
 	elif phase == Phase.SIREN:
 		time_left = 0.0

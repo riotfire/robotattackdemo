@@ -8,7 +8,7 @@
 [sub_resource type="Resource" id="Resource_wbioo"]
 script = ExtResource("1_b6gj7")
 parts = Array[StringName]([&"al", &"cu"])
-bases = PackedFloat32Array(18, 10)
+bases = PackedFloat32Array(18, 4)
 first_levels = PackedInt32Array(1, 4)
 last_levels = PackedInt32Array(5, 5)
 

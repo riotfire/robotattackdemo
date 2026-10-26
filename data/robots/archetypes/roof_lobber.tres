@@ -29,4 +29,6 @@ on_unreachable = 0
 ranged_attack_id = &"lobber_lob"
 drop_al_min = 2
 drop_al_max = 3
-drop_cu_chance = 0.25
+drop_cu_chance = 0.75
+drop_au_chance = 0.12
+drop_pc_chance = 0.08

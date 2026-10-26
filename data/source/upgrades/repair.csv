@@ -3,5 +3,5 @@ repair.elbow_grease,repair,0,0,Elbow Grease,8,,al_to_au 12,repair.speed add_pct 
 repair.bigger_patches,repair,0,1,Bigger Patches,5,repair.elbow_grease 2,al_cu 18,repair.amount add_pct 0.10,+10% Structure restored per repair tick per level.
 repair.leak_plugs,repair,1,1,Leak Plugs,5,repair.elbow_grease 2,al_cu 15,silo.leak_rate add_pct -0.08,-8% leak rate per crack per level.
 repair.harvest_helpers,repair,2,0,Harvest Helpers,5,,al 15; cu 6 3-5; au 2 5-5,silo.harvest_bonus flat 16,+16 bushels Harvest Bonus per level (40 -> 120).
-repair.bigger_silo,repair,1,2,Bigger Silo,5,repair.leak_plugs 3,cu_au 15,silo.max_grain add_pct 0.10,+10% grain capacity per level; Harvest Bonus fills the new space.
+repair.bigger_silo,repair,1,2,Bigger Silo,5,repair.leak_plugs 3,al_cu_au 30,silo.max_grain add_pct 0.10,+10% grain capacity per level; Harvest Bonus fills the new space.
 repair.sack_tracker,repair,2,1,Sack Tracker,1,,cu 25,grain.sack_tracker flag,Grain thieves show through walls; dropped sacks roll home after 5 s.

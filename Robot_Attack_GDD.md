@@ -710,10 +710,10 @@ Robots are **modular kit-bashes**, not unique meshes:
 stateDiagram-v2
     [*] --> Intermission
     Intermission --> Siren: T-3 s, or player rings the bell early
-    Siren --> Spawning: T-0
+    Siren --> Spawning: T-0, Scrap Vac sweeps old parts
     Spawning --> MopUp: spawn window ends
     MopUp --> Cleared: last robot destroyed
-    Cleared --> Intermission: Scrap Vac + Harvest Bonus
+    Cleared --> Intermission: Harvest Bonus + earned salvage
     Intermission --> GameOver: grain reaches 0 (leaks continue)
     Spawning --> GameOver
     MopUp --> GameOver
@@ -723,15 +723,17 @@ stateDiagram-v2
 |---|---|
 | **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. (Builds use 90 s until the Hub pegboard and pinned-goals quick-buy exist; see `docs/ROADMAP.md`, decision D1.) |
 | **Siren (last 3 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. |
-| **Ring the bell early** | Hold Interact on the dinner bell (by the porch) or press the "Ready" button to jump straight to the siren. **Early Bird bonus:** +1 Aluminium per second skipped × (1 + wave/10). |
-| **Spawning** | The director spends the wave's threat budget over the spawn window. |
-| **Mop-up** | No new spawns. The wave ends when the last robot is destroyed. |
-| **Cleared** | Jingle, *Scrap Vac* collects 50% of uncollected parts (upgradable to 100%), and the Harvest Bonus adds grain. |
+| **Ring the bell early** | Hold Interact on the dinner bell (by the porch) or press the "Ready" button to jump straight to the siren. **Early Bird bonus:** five base Aluminium, multiplied by the owned Early Bird upgrade, paid only after clearing that wave. Skipped seconds do not affect the reward. |
+| **Spawning** | First Scrap Vac banks its configured share of old parts and clears leftovers. The director then spends the wave's threat budget over the spawn window. |
+| **Mop-up** | Finish any scheduled spawns delayed by live caps. The wave ends when the spawn queue and live count are both empty. |
+| **Cleared** | Jingle and Harvest Bonus. Each even-numbered clear banks 2 Cu + 1 Au + 1 PC once per wave per attempt. Parts stay available throughout the following intermission. |
+
+**Vertical composition (implemented October 25):** from wave 3, approximately 25% of individual robots are wall-climbing Roof Lobbers. Squads count individually and the bonus Foreman counts in the denominator. These replace ground purchases within the existing budget. Live climber caps are 2 through wave 5, 3 through wave 15, 4 through wave 30, and 5 afterward; waiting climbers do not block due ground spawns. Drones debut at wave 5, with per-wave caps of 1 through wave 7, 2 through wave 15, and 3 afterward. Dedicated silo-ladder attackers remain planned and will share this allocation.
 
 ### 11.2 Phases and the Big Haul
 
 - **A phase is 5 waves.** Wave 5 of each phase is a **Big Haul**: the threat budget is ×1.3 and a **Foreman** appears.
-- **Foreman:** an elite Heavy of the current family with a crown or hard hat, 3× HP, +1 trait, a unique stinger sound and a guaranteed drop of 3 Power Cells + 2 Gold. The Foreman's class rotates by phase (melee → short → long): Thumper at wave 5, Boiler at wave 10 and Longneck at wave 15 are each that Heavy's first appearance.
+- **Foreman:** an elite Heavy of the current family with a crown or hard hat, 3× HP, +1 trait, a unique stinger sound and a guaranteed bounty of 3 Power Cells + 2 Gold banked immediately on a legitimate kill; its common metals remain physical pickups. The Foreman's class rotates by phase (melee → short → long): Thumper at wave 5, Boiler at wave 10 and Longneck at wave 15 are each that Heavy's first appearance.
 - Completing a phase advances the time of day by one step (dawn → morning → … → moonlit → dawn).
 
 ### 11.3 Wave length
@@ -826,20 +828,22 @@ Melee robots start throwing at out-of-reach farmers at wave 7, and the Clanker's
 
 ### 12.2 Drop table (base, before wave scaling)
 
-| Type | Aluminium | Copper | Gold | Power Cell |
+| Implemented archetype | Aluminium (including current bonus) | Copper | Gold | Power Cell |
 |---|---|---|---|---|
-| Scout | 1–2 (100%) | 15% × 1 | 1% × 1 | 0.5% × 1 |
-| Grunt (each) | 1–3 (100%) | 40% × 1 | 3% × 1 | 2% × 1 |
-| Heavy | 4–6 (100%) | 2–3 (100%) | 30% × 1 | **100% × 1** |
-| Foreman | 10 | 6 | 2 (guaranteed) | 3 (guaranteed) |
+| Nibbler | 2–3 | 25% × 1 | 2% × 1 | 1% × 1 |
+| Clanker (each) | 2–4 | 60% × 1 | 6% × 1 | 3% × 1 |
+| Roof Lobber | 3–4 | 75% × 1 | 12% × 1 | 8% × 1 |
+| Drone | 3–4 | 50% × 1 | 10% × 1 | 10% × 1 |
+| Thumper | 5–7 | 2–3 guaranteed | 1 guaranteed | 1 guaranteed |
+| Foreman | 10 | 6 | 2 banked immediately | 3 banked immediately |
 
-**Class modifiers:** Melee +1 Aluminium. Short-range ×1.5 Copper chance. Long-range ×2 Gold chance and ×2 Power Cell chance.
+Aluminium quantities scale with the wave's drop multiplier. Gilded and luck modify Gold chance; Overcharged and luck modify Power Cell chance. Individual archetype resources are authoritative. In addition to kills, each even-numbered wave clear directly banks 2 Cu + 1 Au + 1 PC. Legitimate repeat clears in a new attempt earn this again; repeated callbacks in one attempt cannot duplicate it.
 
 ### 12.3 Pickup behavior
 
 - Parts burst out as springy clay bits, then **magnetize** to the farmer within 3 m (upgradable).
-- Uncollected parts blink and despawn after 25 s. At wave end, **Scrap Vac** collects a percentage of whatever is left.
-- **Full persistence:** parts are banked the instant they are collected. Nothing is lost on game over.
+- Ordinary parts have no age-based expiration. They remain through battle, clear, the next intermission, and the siren. At the next battle start, **Scrap Vac** banks its configured share (50% base, upgradable to 100%) and removes the remainder before new enemies or loot are spawned. Parts blink during the siren as a sweep warning.
+- **Full persistence:** collected parts and directly banked rewards survive game over. Uncollected world pickups are not automatically banked on defeat. Grain sacks retain their separate objective timers.
 
 ### 12.4 Cost tiers ("more items in different combinations")
 
@@ -849,20 +853,20 @@ Each upgrade track's recipe changes as levels climb:
 |---|---|
 | 1–3 | Aluminium only |
 | 4–6 | Aluminium + Copper |
-| 7–8 | Copper + Gold |
-| 9–10 | Copper + Gold + Power Cells |
+| 7–8 | Aluminium + Copper + Gold |
+| 9–10 | Aluminium + Copper + Gold + Power Cells |
 | Unlocks, capstones | Hand-tuned mixes, often heavy on Power Cells |
 
-**Cost curve:** each part type in a recipe has its own base amount and grows from the level where it first appears: cost(L) = base × 1.35^(L − first level), rounded.
+**Cost curve:** each part type in a recipe has its own base amount and grows from the level where it first appears: cost(L) = base × 1.25^(L − first level), rounded. Aluminium remains at every rank; standard combat tracks add Copper at 20% of the Al base from rank 4, Gold at 6.7% from rank 7, and explicit Power Cell finishers (one at rank 9, two at rank 10). Previously Copper-only support tracks now use mixed Aluminium/Copper prices with small upper-rank Gold costs.
 
 **Example: Pistol Damage**
 
 | Level | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Al | 15 | 20 | 27 | 37 | 50 | 67 | — | — | — | — |
-| Cu | — | — | — | 8 | 11 | 15 | 20 | 27 | 36 | 48 |
-| Au | — | — | — | — | — | — | 4 | 5 | 7 | 10 |
-| PC | — | — | — | — | — | — | — | — | 2 | 4 |
+| Al | 15 | 19 | 23 | 29 | 37 | 46 | 57 | 72 | 89 | 112 |
+| Cu | — | — | — | 3 | 4 | 5 | 6 | 7 | 9 | 11 |
+| Au | — | — | — | — | — | — | 1 | 1 | 2 | 2 |
+| PC | — | — | — | — | — | — | — | — | 1 | 2 |
 
 Later weapon tracks can have their own cost bases after their combat roles are playtested.
 
@@ -876,6 +880,8 @@ Later weapon tracks can have their own cost bases after their combat roles are p
 | About 50% of pegboard levels | About 10–12 hours |
 | About 80% of total power | About 15 hours |
 | Every node maxed | About 30–35 hours |
+
+**Current six-wave calibration:** a 256-seed model with all kills and full collection yields about 344 Al / 59 Cu / 11 Au / 9.8 PC, excluding bell, tutorial, luck, traits, and spending. Baseline 50%-Vac-only recovery, including the sweep after wave six, yields about 172 / 32 / 8 / 7.9. Current catalog totals are 6,321 / 765 / 63 / 19. These are economy estimates, not human difficulty results; longer progression-hour targets above require a new playtest with construction spending. Reproduce with `tools/economy_probe.gd`.
 
 Tuning lever: the drop quantity multiplier (12.2 and 11.5) and per-branch base multipliers. All numbers live in data resources (see 18.5).
 
@@ -1010,7 +1016,7 @@ A bought weapon is immediately usable. Future refinements should improve these d
 |---|---|---|---|---|
 | Hearty Breakfast | 5 | +10 max HP | — | Al / Cu |
 | Body Armor: Overalls | Tier | 25 armor | — | 30 Al |
-| Body Armor: Padded Vest | Tier | 50 armor | Overalls | 60 Al + 20 Cu |
+| Body Armor: Padded Vest | Tier | 50 armor | Overalls | 60 Al + 8 Cu |
 | Body Armor: Tin Plate | Tier | 80 armor | Padded Vest | 40 Cu + 10 Au |
 | Body Armor: Tractor Plate | Tier | 120 armor | Tin Plate | 20 Au + 6 PC |
 | Armor Regen | 5 | +15% armor regen rate, −0.4 s regen delay | Padded Vest | Cu / Au |
@@ -1018,7 +1024,7 @@ A bought weapon is immediately usable. Future refinements should improve these d
 | Lunchbox | 3 | Carry 1 / 2 / 3 pies | Porch Swing 2 | Cu |
 | **Second Wind** (capstone) | 1 | One revive per run (see 8.1) | Tractor Plate, Hearty Breakfast 5 | 30 Au + 15 PC |
 | Silo Plating: Tin | Tier | 10% damage reduction | — | 40 Al |
-| Silo Plating: Aluminium | Tier | 18% | Tin | 100 Al + 20 Cu |
+| Silo Plating: Aluminium | Tier | 18% | Tin | 100 Al + 8 Cu |
 | Silo Plating: Copper | Tier | 25% | Aluminium plating | 80 Cu + 10 Au |
 | Silo Plating: Gold-Trim | Tier | 32% | Copper plating | 40 Au + 5 PC |
 | Silo Plating: Power-Shield | Tier | 40% + 200 HP shield that refills between waves | Gold-Trim | 30 Au + 15 PC |
@@ -1033,10 +1039,10 @@ A bought weapon is immediately usable. Future refinements should improve these d
 | Node | Lvls | Effect | Requires | Recipe |
 |---|---|---|---|---|
 | Scrap Magnet | 5 | +1.5 m pickup magnet radius (base 3 m) | — | Al |
-| Scrap Vac | 5 | End-of-wave auto-collect: 50% → 100% | — | Al / Cu |
+| Scrap Vac | 5 | Next-battle Scrap Vac: 50% → 100% | — | Al / Cu |
 | Lucky Horseshoe | 5 | +15% (relative) Gold and Power Cell drop chance (+75% at max) | Scrap Magnet 2 | Cu / Au |
 | Early Bird | 3 | +25 / 50 / 75% Early Bird bonus | — | Al / Cu |
-| Farmer's Almanac | 1 | Lanes and the next family's traits are revealed at the **start** of intermission instead of T−10 s | — | 30 Cu + 2 Au |
+| Farmer's Almanac | 1 | Records previous attacks, known robot behaviors, and trap interactions; future gates remain hidden until the siren | — | 30 Cu + 2 Au |
 
 ---
 
@@ -1409,7 +1415,7 @@ enum Branch { TRAVEL, ATTACK, REPAIR, DEFEND, FARMHAND }
 @export var icon: Texture2D
 @export var max_level: int = 1
 @export var prerequisites: Array[UpgradeRequirement] = []
-@export var cost_curve: CostCurve          # base amounts, growth 1.35, tier recipe table
+@export var cost_curve: CostCurve          # base amounts, growth 1.25, tier recipe table
 @export var effects: Array[StatModifier] = []  # applied once per level
 ```
 
@@ -1711,10 +1717,10 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 | Jetpack fuel / climb / recharge | 1.2 s / 6 m/s / 0.5 s delay + 2.0 s | 5.4 |
 | Fuel Tank per level | ×1.20 compounding | 5.4 |
 | Weapon Damage / Fire Rate per level | +12% / +8% additive | 6.3 |
-| Cost growth | ×1.35 per level within a tier | 12.4 |
+| Cost growth | ×1.25 per level within a material tier | 12.4 |
 | Home heal | 15 HP/s | 8.1 |
 | Pickup magnet | 3 m (+1.5 m per level) | 12.3 |
-| Part despawn | 25 s | 12.3 |
+| Part sweep | At the next battle start, after the collection intermission | 12.3 |
 | Egg lay interval | 15 s intermission / 30 s wave | 6.2 |
 
 ## Appendix B: Name Generator Word Lists

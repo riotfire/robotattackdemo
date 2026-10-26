@@ -154,6 +154,20 @@ func test_large_robots_flyers_and_foremen_never_form_trios() -> void:
 	assert_eq(curve.trio_chance(10, nibbler, true), 0.0, "a Foreman is always solo")
 
 
+func test_climber_share_starts_at_wave_three_and_counts_individual_robots() -> void:
+	assert_eq(curve.climber_count(1, 12), 0)
+	assert_eq(curve.climber_count(2, 12), 0)
+	assert_eq(curve.climber_count(3, 12), 4, "four climbers join twelve others for a 25% share")
+	assert_eq(curve.climber_count(6, 30), 10)
+	assert_eq(curve.climber_count(40, 120), 40, "the quota keeps pace instead of hitting a tiny total cap")
+	assert_eq(WaveDirector.drone_cap_for(3), 0)
+	assert_eq(WaveDirector.drone_cap_for(5), 1)
+	assert_eq(WaveDirector.drone_cap_for(7), 1)
+	assert_eq(WaveDirector.drone_cap_for(8), 2)
+	assert_eq(WaveDirector.drone_cap_for(16), 3)
+	assert_eq(WaveDirector.drone_cap_for(100), 3)
+
+
 # --- Attack scaling (M2-B10, robot attack variety plan "Scaling from wave 6") ----------------------------
 
 func test_waves_one_to_five_keep_every_attack_knob_at_its_m1_value() -> void:

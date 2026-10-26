@@ -2,24 +2,32 @@ extends GutTest
 ## The weapon framework (GDD 5.2, 6, 18.4; M2-A2): WeaponData, the WeaponHolder's switching and wheel,
 ## mod hooks and slots, and pooled projectiles.
 
-const TEMP_PROFILE := "user://gut_weapons_profile.json"
+const MAUL_FIXTURE_ID: StringName = &"test.weapon_holder_maul"
 const FARMER_SCENE := "res://scenes/player/farmer.tscn"
 
 var _saved_levels: Dictionary = {}
 var _saved_profile_path: String = ""
+var _saved_maul_fixture: UpgradeNode = null
+var _temp_profile: String = ""
 
 
 func before_each() -> void:
 	_saved_profile_path = SaveManager.profile_path
-	SaveManager.profile_path = TEMP_PROFILE
+	_temp_profile = OS.get_temp_dir().path_join("gut_weapons_profile_%d.json" % OS.get_process_id())
+	SaveManager.profile_path = _temp_profile
 	_saved_levels = StatService.levels.duplicate()
+	_saved_maul_fixture = StatService.catalog.get(MAUL_FIXTURE_ID)
 	StatService.set_levels({})
 
 
 func after_each() -> void:
+	if _saved_maul_fixture == null:
+		StatService.catalog.erase(MAUL_FIXTURE_ID)
+	else:
+		StatService.catalog[MAUL_FIXTURE_ID] = _saved_maul_fixture
 	StatService.set_levels(_saved_levels)
 	SaveManager.profile_path = _saved_profile_path
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEMP_PROFILE))
+	DirAccess.remove_absolute(_temp_profile)
 
 
 func test_weapon_data_matches_the_gdd_arsenal() -> void:
@@ -82,7 +90,14 @@ func test_holder_switches_and_equips_new_unlocks() -> void:
 	assert_eq(holder.weapon_at(Vector2(0.43, 0.9)).data.id, &"rifle", "the wheel reaches the long-range weapon")
 	assert_eq(holder.weapon_at(Vector2(-0.78, -0.62)).data.id, &"scythe", "the wheel reaches the 360-degree melee weapon")
 	assert_null(holder.weapon_at(Vector2.ZERO), "nothing inside the deadzone")
-	StatService.grant(&"attack.maul")
+	# The maul is implemented but its shop entry is not enabled. Exercise the unlock behavior with a
+	# temporary valid node, independently of which weapons are currently offered in the real catalog.
+	var unlock := UpgradeNode.new()
+	unlock.id = MAUL_FIXTURE_ID
+	unlock.branch = UpgradeNode.Branch.ATTACK
+	unlock.effects = [StatModifier.make(&"maul.unlocked", StatModifier.Kind.FLAG, 1.0)]
+	StatService.catalog[MAUL_FIXTURE_ID] = unlock
+	StatService.grant(MAUL_FIXTURE_ID)
 	assert_eq(holder.current.data.id, &"maul", "buying a melee weapon equips it")
 	assert_eq(holder.melee_weapon_id, &"wrench", "the wrench remains the quick bonk")
 	assert_true(holder.equip(pistol))

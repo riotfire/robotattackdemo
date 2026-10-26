@@ -7,10 +7,10 @@
 
 [sub_resource type="Resource" id="Resource_oat1t"]
 script = ExtResource("1_6jbl6")
-parts = Array[StringName]([&"cu", &"au"])
-bases = PackedFloat32Array(15, 5)
-first_levels = PackedInt32Array(1, 4)
-last_levels = PackedInt32Array(5, 5)
+parts = Array[StringName]([&"al", &"cu", &"au"])
+bases = PackedFloat32Array(30, 4, 1)
+first_levels = PackedInt32Array(1, 1, 4)
+last_levels = PackedInt32Array(5, 5, 5)
 
 [sub_resource type="Resource" id="Resource_rq337"]
 script = ExtResource("2_73wwg")

@@ -8,7 +8,7 @@
 [sub_resource type="Resource" id="Resource_kqpdo"]
 script = ExtResource("1_x4cue")
 parts = Array[StringName]([&"al", &"cu"])
-bases = PackedFloat32Array(20, 11)
+bases = PackedFloat32Array(20, 4)
 first_levels = PackedInt32Array(1, 4)
 last_levels = PackedInt32Array(5, 5)
 

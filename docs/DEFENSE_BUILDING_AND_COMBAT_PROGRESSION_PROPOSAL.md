@@ -1,6 +1,6 @@
 # Robot Attack! — intermission construction and vertical defense
 
-October 25, 2026. Revised after the user's design corrections. This replaces the previous version of this proposal, including its early forecast, battle construction, starter turret, separate Field Scrap currency, and automatic permanent-loot recovery recommendations. This is a design document; it does not implement gameplay or change the GDD/roadmap. Exact prices, times, limits, and unlock timing below are prototype recommendations.
+October 25, 2026. Revised after the user's design corrections. This replaces the previous version of this proposal, including its early forecast, battle construction, starter turret, separate Field Scrap currency, and automatic permanent-loot recovery recommendations. The roster/economy revision below is now implemented in the current game. Construction, new defensive items, and dedicated silo-ladder enemies remain proposed work. Exact defense prices, times, limits, and unlock timing below are prototype recommendations.
 
 **The central loop is commitment under uncertainty.** During a fixed intermission, collect parts, buy upgrades, repair the silo, climb to useful positions, and build a defensive arrangement without knowing the next gates. The siren reveals the attack. During battle, fight using the arrangement already built, including the consequences of a mistaken bet. Height should improve that arrangement and create combat opportunities, while climbing enemies make upper levels worth defending.
 
@@ -15,13 +15,14 @@ The user's confirmed direction is:
 | Collection | Parts remain until the next battle starts instead of expiring after 25 seconds. |
 | Starter defenses | Decoys, barricades, and spring traps that launch robots. Turrets unlock later. |
 | Height | Make defenses more effective in useful elevated positions. Enemies should climb the silo ladder and attack upper levels. |
-| Playtest evidence | Players rarely zipline, remain predominantly on the ground, and have not used purchased firing-while-ziplining capability. An implemented capability is not evidence of a useful combat loop. |
+| Playtest evidence | Players rarely zipline, but the existing ladder-to-dome cable approach works well when used. Preserve that route. Players have not progressed beyond six waves after repeated losses; vertical threats must be common and progression useful within that window. |
+| Climber share | Roughly 25% of individual robots are climbers after introduction; keep drones scarce. |
 
 **Current implementation supports parts of this, but not the full loop.** The [wave director](../scripts/systems/wave_director.gd) currently has a 90-second default preparation period, with the last three seconds used for the siren reveal. The shed closes for combat. The [pickup system](../scripts/systems/pickup.gd) expires ordinary parts after 25 seconds, and wave clear calls Scrap Vac, which removes the remaining pickups after awarding a fraction. Both removal mechanisms must change to preserve an intermission collection window.
 
 The [profile save](../scripts/autoload/save_manager.gd) persists parts, upgrade levels, unlocks, and records. It is not a complete active-run save of placements and construction jobs. [Roof Lobbers](../scripts/ai/vertical_robot.gd) already follow scripted approaches up outer walls. The [ladder component](../scripts/components/climbable.gd) currently handles farmers, with a player collision mask; robots do not gain ladder behavior merely by being sent toward it.
 
-The [farm generator](../tools/build_graybox_farm.gd) places the main silo-to-barn cable on a mast above the dome, well above the first and second catwalks. That route's full approach cost matters more than its 12 m/s ride speed. The current GDD's simplified 22 m starting description does not capture the actual higher cable attachment. Use generated scene geometry when measuring routes.
+The user confirms that the existing silo ladder leads onto the dome and makes the silo-to-barn cable approach work well in playtesting. Keep its start, end, and ladder access as they are. The design task is to make fights and defenses provide reasons to use this tested route.
 
 **Keep the existing parts wallet as the source of competing investments.** Use Aluminium and Copper for ordinary construction, with Gold and Power Cells reserved mainly for advanced recipes, lasting upgrades, and later machinery. Do not add a new field-only currency in this version. Saving for a weapon upgrade versus buying a defensive item becomes a deliberate decision across runs and within the intermission.
 
@@ -66,9 +67,9 @@ Keep unknown gates genuinely unknown. Do not add an Almanac upgrade that reveals
 
 Defenses persisting across waves softens a bad bet without removing it: a gate-6 barricade may be idle now and useful later. Offer a mixture of broad but weaker coverage, narrow strong placements, and personal intervention. The player still has a recoverable fight when the guess fails. A wrong guess should redirect their combat plan, not automatically determine defeat.
 
-The existing bell payout still needs a balance pass. At current settings, skipping almost all of the pre-wave-two break can pay approximately 104 Al before Early Bird upgrades, compared with a 20-Al pistol. That magnitude can dominate both construction and permanent purchases. Preserve the option to sacrifice preparation time for a modest readiness benefit, but recommend a small bounded reward settled after a successful clear. Do not pay a huge immediate amount that replaces the need to collect or defend.
+The former timer-based bell payout could grant roughly 104 Al before wave two. It is now replaced with a five-Al base reward paid only after that wave clears, independent of skipped time. Existing Early Bird ranks still multiply it, up to eight Al. Ringing and losing/restarting pays nothing; normal tutorial completion retains its separate teaching reward.
 
-**Make upper levels a second combat front.** Start by giving a small, clearly marked subset of an existing ground robot a ladder-climbing behavior. It approaches the silo ladder, climbs to a specific catwalk, moves onto the catwalk, and attacks the silo at that height. Damage and cracks follow the real impact point. A farmer can intercept it below, shoot it while climbing, meet it above, or prepare a spring/barricade combination at a safe distance from the landing.
+**Make upper levels a second combat front.** The implemented roster now allocates roughly 25% of individual robots to existing wall-climbing Roof Lobbers from wave three. The next dedicated ladder behavior should take part of this same climber allocation, rather than adding another 25% on top. Give a clearly marked light robot that behavior. It approaches the silo ladder, climbs to a specific catwalk, moves onto the catwalk, and attacks the silo at that height. Damage and cracks follow the real impact point. A farmer can intercept it below, shoot it while climbing, meet it above, or prepare a spring/barricade combination at a safe distance from the landing.
 
 This enemy has a reason to climb even without a roof decoy or a high crack. The threat creates a proactive upper-level defense decision. Players can still fight it from the ground where sight lines permit, but reaching its attack position should offer faster interruption, melee access, or a better trap opportunity. Do not make it immune to ground fire just to force climbing.
 
@@ -82,9 +83,9 @@ Decoys only lure robots to elevated sites they can actually reach. Thieves remai
 
 A useful route is: climb to prepare a roof defense → fight an upper threat or exploit that position → use a cable to reach another active position. On a wrong-gate reveal, the cable lets the farmer abandon their bet and personally cover another approach. After a catwalk interception, a cable can return them to a meaningful fight or collection route.
 
-The present silo-to-barn start is above the dome. If a useful fight is on the first catwalk, requiring another long climb just to board can erase the shortcut. Prototype a lower connector from a useful catwalk/roof position and land the player near a usable defense/combat position. Check its relationship to the existing water-tower and barn/stables routes. Do not assume a cable is faster merely because its travel speed exceeds running speed.
+Keep the current silo-to-barn cable and its ladder-to-dome approach. Create a useful sequence of upper-level defense, dome access, and a barn-side fight so the existing cable connects actions the farmer already wants to take. No new connector or cable relocation is proposed.
 
-Measure approach, climb, boarding, ride, exit, and final attack readiness against the full ground route. Improve awkward boarding, dead-end landings, or unnecessary height first. All important roofs still need ordinary access before the jetpack; the later jetpack reward changes how routes can be combined rather than introducing the first reason to care about height.
+Measure voluntary cable use and response outcomes in those encounters. Its existing physical approach is supported by the user's playtests; evaluate the motivation supplied by the encounters and defenses. All important roofs still need ordinary access before the jetpack; the later jetpack reward changes how routes can be combined rather than introducing the first reason to care about height.
 
 **Combat progression should reinforce these interactions.** Keep permanent ownership and the player's existing earned stat value. The initial tree can support three preferences without hard class locks:
 
@@ -110,6 +111,30 @@ Grain sacks remain separate objective items with their own recovery and burst be
 
 Rare parts continue supporting lasting progression and later machinery. Named mods can deepen decoy, barricade, and spring behavior once the loop works, without adding a full random-stat inventory immediately. Essential recipes should have guaranteed access; rare rolls should not decide whether the player can participate in the vertical-defense lesson. Award normal kill credit and drops for legitimate spring-trap kills, independent of direct weapon damage.
 
+**The implemented economy is tuned around progress within six waves.** The original catalog needed 4,022 Al, 2,116 Cu, 224 Au, and 31 PC. Aluminium stopped contributing to several major tracks after rank six. That stranded the player's common-metal savings while scarce Copper, Gold, and Power Cells blocked further purchases.
+
+The revised catalog costs 6,321 Al, 765 Cu, 63 Au, and 19 PC. Existing inventories and owned ranks are preserved. Aluminium remains part of every rank on long combat tracks; material price growth is 1.25 instead of 1.35. Previously Copper-only support tracks now combine Aluminium with a modest Copper cost. Core armor/plating unlocks use eight Copper instead of twenty. The new defense copies remain Aluminium-only at entry level, with no Power Cell requirement; later configuration upgrades can add Copper.
+
+| Example: all ten Pistol Damage ranks | Aluminium | Copper | Gold | Power Cells |
+|---|---:|---:|---:|---:|
+| Previous cost | 216 | 165 | 26 | 5 |
+| Revised cost | 499 | 45 | 6 | 3 |
+
+Every even-numbered wave clear now directly banks 2 Cu, 1 Au, and 1 PC. The same wave pays once per attempt; actually clearing it in another attempt earns the reward again. A legitimate Foreman kill banks its existing 2 Au and 3 PC immediately, leaving the common-metal portion as pickups. Debug/quiet kills do not pay. These guarantees prevent a player from having to reach the Foreman merely to begin dependable Power Cell progression.
+
+Ordinary drop chances (Cu / Au / PC) are now Nibbler 25% / 2% / 1%, Clanker 60% / 6% / 3%, wall climber 75% / 12% / 8%, and Drone 50% / 10% / 10%. Regular Heavies retain guaranteed Copper and PC and now guarantee one Gold. The higher climber share consequently creates a useful Copper source as well as a combat reason to visit upper levels. Basic defenses never depend on a lucky rare drop.
+
+A reproducible [economy probe](../tools/economy_probe.gd) samples the real scene configuration and spawn generator. Across 256 seeds, climbers are 24.76% of robots in waves 3–6. Approximate mean climber counts are 3.5, 4.5, 7.7, and 6.4 respectively. They replace ground budget and are spread through the wave; live caps are two through wave five and three through wave fifteen. Drones are absent before wave five, one on their debut, and zero or one in wave six. Later drone totals remain capped at two through wave fifteen and three afterward.
+
+| Six completed waves, modeled recovery | Al | Cu | Au | PC |
+|---|---:|---:|---:|---:|
+| Full collection | 344 | 59 | 11 | 9.8 |
+| No manual collection, baseline 50% Scrap Vac | 172 | 32 | 8 | 7.9 |
+
+The Vac model includes the next battle-start sweep after the last sampled wave. Both models assume all enemies killed and waves cleared, and exclude luck, traits, tutorial rewards, optional bell bonuses, and spending. They are not survival or enjoyment measurements. Full-collection cumulative PC expectations are approximately 1.25 after wave two and 3.26 after wave four, allowing shorter failed attempts to improve future prospects. Optional bell rewards add at most 30 base Al for six completed waves rather than approximately 702 before clears.
+
+Progression targets for subsequent human tests: usually one affordable meaningful purchase in an intermission, a visible larger goal within a few attempts, and enough surplus Aluminium to consider an item without making all construction free. Price initial physical defenses around 6–12 Al, reserving budget for a combat upgrade. As players survive longer, replacement, repairs, and higher-tier copies can become recurring Aluminium sinks. Validate that these expenses do not stop weaker players from making permanent progress. The first prototype should measure both a returning player with thousands of Al and a genuinely fresh profile; neither stockpile is erased to create scarcity.
+
 **A representative encounter should test the whole loop.** The farmer collects last wave's parts, buys a useful improvement, and bets on gate 6 with a ground barricade. They also climb to prepare a spring and decoy covering a silo catwalk approach. Time runs short, leaving some loot and another desired purchase behind.
 
 The siren reveals gates 2 and 3. Construction closes. The gate-6 barricade remains for a future wave. The farmer uses the roof network or drops to intercept one active approach. A marked climber reaches the silo ladder; the decoy pulls an eligible attacker along its supported route, and the spring throws one off the catwalk. The player chooses whether to stay high and interrupt the next climber or take a cable to the other fight. Nothing new can be placed to solve the surprise immediately.
@@ -125,7 +150,7 @@ On clear, the remaining parts stay put. The next timed intermission offers a dec
 | 3 | Spring trap on a validated catwalk site, plus a ground version for comparison; actual launch, fall/recovery, and kill credit. | Is the rooftop placement visibly better for that situation, and is returning upward worth the time? |
 | 4 | Timed intermission construction using existing parts, strict siren cutoff, previews, reserved resources, and unfinished-job behavior. | Does the shared time budget create understandable sacrifices? |
 | 5 | Decoy and authored barricade positions, reachable lure/obstruction behavior, persistence between waves. | Do combinations and uncertain gates create more than one useful setup? |
-| 6 | A lower/closer useful zipline connection and a controlled two-position encounter; then short combat/trapper upgrade paths. | Do players voluntarily use height and the cable because of where they need to fight? |
+| 6 | A controlled two-position encounter using the unchanged silo-ladder, dome, and cable route; then short combat/trapper upgrade paths. | Do players voluntarily use height and the existing cable because of where they need to fight? |
 | 7 | Later turret recipe and limited configurations after those systems pass. | Does sustained automation add another decision without making traps or personal combat redundant? |
 
 Keep wave-number choices provisional while the separate phase/checkpoint plan is being evaluated. This proposal does not approve its three-wave phase change or lock these introductions to the old five-wave schedule. Coordinate the lesson, remix, and boss beats once that schedule is decided. The [opening plan](FIRST_FIVE_WAVES_FUN_PLAN.md)'s shop-pause and other conflicting preparation recommendations are superseded for this design; the [jetpack plan](JETPACK_GAMEPLAY_AND_REWARD_PLAN.md)'s later reward and normal roof access remain applicable. Coordinate ladder attackers with the [robot variety plan](ROBOT_ATTACK_VARIETY_PLAN.md), rather than assuming current Lobber wall-climbing implements them.

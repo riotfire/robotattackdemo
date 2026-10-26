@@ -1,5 +1,5 @@
 id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,description
 farmhand.scrap_magnet,farmhand,0,0,Scrap Magnet,5,,al 10,pickups.magnet_radius flat 1.5,+1.5 m pickup magnet radius per level (base 3 m).
-farmhand.lucky_horseshoe,farmhand,0,1,Lucky Horseshoe,5,farmhand.scrap_magnet 2,cu_au 15,drops.rare_chance add_pct 0.15,+15% (relative) Gold and Power Cell drop chance per level.
-farmhand.scrap_vac,farmhand,1,0,Scrap Vac,5,,al_cu 12,pickups.scrap_vac flat 0.10,"End-of-wave auto-collect: 50% of leftover parts, +10% per level."
-farmhand.early_bird,farmhand,1,1,Early Bird,3,,al_cu 12,economy.early_bird add_pct [0.25 0.5 0.75],+25 / 50 / 75% Early Bird bonus for ringing the bell early.
+farmhand.lucky_horseshoe,farmhand,0,1,Lucky Horseshoe,5,farmhand.scrap_magnet 2,al_cu_au 30,drops.rare_chance add_pct 0.15,+15% (relative) Gold and Power Cell drop chance per level.
+farmhand.scrap_vac,farmhand,1,0,Scrap Vac,5,,al_cu 12,pickups.scrap_vac flat 0.10,"Next-battle Scrap Vac: 50% of leftover parts, +10% per level."
+farmhand.early_bird,farmhand,1,1,Early Bird,3,,al_cu 12,economy.early_bird add_pct [0.25 0.5 0.75],+25 / 50 / 75% to the small Early Bird bonus paid after clearing the wave.

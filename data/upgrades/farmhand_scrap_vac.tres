@@ -8,7 +8,7 @@
 [sub_resource type="Resource" id="Resource_1o70w"]
 script = ExtResource("1_wl211")
 parts = Array[StringName]([&"al", &"cu"])
-bases = PackedFloat32Array(12, 6)
+bases = PackedFloat32Array(12, 2)
 first_levels = PackedInt32Array(1, 4)
 last_levels = PackedInt32Array(5, 5)
 
@@ -24,7 +24,7 @@ script = ExtResource("4_ibh7f")
 id = &"farmhand.scrap_vac"
 branch = 4
 display_name = "Scrap Vac"
-description = "End-of-wave auto-collect: 50% of leftover parts, +10% per level."
+description = "Next-battle Scrap Vac: 50% of leftover parts, +10% per level."
 max_level = 5
 cost_curve = SubResource("Resource_1o70w")
 effects = Array[ExtResource("2_qwwkc")]([SubResource("Resource_jntc7")])

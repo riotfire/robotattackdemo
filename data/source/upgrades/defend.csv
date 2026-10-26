@@ -2,9 +2,9 @@ id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,
 defend.hearty_breakfast,defend,0,0,Hearty Breakfast,5,,al_cu 15,player.max_hp flat 10,+10 max HP per level.
 defend.porch_swing,defend,0,1,Porch Swing,5,,al 12,home.heal_rate add_pct 0.20,+20% Home healing per level.
 defend.armor_overalls,defend,1,0,Armor: Overalls,1,,al 30,player.armor max 25,25 armor. Absorbs damage first; recharges after 4 s.
-defend.armor_vest,defend,1,1,Armor: Padded Vest,1,defend.armor_overalls,al 60; cu 20,player.armor max 50,50 armor.
-defend.armor_regen,defend,1,2,Armor Regen,5,defend.armor_vest,cu_au 12,player.armor_regen_rate add_pct 0.15; player.armor_regen_delay flat -0.4,+15% armor regen rate and -0.4 s regen delay per level.
+defend.armor_vest,defend,1,1,Armor: Padded Vest,1,defend.armor_overalls,al 60; cu 8,player.armor max 50,50 armor.
+defend.armor_regen,defend,1,2,Armor Regen,5,defend.armor_vest,al_cu_au 24,player.armor_regen_rate add_pct 0.15; player.armor_regen_delay flat -0.4,+15% armor regen rate and -0.4 s regen delay per level.
 defend.plating_tin,defend,2,0,Plating: Tin,1,,al 40,silo.damage_reduction max 0.10,The silo takes 10% less damage.
-defend.plating_aluminium,defend,2,1,Plating: Aluminium,1,defend.plating_tin,al 100; cu 20,silo.damage_reduction max 0.18,The silo takes 18% less damage.
+defend.plating_aluminium,defend,2,1,Plating: Aluminium,1,defend.plating_tin,al 100; cu 8,silo.damage_reduction max 0.18,The silo takes 18% less damage.
 defend.rivet_count,defend,3,1,Rivet Count,5,defend.plating_tin,al_cu 20,silo.max_structure add_pct 0.10,+10% silo max Structure per level.
-defend.crack_stoppers,defend,3,2,Crack Stoppers,3,defend.rivet_count 3,cu_au 15,silo.crack_stop_chance flat 0.15,-15% chance per level that damage opens a new crack.
+defend.crack_stoppers,defend,3,2,Crack Stoppers,3,defend.rivet_count 3,al_cu_au 30,silo.crack_stop_chance flat 0.15,-15% chance per level that damage opens a new crack.
