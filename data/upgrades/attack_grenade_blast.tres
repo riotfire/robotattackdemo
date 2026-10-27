@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_1rp5h"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_4gbke"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_0vcvb"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_nh1vi"]
+
+[sub_resource type="Resource" id="Resource_fa5gv"]
+script = ExtResource("1_1rp5h")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(20)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(3)
+
+[sub_resource type="Resource" id="Resource_2n7h5"]
+script = ExtResource("2_4gbke")
+stat = &"grenade.blast_radius"
+value = 0.15
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_c5vo2"]
+script = ExtResource("3_0vcvb")
+node_id = &"attack.grenade"
+
+[resource]
+script = ExtResource("4_nh1vi")
+id = &"attack.grenade_blast"
+branch = 1
+display_name = "Bigger Boiler"
+description = "+15% blast radius per level."
+max_level = 3
+prerequisites = Array[ExtResource("3_0vcvb")]([SubResource("Resource_c5vo2")])
+cost_curve = SubResource("Resource_fa5gv")
+effects = Array[ExtResource("2_4gbke")]([SubResource("Resource_2n7h5")])
+board_position = Vector2i(4, 2)

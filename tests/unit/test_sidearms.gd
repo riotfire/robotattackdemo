@@ -108,7 +108,7 @@ func test_small_melee_spawns_become_spitters_by_the_curve_share() -> void:
 	director.spitter_archetype = load(SPITTER) as RobotArchetype
 	var nibbler := load(NIBBLER) as RobotArchetype
 	var clanker := load(CLANKER) as RobotArchetype
-	for case: Array in [[6, 0.0], [7, 0.10], [12, 0.20], [30, 0.40]]:
+	for case: Array in [[12, 0.0], [13, 0.10], [18, 0.20], [30, 0.40]]:
 		var rng := RngService.make_rng([5, case[0]])
 		director.set(&"_wave_rng", rng)
 		var spitters := 0
@@ -119,35 +119,35 @@ func test_small_melee_spawns_become_spitters_by_the_curve_share() -> void:
 	var rng := RngService.make_rng([5])
 	director.set(&"_wave_rng", rng)
 	var state := rng.state
-	director.roll_role(6, nibbler, 100.0)
-	assert_eq(rng.state, state, "no roll before wave 7, so earlier waves build the same spawns")
+	director.roll_role(12, nibbler, 100.0)
+	assert_eq(rng.state, state, "no roll before wave 13, so earlier waves build the same spawns")
 	for i in 200:
 		assert_eq(director.roll_role(30, clanker, 100.0), clanker, "only small melee spawns become Spitters")
 	assert_eq(director.roll_role(30, nibbler, 2.4), nibbler, "a Spitter needs the budget for one")
 	director.free()
 
 
-func test_spitters_appear_in_built_waves_from_wave_seven() -> void:
+func test_spitters_appear_in_built_waves_from_wave_thirteen() -> void:
 	var director := WaveDirector.new()
 	director.curve = load(CURVE) as DifficultyCurve
 	director.spitter_archetype = load(SPITTER) as RobotArchetype
 	for path in [NIBBLER, CLANKER, THUMPER]:
 		director.archetypes.append(load(path) as RobotArchetype)
 	var seen := {}
-	for wave in range(1, 26):
+	for wave in range(1, 32):
 		director.set(&"_wave_rng", RngService.make_rng([41, wave]))
 		var events: Array = director.call(&"_build_spawn_events", wave)
 		for event: WaveDirector.SpawnEvent in events:
 			if event.archetype.id == &"spitter":
 				seen[wave] = true
-				assert_gte(wave, 7, "no Spitters before wave 7")
+				assert_gte(wave, 13, "no Spitters before wave 13")
 				assert_true(event.robot_count() in [1, 3], "Spitters come solo or as a trio")
 	assert_gt(seen.size(), 5, "Spitters show up in later waves")
 	director.free()
 
 
 func test_a_spitter_stands_off_shoots_and_hops_every_three_shots() -> void:
-	var spitter := _robot(SPITTER, 7, Vector3(_silo.wall_point_toward(Vector3(1, 0, 0), 0.0).x + 14.0, 0.0, 0.0)) as SpitterRobot
+	var spitter := _robot(SPITTER, 13, Vector3(_silo.wall_point_toward(Vector3(1, 0, 0), 0.0).x + 14.0, 0.0, 0.0)) as SpitterRobot
 	spitter.target_kind = Robot.TargetKind.SILO
 	spitter.stand_distance = 14.0
 	_run([spitter], STEP * 2)
@@ -173,7 +173,7 @@ func test_a_spitter_stands_off_shoots_and_hops_every_three_shots() -> void:
 
 
 func test_a_spitter_backs_off_once() -> void:
-	var spitter := _robot(SPITTER, 7, Vector3(30.0, 0.0, 0.0)) as SpitterRobot
+	var spitter := _robot(SPITTER, 13, Vector3(30.0, 0.0, 0.0)) as SpitterRobot
 	var farmer := _farmer(Vector3(27.0, 0.0, 0.0))
 	_run([spitter], STEP)
 	assert_eq(spitter.move, SpitterRobot.Move.BACK_OFF, "a farmer within 5 m makes it back off")
@@ -191,7 +191,7 @@ func test_a_spitter_trio_fires_a_staggered_three_beat_volley() -> void:
 	var spitters: Array = []
 	var wall_x := _silo.wall_point_toward(Vector3(1, 0, 0), 0.0).x
 	for i in 3:
-		var robot := _robot(SPITTER, 7, Vector3(wall_x + 14.0, 0.0, -2.0 + 2.0 * i), squad) as SpitterRobot
+		var robot := _robot(SPITTER, 13, Vector3(wall_x + 14.0, 0.0, -2.0 + 2.0 * i), squad) as SpitterRobot
 		robot.target_kind = Robot.TargetKind.SILO
 		robot.stand_distance = 14.0
 		spitters.append(robot)
@@ -213,7 +213,7 @@ func test_a_spitter_trio_fires_a_staggered_three_beat_volley() -> void:
 
 
 func test_a_spitter_can_shoot_a_farmer_up_high() -> void:
-	var spitter := _robot(SPITTER, 7, Vector3(30.0, 0.0, 0.0)) as SpitterRobot
+	var spitter := _robot(SPITTER, 13, Vector3(30.0, 0.0, 0.0)) as SpitterRobot
 	var farmer := _farmer(Vector3(30.0, 9.0, 12.0))
 	spitter.backed_off = true
 	spitter.targeting.switch_to_farmer(farmer)
@@ -226,7 +226,7 @@ func test_a_spitter_can_shoot_a_farmer_up_high() -> void:
 # --- Throws at an out-of-reach farmer --------------------------------------------------------------------
 
 func test_a_clanker_throws_two_telegraphed_bolts_then_goes_back_to_the_silo() -> void:
-	var clanker := _robot(CLANKER, 7, Vector3(20.0, 0.0, 0.0))
+	var clanker := _robot(CLANKER, 13, Vector3(20.0, 0.0, 0.0))
 	var farmer := _farmer(Vector3(22.0, 5.0, 0.0))
 	clanker.targeting.switch_to_farmer(farmer)
 	var throw := clanker.get_node(^"Throw") as RangedAttack
@@ -250,7 +250,7 @@ func test_a_clanker_throws_two_telegraphed_bolts_then_goes_back_to_the_silo() ->
 
 
 func test_a_thumper_lobs_clods_with_splash() -> void:
-	var thumper := _robot(THUMPER, 7, Vector3(20.0, 0.0, 0.0))
+	var thumper := _robot(THUMPER, 13, Vector3(20.0, 0.0, 0.0))
 	var farmer := _farmer(Vector3(24.0, 7.0, 0.0))
 	thumper.targeting.switch_to_farmer(farmer)
 	var throw := thumper.get_node(^"Throw") as RangedAttack
@@ -265,21 +265,21 @@ func test_a_thumper_lobs_clods_with_splash() -> void:
 	assert_eq(thumper.throws_done(), 1)
 
 
-func test_throwing_starts_at_wave_seven() -> void:
-	var clanker := _robot(CLANKER, 6, Vector3(20.0, 0.0, 0.0))
-	assert_null(clanker.get_node_or_null(^"Throw"), "no throw in wave 6")
+func test_throwing_starts_at_wave_thirteen() -> void:
+	var clanker := _robot(CLANKER, 12, Vector3(20.0, 0.0, 0.0))
+	assert_null(clanker.get_node_or_null(^"Throw"), "no throw in wave 12")
 	var pouch := clanker.get_node(^"Model/Pose/Kit/bolt_pouch") as Node3D
 	assert_false(pouch.visible, "and no bolt pouch to promise one")
 	var farmer := _farmer(Vector3(22.0, 5.0, 0.0))
 	clanker.targeting.switch_to_farmer(farmer)
 	_run([clanker], clanker.archetype.give_up_time + 0.1)
 	assert_false(clanker.targeting.on_farmer(), "it gives up as before")
-	assert_true((_robot(CLANKER, 7, Vector3(-20.0, 0.0, 0.0)).get_node(^"Model/Pose/Kit/bolt_pouch") as Node3D).visible,
+	assert_true((_robot(CLANKER, 13, Vector3(-20.0, 0.0, 0.0)).get_node(^"Model/Pose/Kit/bolt_pouch") as Node3D).visible,
 			"the pouch shows once it throws")
 
 
 func test_no_free_token_means_no_throw() -> void:
-	var clanker := _robot(CLANKER, 7, Vector3(20.0, 0.0, 0.0))
+	var clanker := _robot(CLANKER, 13, Vector3(20.0, 0.0, 0.0))
 	var farmer := _farmer(Vector3(22.0, 5.0, 0.0))
 	var throw := clanker.get_node(^"Throw") as RangedAttack
 	var holders: Array[RefCounted] = []
@@ -293,7 +293,7 @@ func test_no_free_token_means_no_throw() -> void:
 
 
 func test_a_hovering_farmer_is_neither_immune_nor_a_lure() -> void:
-	var clanker := _robot(CLANKER, 7, Vector3(20.0, 0.0, 0.0))
+	var clanker := _robot(CLANKER, 13, Vector3(20.0, 0.0, 0.0))
 	var eager := clanker.archetype.duplicate() as RobotArchetype
 	eager.distractibility = 1.0
 	eager.commit_time = 0.0
@@ -328,7 +328,7 @@ func _hit_from(robot: Robot, offset: Vector3) -> float:
 
 
 func test_the_clanker_arm_guard_halves_damage_from_the_front() -> void:
-	var clanker := _robot(CLANKER, 6, Vector3(20.0, 0.0, 0.0))
+	var clanker := _robot(CLANKER, 13, Vector3(20.0, 0.0, 0.0))
 	clanker.model.rotation.y = 0.0  # facing -Z
 	assert_almost_eq(_hit_from(clanker, Vector3(0.0, 0.0, -5.0)), 5.0, 0.001, "-50% from straight ahead")
 	assert_almost_eq(_hit_from(clanker, Vector3(2.0, 1.0, -5.0)), 5.0, 0.001, "and a little to the side")
@@ -339,10 +339,10 @@ func test_the_clanker_arm_guard_halves_damage_from_the_front() -> void:
 	assert_true((clanker.get_node(^"Model/Pose/Kit/arm_guard") as Node3D).visible, "the guard plate shows")
 
 
-func test_the_arm_guard_waits_for_wave_six_and_is_the_clankers_alone() -> void:
-	var opening := _robot(CLANKER, 5, Vector3(20.0, 0.0, 0.0))
+func test_the_arm_guard_waits_for_wave_thirteen_and_is_the_clankers_alone() -> void:
+	var opening := _robot(CLANKER, 12, Vector3(20.0, 0.0, 0.0))
 	opening.model.rotation.y = 0.0
-	assert_almost_eq(_hit_from(opening, Vector3(0.0, 0.0, -5.0)), 10.0, 0.001, "the opening keeps the M1 Clanker")
+	assert_almost_eq(_hit_from(opening, Vector3(0.0, 0.0, -5.0)), 10.0, 0.001, "until phase 5 it is the M1 Clanker")
 	assert_false((opening.get_node(^"Model/Pose/Kit/arm_guard") as Node3D).visible, "with no plate")
 	var nibbler := _robot(NIBBLER, 10, Vector3(-20.0, 0.0, 0.0))
 	nibbler.model.rotation.y = 0.0

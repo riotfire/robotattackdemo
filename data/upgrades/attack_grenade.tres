@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_smekh"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_tupbg"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_f0av1"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_4e1st"]
+
+[sub_resource type="Resource" id="Resource_bbok1"]
+script = ExtResource("1_smekh")
+parts = Array[StringName]([&"al", &"cu"])
+bases = PackedFloat32Array(60, 8)
+first_levels = PackedInt32Array(1, 1)
+last_levels = PackedInt32Array(1, 1)
+
+[sub_resource type="Resource" id="Resource_ba1jv"]
+script = ExtResource("2_tupbg")
+stat = &"grenade.unlocked"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_mdndh"]
+script = ExtResource("3_f0av1")
+node_id = &"attack.pistol"
+
+[resource]
+script = ExtResource("4_4e1st")
+id = &"attack.grenade"
+branch = 1
+display_name = "Boiler Grenades"
+description = "Lob a shell onto the crosshair that bursts across a group of tough robots."
+prerequisites = Array[ExtResource("3_f0av1")]([SubResource("Resource_mdndh")])
+cost_curve = SubResource("Resource_bbok1")
+effects = Array[ExtResource("2_tupbg")]([SubResource("Resource_ba1jv")])
+board_position = Vector2i(4, 0)

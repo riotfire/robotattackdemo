@@ -1,0 +1,74 @@
+[
+ {
+  "name": "Baseline (your testers)",
+  "sessions": 400,
+  "reach_w4": 0.468,
+  "reach_w5": 0.03,
+  "clear_w4": 0.1,
+  "clear_w5": 0.0,
+  "deaths": 0.77,
+  "waves_cleared": 3.75,
+  "game_overs": {
+   "silo": 145,
+   "grain": 162
+  },
+  "lost_in_break": 54,
+  "lost_on_wave": {
+   "2": 6,
+   "3": 98,
+   "4": 139,
+   "5": 10
+  },
+  "grain_leaked": 789,
+  "cracks_repaired": 1.7,
+  "cracks_opened": 9.3
+ },
+ {
+  "name": "Repairs every ground crack in the break",
+  "sessions": 400,
+  "reach_w4": 0.517,
+  "reach_w5": 0.102,
+  "clear_w4": 0.177,
+  "clear_w5": 0.0,
+  "deaths": 0.68,
+  "waves_cleared": 3.72,
+  "game_overs": {
+   "silo": 164,
+   "grain": 107
+  },
+  "lost_in_break": 29,
+  "lost_on_wave": {
+   "2": 3,
+   "3": 69,
+   "4": 130,
+   "5": 40
+  },
+  "grain_leaked": 633,
+  "cracks_repaired": 4.1,
+  "cracks_opened": 10.9
+ },
+ {
+  "name": "Repairs every crack, catwalks included",
+  "sessions": 400,
+  "reach_w4": 0.52,
+  "reach_w5": 0.195,
+  "clear_w4": 0.263,
+  "clear_w5": 0.0,
+  "deaths": 0.61,
+  "waves_cleared": 3.71,
+  "game_overs": {
+   "silo": 190,
+   "grain": 56
+  },
+  "lost_in_break": 15,
+  "lost_on_wave": {
+   "2": 3,
+   "3": 66,
+   "4": 85,
+   "5": 77
+  },
+  "grain_leaked": 523,
+  "cracks_repaired": 5.8,
+  "cracks_opened": 12.3
+ }
+]

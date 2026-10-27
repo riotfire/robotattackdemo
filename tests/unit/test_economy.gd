@@ -7,6 +7,7 @@ var _saved_survived: int = 0
 var _saved_silo: Silo
 var _saved_profile_path: String = ""
 var _test_profile_path: String = ""
+var _saved_records: Dictionary = {}
 
 
 func before_each() -> void:
@@ -17,6 +18,9 @@ func before_each() -> void:
 	_saved_levels = StatService.levels.duplicate()
 	_saved_survived = GameState.waves_survived
 	_saved_silo = GameState.silo
+	_saved_records = SaveManager.records.duplicate(true)
+	SaveManager.records["best_wave"] = 0
+	SaveManager.records["foreman_bounties"] = []
 	GameState.silo = null
 	GameState.clear_parts()
 	StatService.set_levels({})
@@ -28,6 +32,7 @@ func after_each() -> void:
 	GameState.waves_survived = _saved_survived
 	GameState.silo = _saved_silo
 	StatService.set_levels(_saved_levels)
+	SaveManager.records = _saved_records
 	SaveManager.profile_path = _saved_profile_path
 	DirAccess.remove_absolute(_test_profile_path)
 
@@ -70,25 +75,56 @@ func test_bell_rewards_require_a_clear_and_do_not_scale_with_skipped_time() -> v
 	upgraded.ring_bell()
 	upgraded._settle_clear_parts()
 	assert_eq(GameState.parts[&"al"], 8, "existing Early Bird ranks retain their multiplier")
+	# A cheap retry must not farm it (PHASE_CHECKPOINT_PROGRESSION_PLAN.md): only waves above the best pay.
+	GameState.clear_parts()
+	SaveManager.records["best_wave"] = 2
+	var retry := _director(2)
+	retry.ring_bell()
+	retry._settle_clear_parts()
+	assert_eq(GameState.parts[&"al"], 0, "a wave already beaten pays no Early Bird")
 
 
 func test_foreman_rare_bounty_is_banked_without_duplicating_physical_loot() -> void:
 	var robot := Robot.new()
 	robot.is_foreman = true
+	robot.wave = 3
 	var physical := robot.roll_drops()
 	robot.bank_guaranteed_parts(physical)
-	assert_eq(GameState.parts[&"pc"], 3)
-	assert_eq(GameState.parts[&"au"], 2)
+	assert_eq(GameState.parts[&"pc"], 2, "every third wave is a Foreman wave now: 2 Power Cells")
+	assert_eq(GameState.parts[&"au"], 1, "and 1 Gold")
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(_test_profile_path))
-	assert_eq(saved["parts"]["pc"], 3.0, "the Foreman bounty survives closing during battle")
+	assert_eq(saved["parts"]["pc"], 2.0, "the Foreman bounty survives closing during battle")
 	assert_eq(physical.get(&"pc", 0), 0, "banked cells cannot also appear as pickups")
 	assert_eq(physical.get(&"au", 0), 0)
 	assert_eq(physical[&"al"], 10)
 	assert_eq(physical[&"cu"], 6)
 	robot.bank_guaranteed_parts(physical)
-	assert_eq(GameState.parts[&"pc"], 3, "resettling the same burst does not pay again")
-	assert_eq(GameState.parts[&"au"], 2)
+	assert_eq(GameState.parts[&"pc"], 2, "resettling the same burst does not pay again")
+	assert_eq(GameState.parts[&"au"], 1)
 	robot.free()
+
+
+func test_the_foreman_bounty_pays_once_per_foreman_wave_on_a_profile() -> void:
+	var first := Robot.new()
+	first.is_foreman = true
+	first.wave = 3
+	first.archetype = load("res://data/robots/archetypes/thumper.tres") as RobotArchetype
+	first.bank_guaranteed_parts(first.roll_drops())
+	assert_true(SaveManager.foreman_bounty_paid(3))
+	var again := Robot.new()
+	again.is_foreman = true
+	again.wave = 3
+	again.archetype = first.archetype
+	assert_ne(again.roll_drops(), Robot.FOREMAN_DROPS, "a retry's Foreman drops the Heavy's own table")
+	var pc := GameState.parts[&"pc"]
+	again.bank_guaranteed_parts(again.roll_drops())
+	assert_eq(GameState.parts[&"pc"], pc, "and banks no second bounty")
+	var next := Robot.new()
+	next.is_foreman = true
+	next.wave = 6
+	assert_eq(next.roll_drops(), Robot.FOREMAN_DROPS, "the next Foreman wave pays its own first bounty")
+	for robot in [first, again, next]:
+		robot.free()
 
 
 func test_ordinary_robot_loot_still_requires_collection() -> void:

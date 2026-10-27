@@ -90,7 +90,7 @@ flowchart LR
     B --> C[Fight: shoot, bonk, jetpack to perches]
     C --> D[Robots pop into parts]
     D --> E[Collect Aluminium, Copper, Gold, Power Cells]
-    E --> F[30 s intermission]
+    E --> F[90 s intermission]
     F --> G[Tool Shed: buy upgrades]
     F --> H[Silo: patch leaks]
     F --> I[Home: heal / Coop: collect eggs]
@@ -105,8 +105,8 @@ flowchart LR
 |---|---|---|---|
 | **Moment-to-moment** | 2–10 s | Move, aim, shoot, jump, jetpack hop, grab parts, patch a crack | Robot pops, parts burst out, satisfying feedback |
 | **Wave** | 45 s – 3.5 min + mop-up | Defend the silo against one robot family | Parts, a new family logged in the Almanac |
-| **Intermission** | 30 s | Shop, repair, heal, restock eggs, reposition | Power spike before the next wave |
-| **Phase** | 5 waves | Survive the escalation to a "Big Haul" wave with a Foreman robot | Bonus parts, time of day advances |
+| **Intermission** | 90 s | Walk to the shed to shop, build defenses, repair, heal, restock eggs, reposition | Power spike before the next wave |
+| **Phase** | 3 waves: Lesson, Twist, Big Haul | Survive the escalation to a "Big Haul" wave with a Foreman robot; a loss retries the phase | Bonus parts, time of day advances, the checkpoint moves |
 | **Run** | 8 min (early) – 60+ min (late) | Push as far as possible | New best wave, parts banked forever |
 | **Meta** | Hours to weeks | Fill the pegboard, complete the Almanac, beat records | Permanent power, cosmetics, bragging rights |
 
@@ -126,12 +126,13 @@ flowchart TD
 ### 2.4 The first 10 minutes (onboarding)
 
 1. **Morning Chores (first-run tutorial, untimed):** collect a cluster of six floating Aluminium bits beside the tractor, then buy Grandpa's Wrench for 6 Al on the real pegboard. The Dummy-Bot then pops up for three satisfying swings; its spring bonks the farmer, leading to the porch heal. Intercept one slow Nibbler, repair the crack if it hits the silo, climb the catwalk, then ring the bell. Short cues explain why each action matters.
-2. **Siren:** the hand-cranked siren on the water tower winds up. The HUD shows "INCOMING" with the first family's name card.
-3. **Wave 1 (45 s):** only Scout melee robots (Nibblers). The wrench is enough.
-4. **Intermission 1:** the shed pegboard opens for the first build choice. Spend earned parts on a stronger wrench, the **Rivet Pistol** for range, repair and defense, or movement. The player is free to follow their play style; the pistol is built later rather than handed out in the prologue.
-5. **Wave 2:** Grunt melee trios (Clankers) appear.
-6. **The Jetpack Moment:** starting wave 3, Grandpa's **Milk-Can Jetpack** can be built at the shed for 40 Al and 15 Cu. A prompt teaches jetpack hops onto the tool shed and stable roofs.
-7. **Waves 3–5:** short-range robots appear. Wave 5 is the first **Big Haul** with a Foreman (a Thumper heavy). Phase 1 complete.
+2. **Siren:** the hand-cranked siren on the water tower winds up. The HUD shows "INCOMING" with the first family's name card and the landmark its lane passes.
+3. **Wave 1, First Bonks (about 45 s):** six Nibblers in pairs from one lane in front of the farmer, at most three alive at once, bursting out of the crops 45 m out. The wrench is enough. Clearing a wave never hands over an item: everything is bought at the shed.
+4. **Intermissions (90 s, siren included):** walk to the tool shed to shop on the pegboard, build defenses wherever you want them (Tab or Back), and ring the dinner bell by the porch to start early. Crossing the farm is part of the plan (playtest feedback 2026-10-26: a quick-buy menu usable anywhere took the fun out of traveling). The clock keeps running.
+5. **Wave 2, Take the High Ground:** the first **Roof Lobber** climbs the tool shed while there is still no gun: the farmer hops up the rain barrel and crates and bonks it, so the roofs are learned before range is (playtest feedback 2026-10-26). Two Nibbler pairs come in behind it. Clearing it opens the **Rivet Pistol** (20 Al) and, through it, every gun (StatService.MILESTONE_GATES).
+6. **Wave 3, the Foreman's first visit:** the phase 1 **Big Haul**. An authored 350 HP Thumper Foreman with no random trait enters alone, rears up for 1.2 s before every slam and then exposes a glowing back vent (×3) for 2.5 s; any hit from within 3.5 m behind it counts as a vent hit then, so the wrench alone can beat it in about two windows. Its plates let only 30% of a hit from more than 6 m through, unless it lands in the open vent, so it can't be kited with the new pistol. Only four Nibblers come with it, and its defeat calls off the adds still to come. **Phase 1 complete**; a loss from here on restarts the phase, not the run (14.2).
+7. **Phase 2 (waves 4–6), split pressure:** Stop That Sack (a Clanker pair for the pistol, exactly one teaching thief, a Lobber on the barn roof; wave 4); Up the Ladder (a **Rung Runner** climbs the silo ladder from the ladder's side while announced raids hit the far side, so one farmer can't cover both and a Spring Trap at the ladder top decides it; the intermission before it asks for one; wave 5); and a second Foreman (900 HP) from the far side that throws dirt clods at a farmer who keeps away from the start, faster below half health, while climbers take the ladder (wave 6). This is where defenses come into play.
+8. **The jetpack** is a later milestone: its blueprint comes with clearing wave 9 (phase 3's Big Haul) and stays on the profile.
 
 ---
 
@@ -139,7 +140,7 @@ flowchart TD
 
 ### 3.1 Objective
 
-Survive as many waves as possible. Your score is **waves survived**, shown as **Phase.Wave** (for example, *Phase 4, Wave 3* = 18 waves).
+Survive as many waves as possible. Your score is **waves survived**, shown as **Phase.Wave** (for example, *Phase 4, Wave 3* = 12 waves).
 
 ### 3.2 Game over (any one of these)
 
@@ -160,7 +161,8 @@ The silo has two meters:
 
 - Every 10% of Structure lost opens a new **crack** at one of 16 crack sockets on the silo (maximum 10 active cracks). Each crack holds that 10% of max Structure as its **repair pool**: repairing drains the pool back into Structure, and the crack closes when the pool is empty.
 - **Hits open cracks near where they land** (decision R-D3). A new crack goes to the hit's own height band 70% of the time; the other 30% is shared by the other bands by weight (**ground 50%, catwalk 1 30%, catwalk 2 20%**). It then takes the free socket in that band that faces the hit most directly. Ground robots open low cracks and ranged and flying robots open high ones, so more ranged robots later means more catwalk repairs.
-- **Waves 1–2 open ground cracks only**, while the player learns to repair. If every ground socket is taken, the damage goes into an open crack's pool instead.
+- **Waves 1–2 open ground cracks only**, while the player learns to repair. If every ground socket is taken, the damage goes into an open crack's pool instead. Catwalk cracks first come from wave 4's Lobber and wave 5's Rung Runner, the climbers' phase.
+- **Between attacks the HUD points at the worst leak** (biggest first, then nearest) with its direction and time to seal, and its beacon says WORST LEAK. Sealing a crack plays one crisp relief chime.
 - When all 10 crack slots are full, further damage is added to the nearest crack's pool, so it stays repairable.
 - Sockets are spread across three heights: **ground level (0–4 m)**, **first catwalk (8 m)** and **upper catwalk (16 m)**. High cracks need the ladder, a zipline or the jetpack to reach. This ties repair to vertical traversal.
 - Each crack is a visible grain spout (golden clay pellets pouring out and piling on the ground).
@@ -206,7 +208,8 @@ The silo has two meters:
 | Repair silo | Yes | Yes |
 | Heal at Home | Yes | Yes |
 | Collect eggs at Coop | Yes (slower lay rate) | Yes |
-| Buy upgrades at Tool Shed | **No** (shed is shuttered) | Yes |
+| Buy upgrades (the shed pegboard) | **No** (shed is shuttered) | Yes, until the siren |
+| Build defenses anywhere they fit; move, repair or dismantle them | **No** (unfinished work freezes and does nothing) | Yes, until the siren |
 | Swap weapon mods | No | Yes (at the shed) |
 
 ---
@@ -217,7 +220,7 @@ The silo has two meters:
 
 - **One handcrafted farm** that players learn deeply: rooftops, routes, zipline lines and sight lines stay the same every run.
 - **Variation every run** comes from props, crops, time of day and weather (see 4.6), plus the robots themselves.
-- **The silo is the center of gravity.** Every other building sits 20–40 m away, so the 30 s intermission forces a choice: shop, repair or heal. You can't comfortably do all three.
+- **The silo is the center of gravity.** Every other building sits 20–40 m away, so the 90 s intermission is a route: the shed, the defenses you want to build, the cracks to repair and the porch to heal. Walking it is part of the fun.
 
 ### 4.2 Scale
 
@@ -291,7 +294,7 @@ Positions are in meters from the silo (x = east, y = north).
 | **Ziplines** | Always | **Z1:** silo dome (22 m) → barn roof (13 m). **Z2:** water tower top (19 m) → silo upper catwalk (16 m). **Z3:** barn roof (13 m) → stables roof (6 m). 12 m/s. You can fire the pistol while riding. |
 | **Hay-bale stairs** | Always | Stacked bales next to the stables and chicken house. They give early-game access to low roofs. |
 | **Vine trellis** | Always | Home porch roof. |
-| **Jetpack** | Build at the shed for 40 Al + 15 Cu from wave 3 | Base reach about 8.5 m. Upgrades extend it to every roof (see 5.4). |
+| **Jetpack** | Build at the shed for 40 Al + 15 Cu once the profile has cleared wave 9 | Base reach about 8.5 m. Upgrades extend it to every roof (see 5.4). |
 
 **Design rule:** every perch has at least two ways up and one fast way down. Roof Lobbers climb the outer walls of the barn, chicken house, stables and tool shed, then throw slow projectiles from their perches. Drones fly above the farm and fire while circling the silo. Both give the farmer a reason to watch and use the farm's vertical routes.
 
@@ -350,7 +353,7 @@ A stubby clay farmer in patched overalls, a straw hat and welding goggles (worki
 | Eat pie | C | D-pad left |
 | Overdrive (jetpack capstone) | X | LB + RB |
 | Shoulder swap | Middle mouse | — |
-| Wave info / map | Tab | View / Select |
+| Build a defense (intermission): pick a recipe, then place it | Tab | View / Select / Back |
 | Pause | Esc | Start / Options |
 
 Holding the weapon-wheel input slows time to 20% while the wheel is open, giving the player time to aim the selection stick without leaving the farmer fully exposed. Releasing it equips the highlighted weapon and restores normal time.
@@ -374,7 +377,7 @@ All bindings are remappable. Gamepad gets aim assist (slowdown plus light magnet
 
 ### 5.4 The Milk-Can Jetpack
 
-**Unlock:** build at the shed for 40 Al + 15 Cu, available from wave 3. It is kept forever.
+**Unlock:** build at the shed for 40 Al + 15 Cu. The blueprint is a profile milestone, clearing wave 9 (phase 3's Big Haul, the first with Drones); after that it can be built in any run. It is kept forever. Every roof is reachable on foot before it.
 
 **Early role:** traversal. It gets you onto low roofs and catwalks quickly. **Later role:** attack advantage through hovering, air dashes, aerial damage bonuses, ground pounds and afterburner damage (see the Travel branch in 13.4).
 
@@ -482,7 +485,22 @@ Progression in this branch improves **how much** each repair restores and **how 
 | **Rivet Count** | +10% silo max Structure per level |
 | **Crack Stoppers** | Lower chance that damage opens a new crack |
 | **Zap Plates** | Melee robots attacking the silo take shock damage |
-| **Scarecrow Decoy** | A placeable scarecrow that pulls melee robots' attention for 10 s |
+| **Scarecrow Decoy** | A built defense (8.3) that pulls a few nearby robots onto itself for 10 s each |
+
+### 8.3 Built defenses (intermission construction)
+
+DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md, first version. **Recipes** are lasting pegboard progression (the BUILD branch, 13); every **copy** costs parts again, and a destroyed copy stays spent. Copies are run-scoped: they stay put between waves, keeping their damage, and a new run starts with none.
+
+| Defense | Copy | Capacity | Assembly | What it does |
+|---|---|---|---|---|
+| **Spring Trap** | 12 Al | 2 | 10 s | Throws a small robot up and out along its arrow; medium robots fly less far; large robots and Foremen stomp it instead. On the ground it delays; on the catwalk or a roof the landing hurts (no damage up to 2 m of fall, then 7 per metre, at most 60), with a 1 s recovery and kill credit to whoever placed it. Resets in 5 s. The recipe is 15 Al on the BUILD board; the wave 5 intermission asks for one at the ladder top. |
+| **Scarecrow Decoy** | 6 Al | 1 | 5 s | Holds up to 3 eligible robots on itself for 10 s each, then lets them go (they ignore decoys for 6 s after). On the ground it pulls ground robots within 12 m; on the catwalk it pulls Rung Runners from anywhere on their route; on a roof it draws Lobbers within reach to that roof. Never thieves, heist crews, Foremen or a robot already after the farmer. |
+| **Scrap Barricade** | 8 Al | 2 | 8 s | Robots that reach it must smash it (160 durability) before going on; the farmer walks through. On the ground it stands across the way the farmer faced when placing it; on the catwalk it turns a Rung Runner the other way round. |
+
+- **Free placement, no marked spots** (playtest feedback 2026-10-26): press Build (Tab / Back) anywhere in an intermission, pick a recipe, and its see-through ghost stands in front of the farmer. It is green where it fits and red where it would overlap a building, the silo, a prop, a robot or another defense, or has no floor under it. Interact or Fire builds it; Build again cancels. The camera's facing sets a spring's arrow and a barricade's face. On the silo's first catwalk the ghost snaps onto the ring the climbers walk and faces out from the silo. Barricades never go on roofs. Interact with a placed copy for its menu.
+- **Only the intermission builds.** Confirming a blueprint reserves its whole cost and capacity at once. One job advances at a time while the farmer does anything else; at most two more wait behind it. Standing beside the job doubles its speed. The siren closes construction: unfinished work freezes as a ghost that does nothing in battle and resumes next intermission.
+- **Capacity 8** (More Room adds up to 2) caps how much a wealthy profile can automate; jobs reserve it too.
+- **Refunds settle once:** cancelling returns only the unbuilt share of what was reserved; the run's end refunds every unfinished job the same way. A finished copy can **move** anywhere it fits in a later intermission (no parts, half its assembly time again), be **repaired** for half its price scaled by the damage, or be **dismantled** for half its price times its condition, so selling and rebuilding never pays or heals for free.
 
 ---
 
@@ -492,7 +510,7 @@ Progression in this branch improves **how much** each repair restores and **how 
 
 | Type (size) | Size | HP (wave 1) | Speed | Group | Frequency |
 |---|---|---|---|---|---|
-| **Scout** (small) | 0.8 m | 30 | 8.0 m/s (faster than the farmer) | On the ground, usually a trio: 40% in waves 1–2, 60% from wave 3, rising to 70% by wave 15. Flyers are solo | Most frequent (about 55% of spawn events) |
+| **Scout** (small) | 0.8 m | 30 | 8.0 m/s (faster than the farmer) | On the ground, usually a trio: 40% through phase 1, 60% from wave 4, rising to 70% by wave 16. Flyers are solo | Most frequent (about 55% of spawn events) |
 | **Grunt** (medium) | 1.4 m | 60 | 4.5 m/s | Rarely a trio (15%) | Medium (about 35%) |
 | **Heavy** (large) | 2.6 m | 400 | 2.5 m/s | Always solo | Rare (about 10%, with a per-wave cap) |
 
@@ -555,7 +573,9 @@ Who a robot goes after comes from its behavior variables (see 9.6), not a fixed 
 
 Heavies debut as a Foreman, then join regular spawns from the next wave. From wave 16 on, all nine archetypes can appear and the director's weights decide the mix.
 
-**Built so far (robot attack variety plan):** Nibbler (1), Clanker (2), Roof Lobber (3), Drone (5), Thumper (Foreman at 5, regular spawns from 6), and at wave 7 Spitters and out-of-reach throwing.
+**Built so far (robot attack variety plan, re-keyed to 3-wave phases):** Nibbler (1), Clanker (2), Thumper (the first Foreman at 3, regular spawns from 8), Roof Lobber (4), **Rung Runner** (5, the silo-ladder climber), Drone (7), and at wave 13 Spitters, the Clanker's arm guard and out-of-reach throwing. Waves 1–6 are authored (11.1).
+
+**Rung Runner** (small melee, a role of the climber share): a clearly marked light robot with hazard-yellow climbing hooks. It walks to the silo ladder, climbs it at 2.2 m/s with a metal clanking rhythm (at most two on the ladder at once; the rest wait beside the foot, never on it), steps onto the first catwalk and walks the ring to a crack socket 45° from the ladder, then bashes the silo at catwalk height, so its cracks open up there. It never steals. A catwalk barricade sends it the other way round; with both ways shut it smashes one. A catwalk decoy pulls it in, and a spring throws it off (8.3). It can be shot all the way up, met on the catwalk, or ignored while it climbs (it can't reach a farmer below).
 
 ### 9.6 AI behavior summary
 
@@ -567,7 +587,7 @@ Each class runs one behavior tree (built with LimboAI, see 18.4), parameterized 
 - **Trios:** any small or medium ground robot can come as a trio (see 9.1). A trio shares one blackboard: the leader rolls the target, role and any distraction, and the other two follow. They move in a loose triangle behind the leader and attack in a 3-beat rhythm (*nip-nip-NIP*, *clank-clank-CLANK*). If the leader falls, the next one leads.
 - **Heist crews:** in a thief trio only the leader carries a sack. The other two escort it and fight a farmer who comes near either of them. The crew counts as one thief toward the thief share (11.7). If the thief is destroyed, the escorts carry on as an ordinary pair; if it escapes, they slip into the corn too.
 - **Ranged attacks:** every ranged and flying robot fires through one shared attack (an attack profile per archetype: charge time, interval, damage, speed, arc, range). **Telegraphs:** every shot charges a glow for at least 0.45 s; lobs show a chalk circle where they will land (it follows the target while the lob charges, then stays put); rails show a red-yarn aim line; bombs show a shadow circle. Lobs never lead their target.
-- **Attack tokens:** only N robots may shoot at one farmer at once (2 in waves 1–5, then 3 / 4 / 5 by phase, see 11.8). The rest shoot the silo. At most 24 robot shots fly at once.
+- **Attack tokens:** only N robots may shoot at one farmer at once (2 in waves 1–6, then 3 / 4 / 5 by phase, see 11.8). The rest shoot the silo. At most 24 robot shots fly at once.
 - **Scaling (11.8):** from wave 6 charges get shorter (never under 0.45 s), straight shots lead a moving farmer from wave 10 (lobs, rails and bombs never do), and Drones and Spitter trios fire volleys from wave 16.
 - **Spitter:** approach to 12–16 m → stand still and charge → fire → hop around the target every 3 shots; back off 4 m once from a close farmer. It can shoot a farmer up high, so it never gives up on one.
 - **Out-of-reach throws** (`on_unreachable` = throw): once the farmer has been out of reach for 0.5 s and is within throwing range, the robot stops and throws (charge glow and chalk circle), at most twice, then goes back to the silo. The give-up clock holds while a throw is under way. A throw needs one of the farmer's attack tokens; with none free the robot doesn't throw at the silo instead, it gives up as usual. In a trio each robot throws for itself and the first to finish sends the trio back.
@@ -687,7 +707,7 @@ All robots in a wave share these genes, so the wave reads as one family.
 | **Thieving** | ×1.5 thief share for the wave (max 60% of spawns, see 11.7). Squads still never steal. | Little sacks on their backs |
 | **Medic** | Robots slowly repair nearby allies | Wrench antenna, green cross |
 
-**Trait count by wave:** 0 (waves 1–5), 1 (waves 6–15), 2 (waves 16–30), 3 (wave 31 and later). A Foreman always gets +1 extra trait.
+**Trait count by wave:** 0 (waves 1–6, the authored opening), 1 (waves 7–15), 2 (waves 16–30), 3 (wave 31 and later). A generated Foreman gets +1 extra trait; the opening's two Foremen get none.
 
 ### 10.4 Assembly method
 
@@ -711,7 +731,7 @@ stateDiagram-v2
     [*] --> Intermission
     Intermission --> Siren: T-3 s, or player rings the bell early
     Siren --> Spawning: T-0, Scrap Vac sweeps old parts
-    Spawning --> MopUp: spawn window ends
+    Spawning --> MopUp: nothing left to spawn
     MopUp --> Cleared: last robot destroyed
     Cleared --> Intermission: Harvest Bonus + earned salvage
     Intermission --> GameOver: grain reaches 0 (leaks continue)
@@ -721,20 +741,22 @@ stateDiagram-v2
 
 | Phase of a wave | Rules |
 |---|---|
-| **Intermission** | Fixed **30 s**. Shed open. Leaks keep draining. (Builds use 90 s until the Hub pegboard and pinned-goals quick-buy exist; see `docs/ROADMAP.md`, decision D1.) |
-| **Siren (last 3 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. |
-| **Ring the bell early** | Hold Interact on the dinner bell (by the porch) or press the "Ready" button to jump straight to the siren. **Early Bird bonus:** five base Aluminium, multiplied by the owned Early Bird upgrade, paid only after clearing that wave. Skipped seconds do not affect the reward. |
-| **Spawning** | First Scrap Vac banks its configured share of old parts and clears leftovers. The director then spends the wave's threat budget over the spawn window. |
-| **Mop-up** | Finish any scheduled spawns delayed by live caps. The wave ends when the spawn queue and live count are both empty. |
+| **Intermission** | Fixed **90 s**, siren included: time to walk to the shed and shop, build defenses and get back (playtest feedback 2026-10-26 replaced decision D1's 30 s and its quick-buy panel). Shed and construction open. Leaks keep draining. Shopping and building never pause it. |
+| **Siren (last 3 s of intermission)** | The water-tower siren winds up. Active spawn lanes are marked on the compass and the corn rustles. The family name card appears with a silhouette. The siren **commits the plan**: the shed shutters and construction, placement, moves and repairs close; parts can still be picked up until the attack. |
+| **Ring the bell early** | Hold Interact on the dinner bell (by the porch) to jump straight to the siren. **Early Bird bonus:** five base Aluminium, multiplied by the owned Early Bird upgrade, paid only after clearing that wave, and only for a wave above the profile's best (a cheap retry can't farm it). Skipped seconds do not affect the reward. |
+| **Spawning** | First Scrap Vac banks its configured share of old parts and clears leftovers. The director then plays the authored wave (waves 1–6) or spends the wave's threat budget over the spawn window. |
+| **Mop-up** | Starts as soon as nothing is left to spawn. Finish any spawns delayed by live caps. The wave ends the moment the spawn queue and live count are both empty, never waiting out a timer. |
 | **Cleared** | Jingle and Harvest Bonus. Each even-numbered clear banks 2 Cu + 1 Au + 1 PC once per wave per attempt. Parts stay available throughout the following intermission. |
 
-**Vertical composition (implemented October 25):** from wave 3, approximately 25% of individual robots are wall-climbing Roof Lobbers. Squads count individually and the bonus Foreman counts in the denominator. These replace ground purchases within the existing budget. Live climber caps are 2 through wave 5, 3 through wave 15, 4 through wave 30, and 5 afterward; waiting climbers do not block due ground spawns. Drones debut at wave 5, with per-wave caps of 1 through wave 7, 2 through wave 15, and 3 afterward. Dedicated silo-ladder attackers remain planned and will share this allocation.
+**The authored opening (waves 1–6):** fixed rosters in `data/opening` (FIRST_FIVE_WAVES_FUN_PLAN.md, re-keyed by PHASE_CHECKPOINT_PROGRESSION_PLAN.md): groups released at set times or a few seconds after an earlier group is beaten, a live cap per wave (4, 6, 6, 7, 9, 7), arrivals bursting out of the crops 45 m out, named roofs for the Lobbers, one-time debut captions, and a late raid in wave 5 announced 3 s ahead from a third direction. Only cosmetics and the actual lanes are seeded.
+
+**Vertical composition (generated waves, from wave 7):** approximately 25% of individual robots are climbers. Squads count individually and the bonus Foreman counts in the denominator. These replace ground purchases within the existing budget. About a third of the climbers are Rung Runners for the silo ladder (at least one whenever there are two climbers) and the rest Roof Lobbers; this is one allocation, not two. Live caps: Lobbers 2 before wave 5, 3 through wave 15, 4 through wave 30 and 5 afterward; Rung Runners 2 through wave 15 and 3 afterward. Waiting climbers do not block due ground spawns. Drones debut at wave 7 (one), then at most 2 through wave 9 and 3 from wave 10.
 
 ### 11.2 Phases and the Big Haul
 
-- **A phase is 5 waves.** Wave 5 of each phase is a **Big Haul**: the threat budget is ×1.3 and a **Foreman** appears.
-- **Foreman:** an elite Heavy of the current family with a crown or hard hat, 3× HP, +1 trait, a unique stinger sound and a guaranteed bounty of 3 Power Cells + 2 Gold banked immediately on a legitimate kill; its common metals remain physical pickups. The Foreman's class rotates by phase (melee → short → long): Thumper at wave 5, Boiler at wave 10 and Longneck at wave 15 are each that Heavy's first appearance.
-- Completing a phase advances the time of day by one step (dawn → morning → … → moonlit → dawn).
+- **A phase is 3 waves: Lesson, Twist, Big Haul** (PHASE_CHECKPOINT_PROGRESSION_PLAN.md). The Lesson meets the phase's new thing in a gentle form, the Twist uses it under pressure, and the third wave is the **Big Haul**: the threat budget is ×1.3 and a **Foreman** appears. Every scaling step starts on a phase's first wave (waves 1, 4, 7, …), so a retry plays by the same rules; the late third and fourth lanes (5, 14) and regular Thumpers (8) are deliberate twist-wave exceptions.
+- **Foreman:** an elite Heavy of the current family with a crown or hard hat, 3× HP, +1 trait, a unique stinger sound and a bounty of **2 Power Cells + 1 Gold**, banked immediately on the first legitimate kill of each Foreman wave per profile; a repeat kill drops the Heavy's own table, so retries can't farm it. Its common metals remain physical pickups. The opening's Foremen are authored: wave 3's has 350 HP, no trait, a 1.2 s slam tell and a 2.5 s recovery that exposes a glowing ×3 back vent; wave 6's has 900 HP (not the curve's ~1,700) and throws dirt clods at a farmer more than 6 m away from the start, every 4.5 s, every 2.5 s below half health. Both wear plates: a hit from more than 6 m does 30% unless it lands in the open vent. An authored Foreman's defeat calls off the adds still to come.
+- Completing a phase advances the time of day by one step (dawn → morning → … → moonlit → dawn), counted from wave 1, so a full day is 18 waves and a run that starts at a later checkpoint opens at that phase's time of day.
 
 ### 11.3 Wave length
 
@@ -750,7 +772,7 @@ After wave 25 the window stops growing, but the budget keeps rising, so waves ge
 
 ### 11.4 Threat budget
 
-**Budget B(w) = 12 + 6 × w^1.3** (× 1.3 on Big Haul waves; the table below shows the base value before that multiplier)
+**Budget B(w) = 12 + 6 × w^1.3** (× 1.3 on Big Haul waves; the table below shows the base value before that multiplier). The first generated phase after the authored opening steps up from it: waves 7, 8 and 9 use ×0.7, ×0.8 and ×0.85 (`DifficultyCurve.opening_handoff`), so the count rises from the opening's 15–20 robots to about 23, 28 and 47 instead of jumping to 33.
 
 Threat cost is **per robot × group size**. Per robot it is the size cost × the attack-style multiplier, so a trio costs three robots and a solo Clanker costs twice a Nibbler, matching its double HP.
 
@@ -760,7 +782,7 @@ Threat cost is **per robot × group size**. Per robot it is the size cost × the
 | Grunt (medium) | 4 | Ranged ×1.25 |
 | Heavy (large) | 14 | Flight ×1.6 |
 
-A spawn picks its archetype by type weight, then rolls the archetype's trio chance from the wave's spawn stream. A trio only forms if the budget still covers all three. From wave 6 the type weights are rescaled so the attack grid's columns (melee, ranged, flight) get their shares from 11.8. From wave 7 a small ground melee pick becomes a Spitter group with the Spitter share from 11.8, if the budget covers it (a Spitter costs 2.5).
+A spawn picks its archetype by type weight, then rolls the archetype's trio chance from the wave's spawn stream. A trio only forms if the budget still covers all three. From wave 7 the type weights are rescaled so the attack grid's columns (melee, ranged, flight) get their shares from 11.8. From wave 13 a small ground melee pick becomes a Spitter group with the Spitter share from 11.8, if the budget covers it (a Spitter costs 2.5).
 
 | Wave | 1 | 2 | 5 | 10 | 15 | 20 | 30 | 40 | 60 |
 |---|---|---|---|---|---|---|---|---|---|
@@ -786,7 +808,8 @@ A spawn picks its archetype by type weight, then rolls the archetype's trio chan
 ### 11.6 Spawn lanes
 
 - 8 lanes at the compass points, emerging from the corn at about 110 m.
-- Waves 1–4 use 2 lanes; waves 5–14 use 3; waves 15–29 use 4; wave 30 and later use 5. The active lanes are chosen per wave from the wave seed.
+- Waves 1–4 use 2 lanes; waves 5–13 use 3; waves 14–30 use 4; wave 31 and later use 5. The active lanes are chosen per wave from the wave seed. The authored opening sets its own: wave 1 opens one lane in front of the farmer's start, and wave 5's third direction opens late as an announced raid.
+- Announcements name the landmark a lane passes ("from the north, by the barn") rather than its number.
 - Trios always share a lane and start in a triangle. Longnecks always take a lane that gives them a siege position facing the silo.
 
 ### 11.7 Grain thieves
@@ -796,20 +819,20 @@ A spawn picks its archetype by type weight, then rolls the archetype's trio chan
 - **How it's rolled:** each Nibbler spawn (a solo or a trio's leader) first rolls its silo focus (70%). If it goes for the silo, the steal roll is scaled so the overall share of thieves matches the thief share above.
 - **Foremen** never steal.
 
-### 11.8 Attack scaling (from wave 6)
+### 11.8 Attack scaling (from wave 7)
 
-The stat curves (11.5) raise raw numbers. These knobs make later waves harder through how robots attack instead (robot attack variety plan; `DifficultyCurve`, M2-B10). Waves 1–5 keep the first value of every knob.
+The stat curves (11.5) raise raw numbers. These knobs make later waves harder through how robots attack instead (robot attack variety plan; `DifficultyCurve`, M2-B10). The six-wave authored opening keeps the first value of every knob.
 
-| Knob | Waves 1–5 | 6–15 | 16–30 | 31+ |
+| Knob | Waves 1–6 | 7–15 | 16–30 | 31+ |
 |---|---|---|---|---|
 | Farmer attack tokens (9.6) | 2 | 3 | 4 | 5 |
 | Charge-time multiplier (never under 0.45 s) | 1.0 | 0.9 | 0.8 | 0.7 |
 | Aim lead, straight shots only (share of the farmer's travel during the shot's flight) | 0 | 0 until wave 10, then 0.3 | 0.6 | 0.6 |
-| Shots per volley (Drones, Spitter trios) | 1 | 1 | 2 (3 from wave 24) | 3 |
-| Spitter share of small ground melee spawns | 0 | 10% at wave 7, +2 points a wave | up to 40% (reached at wave 22) | 40% |
+| Shots per volley (Drones, Spitter trios) | 1 | 1 | 2 (3 from wave 25) | 3 |
+| Spitter share of small ground melee spawns | 0 | 10% at wave 13, +2 points a wave | up to 40% (reached at wave 28) | 40% |
 | Column shares, melee / ranged / flight | type weights only | 60 / 28 / 12 | 52 / 30 / 18 | 45 / 33 / 22 |
 
-Melee robots start throwing at out-of-reach farmers at wave 7, and the Clanker's arm guard is up from wave 6 (9.3).
+Phase 5 (waves 13–15), "the robots fight back", brings Spitters, the Clanker's arm guard and melee throws at out-of-reach farmers together (9.3).
 
 ---
 
@@ -881,7 +904,7 @@ Later weapon tracks can have their own cost bases after their combat roles are p
 | About 80% of total power | About 15 hours |
 | Every node maxed | About 30–35 hours |
 
-**Current six-wave calibration:** a 256-seed model with all kills and full collection yields about 344 Al / 59 Cu / 11 Au / 9.8 PC, excluding bell, tutorial, luck, traits, and spending. Baseline 50%-Vac-only recovery, including the sweep after wave six, yields about 172 / 32 / 8 / 7.9. Current catalog totals are 6,321 / 765 / 63 / 19. These are economy estimates, not human difficulty results; longer progression-hour targets above require a new playtest with construction spending. Reproduce with `tools/economy_probe.gd`.
+**Current six-wave calibration** (the authored opening, 76 robots): a 256-seed model with all kills and full collection yields about 243 Al / 49 Cu / 8 Au / 8.6 PC, excluding bell, tutorial, luck, traits, and spending (measured before the 2026-10-26 opening tuning, which has fewer robots). Baseline 50%-Vac-only recovery, including the sweep after wave six, yields about 121 / 27 / 6.5 / 7.8. Current catalog totals are 7,390 / 844 / 72 / 23 (Maul, Scythe, Grenades and the BUILD branch are on the pegboard; Springy Soles and Zipline Grip are retired). These are economy estimates, not human difficulty results; longer progression-hour targets above require a new playtest with construction spending. Reproduce with `tools/economy_probe.gd`.
 
 Tuning lever: the drop quantity multiplier (12.2 and 11.5) and per-branch base multipliers. All numbers live in data resources (see 18.5).
 
@@ -947,9 +970,7 @@ About **350 purchasable levels** in total, so the tree is long. With full persis
 | Node | Lvls | Effect | Requires | Recipe |
 |---|---|---|---|---|
 | Comfy Boots | 5 | +3% run speed | — | Al → Cu |
-| Springy Soles | 3 | +10% jump height | Comfy Boots 2 | Al |
-| Zipline Grip | 2 | +30% zipline speed; level 2 lets you fire **any** weapon while ziplining | Comfy Boots 3 | Al / Cu |
-| **Milk-Can Jetpack** | Unlock | 40 Al + 15 Cu; available from wave 3 | — | — |
+| **Milk-Can Jetpack** | Unlock | 40 Al + 15 Cu; the blueprint comes with clearing wave 9 | — | — |
 | Fuel Tank | 10 | ×1.20 flight time (compounding; see 5.4) | Jetpack | Al → PC |
 | Quick Refill | 8 | +15% recharge speed; level 4 also cuts recharge delay by 0.25 s | Jetpack | Al → Au |
 | Thrusters | 5 | +8% climb rate and air speed | Fuel Tank 2 | Al / Cu |
@@ -1034,6 +1055,8 @@ A bought weapon is immediately usable. Future refinements should improve these d
 | Scarecrow Decoy | Unlock + 3 | Place a scarecrow that pulls melee aggro for 10 s (60 s cooldown). Levels add HP and duration. | Copper plating | Cu / Au |
 | **Iron Silo** (capstone) | 1 | Once per wave, when Structure drops below 25%, the silo is invulnerable for 8 s | Power-Shield, Rivet Count 5 | 25 Au + 12 PC |
 
+Springy Soles (jump height) and Zipline Grip (zipline speed, firing any weapon) were retired in favor of effects with demonstrated uses (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md). Profiles that bought them get their parts back once, at the higher of the two historical prices (`RetiredUpgrades`). Every gun now fires from a zipline as part of basic riding; melee tools don't.
+
 ### 13.8 FARMHAND branch (small utility branch)
 
 | Node | Lvls | Effect | Requires | Recipe |
@@ -1043,6 +1066,22 @@ A bought weapon is immediately usable. Future refinements should improve these d
 | Lucky Horseshoe | 5 | +15% (relative) Gold and Power Cell drop chance (+75% at max) | Scrap Magnet 2 | Cu / Au |
 | Early Bird | 3 | +25 / 50 / 75% Early Bird bonus | — | Al / Cu |
 | Farmer's Almanac | 1 | Records previous attacks, known robot behaviors, and trap interactions; future gates remain hidden until the siren | — | 30 Cu + 2 Au |
+
+
+### 13.9 BUILD branch (defense recipes and the trapper)
+
+Recipes are lasting progression; every copy still costs parts (8.3). Base copies cost only Aluminium; Copper, Gold and Power Cells go into the trapper's upgrades, which gives the rarer parts a use within the first half hour.
+
+| Node | Lvls | Effect | Requires | Recipe |
+|---|---|---|---|---|
+| Spring Trap | 1 | Recipe: the spring trap (12 Al a copy) | the reward for clearing wave 4, with one free copy | — |
+| Scarecrow Decoy | 1 | Recipe: the decoy (6 Al a copy) | Spring Trap | 15 Al |
+| Scrap Barricade | 1 | Recipe: the barricade (8 Al a copy) | Spring Trap | 20 Al |
+| Quick Assembly | 2 | +25% construction speed per level (a 10 s spring builds in 8 s) | Spring Trap | Al / Cu |
+| Coil Springs | 3 | +15% launch power and −12% reset time per level | Spring Trap | Al / Cu, Au at 3 |
+| Loud Scarecrow | 2 | +20% lure radius and one more robot held per level | Scarecrow Decoy | Al / Cu / Au |
+| Sturdy Scrap | 3 | +25% barricade durability per level | Scrap Barricade | Al / Cu |
+| More Room | 2 | +1 defense capacity per level (8 → 10) | Quick Assembly | Al / Cu / Au, PC at 2 |
 
 ---
 
@@ -1067,8 +1106,8 @@ A bought weapon is immediately usable. Future refinements should improve these d
 Full persistence means runs get easier as you grind. That's intended, and it's balanced by:
 
 1. **Quadratic robot scaling** against additive upgrades: everyone hits a wall eventually (see 11.5).
-2. **Start-phase checkpoints:** start a run at Phase 1, or at the first wave of any phase up to **(best phase − 1)**. Veterans skip trivial early waves. Skipped waves give no parts, so starting early stays efficient for farming.
-3. **Records are tracked separately** for runs that started at Phase 1 ("Full Harvest") and checkpoint runs.
+2. **Phase checkpoints** (PHASE_CHECKPOINT_PROGRESSION_PLAN.md): a loss (farmer down, silo destroyed or grain gone) costs the phase, not the climb. The Harvest Report's main choice is **Retry Phase N**: a fresh attempt at the phase's first wave with a full silo, a new seed (derived from the last one) and every part, upgrade and unlock kept. **Start over at Phase 1** is the second choice. The checkpoint (`resume_wave`) is saved, so quitting and relaunching continues at the start of that phase; the pause menu can also restart the phase, start over, or continue at the furthest checkpoint. Level 0 is never replayed by a retry.
+3. **Records:** best wave stays "the highest wave cleared" across retries. **Full Harvest** is a run from wave 1 with no retries. Attempts per phase (latest and fewest to clear) are kept. The cheap retry can't farm rewards: Early Bird pays only above the best wave, each Foreman wave's bounty pays once per profile, and the jetpack blueprint milestone settles once. No milestone hands over an item.
 
 ### 14.3 Robot Almanac
 
@@ -1277,6 +1316,12 @@ flowchart LR
 | **Parts counter** | Animated tick-up as parts are collected |
 | **Family name card** | Shown during the siren: the name, a silhouette lineup and trait icons |
 | **Damage numbers** | Optional; off by default for the cute, uncluttered look |
+| **Next wave card** | Between waves, the authored wave's title and what it asks ("Next: Take the High Ground"), or "the Big Haul", plus where to shop, the Build key and the dinner bell |
+| **Construction line** | Under the wave card: the job being built and its percentage ("lending a hand x2" when the farmer stands by it), what waits, and the capacity; in battle, how many jobs are frozen |
+| **Climber warning** | While a Rung Runner is on the silo ladder or catwalk: "CLIMBER ON THE SILO LADDER", which way it is from the farmer, and how many are up top |
+| **Low health** | Below 30% HP, a pulsing red edge and the nearest heal: the porch, or the well 12 m from the silo (8 HP/s, slower than the porch's 15) |
+| **Worst leak** | Between attacks, the silo card names the worst leak, its direction and its time to seal |
+| **Reward banners** | The jetpack blueprint milestone and one-time debut captions for each new robot |
 
 ### 17.3 Pegboard UI
 
@@ -1285,15 +1330,15 @@ flowchart LR
 - **States, shown by colour and outline (no filter toggle):** fill green = owned, cream = available, grey = locked; gold ring = you can afford the next level, red ring = short on parts. Owned and upgradable reads as green with a ring.
 - **Buying:** hold A (or hold the mouse on a peg) for 1 s, the same as the dinner bell, and a bar fills while you hold. Letting go early cancels, so a stray press can't spend parts.
 - **Controller:** D-pad or left stick moves across every branch, B or Start closes. Every peg is focusable, locked ones included, and the line under the board says what a peg needs.
-- **During a run:** the 30 s intermission timer stays visible on the pegboard and keeps running. A **pinned goals** quick-buy list lets players buy their next targets in a couple of seconds. Robots don't attack during intermission, but leaks keep draining.
+- **During a run:** the 90 s intermission timer stays visible on the pegboard and keeps running. Robots don't attack during intermission, but leaks keep draining.
 
 ### 17.4 Harvest Report (game over)
 
-- Waves survived (Phase.Wave), new record banner
+- Where it was lost (Phase.Wave) and the attempt number, waves survived, new record banner
 - Parts collected this run (all of it banked)
 - Families encountered (with name cards); new Almanac entries
 - Cause of game over, with a playful line: "The Rusty Disco Toasters got the last of the grain!"
-- Buttons: **Pegboard**, **Run again**, **Hub**
+- Buttons: **Retry Phase N** (R, Enter, A), **Start over at Phase 1** (Backspace, Y), **Pegboard** (P, Start: unhurried shopping with no clock), and **Hub** once it exists
 
 ### 17.5 Fonts and look
 
@@ -1636,7 +1681,7 @@ Low-poly CC0 packs are faceted; claymation needs soft, lumpy forms. A Blender Py
 | **Aim** | Aim assist strength (gamepad), aim slowdown, toggle or hold aim, sensitivity per axis, gyro via Steam Input |
 | **Controls** | Full remapping, hold-vs-toggle for repair and jetpack hover, one-handed preset |
 | **Visual** | Colorblind presets (robot class is always shown by **shape** as well as glow color), HUD scale, high-contrast outlines on robots, subtitles and captions for audio cues (the siren, Longneck charge and thieves get visual indicators) |
-| **Pacing** | **Relaxed Intermission** option: pauses the 30 s timer while the pegboard is open. Runs with it on are flagged in records. |
+| **Pacing** | Intermissions are already 90 s. The clock still runs while shopping and building (the defense plan's rule that preparation is never untimed). |
 | **Difficulty assist** | **Gentle Farm** mode: robots −25% HP and damage. Records tracked separately. |
 | **Audio** | Separate volume sliders (master, music, SFX, voices, UI), mono audio |
 
@@ -1677,8 +1722,8 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 
 **Assumptions made in this draft (easy to change):**
 
-1. **"Phase" = 5 waves.** The score is waves survived, displayed as Phase.Wave, and every 5th wave is a Big Haul with a Foreman.
-2. **The jetpack is a shed purchase from wave 3 onward**, costing 40 Al + 15 Cu.
+1. **"Phase" = 3 waves** (PHASE_CHECKPOINT_PROGRESSION_PLAN.md). The score is waves survived, displayed as Phase.Wave, and every 3rd wave is a Big Haul with a Foreman.
+2. **The jetpack is a shed purchase once wave 9 has been cleared on the profile**, costing 40 Al + 15 Cu.
 3. **The Chicken House needs a gameplay role beyond elevation.** Choose one after the new grenade launcher has been playtested.
 4. **Harvest Bonus grain** (+40 per wave cleared) exists so grain is a slow-burning threat rather than a guaranteed end to every run.
 5. **A small fifth branch, FARMHAND** (magnet, scrap vac, luck, early bird, almanac), was added alongside Travel, Attack, Repair and Defend.
@@ -1700,7 +1745,18 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 
 | Constant | Value | Section |
 |---|---|---|
-| Intermission length | 30 s (builds use 90 s until M2-H3 and M2-G1; ROADMAP D1) | 11.1 |
+| Intermission length | 90 s, siren included | 11.1 |
+| Phase length | 3 waves: Lesson, Twist, Big Haul | 11.2 |
+| First Foreman (wave 3) | 350 HP; 1.2 s slam tell; 2.5 s recovery with a ×3 vent (any hit from 3.5 m behind); plates (30% from beyond 6 m) | 11.2 |
+| Foreman bounty | 2 PC + 1 Au, first kill per Foreman wave per profile | 11.2 |
+| Opening live caps (waves 1–6) | 4 / 6 / 6 / 7 / 9 / 7 robots | 11.1 |
+| Authored arrival distance | 45 m from the silo | 11.1 |
+| First generated phase budget | ×0.7 / ×0.8 / ×0.85 (waves 7–9) | 11.4 |
+| Jetpack blueprint | clearing wave 9 (profile milestone) | 5.4 |
+| Defense capacity | 8 (+1 per More Room level) | 8.3 |
+| Spring / decoy / barricade copy | 12 / 6 / 8 Al; 10 / 5 / 8 s; capacity 2 / 1 / 2 | 8.3 |
+| Thrown robot's fall damage | 0 up to 2 m, then 7 per metre, at most 60 | 8.3 |
+| Rung Runner climb | 2.2 m/s; at most 2 on the ladder | 9.3 |
 | Siren lead time | 3 s | 11.1 |
 | Spawn window | min(45 + 7(w−1), 210) s | 11.3 |
 | Threat budget | 12 + 6·w^1.3 (×1.3 on Big Haul) | 11.4 |
@@ -1718,7 +1774,7 @@ Estimates assume 1–2 developers working with mostly sourced art. Durations are
 | Fuel Tank per level | ×1.20 compounding | 5.4 |
 | Weapon Damage / Fire Rate per level | +12% / +8% additive | 6.3 |
 | Cost growth | ×1.25 per level within a material tier | 12.4 |
-| Home heal | 15 HP/s | 8.1 |
+| Home heal | 15 HP/s (the well: 8 HP/s) | 8.1 |
 | Pickup magnet | 3 m (+1.5 m per level) | 12.3 |
 | Part sweep | At the next battle start, after the collection intermission | 12.3 |
 | Egg lay interval | 15 s intermission / 30 s wave | 6.2 |
@@ -1740,7 +1796,12 @@ Family name format: **"The {Palette adjective} {Theme word} {Body plural}"**
 | Term | Meaning |
 |---|---|
 | **Wave** | One robot attack, from siren to last robot destroyed |
-| **Phase** | A block of 5 waves; the 5th is a Big Haul |
+| **Phase** | A block of 3 waves: a Lesson, a Twist and a Big Haul |
+| **Checkpoint** | The first wave of the phase the farmer is in; a loss retries from there with parts and upgrades kept |
+| **Authored opening** | Waves 1–6, played from fixed rosters instead of the threat budget |
+| **Rung Runner** | The small robot that climbs the silo ladder and bashes the silo from the first catwalk |
+| **Build ghost** | The see-through preview of a defense being placed: green where it fits, red where it doesn't |
+| **Capacity** | The farm's limit on built defenses (8); each defense and each unfinished job takes its share |
 | **Big Haul** | The phase-ending wave with a larger budget and a Foreman |
 | **Foreman** | An elite Heavy robot of the current family |
 | **Family** | The procedural look and traits shared by all robots in one wave |

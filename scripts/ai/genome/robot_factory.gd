@@ -350,6 +350,15 @@ static func _accessory(kit: Node3D, id: StringName, _primary: Color, secondary: 
 			# A scoop of farm dirt to lob at a farmer out of reach.
 			_part(kit, _cyl(0.12, 0.08, 0.12), METAL, BODY + Vector3(-0.3, 0.12, 0.08))
 			_part(kit, _sphere(0.1, 0.16), Color(0.5, 0.36, 0.22), BODY + Vector3(-0.3, 0.2, 0.08))
+		&"climb_hooks":
+			# The Rung Runner's tell: hazard-yellow grapnel hooks on both hands and a coil of rope on its back,
+			# readable from the ground at a glance.
+			for x: float in [-1.0, 1.0]:
+				var hand := ARM_WEAPON * Vector3(x, 1.0, 1.0)
+				_part(kit, _torus(0.035, 0.06), HAZARD, hand + Vector3(0.0, 0.14, -0.06), Vector3(PI * 0.5, 0.0, 0.0), 0.5)
+				_part(kit, _cyl(0.02, 0.02, 0.16), METAL, hand + Vector3(0.0, 0.06, -0.06))
+			_part(kit, _torus(0.09, 0.14), Color(0.78, 0.62, 0.38), BACK + Vector3(0.0, 0.02, 0.06), Vector3(PI * 0.5, 0.0, 0.0))
+			_part(kit, _box(Vector3(0.36, 0.05, 0.02)), HAZARD, BODY + Vector3(0.0, 0.18, -0.29), Vector3.ZERO, 0.4, 5, DARK)
 		&"crown":
 			_part(kit, _cyl(0.15, 0.17, 0.08), trim, HEAD + Vector3(0.0, 0.22, 0.0), Vector3.ZERO, 0.4)
 			for i in 5:

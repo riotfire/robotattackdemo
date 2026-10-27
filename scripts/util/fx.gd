@@ -34,6 +34,29 @@ static func puff(context: Node, at: Vector3, color: Color, radius: float = 0.25,
 	tween.chain().tween_callback(instance.queue_free)
 
 
+## A short floating word at `at` that drifts up and fades: the hit-quality cue ("WEAK x2", "BLOCKED").
+static func callout(context: Node, at: Vector3, text: String, color: Color, size: int = 40) -> void:
+	var label := Label3D.new()
+	label.text = text
+	label.font_size = size
+	label.pixel_size = 0.005
+	label.modulate = color
+	label.outline_size = 12
+	label.outline_modulate = Color(0.0, 0.0, 0.0, 0.85)
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.no_depth_test = true
+	label.fixed_size = false
+	label.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	var parent := context.get_tree().current_scene if context.get_tree().current_scene != null else context.get_tree().root
+	parent.add_child(label)
+	label.global_position = at + Vector3(0.0, 0.3, 0.0)
+	var tween := label.create_tween()
+	tween.set_parallel()
+	tween.tween_property(label, ^"global_position:y", label.global_position.y + 0.8, 0.6)
+	tween.tween_property(label, ^"modulate:a", 0.0, 0.6).set_delay(0.25)
+	tween.chain().tween_callback(label.queue_free)
+
+
 static func _spawn(context: Node, mesh: Mesh, color: Color, xform: Transform3D) -> MeshInstance3D:
 	var instance := MeshInstance3D.new()
 	instance.mesh = mesh

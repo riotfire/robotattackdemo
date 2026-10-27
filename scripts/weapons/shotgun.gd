@@ -1,13 +1,15 @@
 class_name Shotgun
 extends Pistol
 ## Seven fixed pellet rays. Strong against a nearby cluster, with spread and a short reach.
-## One pellet flies straight; the other six alternate between an inner and the outer ring, so the
-## pattern stays dense enough at mid range for more than the center pellet to hit a small robot.
+## One pellet flies straight; the other six alternate between an inner and the outer ring. The inner ring is
+## tight enough that at the 5-10 m testers fight from, the centre pellet and the three inner ones all land on
+## one small robot (PLAYTEST_SIMULATION_REPORT.md finding 8: the old 11-degree cone landed 1-2 of 7 there),
+## and the outer ring still spreads across a group.
 
 const PELLETS: int = 7
-const SPREAD_DEGREES: float = 11.0
-## Inner ring's share of the full spread.
-const INNER_RING: float = 0.45
+const SPREAD_DEGREES: float = 9.0
+## Inner ring's share of the full spread: 2.25 degrees, 0.24 m off the aim line at 6 m.
+const INNER_RING: float = 0.25
 
 
 func fire() -> bool:

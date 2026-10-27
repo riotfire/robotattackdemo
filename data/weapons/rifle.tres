@@ -8,6 +8,7 @@ id = &"rifle"
 display_name = "Longneck Rifle"
 slot = 4
 unlock_flag = &"rifle.unlocked"
+usable_on_zipline = true
 damage = 55.0
 damage_stat = &"rifle.damage"
 fire_rate = 0.8

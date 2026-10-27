@@ -23,6 +23,7 @@ var _hits_since_resize: int = 0
 ## Wrench time already spent on the current size.
 var _stage_progress: float = 0.0
 var _highlighted: bool = false
+var _pointed: bool = false
 var _crack_mesh: MeshInstance3D
 var _spout: CPUParticles3D
 var _beacon: Label3D
@@ -137,6 +138,14 @@ func describe() -> String:
 	return "%s crack (%s)" % [SIZE_NAMES[size], BAND_NAMES[band]]
 
 
+## The HUD's pick for the worst leak between attacks: a bigger beacon that says so.
+func set_pointed(on: bool) -> void:
+	if on == _pointed:
+		return
+	_pointed = on
+	_update_visual()
+
+
 func set_highlighted(on: bool) -> void:
 	if on == _highlighted:
 		return
@@ -151,7 +160,8 @@ func _update_visual() -> void:
 	(_crack_mesh.mesh as BoxMesh).size = Vector3(extents.x, extents.y, 0.06)
 	_crack_mesh.material_override = _highlight_material if _highlighted else _crack_material
 	_spout.amount = SPOUT_AMOUNTS[size]
-	_beacon.text = "! %s" % SIZE_NAMES[size].to_upper()
+	_beacon.text = ("WORST LEAK: %s" if _pointed else "! %s") % SIZE_NAMES[size].to_upper()
+	_beacon.font_size = 30 if _pointed else 22
 	_beacon.modulate = Color(1.0, 0.85, 0.2) if size == Size.SMALL else (Color(1.0, 0.55, 0.15) if size == Size.MEDIUM else Color(1.0, 0.25, 0.2))
 
 

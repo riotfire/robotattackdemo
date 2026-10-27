@@ -79,6 +79,34 @@ def silo_alarm(time: float) -> float:
             + math.sin(TAU * frequency * 2 * age) * 0.08) * envelope
 
 
+def climb_clank(time: float) -> float:
+    """A robot's foot on a steel rung: a short inharmonic ping (the Rung Runner's climbing rhythm)."""
+    partials = ((1180, 0.22), (2630, 0.12), (4010, 0.06))
+    body = sum(math.sin(TAU * f * time) * a for f, a in partials)
+    return (body * math.exp(-time * 38) + math.sin(TAU * 210 * time) * math.exp(-time * 60) * 0.18) \
+        * min(1.0, time / 0.002)
+
+
+def spring_boing(time: float) -> float:
+    """A spring trap letting go: a wobbling pitch rise."""
+    wobble = 1.0 + 0.08 * math.sin(TAU * 16 * time)
+    return math.sin(TAU * (190 * time + 520 * time * time) * wobble) * math.exp(-time * 6) * 0.32 \
+        * min(1.0, time / 0.004)
+
+
+def leak_sealed(time: float) -> float:
+    """One crisp relief chime when a crack closes (FIRST_FIVE_WAVES_FUN_PLAN.md)."""
+    first = note(time, 0.0, 0.25, 784.0)
+    second = note(time, 0.09, 0.4, 1175.0)
+    return (first + second) * 0.28
+
+
+def write_defense_cues() -> None:
+    write("climb_clank", 0.16, climb_clank)
+    write("spring_boing", 0.5, spring_boing)
+    write("leak_sealed", 0.55, leak_sealed)
+
+
 def main() -> None:
     tracks = {
         "music_intermission": ((60, 64, 67, 64, 62, 65, 67, 65), 92, 0.025, 0.13, 0.01),
@@ -117,6 +145,8 @@ def main() -> None:
     write("grain_leak", 1.2, lambda t:
           (noise[int(t * RATE)] * 0.08
            + math.sin(TAU * 85 * t) * 0.02))
+
+    write_defense_cues()
 
 
 if __name__ == "__main__":

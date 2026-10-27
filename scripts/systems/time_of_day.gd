@@ -34,6 +34,8 @@ var look: AtmosphereLook
 var _from: AtmosphereLook
 var _to: AtmosphereLook
 var _blend_time: float = 0.0
+## False until the run's first wave phase arrives (its first preset change snaps instead of blending).
+var _settled_this_run: bool = false
 var _step_time: float = 0.0
 
 
@@ -64,6 +66,7 @@ static func roll_for_run(environment_table: EnvironmentTable) -> EnvironmentTabl
 
 
 func _on_run_started(_run_seed: int) -> void:
+	_settled_this_run = false
 	run_roll = roll_for_run(table)
 	run_roll.start_index = table.preset_by_id(START_PRESET)
 	run_roll.weather_index = table.weather_by_id(START_WEATHER)
@@ -82,12 +85,16 @@ func _on_run_started(_run_seed: int) -> void:
 	show_preset(run_roll.start_index, false)
 
 
+## Steps are counted from wave 1, not from the run's first wave, so a run that starts at a later phase's
+## checkpoint opens at that phase's time of day (PHASE_CHECKPOINT_PROGRESSION_PLAN.md). The run's first phase
+## change snaps there instead of blending.
 func _on_wave_phase_changed(_phase: int, wave: int) -> void:
 	if run_roll == null:
 		return
-	var index := table.preset_index(run_roll.start_index, wave, GameState.start_wave)
+	var index := table.preset_index(run_roll.start_index, wave, 1)
 	if index != preset_index:
-		show_preset(index, true)
+		show_preset(index, _settled_this_run)
+	_settled_this_run = true
 
 
 ## Shows preset `index` with the current weather, blending over transition_time when `animate`.

@@ -37,6 +37,8 @@ func _initialize() -> void:
 	_action(&"ui_accept", [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE], [], [JOY_BUTTON_A], [])
 	_action(&"ui_cancel", [KEY_ESCAPE], [], [JOY_BUTTON_B], [])
 	_action(&"pause", [KEY_ESCAPE], [], [JOY_BUTTON_START], [])
+	# Build a defense where you stand (intermission only): pick a recipe, then place it (ConstructionManager).
+	_action(&"build", [KEY_TAB], [], [JOY_BUTTON_BACK], [])
 	var err := ProjectSettings.save()
 	print("Input map saved: %s" % error_string(err))
 	quit(0 if err == OK else 1)

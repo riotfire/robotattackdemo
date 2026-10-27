@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DefenseDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/construction/defense_definition.gd" id="1_35q0o"]
+
+[resource]
+script = ExtResource("1_35q0o")
+id = &"scarecrow_decoy"
+display_name = "Scarecrow Decoy"
+kind = 1
+description = "Pulls up to three nearby robots off the silo to bash it instead. On the catwalk it pulls climbers; on a roof it draws Lobbers to that roof."
+recipe_flag = &"defense.scarecrow_decoy"
+cost_al = 6
+assembly_time = 5.0
+max_hp = 60.0
+site_kinds = Array[StringName]([&"ground", &"catwalk", &"roof"])

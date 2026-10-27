@@ -10,23 +10,31 @@ extends CharacterBody3D
 ## Sidearms (M2-B9): a melee robot with on_unreachable = throw (Clanker bolts, Thumper clods) makes up to
 ## MAX_THROWS telegraphed throws through a RangedAttack at a farmer it can't reach, then goes back to the
 ## silo. An archetype's front_guard (the Clanker's arm guard) cuts damage from hits in front of it.
+## Defenses (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md): a Spring Trap throws a robot (launch(): a
+## real arc, a landing that hurts by fall height up to a cap, a short recovery, and kill credit to the trap's
+## owner); a Scarecrow Decoy pulls a robot onto itself for a while (lure_to()); a Scrap Barricade in its way
+## is smashed before it goes on. All three are TargetKind.DEFENSE targets for the usual windup and hit.
 ## The look is kit-bashed by RobotFactory from the wave's RobotGenome. Poses step at 12 fps (GDD 15.4).
 ## This state machine is replaced by LimboAI behavior trees later (GDD 18.4).
 
 signal destroyed(robot: Robot, killer: Node)
 
-enum AiState { SEEK, WINDUP, RECOVER, STEALING, FLEEING, DEAD }
-## ESCORT: a heist crew member following its thief (RobotSquad).
-enum TargetKind { SILO, PLAYER, CHUTE, ESCORT }
+## LAUNCHED: thrown by a spring, flying. STUNNED: just landed from a throw, getting back up.
+enum AiState { SEEK, WINDUP, RECOVER, STEALING, FLEEING, DEAD, LAUNCHED, STUNNED }
+## ESCORT: a heist crew member following its thief (RobotSquad). DEFENSE: a decoy luring it or a barricade
+## in its way (target_defense).
+enum TargetKind { SILO, PLAYER, CHUTE, ESCORT, DEFENSE }
 
 const GROUP: StringName = &"robots"
 const THIEF_GROUP: StringName = &"thieves"
 const SACK_SIZE: float = 20.0
 const FOREMAN_HP_MULTIPLIER: float = 3.0
-## Foreman drops are fixed (GDD 12.2).
-const FOREMAN_DROPS: Dictionary[StringName, int] = {&"al": 10, &"cu": 6, &"au": 2, &"pc": 3}
+## Foreman drops the first time each Foreman wave's Foreman falls on a profile (GDD 12.2). Every third wave
+## is a Big Haul now, so the bounty is 2 Power Cells and 1 Gold (PHASE_CHECKPOINT_PROGRESSION_PLAN.md), and a
+## repeat kill drops the Heavy's own table instead, so a cheap retry can't farm it.
+const FOREMAN_DROPS: Dictionary[StringName, int] = {&"al": 10, &"cu": 6, &"au": 1, &"pc": 2}
 ## A legitimate Foreman defeat banks its rare reward immediately; physical parts contain only the rest.
-const FOREMAN_BOUNTY: Dictionary[StringName, int] = {&"au": 2, &"pc": 3}
+const FOREMAN_BOUNTY: Dictionary[StringName, int] = {&"au": 1, &"pc": 2}
 ## Distance from the silo at which a fleeing thief is gone into the corn.
 const ESCAPE_RADIUS: float = 102.0
 ## A ground robot can't reach a farmer standing more than this far above it.
@@ -37,6 +45,15 @@ const PERCH_HEIGHT: float = 2.5
 const ANGRY_TIME: float = 1.5
 ## Throws at an out-of-reach farmer before going back to the silo (decision R-D2).
 const MAX_THROWS: int = 2
+## A thrown robot's landing: no damage for falls up to SAFE_FALL metres, then FALL_DAMAGE_PER_METRE, never
+## more than FALL_DAMAGE_CAP. A catwalk throw (about 11 m) hits the cap; a ground throw mostly delays.
+const SAFE_FALL: float = 2.0
+const FALL_DAMAGE_PER_METRE: float = 7.0
+const FALL_DAMAGE_CAP: float = 60.0
+## Seconds on the ground after landing from a throw.
+const LAUNCH_RECOVERY: float = 1.0
+## A robot lured off a decoy, or that broke a barricade, ignores decoys this long.
+const LURE_COOLDOWN: float = 6.0
 ## The farmer must be out of reach this long before a throw, so a jump doesn't draw one.
 const THROW_DELAY: float = 0.5
 const GENE_LIBRARY_PATH := "res://data/robots/gene_library.tres"
@@ -94,7 +111,15 @@ var target_kind: TargetKind = TargetKind.SILO:
 				farmer = GameState.get_nearest_player(global_position)
 			targeting.switch_to_farmer(farmer)
 var target_player: Node3D = null
+## The decoy luring it or the barricade it is breaking through, while target_kind is DEFENSE.
+var target_defense: Defense = null
 var ai_state: AiState = AiState.SEEK
+## Authored waves: &"thief" makes it the wave's teaching thief, &"calm" means it never steals.
+var spawn_role: StringName = &""
+## Above 0, the Foreman's HP (the authored opening's 450 and 900) instead of the curve's.
+var foreman_hp_override: float = 0.0
+## Who threw it with a spring trap, for the kill credit of a fatal landing.
+var launched_by: Node = null
 var look: RobotFactory.Look
 ## True from the moment a destroyed robot starts its RobotExplosion; the explosion plays the pop sound.
 var exploding: bool = false
@@ -124,6 +149,11 @@ var _spark_core: MeshInstance3D = null
 ## The out-of-reach throw (on_unreachable = throw), or null.
 var _throw: RangedAttack = null
 var _throws_done: int = 0
+var _launch_peak_y: float = 0.0
+var _launch_velocity: Vector3 = Vector3.ZERO
+var _stun_left: float = 0.0
+var _lure_left: float = 0.0
+var _lure_cooldown: float = 0.0
 
 @onready var health: HealthComponent = $Health
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
@@ -132,10 +162,14 @@ var _throws_done: int = 0
 
 
 ## Call before adding to the tree. `rng` is the wave's spawn stream, so targeting is deterministic.
+## `role` and `foreman_hp` come from authored waves (OpeningGroup): &"thief" makes it a thief, &"calm" stops
+## it stealing, and a foreman_hp above 0 replaces the Foreman's curve HP.
 func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyCurve, rng: RandomNumberGenerator,
 		family: RobotGenome = null, foreman: bool = false, bonus_traits: Array[RobotTrait] = [],
-		robot_squad: RobotSquad = null) -> void:
+		robot_squad: RobotSquad = null, role: StringName = &"", foreman_hp: float = 0.0) -> void:
 	archetype = robot_archetype
+	spawn_role = role
+	foreman_hp_override = foreman_hp if foreman else 0.0
 	wave = wave_number
 	genome = family
 	family_code = family.family_code if family != null else ""
@@ -181,8 +215,14 @@ func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyC
 				and archetype.robot_type == RobotArchetype.RobotType.SCOUT:
 			var thieving := all_traits().any(func(t: RobotTrait) -> bool: return t.thieving)
 			steal_chance = curve.thief_chance(wave, archetype.silo_focus, thieving)
-		if not targeting.hunter and not foreman and rng.randf() < steal_chance:
+		if spawn_role == &"thief" and not foreman:
+			# The authored teaching thief always goes for the chute.
+			targeting.hunter = false
+			targeting.goal = RobotTargeting.Goal.SILO
 			is_thief = true
+		elif spawn_role != &"calm" and can_steal() and not targeting.hunter and not foreman and rng.randf() < steal_chance:
+			is_thief = true
+		if is_thief:
 			targeting.can_be_distracted = false
 			target_kind = TargetKind.CHUTE
 		if squad != null:
@@ -205,7 +245,11 @@ func _ready() -> void:
 	if genome == null:
 		genome = RobotGenome.from_code("BOLTCO", wave, load(GENE_LIBRARY_PATH) as GeneLibrary, DifficultyCurve.new())
 		family_code = genome.family_code
+	if foreman_hp_override > 0.0:
+		# The authored Foreman's HP replaces the curve's (no traits in the opening).
+		hp_multiplier = foreman_hp_override / maxf(1.0, archetype.base_hp)
 	health.reset(archetype.base_hp * hp_multiplier)
+	collision_mask |= Defense.LAYER
 	health.died.connect(_on_died)
 	agent.max_speed = move_speed()
 	agent.velocity_computed.connect(_on_velocity_computed)
@@ -227,6 +271,11 @@ func _ready() -> void:
 		_set_marker("$", Color(1.0, 0.85, 0.3), StatService.has_flag(&"grain.sack_tracker"), 0.6)
 	StopMotionClock.tick_12.connect(_on_tick_12)
 	EventBus.robot_spawned.emit(self)
+
+
+## Robots with another job never grab grain (the Rung Runner's is the ladder).
+func can_steal() -> bool:
+	return true
 
 
 func all_traits() -> Array[RobotTrait]:
@@ -269,15 +318,23 @@ func _physics_process(delta: float) -> void:
 		_die(null, false)
 		return
 	_hit_pop_left = maxf(0.0, _hit_pop_left - delta)
+	if _process_launch(delta):
+		return
 	if is_on_floor():
 		_vertical_velocity = -1.0
 	else:
 		_vertical_velocity -= gravity * delta
 	_update_targeting(delta)
+	_update_defense_target(delta)
 	if _update_throw(delta):
 		agent.velocity = Vector3.ZERO
 		return
+	# Movement happens in _on_velocity_computed once avoidance has adjusted this.
+	agent.velocity = _ai_step(delta)
 
+
+## The melee state machine for one frame. Returns the flat velocity it wants to move at.
+func _ai_step(delta: float) -> Vector3:
 	var desired := Vector3.ZERO
 	match ai_state:
 		AiState.SEEK:
@@ -287,14 +344,14 @@ func _physics_process(delta: float) -> void:
 					_steal_timer = 0.6
 				else:
 					ai_state = AiState.WINDUP
-					_attack_timer = archetype.attack_windup
+					_attack_timer = windup_time()
 					if _first_attack and squad != null:
 						# Squads hit in a 3-beat rhythm: clank-clank-CLANK (GDD 9.6).
 						_attack_timer += squad_index * archetype.attack_interval / 3.0
 					_first_attack = false
 					_on_windup_started()
 			else:
-				desired = _navigate(delta, _goal_position())
+				desired = _seek_velocity(delta)
 		AiState.WINDUP:
 			_face(_target_position())
 			_attack_timer -= delta
@@ -302,7 +359,8 @@ func _physics_process(delta: float) -> void:
 				if _target_in_range(0.5):
 					_deal_hit()
 				ai_state = AiState.RECOVER
-				_attack_timer = maxf(0.0, archetype.attack_interval - archetype.attack_windup)
+				_attack_timer = recover_time()
+				_on_recover_started()
 		AiState.RECOVER:
 			_attack_timer -= delta
 			if _attack_timer <= 0.0:
@@ -317,14 +375,31 @@ func _physics_process(delta: float) -> void:
 			flat.y = 0.0
 			if flat.length() >= ESCAPE_RADIUS:
 				_escape()
-				return
+				return Vector3.ZERO
 			desired = _navigate(delta, _escape_point)
-	# Movement happens in _on_velocity_computed once avoidance has adjusted this.
-	agent.velocity = desired
+	return desired
+
+
+## How it closes in on its target while seeking: the navmesh, toward _goal_position().
+func _seek_velocity(delta: float) -> Vector3:
+	return _navigate(delta, _goal_position())
+
+
+## Telegraph before each hit, and the pause after it. The authored Foreman overrides both (HeavyRobot).
+func windup_time() -> float:
+	return archetype.attack_windup
+
+
+func recover_time() -> float:
+	return maxf(0.0, archetype.attack_interval - archetype.attack_windup)
+
+
+func _on_recover_started() -> void:
+	pass
 
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
-	if ai_state == AiState.DEAD:
+	if ai_state in [AiState.DEAD, AiState.LAUNCHED, AiState.STUNNED]:
 		return
 	velocity = Vector3(safe_velocity.x, _vertical_velocity, safe_velocity.z) + _knockback
 	move_and_slide()
@@ -383,11 +458,18 @@ func farmer_airborne(farmer: Node3D) -> bool:
 
 func _sync_target() -> void:
 	if targeting.on_farmer():
+		if target_kind == TargetKind.DEFENSE:
+			# The farmer pulled it off the decoy or barricade (a hit, say): straight onto the farmer.
+			target_defense = null
+			_lure_left = 0.0
+			_lure_cooldown = LURE_COOLDOWN
 		target_player = targeting.farmer
 		if target_kind != TargetKind.PLAYER:
 			target_kind = TargetKind.PLAYER
 	else:
 		target_player = null
+		if target_kind == TargetKind.DEFENSE and _defense_alive():
+			return
 		if target_kind != TargetKind.SILO:
 			target_kind = TargetKind.SILO
 
@@ -451,6 +533,13 @@ func _silo_center() -> Vector3:
 func _target_position() -> Vector3:
 	var silo := GameState.silo
 	match target_kind:
+		TargetKind.DEFENSE:
+			if _defense_alive():
+				var point := target_defense.strike_point(global_position)
+				var away := global_position - point
+				away.y = 0.0
+				return point + (away.normalized() if away.length_squared() > 0.0001 else Vector3.ZERO) \
+						* (0.4 + archetype.body_radius)
 		TargetKind.PLAYER:
 			if target_player != null and is_instance_valid(target_player):
 				return target_player.global_position
@@ -491,6 +580,8 @@ func _target_in_range(extra: float = 0.0) -> bool:
 			return Vector2(chute.x - global_position.x, chute.z - global_position.z).length() <= 1.2
 		TargetKind.ESCORT:
 			return false
+		TargetKind.DEFENSE:
+			return _defense_alive() and target_defense.distance_from(global_position) <= reach + archetype.body_radius
 	var silo := GameState.silo
 	return silo != null and silo.distance_to_wall(global_position) <= reach
 
@@ -627,6 +718,12 @@ func _on_windup_started() -> void:
 
 
 func _deal_hit() -> void:
+	if target_kind == TargetKind.DEFENSE:
+		if _defense_alive():
+			var point := target_defense.strike_point(global_position)
+			target_defense.take_damage(DamagePacket.create(archetype.damage_vs_silo * damage_multiplier, self, point))
+			Fx.puff(self, point, Color(0.85, 0.7, 0.45), 0.2, 0.15)
+		return
 	if target_kind == TargetKind.PLAYER and target_player != null and is_instance_valid(target_player):
 		if target_player.has_method("take_damage"):
 			var packet := DamagePacket.create(archetype.damage_vs_farmer * damage_multiplier, self, target_player.global_position)
@@ -710,7 +807,12 @@ func take_damage(packet: DamagePacket) -> void:
 	if guard_up and archetype.front_guard > 0.0 and hit_from_front(packet):
 		amount *= 1.0 - archetype.front_guard
 		Fx.puff(self, packet.position, RobotFactory.METAL, 0.2, 0.12)
-	health.apply_damage(amount)
+		Fx.callout(self, packet.position, "BLOCKED", Color(0.75, 0.8, 0.85), 32)
+	elif packet.is_weak_point:
+		Fx.callout(self, packet.position, "WEAK x2", Color(1.0, 0.35, 0.2))
+	var taken := health.apply_damage(amount)
+	if is_foreman:
+		EventBus.boss_hit.emit(self, taken > 0.0)
 
 
 ## The hit came from within FRONT_GUARD_HALF_ANGLE of the way it faces: from the attacker if it has a
@@ -738,6 +840,7 @@ func _die(killer: Node, award_drops: bool) -> void:
 	if ai_state == AiState.DEAD:
 		return
 	ai_state = AiState.DEAD
+	target_defense = null
 	remove_from_group(GROUP)
 	remove_from_group(THIEF_GROUP)
 	collision_layer = 0
@@ -745,7 +848,7 @@ func _die(killer: Node, award_drops: bool) -> void:
 	agent.avoidance_enabled = false
 	for hurtbox in find_children("*Hurtbox", "Area3D"):
 		hurtbox.set_deferred(&"collision_layer", 0)
-	var drop_point := global_position + Vector3.UP * 0.5 * type_scale()
+	var drop_point := safe_drop_point(global_position + Vector3.UP * 0.5 * type_scale())
 	if award_drops:
 		var parts := roll_drops()
 		bank_guaranteed_parts(parts)
@@ -812,7 +915,7 @@ func _detonate() -> void:
 
 ## Parts dropped on death (GDD 12.2), scaled by the wave's drop multiplier, plus trait and upgrade luck.
 func roll_drops() -> Dictionary[StringName, int]:
-	if is_foreman:
+	if is_foreman and not SaveManager.foreman_bounty_paid(wave):
 		return FOREMAN_DROPS.duplicate()
 	var rng := RngService.stream(RngService.STREAM_DROPS)
 	var luck := StatService.get_stat(&"drops.rare_chance", 1.0)
@@ -831,8 +934,9 @@ func roll_drops() -> Dictionary[StringName, int]:
 ## Removes the guaranteed bounty from a rolled burst before banking it. Consumes the passed values,
 ## so a second settlement of the same burst cannot award another bounty. Quiet/debug kills skip it.
 func bank_guaranteed_parts(parts: Dictionary[StringName, int]) -> void:
-	if not is_foreman:
+	if not is_foreman or SaveManager.foreman_bounty_paid(wave):
 		return
+	SaveManager.record_foreman_bounty(wave)
 	var banked: Dictionary[StringName, int] = {}
 	for part: StringName in FOREMAN_BOUNTY:
 		var amount := mini(parts.get(part, 0), FOREMAN_BOUNTY[part])
@@ -842,7 +946,7 @@ func bank_guaranteed_parts(parts: Dictionary[StringName, int]) -> void:
 	if not banked.is_empty():
 		GameState.add_parts(banked)
 		SaveManager.save_profile()
-		EventBus.hud_message.emit("Foreman bounty banked: +2 Gold, +3 Power Cells", 3.0)
+		EventBus.hud_message.emit("Foreman bounty banked: +%d Gold, +%d Power Cells" % [banked.get(&"au", 0), banked.get(&"pc", 0)], 3.0)
 
 
 ## Chance to drop Power Cells, with upgrade luck and traits (Overcharged doubles it).
@@ -879,6 +983,180 @@ func _set_marker(text: String, color: Color, through_walls: bool, extra_height: 
 	_marker.modulate = color
 	_marker.no_depth_test = through_walls
 	_marker.position = Vector3(0.0, 1.5 * type_scale() + extra_height, 0.0)
+
+
+# --- Defenses: springs, decoys, barricades ----------------------------------------------------------
+
+## Large robots and Foremen are too heavy to throw; they stomp a spring instead.
+func launchable() -> bool:
+	return not is_foreman and archetype.robot_type != RobotArchetype.RobotType.HEAVY
+
+
+## Can a spring fire under it right now (not already flying, dead or getting up).
+func can_be_launched_now() -> bool:
+	return ai_state not in [AiState.DEAD, AiState.LAUNCHED, AiState.STUNNED] and not exploding
+
+
+## Throws the robot along `impulse` (a spring trap). `by` gets the kill if the landing is fatal. Returns
+## false for robots too heavy to throw.
+func launch(impulse: Vector3, by: Node, _source: Node3D = null) -> bool:
+	if not launchable() or not can_be_launched_now():
+		return false
+	launched_by = by
+	_release_defense()
+	ai_state = AiState.LAUNCHED
+	_launch_velocity = impulse
+	_launch_peak_y = global_position.y
+	agent.velocity = Vector3.ZERO
+	collision_mask = 1 | Defense.LAYER
+	_on_launched()
+	return true
+
+
+## Flight and recovery after a throw. True while it owns the frame.
+func _process_launch(delta: float) -> bool:
+	match ai_state:
+		AiState.LAUNCHED:
+			_launch_velocity.y -= gravity * delta
+			velocity = _launch_velocity
+			move_and_slide()
+			var landed := is_on_floor() and _launch_velocity.y <= 0.0
+			_launch_velocity = Vector3(velocity.x, _launch_velocity.y, velocity.z)
+			_launch_peak_y = maxf(_launch_peak_y, global_position.y)
+			var flat := Vector3(_launch_velocity.x, 0.0, _launch_velocity.z)
+			if flat.length() > 0.5:
+				_face(global_position + flat)
+			if landed:
+				_land_from_launch()
+			elif global_position.y < -20.0:
+				_die(launched_by, false)
+			return true
+		AiState.STUNNED:
+			_stun_left -= delta
+			velocity = Vector3(0.0, -1.0, 0.0)
+			move_and_slide()
+			if _stun_left <= 0.0:
+				ai_state = AiState.SEEK
+				_on_recovered_from_launch()
+			return true
+	return false
+
+
+func _land_from_launch() -> void:
+	var fall := _launch_peak_y - global_position.y
+	_launch_velocity = Vector3.ZERO
+	ai_state = AiState.STUNNED
+	_stun_left = LAUNCH_RECOVERY
+	Fx.puff(self, global_position + Vector3.UP * 0.2, Color(0.75, 0.65, 0.5), 0.45 * type_scale(), 0.3)
+	_on_landed_from_launch()
+	var damage := fall_damage(fall)
+	if damage > 0.0:
+		# The fall hurts; a fatal landing counts as a kill by whoever placed the trap, exactly once.
+		if is_instance_valid(launched_by):
+			_last_attacker = launched_by
+		_hit_pop_left = 0.12
+		health.apply_damage(damage)
+
+
+static func fall_damage(fall: float) -> float:
+	return clampf((fall - SAFE_FALL) * FALL_DAMAGE_PER_METRE, 0.0, FALL_DAMAGE_CAP)
+
+
+## Hooks for robots with their own travel (VerticalRobot, LadderRobot).
+func _on_launched() -> void:
+	pass
+
+
+func _on_landed_from_launch() -> void:
+	pass
+
+
+func _on_recovered_from_launch() -> void:
+	_repath_timer = 0.0
+	collision_mask = 1 | Defense.LAYER
+
+
+## A decoy may pull this robot: a ground robot on the silo, not a thief, a heist crew, a Foreman or a robot
+## already after the farmer, and not one it let go of a moment ago.
+func can_be_lured_by(decoy: Defense) -> bool:
+	if decoy == null or decoy.site == null or decoy.site.kind != &"ground":
+		return false
+	return _can_take_defense_target() and targeting != null and not targeting.on_farmer()
+
+
+## Sends it to bash `defense` for up to `seconds`. False if it can't be lured now.
+func lure_to(defense: Defense, seconds: float) -> bool:
+	if not can_be_lured_by(defense):
+		return false
+	_set_defense_target(defense)
+	_lure_left = seconds
+	return true
+
+
+func _can_take_defense_target() -> bool:
+	return ai_state in [AiState.SEEK, AiState.RECOVER] and not is_thief and not is_escort and not is_foreman \
+			and target_kind in [TargetKind.SILO, TargetKind.DEFENSE] and _lure_cooldown <= 0.0 and not exploding
+
+
+func _set_defense_target(defense: Defense) -> void:
+	target_defense = defense
+	target_kind = TargetKind.DEFENSE
+	_repath_timer = 0.0
+
+
+func _release_defense() -> void:
+	if target_defense != null or target_kind == TargetKind.DEFENSE:
+		target_defense = null
+		_lure_left = 0.0
+		_lure_cooldown = LURE_COOLDOWN
+		if target_kind == TargetKind.DEFENSE:
+			target_kind = TargetKind.SILO
+			_repath_timer = 0.0
+
+
+func _defense_alive() -> bool:
+	return target_defense != null and is_instance_valid(target_defense) and target_defense.active and target_defense.hp > 0.0
+
+
+## Lures run out; a broken decoy or barricade lets it go; a barricade in its way becomes its target.
+func _update_defense_target(delta: float) -> void:
+	_lure_cooldown = maxf(0.0, _lure_cooldown - delta)
+	if target_kind == TargetKind.DEFENSE:
+		if not _defense_alive():
+			_release_defense()
+			return
+		if target_defense is ScarecrowDecoy:
+			_lure_left -= delta
+			if _lure_left <= 0.0:
+				_release_defense()
+		return
+	if target_kind != TargetKind.SILO or is_thief or is_escort or ai_state != AiState.SEEK:
+		return
+	var wall := _blocking_barricade()
+	if wall != null:
+		_set_defense_target(wall)
+
+
+## A finished ground barricade between this robot and the silo, close enough to touch.
+func _blocking_barricade() -> ScrapBarricade:
+	var goal := _target_position()
+	for node in get_tree().get_nodes_in_group(Defense.GROUP):
+		var wall := node as ScrapBarricade
+		if wall != null and wall.site != null and wall.site.kind == &"ground" \
+				and absf(wall.global_position.y - global_position.y) < 2.0 \
+				and wall.blocks(global_position, goal, archetype.body_radius + 0.6):
+			return wall
+	return null
+
+
+## Never leave loot outside the playable farm or under the world (a reachable landing, DEFENSE plan).
+func safe_drop_point(at: Vector3) -> Vector3:
+	var center := _silo_center()
+	var flat := at - center
+	flat.y = 0.0
+	if flat.length() > 96.0:
+		flat = flat.normalized() * 96.0
+	return Vector3(center.x + flat.x, maxf(at.y, center.y + 0.3), center.z + flat.z)
 
 
 # --- Presentation (stepped at 12 fps, GDD 15.4) ---------------------------------------------------

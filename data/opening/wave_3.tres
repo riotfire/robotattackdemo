@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="OpeningWave" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/opening/opening_group.gd" id="1_xqrey"]
+[ext_resource type="Script" path="res://scripts/systems/opening/opening_wave.gd" id="2_yjwxa"]
+
+[sub_resource type="Resource" id="group_0"]
+script = ExtResource("1_xqrey")
+archetype_ids = Array[StringName]([&"thumper"])
+counts = PackedInt32Array(1)
+roles = Array[StringName]([&"foreman"])
+intro = &"foreman"
+
+[sub_resource type="Resource" id="group_1"]
+script = ExtResource("1_xqrey")
+release_time = 22.0
+lane_slot = 1
+archetype_ids = Array[StringName]([&"nibbler"])
+counts = PackedInt32Array(2)
+roles = Array[StringName]([&""])
+
+[sub_resource type="Resource" id="group_2"]
+script = ExtResource("1_xqrey")
+release_time = 38.0
+archetype_ids = Array[StringName]([&"nibbler"])
+counts = PackedInt32Array(2)
+roles = Array[StringName]([&""])
+
+[resource]
+script = ExtResource("2_yjwxa")
+wave = 3
+title = "The Foreman's First Visit"
+live_cap = 4
+lane_pool = PackedInt32Array()
+foreman_hp = 350.0
+hint = "Its plates shrug off shots from range. Dodge the slam, then whack the glowing back vent."
+groups = Array[ExtResource("1_xqrey")]([SubResource("group_0"), SubResource("group_1"), SubResource("group_2")])

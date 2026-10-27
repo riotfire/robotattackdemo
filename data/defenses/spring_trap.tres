@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DefenseDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/construction/defense_definition.gd" id="1_wloy1"]
+
+[resource]
+script = ExtResource("1_wloy1")
+id = &"spring_trap"
+display_name = "Spring Trap"
+description = "Throws a small robot up and back the way the arrow points. On the ground it delays; on the catwalk or a roof the fall hurts. Large robots just stomp it."
+recipe_flag = &"defense.spring_trap"
+cost_al = 12
+capacity = 2
+assembly_time = 10.0
+max_hp = 80.0
+site_kinds = Array[StringName]([&"ground", &"catwalk", &"roof"])

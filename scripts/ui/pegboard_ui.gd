@@ -5,8 +5,10 @@ extends CanvasLayer
 ## red yarn to its prerequisites. Fill colour says what you have or can get (green owned, cream available,
 ## grey locked); the ring says whether you can afford the next level now (gold) or are short on parts (red).
 ## Controller: D-pad or left stick moves the cursor across every branch, hold A to buy, B or Start closes.
-## The intermission timer keeps running while it's open, and it closes itself when the shed shutters for
-## the wave. Graybox 2D overlay; the 3D pegboard dolly comes later.
+## The intermission timer keeps running while it's open, and it closes itself when the shed shutters at the
+## siren (the defense plan commits upgrades with construction there). After a loss the Harvest Report opens
+## it with no clock at all.
+## Graybox 2D overlay; the 3D pegboard dolly comes later.
 
 ## The board was shut (by the player, or by the shutters coming down).
 signal closed
@@ -14,8 +16,8 @@ signal closed
 const CELL := Vector2(236.0, 112.0)
 const PEG_SIZE := Vector2(212.0, 88.0)
 ## Tab order. One branch shows at a time, so every board fits without scrolling.
-const BRANCH_ORDER: Array[int] = [UpgradeNode.Branch.ATTACK, UpgradeNode.Branch.DEFEND, UpgradeNode.Branch.REPAIR,
-	UpgradeNode.Branch.TRAVEL, UpgradeNode.Branch.FARMHAND]
+const BRANCH_ORDER: Array[int] = [UpgradeNode.Branch.ATTACK, UpgradeNode.Branch.DEFEND, UpgradeNode.Branch.BUILD,
+	UpgradeNode.Branch.REPAIR, UpgradeNode.Branch.TRAVEL, UpgradeNode.Branch.FARMHAND]
 const PART_SHORT: Dictionary[StringName, String] = {&"al": "Al", &"cu": "Cu", &"au": "Au", &"pc": "PC"}
 const CARDBOARD := Color(0.55, 0.41, 0.28)
 const CARDBOARD_DARK := Color(0.36, 0.26, 0.17)
@@ -244,7 +246,7 @@ func _process(delta: float) -> void:
 
 
 func _on_wave_phase_changed(phase: int, _wave: int) -> void:
-	if is_open and phase in [WaveDirector.Phase.SPAWNING, WaveDirector.Phase.GAME_OVER]:
+	if is_open and phase in [WaveDirector.Phase.SIREN, WaveDirector.Phase.SPAWNING, WaveDirector.Phase.GAME_OVER]:
 		close()
 		EventBus.hud_message.emit("The shed shutters: here they come!", 2.0)
 
@@ -290,7 +292,7 @@ func _style_peg(id: StringName, peg: Button) -> void:
 	var cost := StatService.next_cost(id)
 	var affordable := StatService.can_afford(cost)
 	var free_unlock := node.cost_curve == null
-	var wave_locked := id == &"travel.jetpack" and GameState.wave < 3
+	var wave_locked := not StatService.milestone_met(id)
 	var locked := level == 0 and (free_unlock or not prereqs or wave_locked)
 	var buyable := not maxed and not locked and prereqs and affordable
 
@@ -309,7 +311,9 @@ func _style_peg(id: StringName, peg: Button) -> void:
 		status.text = "OWNED" if node.is_unlock() else "MAXED"
 		status.add_theme_color_override(&"font_color", Color(0.2, 0.4, 0.15))
 	elif wave_locked:
-		status.text = "Wave 3"
+		status.text = "Clear wave %d" % StatService.milestone_wave(id)
+	elif free_unlock and level == 0:
+		status.text = "Not for sale"
 		status.add_theme_color_override(&"font_color", LOCKED_INK)
 	elif locked:
 		status.text = "Locked"
@@ -389,13 +393,27 @@ func _refusal_text(id: StringName) -> String:
 	var node := StatService.catalog[id]
 	if StatService.is_maxed(id):
 		return "Already owned" if node.is_unlock() else "Already at max level"
-	if id == &"travel.jetpack" and GameState.wave < 3:
-		return "Available at wave 3"
+	if not StatService.milestone_met(id):
+		return _milestone_text(id)
 	if node.cost_curve == null:
-		return "Free after wave 2"
+		return _reward_text(id)
 	if not StatService.prerequisites_met(id):
 		return "Locked: needs " + _requirement_text(node)
 	return "Not enough parts: need " + _missing_text(StatService.next_cost(id))
+
+
+## Why a gated node isn't buildable yet (StatService.MILESTONE_GATES).
+func _milestone_text(id: StringName) -> String:
+	if id == StatService.PISTOL_ID:
+		return "Beat the Roof Lobber first: the pistol blueprint comes with clearing wave %d" % StatService.milestone_wave(id)
+	if id == StatService.JETPACK_ID:
+		return "The jetpack blueprint comes with clearing wave %d (phase 3)" % StatService.milestone_wave(id)
+	return "Unlocks after clearing wave %d" % StatService.milestone_wave(id)
+
+
+## A node without a cost isn't for sale (a debug grant).
+func _reward_text(_id: StringName) -> String:
+	return "Not for sale"
 
 
 ## One line under the board for the peg under the cursor, so a controller player can read it.
@@ -403,10 +421,10 @@ func _status_text(id: StringName) -> String:
 	var node := StatService.catalog[id]
 	if StatService.is_maxed(id):
 		return "Owned" if node.is_unlock() else "Owned, at max level"
-	if id == &"travel.jetpack" and GameState.wave < 3:
-		return "Available at wave 3"
+	if not StatService.milestone_met(id):
+		return _milestone_text(id)
 	if node.cost_curve == null:
-		return "Free after wave 2"
+		return _reward_text(id)
 	if not StatService.prerequisites_met(id):
 		return "Locked: needs " + _requirement_text(node)
 	var cost := StatService.next_cost(id)

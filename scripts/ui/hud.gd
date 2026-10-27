@@ -3,7 +3,13 @@ extends CanvasLayer
 ## Graybox HUD (GDD 17.2): silo Structure and Grain, farmer HP and armor, jetpack fuel arc, wave and
 ## phase, intermission countdown, weapon and ammo, parts, thieves, the family name card, prompts, toasts
 ## and the Harvest Report. Built in code because it is graybox UI; the cardboard-and-felt look comes later.
-## Keeps processing while the tree is paused so it can show game over and handle restart.
+## Keeps processing while the tree is paused so it can show game over and handle Retry Phase / Start over.
+## Also (the playtest simulation and defense plans): the authored wave's title and hint between waves, the
+## worst leak with its time to seal, a low-health warning pointing at the nearest heal, a climbing warning
+## while a Rung Runner is on the silo ladder or catwalk, the construction status, and reward banners.
+
+## The intermission before the first split-pressure wave, where the HUD asks for a spring at the ladder top.
+const SPRING_LESSON_WAVE: int = 5
 
 @export var director: WaveDirector
 
@@ -14,6 +20,16 @@ var _phase_number_label: Label
 var _phase_label: Label
 var _phase_pill: StyleBoxFlat
 var _robots_label: Label
+var _boss: Robot
+var _last_player_hp: float = -1.0
+var _hp_flash_left: float = 0.0
+var _boss_root: Control
+var _boss_card: Control  # the panel, so shaking moves the whole card
+var _boss_bar: ProgressBar
+var _boss_name: Label
+var _boss_shown: float = 100.0
+var _boss_shake_left: float = 0.0
+var _boss_glow_left: float = 0.0
 var _structure_bar: ProgressBar
 var _grain_bar: ProgressBar
 var _leak_label: Label
@@ -57,6 +73,19 @@ var _theft_explained: bool = false
 var _sack_explained: bool = false
 var _grain_return_explained: bool = false
 var _build_choice_prompted: bool = false
+var _climbers: Array[Node3D] = []
+var _climber_alert: Label
+var _low_hp_label: Label
+var _vignette: TextureRect
+var _build_label: Label
+var _leak_hint: Label
+var _banner_left: float = 0.0
+var _worst_crack: SiloCrack = null
+var _retry_button: Button
+var _start_over_button: Button
+var _pegboard_button: Button
+var _report_ready_at: int = 0
+const LOW_HP: float = 0.3
 const SILO_HIT_HOLD: float = 5.0
 const SILO_ALARM_COOLDOWN: float = 9.0
 const SILO_REMOTE_DISTANCE: float = 15.0
@@ -82,6 +111,9 @@ func _ready() -> void:
 	EventBus.silo_damaged.connect(_on_silo_damaged)
 	EventBus.wave_phase_changed.connect(_on_wave_phase_changed)
 	EventBus.upgrade_purchased.connect(_on_upgrade_purchased)
+	EventBus.reward_granted.connect(_on_reward_granted)
+	EventBus.climber_alert.connect(_on_climber_alert)
+	EventBus.crack_closed.connect(_on_crack_closed)
 	for player in GameState.players:
 		_on_player_registered(player)
 
@@ -140,12 +172,22 @@ func _on_silo_damaged(_amount: float, _at_position: Vector3) -> void:
 func _on_wave_phase_changed(phase: int, wave: int) -> void:
 	if phase == WaveDirector.Phase.INTERMISSION and wave == 2 and not _build_choice_prompted:
 		_build_choice_prompted = true
-		set_tutorial_lesson("The shed is open. Spend robot parts on what you need:\na pistol, a heavy melee swing, repairs/defense, or speed.")
-	elif wave >= 2 and phase != WaveDirector.Phase.INTERMISSION and _build_choice_prompted:
+		set_tutorial_lesson("The shed is open. Walk over and spend robot parts on what you need:\na heavy melee swing, repairs/defense, or speed. Ring the dinner bell when you're ready.")
+		_banner_left = 0.0
+	elif phase == WaveDirector.Phase.INTERMISSION and wave == SPRING_LESSON_WAVE and not StatService.has_flag(&"defense.spring_trap"):
+		# Split pressure starts next wave: the first time defenses decide a wave (ROADMAP 4.13).
+		_build_choice_prompted = true
+		set_tutorial_lesson("Next wave splits up: a climber on the silo ladder AND a raid on the far side.\nBuy the Spring Trap on the shed's BUILD board, then press Tab to set it at the ladder top.")
+		_banner_left = 0.0
+	elif wave >= 2 and phase != WaveDirector.Phase.INTERMISSION and _build_choice_prompted and _banner_left <= 0.0:
 		set_tutorial_lesson("")
 
 
-func _on_upgrade_purchased(_id: StringName, _level: int) -> void:
+func _on_upgrade_purchased(id: StringName, _level: int) -> void:
+	if id == &"build.spring_trap" and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
+		set_tutorial_lesson("Spring Trap recipe! Press Tab (Back), pick it, and set it where the silo ladder\nreaches the catwalk. A climber that steps on it gets thrown off.")
+		_banner_left = 8.0
+		return
 	if _build_choice_prompted and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
 		set_tutorial_lesson("")
 
@@ -173,6 +215,12 @@ func _process(delta: float) -> void:
 	_update_silo()
 	_update_player()
 	_update_silo_alert(delta)
+	_update_banner(delta)
+	_update_climbers()
+	_update_low_hp()
+	_update_build()
+	_update_worst_leak()
+	_update_boss(delta)
 	_toast_left -= delta
 	_toast_label.visible = _toast_left > 0.0
 	_name_card_left -= delta
@@ -181,16 +229,44 @@ func _process(delta: float) -> void:
 		_part_labels[key].text = str(GameState.parts[key])
 
 
+## After a loss: Retry Phase (R, Enter, Jump, Interact), Start over at Phase 1 (Backspace, Y) or the pegboard
+## with no clock running (P, Start). PHASE_CHECKPOINT_PROGRESSION_PLAN.md's retry flow.
 func _unhandled_input(event: InputEvent) -> void:
-	if not GameState.is_game_over:
+	if not GameState.is_game_over or Time.get_ticks_msec() < _report_ready_at or _pegboard_open():
 		return
-	var restart := event.is_action_pressed(&"jump") or event.is_action_pressed(&"interact")
-	if event is InputEventKey and (event as InputEventKey).pressed:
-		restart = restart or (event as InputEventKey).physical_keycode in [KEY_R, KEY_ENTER, KEY_KP_ENTER]
-	if restart:
+	var key := event as InputEventKey
+	var joy := event as InputEventJoypadButton
+	var code := key.physical_keycode if key != null and key.pressed and not key.echo else KEY_NONE
+	var button := joy.button_index if joy != null and joy.pressed else JOY_BUTTON_INVALID
+	if code == KEY_BACKSPACE or button == JOY_BUTTON_Y:
 		get_viewport().set_input_as_handled()
-		get_tree().paused = false
-		get_tree().reload_current_scene()
+		_start_again(false)
+	elif code == KEY_P or button == JOY_BUTTON_START:
+		get_viewport().set_input_as_handled()
+		_open_report_pegboard()
+	elif event.is_action_pressed(&"jump") or event.is_action_pressed(&"interact") \
+			or code in [KEY_R, KEY_ENTER, KEY_KP_ENTER]:
+		get_viewport().set_input_as_handled()
+		_start_again(true)
+
+
+func _start_again(retry: bool) -> void:
+	Main.restart(get_tree(), retry)
+
+
+func _pegboard_open() -> bool:
+	var pegboard := _pegboard()
+	return pegboard != null and pegboard.is_open
+
+
+func _pegboard() -> PegboardUI:
+	return get_parent().get_node_or_null(^"Pegboard") as PegboardUI if get_parent() != null else null
+
+
+func _open_report_pegboard() -> void:
+	var pegboard := _pegboard()
+	if pegboard != null and _player != null and is_instance_valid(_player):
+		pegboard.open(_player)
 
 
 func _update_wave() -> void:
@@ -237,6 +313,50 @@ func _update_wave() -> void:
 	var in_fight := director.phase in [WaveDirector.Phase.SIREN, WaveDirector.Phase.SPAWNING, WaveDirector.Phase.MOP_UP]
 	_family_label.text = director.genome.family_name if director.genome != null and in_fight else ""
 	_family_label.visible = not _family_label.text.is_empty()
+	var preparing := director.phase in [WaveDirector.Phase.INTERMISSION, WaveDirector.Phase.SIREN]
+
+
+const HP_FLASH_TIME := 0.35
+const BOSS_SHAKE_TIME := 0.3
+const BOSS_GLOW_TIME := 0.45
+const BOSS_BAR_COLOR := Color(0.9, 0.6, 0.2)
+
+
+func _on_boss_hit(robot: Node3D, harmed: bool) -> void:
+	if robot != _boss:
+		_boss = robot as Robot
+		_boss_shown = _boss.health.fraction() * 100.0 if _boss != null else 0.0
+		_boss_name.text = (_boss.foreman_title if not _boss.foreman_title.is_empty() else "THE FOREMAN").to_upper()
+	if harmed:
+		_boss_glow_left = BOSS_GLOW_TIME
+	else:
+		_boss_shake_left = BOSS_SHAKE_TIME
+
+
+func _update_boss(delta: float) -> void:
+	if _boss != null and (not is_instance_valid(_boss) or _boss.ai_state == Robot.AiState.DEAD):
+		_boss = null
+	if _boss == null:
+		for node in get_tree().get_nodes_in_group(Robot.GROUP):
+			var robot := node as Robot
+			if robot != null and robot.is_foreman and robot.ai_state != Robot.AiState.DEAD:
+				_boss = robot
+				_boss_shown = 100.0
+				_boss_name.text = (robot.foreman_title if not robot.foreman_title.is_empty() else "THE FOREMAN").to_upper()
+				break
+	_boss_root.visible = _boss != null
+	if _boss == null:
+		return
+	var target := _boss.health.fraction() * 100.0
+	_boss_shown = move_toward(_boss_shown, target, delta * 90.0)
+	_boss_bar.value = _boss_shown
+	_boss_shake_left = maxf(0.0, _boss_shake_left - delta)
+	_boss_glow_left = maxf(0.0, _boss_glow_left - delta)
+	var shake := sin(_boss_shake_left * 90.0) * 12.0 * (_boss_shake_left / BOSS_SHAKE_TIME)
+	_boss_card.position = Vector2(shake, 0.0)
+	var glow := _boss_glow_left / BOSS_GLOW_TIME
+	_set_bar_color(_boss_bar, BOSS_BAR_COLOR.lerp(Color(1.0, 0.15, 0.1), glow))
+	_boss_card.modulate = Color.WHITE.lerp(Color(1.4, 0.7, 0.7), glow)
 
 
 func _update_silo() -> void:
@@ -280,6 +400,147 @@ func _update_silo_alert(delta: float) -> void:
 	_silo_alert.modulate.a = 0.85 + 0.15 * sin(Time.get_ticks_msec() * 0.014) if under_attack else 1.0
 
 
+# --- Banners, climbers, low health, construction, the worst leak -------------------------------------
+
+func _on_reward_granted(text: String) -> void:
+	set_tutorial_lesson(text)
+	_banner_left = 7.0
+
+
+func _update_banner(delta: float) -> void:
+	if _banner_left <= 0.0:
+		return
+	_banner_left -= delta
+	if _banner_left <= 0.0:
+		set_tutorial_lesson("")
+
+
+func _on_climber_alert(robot: Node3D, climbing: bool) -> void:
+	_climbers.erase(robot)
+	if climbing:
+		_climbers.append(robot)
+
+
+## A Rung Runner on the silo ladder or catwalk: which way the ladder is, and how many are up there.
+func _update_climbers() -> void:
+	_climbers = _climbers.filter(_still_climbing)
+	var warn := not _climbers.is_empty() and _player != null and is_instance_valid(_player) and not GameState.is_game_over
+	_climber_alert.visible = warn
+	if not warn:
+		return
+	var climbing := 0
+	for robot in _climbers:
+		if (robot as LadderRobot).travel == LadderRobot.Travel.CLIMB:
+			climbing += 1
+	var up_top := _climbers.size() - climbing
+	var where := _silo_direction(_climbers[0].global_position - _player.global_position)
+	var what := "ON THE SILO LADDER" if climbing > 0 else "ON THE CATWALK"
+	var count := " x%d" % _climbers.size() if _climbers.size() > 1 else ""
+	_climber_alert.text = "CLIMBER %s%s  ·  %s%s" % [what, count, where,
+			"  ·  %d up top" % up_top if climbing > 0 and up_top > 0 else ""]
+
+
+static func _still_climbing(robot: Node3D) -> bool:
+	return is_instance_valid(robot) and robot is LadderRobot and (robot as LadderRobot).is_elevated() \
+			and (robot as Robot).ai_state != Robot.AiState.DEAD
+
+
+## Below LOW_HP: a red edge and the way to the nearest heal (the well or the porch).
+func _update_low_hp() -> void:
+	var low := _player != null and is_instance_valid(_player) and _player.is_alive() and not GameState.is_game_over \
+			and _player.health.fraction() < LOW_HP and director != null and director.phase != WaveDirector.Phase.TUTORIAL
+	_vignette.visible = low
+	_low_hp_label.visible = low
+	if not low:
+		return
+	var pulse := 0.55 + 0.35 * sin(Time.get_ticks_msec() * 0.008)
+	_vignette.modulate.a = pulse
+	var best: HealZone = null
+	var best_distance := INF
+	for node in get_tree().get_nodes_in_group(HealZone.GROUP):
+		var zone := node as HealZone
+		if zone.contains(_player):
+			_low_hp_label.text = "HEALING... stay put"
+			return
+		var distance := zone.global_position.distance_to(_player.global_position)
+		if distance < best_distance:
+			best_distance = distance
+			best = zone
+	if best == null:
+		_low_hp_label.text = "LOW HEALTH"
+		return
+	var place := "the well" if best.name.contains("Well") else "the porch"
+	_low_hp_label.text = "LOW HEALTH  ·  heal at %s, %d m %s" % [place, roundi(best_distance),
+			_silo_direction(best.global_position - _player.global_position)]
+
+
+## The construction line under the wave card: the job being built, what waits, and the capacity.
+func _update_build() -> void:
+	var manager := get_tree().get_first_node_in_group(ConstructionManager.GROUP) as ConstructionManager
+	if manager == null or director == null or GameState.is_game_over:
+		_build_label.visible = false
+		return
+	var text := ""
+	if manager.is_open():
+		var job := manager.active_job()
+		var placing := manager.placing_definition() if manager.is_placing() else null
+		if placing != null:
+			var spot := manager.last_spot
+			var verb := "PLACING" if manager.in_hand == null else "MOVING"
+			text = "%s %s: E or click to build here  ·  Tab to cancel" % [verb, placing.display_name]
+			if spot != null and not spot.problem.is_empty():
+				text += "\n" + spot.problem
+		elif job != null:
+			text = "BUILDING %s %d%%%s" % [job.definition.display_name, roundi(job.fraction() * 100.0),
+					"  (lending a hand x2)" if manager.assisted(job) else ""]
+			if manager.jobs.size() > 1:
+				text += "  ·  %d waiting" % (manager.jobs.size() - 1)
+		if not text.is_empty() or not manager.deployed().is_empty():
+			text += ("  ·  " if not text.is_empty() else "") + "capacity %d/%d" % [manager.capacity_used(), manager.capacity_total()]
+	elif not manager.jobs.is_empty():
+		text = "%d unfinished: frozen until the intermission" % manager.jobs.size()
+	_build_label.text = text
+	_build_label.visible = not text.is_empty()
+
+
+## Between attacks, point at the worst leak with how long it takes to seal (FIRST_FIVE_WAVES_FUN_PLAN.md:
+## "rather than making every crack compete for attention").
+func _update_worst_leak() -> void:
+	var silo := GameState.silo
+	var calm := director != null and director.phase in [WaveDirector.Phase.INTERMISSION, WaveDirector.Phase.CLEARED,
+			WaveDirector.Phase.SIREN]
+	var worst: SiloCrack = null
+	if silo != null and calm and not GameState.is_game_over:
+		for crack in silo.get_cracks():
+			if worst == null or crack.size > worst.size or (crack.size == worst.size and _player != null
+					and crack.global_position.distance_to(_player.global_position) < worst.global_position.distance_to(_player.global_position)):
+				worst = crack
+	if worst != _worst_crack:
+		if _worst_crack != null and is_instance_valid(_worst_crack):
+			_worst_crack.set_pointed(false)
+		_worst_crack = worst
+		if worst != null:
+			worst.set_pointed(true)
+	_leak_hint.visible = worst != null
+	if worst == null:
+		return
+	var rate := StatService.get_stat(&"repair.speed", 1.0) * StatService.get_stat(&"repair.amount", 1.0)
+	var where := ""
+	if _player != null and is_instance_valid(_player):
+		var distance := worst.global_position.distance_to(_player.global_position)
+		where = "  ·  here" if distance < 3.0 else "  ·  %d m %s" % [roundi(distance), _silo_direction(worst.global_position - _player.global_position)]
+	_leak_hint.text = "Worst leak: %s%s  ·  %.1f s to seal" % [worst.describe(), where, worst.repair_seconds_left() / maxf(0.1, rate)]
+
+
+func _on_crack_closed(_crack: Node3D) -> void:
+	if GameState.is_game_over or (director != null and director.phase == WaveDirector.Phase.TUTORIAL):
+		return
+	AudioDirector.play_cue(&"leak_sealed")
+	var silo := GameState.silo
+	if silo != null and silo.get_cracks().size() <= 1:
+		show_message("Leak sealed! The silo is tight again.", 2.0)
+
+
 func _silo_direction(offset: Vector3) -> String:
 	offset.y = 0.0
 	if offset.length_squared() < 0.001:
@@ -297,11 +558,23 @@ func _silo_direction(offset: Vector3) -> String:
 func _update_player() -> void:
 	if _player == null or not is_instance_valid(_player):
 		_player = null
+		_last_player_hp = -1.0
 		return
 	var hp := _player.health.fraction()
+	if _last_player_hp >= 0.0 and hp < _last_player_hp - 0.0001:
+		_hp_flash_left = HP_FLASH_TIME
+	_last_player_hp = hp
+	_hp_flash_left = maxf(0.0, _hp_flash_left - get_process_delta_time())
 	_hp_bar.value = hp * 100.0
 	_set_bar_color(_hp_bar, Color(0.95, 0.3, 0.25).lerp(Color(0.45, 0.85, 0.4), clampf((hp - 0.2) / 0.4, 0.0, 1.0)))
 	_hp_bar.modulate = Color(1.0, 0.7, 0.7) if hp < 0.3 and int(Time.get_ticks_msec() / 300.0) % 2 == 0 else Color.WHITE
+	if _hp_flash_left > 0.0:
+		var flash := _hp_flash_left / HP_FLASH_TIME
+		_hp_bar.modulate = _hp_bar.modulate.lerp(Color(2.2, 0.5, 0.5), flash)
+		_hp_bar.pivot_offset = _hp_bar.size * 0.5
+		_hp_bar.scale = Vector2.ONE * (1.0 + 0.08 * flash)
+	else:
+		_hp_bar.scale = Vector2.ONE
 	_armor_bar.visible = _player.max_armor > 0.0
 	_armor_bar.value = _player.armor / _player.max_armor * 100.0 if _player.max_armor > 0.0 else 0.0
 	_god_label.visible = GameState.god_mode
@@ -377,11 +650,15 @@ func _on_game_over(reason: StringName) -> void:
 	var families := 0
 	if director != null:
 		families = director.genome_history.size()
-	_game_over_label.text = "HARVEST REPORT\n\n%s\n\nWaves survived: %d  (Phase %d · Wave %d)%s\nFamilies met: %d\nParts banked: Al %d  Cu %d  Au %d  PC %d\n\nPress R, Enter or Jump to farm again" % [
-		cause, survived, GameState.phase_of(maxi(1, survived)), GameState.wave_in_phase(maxi(1, survived)),
+	var lost := maxi(1, GameState.wave)
+	var phase := GameState.phase_of(lost)
+	_game_over_label.text = "HARVEST REPORT\n\n%s\n\nLost at Phase %d · Wave %d   (attempt %d)\nWaves survived: %d%s\nFamilies met: %d\nParts banked: Al %d  Cu %d  Au %d  PC %d\n\nYour parts and upgrades are kept. A retry starts Phase %d again with a full silo." % [
+		cause, phase, GameState.wave_in_phase(lost), GameState.attempt, survived,
 		"   NEW RECORD!" if survived >= best and survived > 0 else "   (best %d)" % best, families,
-		GameState.parts[&"al"], GameState.parts[&"cu"], GameState.parts[&"au"], GameState.parts[&"pc"]]
+		GameState.parts[&"al"], GameState.parts[&"cu"], GameState.parts[&"au"], GameState.parts[&"pc"], phase]
+	_retry_button.text = "Retry Phase %d   (R / Enter / A)" % phase
 	_game_over_panel.visible = true
+	_report_ready_at = Time.get_ticks_msec() + 600
 
 
 ## The wave's family name card (GDD 10.2, 17.2), shown through the siren.
@@ -421,6 +698,23 @@ func _build() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
 
+	# Top center: the boss health bar, shown while a Foreman is alive.
+	_boss_root = Control.new()
+	_boss_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_boss_root.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_boss_root.offset_left = -280.0
+	_boss_root.offset_right = 280.0
+	_boss_root.offset_top = 18.0
+	_boss_root.offset_bottom = 78.0
+	_boss_root.visible = false
+	root.add_child(_boss_root)
+	var boss_box := _card(_boss_root)
+	_boss_card = boss_box.get_parent()
+	_boss_name = _label(boss_box, 16)
+	_boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_boss_bar = _bar(boss_box, BOSS_BAR_COLOR, 520.0, 18.0)
+	EventBus.boss_hit.connect(_on_boss_hit)
+
 	# Top left: the wave card, then the silo card.
 	var top_left := _vbox(root, Control.PRESET_TOP_LEFT, Vector2(24, 20))
 	top_left.add_theme_constant_override(&"separation", 10)
@@ -438,12 +732,16 @@ func _build() -> void:
 	_phase_label.add_theme_stylebox_override(&"normal", _phase_pill)
 	_robots_label = _label(wave_card, 16)
 	_family_label = _label(wave_card, 14, Color(0.8, 0.88, 1.0))
+	_build_label = _label(wave_card, 14, Color(1.0, 0.78, 0.4))
+	_build_label.visible = false
 
 	var silo_card := _card(top_left)
 	_structure_bar = _labeled_bar(silo_card, "SILO", Color(0.55, 0.78, 0.9))
 	_grain_bar = _labeled_bar(silo_card, "GRAIN", Color(0.98, 0.8, 0.32))
 	_leak_label = _label(silo_card, 14, Color(1.0, 0.7, 0.35))
 	_leak_label.visible = false
+	_leak_hint = _label(silo_card, 14, Color(1.0, 0.86, 0.5))
+	_leak_hint.visible = false
 
 	# Bottom left: health, with armor as a slim bar above it.
 	var bottom_left := _vbox(root, Control.PRESET_BOTTOM_LEFT, Vector2(24, -24))
@@ -570,19 +868,70 @@ func _build() -> void:
 	_place(_help_label, Control.PRESET_CENTER_RIGHT, Rect2(-460, -150, 440, 300))
 	_help_label.visible = false
 
+	_vignette = TextureRect.new()
+	_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var vignette := GradientTexture2D.new()
+	vignette.fill = GradientTexture2D.FILL_RADIAL
+	vignette.fill_from = Vector2(0.5, 0.5)
+	vignette.fill_to = Vector2(1.05, 1.05)
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0.8, 0.0, 0.0, 0.0))
+	fade.set_color(1, Color(0.85, 0.05, 0.02, 0.75))
+	fade.add_point(0.55, Color(0.8, 0.0, 0.0, 0.0))
+	vignette.gradient = fade
+	_vignette.texture = vignette
+	_vignette.stretch_mode = TextureRect.STRETCH_SCALE
+	_vignette.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	root.add_child(_vignette)
+	root.move_child(_vignette, 0)
+	_vignette.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vignette.visible = false
+
+	_climber_alert = _label(root, 20, Color(1.0, 0.92, 0.55))
+	_climber_alert.add_theme_stylebox_override(&"normal", _pill(Color(0.35, 0.22, 0.02, 0.9), 10, Vector2(14, 5)))
+	_hug(_climber_alert, Control.PRESET_CENTER_TOP, 116)
+	_climber_alert.visible = false
+
+	_low_hp_label = _label(root, 20, Color(1.0, 0.85, 0.82))
+	_low_hp_label.add_theme_stylebox_override(&"normal", _pill(Color(0.45, 0.06, 0.05, 0.88), 10, Vector2(14, 5)))
+	_hug(_low_hp_label, Control.PRESET_CENTER_BOTTOM, -205)
+	_low_hp_label.visible = false
+
 	_game_over_panel = PanelContainer.new()
-	_game_over_panel.custom_minimum_size = Vector2(640, 340)
+	_game_over_panel.custom_minimum_size = Vector2(760, 400)
 	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = Color(0.18, 0.12, 0.08, 0.92)
+	panel_style.bg_color = Color(0.18, 0.12, 0.08, 0.94)
 	panel_style.set_corner_radius_all(16)
 	panel_style.set_content_margin_all(24)
 	_game_over_panel.add_theme_stylebox_override(&"panel", panel_style)
-	_game_over_label = _label(_game_over_panel, 22)
+	var report := VBoxContainer.new()
+	report.add_theme_constant_override(&"separation", 16)
+	_game_over_panel.add_child(report)
+	_game_over_label = _label(report, 21)
 	_game_over_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_game_over_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_game_over_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var report_buttons := HBoxContainer.new()
+	report_buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	report_buttons.add_theme_constant_override(&"separation", 12)
+	report.add_child(report_buttons)
+	_retry_button = _report_button(report_buttons, "Retry Phase", func() -> void: _start_again(true))
+	_start_over_button = _report_button(report_buttons, "Start over at Phase 1   (Backspace / Y)", func() -> void: _start_again(false))
+	_pegboard_button = _report_button(report_buttons, "Pegboard   (P / Start)", _open_report_pegboard)
 	_game_over_panel.visible = false
 	root.add_child(_game_over_panel)
-	_place(_game_over_panel, Control.PRESET_CENTER, Rect2(-320, -170, 640, 340))
+	_place(_game_over_panel, Control.PRESET_CENTER, Rect2(-380, -200, 760, 400))
+
+
+func _report_button(parent: Control, text: String, pressed: Callable) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.add_theme_font_size_override(&"font_size", 15)
+	button.custom_minimum_size = Vector2(0, 40)
+	button.focus_mode = Control.FOCUS_NONE
+	button.pressed.connect(pressed)
+	parent.add_child(button)
+	return button
 
 
 ## Anchors `control` to a preset point and offsets it by `rect` from that anchor.

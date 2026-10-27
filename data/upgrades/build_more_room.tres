@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_d6jow"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_s6ihm"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_6tkdt"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_vqe50"]
+
+[sub_resource type="Resource" id="Resource_dqugx"]
+script = ExtResource("1_d6jow")
+parts = Array[StringName]([&"al", &"cu", &"au", &"pc"])
+bases = PackedFloat32Array(30, 4, 1, 1)
+first_levels = PackedInt32Array(1, 1, 2, 2)
+last_levels = PackedInt32Array(2, 2, 2, 2)
+
+[sub_resource type="Resource" id="Resource_1cd42"]
+script = ExtResource("2_s6ihm")
+stat = &"defense.capacity"
+kind = 0
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_wxmqw"]
+script = ExtResource("3_6tkdt")
+node_id = &"build.quick_assembly"
+
+[resource]
+script = ExtResource("4_vqe50")
+id = &"build.more_room"
+branch = 5
+display_name = "More Room"
+description = "+1 defense capacity per level (8 -> 10)."
+max_level = 2
+prerequisites = Array[ExtResource("3_6tkdt")]([SubResource("Resource_wxmqw")])
+cost_curve = SubResource("Resource_dqugx")
+effects = Array[ExtResource("2_s6ihm")]([SubResource("Resource_1cd42")])
+board_position = Vector2i(1, 2)

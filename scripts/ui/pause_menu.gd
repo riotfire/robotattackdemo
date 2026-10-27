@@ -9,12 +9,16 @@ extends CanvasLayer
 var _root: Control
 var _panel: PanelContainer
 var _status: Label
-var _wave_picker: SpinBox
+var _wave_pick: int = 1
+var _wave_value: Label
 var _god_button: Button
 var _fps_button: Button
 var _model_button: Button
+var _restart_phase_button: Button
+var _furthest_button: Button
 var _time_row: HFlowContainer
 var _weather_row: HFlowContainer
+var _lab_grid: GridContainer
 var _new_game: Button
 var _new_game_armed: bool = false
 var _resume: Button
@@ -56,9 +60,11 @@ func open() -> void:
 	_root.visible = true
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	_wave_picker.value = maxi(1, director.wave + 1) if director != null else 1
+	_set_wave_pick(maxi(1, director.wave + 1) if director != null else 1)
 	_refresh_status()
 	_refresh_sky_buttons()
+	_refresh_run_buttons()
+	_fill_lab()
 	_resume.grab_focus()
 
 
@@ -84,9 +90,19 @@ func _refresh_status() -> void:
 		GameState.run_seed, director.wave, WaveDirector.PHASE_NAMES[director.phase], live, queued]
 
 
+func _set_wave_pick(wave: int) -> void:
+	_wave_pick = clampi(wave, 1, 999)
+	if _wave_value != null:
+		_wave_value.text = str(_wave_pick)
+
+
+func _step_wave_pick(delta: int) -> void:
+	_set_wave_pick(_wave_pick + delta)
+
+
 func _jump_to_selected_wave() -> void:
 	if cheats != null:
-		cheats.skip_to_wave(roundi(_wave_picker.value))
+		cheats.skip_to_wave(_wave_pick)
 	close()
 
 
@@ -102,101 +118,115 @@ func _build() -> void:
 	_root.add_child(dim)
 
 	_panel = PanelContainer.new()
-	# 680 wide, centered, and as tall as the window allows; the contents scroll when they don't fit.
-	_panel.anchor_left = 0.5
-	_panel.anchor_right = 0.5
-	_panel.anchor_top = 0.0
-	_panel.anchor_bottom = 1.0
-	_panel.offset_left = -340.0
-	_panel.offset_right = 340.0
-	_panel.offset_top = 24.0
-	_panel.offset_bottom = -24.0
+	# Centered and sized to its contents: two columns so the whole toolkit fits without scrolling.
+	_panel.set_anchors_preset(Control.PRESET_CENTER)
+	_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.16, 0.12, 0.09, 0.98)
 	panel_style.border_color = Color(0.78, 0.57, 0.28)
 	panel_style.set_border_width_all(3)
 	panel_style.set_corner_radius_all(16)
-	panel_style.set_content_margin_all(24)
+	panel_style.set_content_margin_all(18)
 	_panel.add_theme_stylebox_override(&"panel", panel_style)
 	_root.add_child(_panel)
 
-	var margin := MarginContainer.new()
-	margin.name = "Margin"
-	_panel.add_child(margin)
-	var box := VBoxContainer.new()
-	box.name = "VBox"
-	box.add_theme_constant_override(&"separation", 10)
-	var scroll := ScrollContainer.new()
-	scroll.name = "Scroll"
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	margin.add_child(scroll)
-	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(box)
+	var outer := VBoxContainer.new()
+	outer.name = "VBox"
+	outer.add_theme_constant_override(&"separation", 6)
+	_panel.add_child(outer)
 
-	var title := _label("PAUSED", 34, Color(1.0, 0.86, 0.52))
+	var title := _label("PAUSED", 30, Color(1.0, 0.86, 0.52))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(title)
-	var subtitle := _label("DEVELOPMENT TOOLKIT", 15, Color(0.78, 0.84, 0.88))
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(subtitle)
+	outer.add_child(title)
 	_status = _label("", 15, Color(0.88, 0.92, 0.84))
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(_status)
+	outer.add_child(_status)
+
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override(&"separation", 28)
+	outer.add_child(columns)
+	var left := _column(columns, 560.0)
+	var right := _column(columns, 560.0)
 
 	_resume = _button("Resume  ·  Esc", "Resume")
 	_resume.pressed.connect(close)
-	box.add_child(_resume)
+	left.add_child(_resume)
 
-	box.add_child(_section("PROGRESSION"))
+	left.add_child(_section("RUN"))
+	var run_grid := _grid(left, 2)
+	_restart_phase_button = _button("Restart this phase", "Start this phase again from its first wave, keeping parts and upgrades")
+	_restart_phase_button.pressed.connect(_restart_phase)
+	run_grid.add_child(_restart_phase_button)
+	var start_over := _button("Start over at Phase 1", "Wave 1 again, keeping parts and upgrades (the only way to a Full Harvest record)")
+	start_over.pressed.connect(_start_over)
+	run_grid.add_child(start_over)
+	_furthest_button = _button("Continue at furthest phase", "Jump to the furthest phase checkpoint this profile has reached")
+	_furthest_button.pressed.connect(_continue_furthest)
+	run_grid.add_child(_furthest_button)
+	_refresh_run_buttons()
+
+	left.add_child(_section("PROGRESSION"))
+	# Plain buttons rather than a SpinBox, so a controller can change the number.
 	var wave_row := HBoxContainer.new()
-	wave_row.add_theme_constant_override(&"separation", 8)
-	box.add_child(wave_row)
+	wave_row.add_theme_constant_override(&"separation", 6)
+	left.add_child(wave_row)
 	var wave_label := _label("Jump to wave", 17)
 	wave_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	wave_row.add_child(wave_label)
-	_wave_picker = SpinBox.new()
-	_wave_picker.min_value = 1
-	_wave_picker.max_value = 999
-	_wave_picker.step = 1
-	_wave_picker.custom_minimum_size = Vector2(110, 38)
-	wave_row.add_child(_wave_picker)
+	for step in [-5, -1]:
+		var down := _button("%d" % step if step < -1 else "−", "Lower the target wave by %d" % -step)
+		down.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		down.custom_minimum_size = Vector2(46, 38)
+		down.pressed.connect(_step_wave_pick.bind(step))
+		wave_row.add_child(down)
+	_wave_value = _label("1", 20, Color(1.0, 0.86, 0.52))
+	_wave_value.custom_minimum_size = Vector2(48, 0)
+	_wave_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_wave_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	wave_row.add_child(_wave_value)
+	for step in [1, 5]:
+		var up := _button("+%d" % step if step > 1 else "+", "Raise the target wave by %d" % step)
+		up.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		up.custom_minimum_size = Vector2(46, 38)
+		up.pressed.connect(_step_wave_pick.bind(step))
+		wave_row.add_child(up)
 	var jump := _button("Jump", "Jump to selected wave")
+	jump.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	jump.custom_minimum_size = Vector2(90, 38)
 	jump.pressed.connect(_jump_to_selected_wave)
 	wave_row.add_child(jump)
-	var wave_buttons := HBoxContainer.new()
-	wave_buttons.add_theme_constant_override(&"separation", 8)
-	box.add_child(wave_buttons)
+	var wave_grid := _grid(left, 2)
 	var next := _button("Next wave now", "Skip directly to the next wave")
 	next.pressed.connect(_skip_next_wave)
-	wave_buttons.add_child(next)
+	wave_grid.add_child(next)
 	var bell := _button("Ring bell", "End intermission or siren early")
 	bell.pressed.connect(_ring_bell)
-	wave_buttons.add_child(bell)
+	wave_grid.add_child(bell)
 
-	box.add_child(_section("DISPLAY"))
+	left.add_child(_section("DISPLAY AND PLAYER"))
+	var display_grid := _grid(left, 2)
 	_fps_button = _button("", "Show or hide the frame rate in the top-right corner")
 	_fps_button.pressed.connect(_toggle_fps)
-	box.add_child(_fps_button)
+	display_grid.add_child(_fps_button)
 	_refresh_fps_button()
-
-	box.add_child(_section("PLAYER MODEL"))
 	_model_button = _button("", "Swap the clay farmer for the rigged Blender farmer (test)")
 	_model_button.pressed.connect(_toggle_rigged_model)
-	box.add_child(_model_button)
+	display_grid.add_child(_model_button)
 	_refresh_model_button()
 
-	box.add_child(_section("TIME OF DAY"))
-	_time_row = _flow_row(box)
-	box.add_child(_section("WEATHER"))
-	_weather_row = _flow_row(box)
+	left.add_child(_section("TIME OF DAY"))
+	_time_row = _flow_row(left)
+	left.add_child(_section("WEATHER"))
+	_weather_row = _flow_row(left)
 	_refresh_sky_buttons()
 
-	box.add_child(_section("DEBUG TOOLS"))
-	var tools_grid := GridContainer.new()
-	tools_grid.columns = 2
-	tools_grid.add_theme_constant_override(&"h_separation", 8)
-	tools_grid.add_theme_constant_override(&"v_separation", 8)
-	box.add_child(tools_grid)
+	right.add_child(_section("ENEMY LAB  ·  spawn one in front of you to fight it"))
+	_lab_grid = _grid(right, 3)
+	_fill_lab()
+
+	right.add_child(_section("DEBUG TOOLS"))
+	var tools_grid := _grid(right, 2)
 	var parts := _button("Give parts", "+100 Al, +20 Cu, +5 Au, +2 PC")
 	parts.pressed.connect(_give_parts)
 	tools_grid.add_child(parts)
@@ -215,9 +245,6 @@ func _build() -> void:
 	var help := _button("Toggle debug help", "Show or hide the debug key reference")
 	help.pressed.connect(_toggle_help)
 	tools_grid.add_child(help)
-	var restart := _button("Restart run", "Restart this scene with a fresh run")
-	restart.pressed.connect(_restart_run)
-	tools_grid.add_child(restart)
 	var restart_empty := _button("Restart, no parts", "Restart from wave 1 with zero parts and save that")
 	restart_empty.pressed.connect(_restart_with_no_parts)
 	tools_grid.add_child(restart_empty)
@@ -225,11 +252,44 @@ func _build() -> void:
 	_new_game.pressed.connect(_new_game_pressed)
 	tools_grid.add_child(_new_game)
 
-	var footer := _label("Gameplay is frozen while this menu is open. Esc resumes.", 13,
+	var footer := _label("Gameplay is frozen while this menu is open. Esc or Start resumes.", 13,
 			Color(0.72, 0.72, 0.68))
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(footer)
-	_wave_picker.value = maxi(1, director.wave + 1) if director != null else 1
+	outer.add_child(footer)
+	_set_wave_pick(maxi(1, director.wave + 1) if director != null else 1)
+
+
+func _column(parent: Control, width: float) -> VBoxContainer:
+	var column := VBoxContainer.new()
+	column.custom_minimum_size = Vector2(width, 0)
+	column.add_theme_constant_override(&"separation", 6)
+	parent.add_child(column)
+	return column
+
+
+func _grid(parent: Control, columns: int) -> GridContainer:
+	var grid := GridContainer.new()
+	grid.columns = columns
+	grid.add_theme_constant_override(&"h_separation", 8)
+	grid.add_theme_constant_override(&"v_separation", 6)
+	parent.add_child(grid)
+	return grid
+
+
+## One button per robot the wave director can field. Built on first use since the director may arrive late.
+func _fill_lab() -> void:
+	if director == null or _lab_grid.get_child_count() > 0:
+		return
+	for row in director.lab_roster():
+		var button := _button(String(row["label"]), "Spawn one %s in front of you" % row["label"])
+		button.pressed.connect(_spawn_lab_robot.bind(row["archetype"], bool(row["foreman"])))
+		_lab_grid.add_child(button)
+
+
+func _spawn_lab_robot(archetype: RobotArchetype, foreman: bool) -> void:
+	if director != null:
+		director.spawn_lab_robot(archetype, foreman)
+	close()
 
 
 func _skip_next_wave() -> void:
@@ -272,7 +332,7 @@ func _time_of_day() -> TimeOfDay:
 	return get_tree().get_first_node_in_group(&"time_of_day") as TimeOfDay
 
 
-func _flow_row(box: VBoxContainer) -> HFlowContainer:
+func _flow_row(box: Control) -> HFlowContainer:
 	var row := HFlowContainer.new()
 	row.add_theme_constant_override(&"h_separation", 6)
 	row.add_theme_constant_override(&"v_separation", 6)
@@ -355,14 +415,41 @@ func _toggle_help() -> void:
 
 
 func _restart_run() -> void:
+	_start_over()
+
+
+func _restart_phase() -> void:
+	_root.visible = false
+	Main.restart(get_tree(), true)
+
+
+func _start_over() -> void:
+	_root.visible = false
+	Main.restart(get_tree(), false)
+
+
+func _continue_furthest() -> void:
+	_root.visible = false
+	SaveManager.pending_start = {"wave": int(SaveManager.records.get("furthest_checkpoint", 1))}
+	SaveManager.save_profile()
 	get_tree().paused = false
 	get_tree().reload_current_scene()
+
+
+func _refresh_run_buttons() -> void:
+	if _restart_phase_button == null:
+		return
+	var phase := GameState.phase_of(maxi(1, director.wave)) if director != null else 1
+	_restart_phase_button.text = "Restart Phase %d" % phase
+	var furthest := int(SaveManager.records.get("furthest_checkpoint", 1))
+	_furthest_button.text = "Continue at Phase %d (furthest)" % GameState.phase_of(furthest)
+	_furthest_button.disabled = furthest <= 1
 
 
 func _restart_with_no_parts() -> void:
 	GameState.clear_parts()
 	SaveManager.save_profile()
-	_restart_run()
+	_start_over()
 
 
 ## Two clicks, because this erases saved progress. The first click arms the button.

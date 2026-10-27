@@ -1,0 +1,7 @@
+wave,title,live_cap,main_lanes,lane_pool,spawn_distance,foreman_hp,foreman_throw_phase,foreman_cancels_adds,hint
+1,First Bonks,4,1,1 2,45,,false,true,Bonk them with the wrench: two hits pop a Nibbler.
+2,Take the High Ground,4,1,,45,,false,true,"Roof Lobbers climb the tool shed. No gun yet: hop up the rain barrel and crates and bonk them. Clearing the wave unlocks the Rivet Pistol."
+3,The Foreman's First Visit,4,2,,45,350,false,true,"Its plates shrug off shots from range. Dodge the slam, then whack the glowing back vent."
+4,Stop That Sack,5,2,,45,,false,true,"Clankers take more hits: the pistol softens them up. Catch the thief before it reaches the corn, and watch the barn roof."
+5,Up the Ladder,7,1,5 6,45,,false,true,"A Rung Runner climbs the silo ladder while a raid hits the far side. You can't be in both places: buy the Spring Trap on the shed's BUILD board and press Tab to set it at the ladder top."
+6,The Foreman Returns,5,1,5 6,45,900,true,true,"The Foreman comes from the far side and throws dirt clods at anyone who keeps away, while climbers take the ladder. Get in close and let your springs hold the catwalk."

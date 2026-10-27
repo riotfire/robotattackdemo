@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="OpeningWave" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/opening/opening_group.gd" id="1_ykgus"]
+[ext_resource type="Script" path="res://scripts/systems/opening/opening_wave.gd" id="2_mtwxv"]
+
+[sub_resource type="Resource" id="group_0"]
+script = ExtResource("1_ykgus")
+archetype_ids = Array[StringName]([&"rung_runner"])
+counts = PackedInt32Array(1)
+roles = Array[StringName]([&""])
+intro = &"rung_runner"
+
+[sub_resource type="Resource" id="group_1"]
+script = ExtResource("1_ykgus")
+release_time = 4.0
+lane_slot = 2
+archetype_ids = Array[StringName]([&"clanker", &"nibbler"])
+counts = PackedInt32Array(2, 2)
+roles = Array[StringName]([&"", &""])
+announce = true
+
+[sub_resource type="Resource" id="group_2"]
+script = ExtResource("1_ykgus")
+release_time = 22.0
+archetype_ids = Array[StringName]([&"nibbler"])
+counts = PackedInt32Array(3)
+roles = Array[StringName]([&""])
+
+[sub_resource type="Resource" id="group_3"]
+script = ExtResource("1_ykgus")
+release_time = 36.0
+archetype_ids = Array[StringName]([&"rung_runner"])
+counts = PackedInt32Array(1)
+roles = Array[StringName]([&""])
+
+[sub_resource type="Resource" id="group_4"]
+script = ExtResource("1_ykgus")
+release_time = 40.0
+lane_slot = 2
+archetype_ids = Array[StringName]([&"clanker", &"nibbler"])
+counts = PackedInt32Array(2, 1)
+roles = Array[StringName]([&"", &"thief"])
+announce = true
+
+[sub_resource type="Resource" id="group_5"]
+script = ExtResource("1_ykgus")
+release_time = 56.0
+lane_slot = 1
+archetype_ids = Array[StringName]([&"nibbler"])
+counts = PackedInt32Array(3)
+roles = Array[StringName]([&""])
+
+[resource]
+script = ExtResource("2_mtwxv")
+wave = 5
+title = "Up the Ladder"
+live_cap = 7
+main_lanes = 1
+lane_pool = PackedInt32Array(5, 6)
+hint = "A Rung Runner climbs the silo ladder while a raid hits the far side. You can't be in both places: buy the Spring Trap on the shed's BUILD board and press Tab to set it at the ladder top."
+groups = Array[ExtResource("1_ykgus")]([SubResource("group_0"), SubResource("group_1"), SubResource("group_2"), SubResource("group_3"), SubResource("group_4"), SubResource("group_5")])

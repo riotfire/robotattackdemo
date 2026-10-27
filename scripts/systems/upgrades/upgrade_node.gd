@@ -3,9 +3,10 @@ extends Resource
 ## One tool on the pegboard (GDD 13, 18.5). Systems never read levels directly; they read stats from
 ## StatService, which folds every owned node's effects into modifier stacks.
 
-enum Branch { TRAVEL, ATTACK, REPAIR, DEFEND, FARMHAND }
+## BUILD: defense recipes and the trapper's upgrades (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md).
+enum Branch { TRAVEL, ATTACK, REPAIR, DEFEND, FARMHAND, BUILD }
 
-const BRANCH_NAMES: PackedStringArray = ["Travel", "Attack", "Repair", "Defend", "Farmhand"]
+const BRANCH_NAMES: PackedStringArray = ["Travel", "Attack", "Repair", "Defend", "Farmhand", "Build"]
 
 @export var id: StringName = &""
 @export var branch: Branch = Branch.TRAVEL

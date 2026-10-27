@@ -20,6 +20,11 @@ func setup(owner_farmer: Farmer) -> void:
 
 func physics_step(delta: float) -> void:
 	focus = null
+	if farmer.building:
+		_hold = 0.0
+		progress = 0.0
+		_needs_release = true
+		return
 	if farmer.repair.target == null and farmer.state == Farmer.State.GROUNDED:
 		var best_distance := INF
 		for node in get_tree().get_nodes_in_group(Interactable.GROUP):

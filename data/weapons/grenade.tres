@@ -8,6 +8,7 @@ id = &"grenade"
 display_name = "Boiler Grenades"
 slot = 5
 unlock_flag = &"grenade.unlocked"
+usable_on_zipline = true
 damage = 90.0
 damage_stat = &"grenade.damage"
 fire_rate = 0.5

@@ -68,10 +68,31 @@ func test_stacks_add_multiply_and_take_max() -> void:
 
 
 func test_flags_respect_their_level() -> void:
-	StatService.set_levels({&"travel.comfy_boots": 3, &"travel.zipline_grip": 1})
-	assert_false(StatService.has_flag(&"zipline.any_weapon"), "Zipline Grip 1 doesn't allow every weapon")
-	StatService.set_levels({&"travel.comfy_boots": 3, &"travel.zipline_grip": 2})
-	assert_true(StatService.has_flag(&"zipline.any_weapon"), "Zipline Grip 2 does")
+	StatService.set_levels({&"travel.comfy_boots": 3})
+	assert_false(StatService.has_flag(&"pistol.unlocked"), "not owned, not on")
+	StatService.set_levels({&"travel.comfy_boots": 3, &"attack.pistol": 1})
+	assert_true(StatService.has_flag(&"pistol.unlocked"), "level 1 turns the flag on")
+
+
+## DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md: the paid jump-height and zipline-speed ranks are retired
+## and prior purchases compensated, at the higher of the two historical prices, exactly once.
+func test_retired_ranks_are_refunded_once() -> void:
+	var levels := {"travel.springy_soles": 3, "travel.zipline_grip": 2, "travel.comfy_boots": 1}
+	var refund := RetiredUpgrades.refund(levels)
+	assert_eq(refund, {&"al": 15 + 20 + 27 + 25 + 34, &"cu": 10} as Dictionary[StringName, int])
+	assert_eq(levels.keys(), ["travel.comfy_boots"], "the retired levels are gone, the rest kept")
+	assert_true(RetiredUpgrades.refund(levels).is_empty(), "nothing left to refund twice")
+	assert_false(StatService.catalog.has(&"travel.springy_soles") or StatService.catalog.has(&"travel.zipline_grip"),
+			"they are off the pegboard")
+
+
+func test_the_spring_trap_recipe_is_bought_at_the_shed() -> void:
+	StatService.set_levels({})
+	GameState.parts[&"al"] = 500
+	assert_not_null(StatService.catalog[&"build.spring_trap"].cost_curve, "the Spring Trap recipe has a price")
+	assert_true(StatService.purchase(&"build.spring_trap"), "and is bought like any other peg")
+	assert_eq(GameState.parts[&"al"], 485, "for 15 Al")
+	assert_true(StatService.has_flag(&"defense.spring_trap"))
 
 
 func test_purchase_spends_parts_and_checks_prerequisites() -> void:

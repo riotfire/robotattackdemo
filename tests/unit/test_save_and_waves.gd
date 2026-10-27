@@ -19,8 +19,17 @@ func test_migrates_a_v0_profile() -> void:
 
 
 func test_current_profile_is_left_alone() -> void:
-	var data := {"schema_version": 1, "parts": {"al": 5}, "unlocks": {"jetpack": false}}
+	var data := {"schema_version": 2, "parts": {"al": 5}, "unlocks": {"jetpack": false}, "resume_wave": 4}
 	assert_eq(SaveManager.migrate(data), data)
+
+
+func test_a_v1_profile_continues_at_the_phase_of_its_next_wave() -> void:
+	# v1 had 5-wave phases and no checkpoint (PHASE_CHECKPOINT_PROGRESSION_PLAN.md step 2).
+	for case: Array in [[0, 1], [2, 1], [3, 4], [5, 4], [6, 7], [8, 7], [9, 10]]:
+		var old := {"schema_version": 1, "parts": {"al": 5}, "records": {"best_wave": case[0]}}
+		var migrated := SaveManager.migrate(old)
+		assert_eq(int(migrated["schema_version"]), 2)
+		assert_eq(int(migrated["resume_wave"]), case[1], "best wave %d resumes at wave %d" % [case[0], case[1]])
 
 
 func test_profile_round_trip() -> void:
@@ -47,11 +56,12 @@ func test_profile_round_trip() -> void:
 		GameState.parts[key] = parts[key]
 
 
-func test_heavy_cap() -> void:
-	assert_eq(WaveDirector.heavy_cap_for(6), 1)
-	assert_eq(WaveDirector.heavy_cap_for(13), 1)
-	assert_eq(WaveDirector.heavy_cap_for(14), 2)
-	assert_eq(WaveDirector.heavy_cap_for(30), 4)
+func test_heavy_cap_steps_on_phase_starts() -> void:
+	assert_eq(WaveDirector.heavy_cap_for(8), 1, "regular Thumpers join on wave 8 one at a time")
+	assert_eq(WaveDirector.heavy_cap_for(15), 1)
+	assert_eq(WaveDirector.heavy_cap_for(16), 2)
+	assert_eq(WaveDirector.heavy_cap_for(25), 3)
+	assert_eq(WaveDirector.heavy_cap_for(34), 4)
 
 
 func test_spawn_buying_spends_the_budget_within_the_rules() -> void:
@@ -89,7 +99,7 @@ func test_spawn_buying_spends_the_budget_within_the_rules() -> void:
 func _full_roster_director() -> WaveDirector:
 	var director := WaveDirector.new()
 	director.curve = load("res://data/difficulty/default_difficulty.tres") as DifficultyCurve
-	for id in ["nibbler", "clanker", "thumper", "roof_lobber", "drone"]:
+	for id in ["nibbler", "clanker", "thumper", "roof_lobber", "drone", "rung_runner"]:
 		director.archetypes.append(load("res://data/robots/archetypes/%s.tres" % id) as RobotArchetype)
 	director.foreman_archetype = load("res://data/robots/archetypes/thumper.tres") as RobotArchetype
 	director.spitter_archetype = load("res://data/robots/archetypes/spitter.tres") as RobotArchetype
@@ -103,14 +113,17 @@ func test_climbers_replace_ground_budget_and_make_one_quarter_of_individual_robo
 			director.set(&"_wave_rng", RngService.make_rng([seed_value, wave_number]))
 			var events: Array = director.call(&"_build_spawn_events", wave_number)
 			var climbers := 0
+			var ladders := 0
 			# The bonus Foreman is spawned separately, but still counts as an individual for composition.
 			var other_robots := 1 if director.curve.is_big_haul(wave_number) else 0
 			var spent := 0.0
 			var drones := 0
 			for event: WaveDirector.SpawnEvent in events:
 				spent += event.threat_cost()
-				if event.archetype.id == &"roof_lobber":
+				if event.archetype.id in [&"roof_lobber", &"rung_runner"]:
 					climbers += event.robot_count()
+					if event.archetype.id == &"rung_runner":
+						ladders += event.robot_count()
 				else:
 					other_robots += event.robot_count()
 				if event.archetype.id == &"drone":
@@ -118,14 +131,18 @@ func test_climbers_replace_ground_budget_and_make_one_quarter_of_individual_robo
 			var label := "seed %d wave %d" % [seed_value, wave_number]
 			assert_lte(spent, director.curve.threat_budget(wave_number) + 0.001, "%s stays in the existing budget" % label)
 			assert_lte(drones, WaveDirector.drone_cap_for(wave_number), "%s keeps drones scarce" % label)
-			if wave_number < 3:
-				assert_eq(climbers, 0, "%s preserves the melee introduction" % label)
+			if wave_number < 4:
+				assert_eq(climbers, 0, "%s keeps phase 1 on the ground" % label)
 			else:
 				assert_eq(climbers, director.curve.climber_count(wave_number, other_robots),
 						"%s reserves climbers using robot counts, not event counts" % label)
 				var target := 0.25 * float(climbers + other_robots)
 				assert_almost_eq(float(climbers), target, 0.5, "%s is within half a robot of 25%%" % label)
-			if wave_number == 5:
+				assert_eq(ladders, director.curve.ladder_climber_count(wave_number, climbers),
+						"%s gives Rung Runners their part of the same share, not a second one" % label)
+			if wave_number < 7:
+				assert_eq(drones, 0, "%s has no drones before phase 3" % label)
+			if wave_number == 7:
 				assert_eq(drones, 1, "%s keeps the guaranteed single-drone debut" % label)
 	director.free()
 
@@ -135,7 +152,7 @@ func test_climber_composition_is_deterministic_and_not_a_single_wave_end_cluster
 	var describe := func(events: Array) -> Array:
 		return events.map(func(event: WaveDirector.SpawnEvent) -> String:
 			return "%s x%d" % [event.archetype.id, event.robot_count()])
-	for wave_number in [3, 4, 5, 6, 15, 40]:
+	for wave_number in [4, 5, 6, 15, 40]:
 		director.set(&"_wave_rng", RngService.make_rng([31, wave_number]))
 		var first: Array = director.call(&"_build_spawn_events", wave_number)
 		director.set(&"_wave_rng", RngService.make_rng([31, wave_number]))
@@ -144,7 +161,7 @@ func test_climber_composition_is_deterministic_and_not_a_single_wave_end_cluster
 		var first_half := 0
 		var second_half := 0
 		for i in first.size():
-			if first[i].archetype.id == &"roof_lobber":
+			if first[i].archetype.id in [&"roof_lobber", &"rung_runner"]:
 				if i < first.size() / 2:
 					first_half += 1
 				else:

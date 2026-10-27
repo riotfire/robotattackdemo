@@ -15,6 +15,8 @@ const ROOF_SITES: Array[Dictionary] = [
 ]
 
 @export var aerial: bool = false
+## Authored waves name the roof (a ROOF_SITES path such as ToolShed); otherwise it picks the nearest free one.
+var forced_roof: StringName = &""
 @export var climb_speed: float = 3.2
 @export var flight_speed: float = 9.0
 ## Drones stop shooting this far out from the silo (flat distance).
@@ -81,6 +83,10 @@ func _choose_roof() -> void:
 		for node in get_tree().get_nodes_in_group(ROOF_GROUP):
 			if node != self and node is VerticalRobot and (node as VerticalRobot)._roof_index == i:
 				score += 100.0
+		if not forced_roof.is_empty():
+			score += 0.0 if StringName(String(site["path"])) == forced_roof else 1000.0
+		else:
+			score -= _decoy_pull(building.to_global(site["top"] as Vector3))
 		if score < best_score:
 			best_score = score
 			_roof_index = i
@@ -92,6 +98,17 @@ func _choose_roof() -> void:
 		push_warning("Roof lobber found no farm roofs; falling back to ground combat.")
 		travel = Travel.PERCHED
 		_roof_top = global_position
+
+
+## A Scarecrow Decoy on a roof draws Lobbers within its (elevated) lure radius to that roof instead.
+func _decoy_pull(roof_top: Vector3) -> float:
+	for node in get_tree().get_nodes_in_group(Defense.GROUP):
+		var decoy := node as ScarecrowDecoy
+		if decoy != null and decoy.active and decoy.site != null and decoy.site.kind == &"roof" \
+				and decoy.global_position.distance_to(roof_top) < 4.0 \
+				and decoy.global_position.distance_to(global_position) <= decoy.lure_radius() * 2.0:
+			return 150.0
+	return 0.0
 
 
 ## Main may be instanced below a smoke/test scene or another game root. Prefer the registered silo's
@@ -117,6 +134,9 @@ func _physics_process(delta: float) -> void:
 		_die(null, false)
 		return
 	_hit_pop_left = maxf(0.0, _hit_pop_left - delta)
+	if _process_launch(delta):
+		ranged.cancel()
+		return
 	_update_targeting(delta)
 	match travel:
 		Travel.APPROACH:
@@ -152,6 +172,31 @@ func _physics_process(delta: float) -> void:
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	if travel == Travel.APPROACH:
 		super._on_velocity_computed(safe_velocity)
+
+
+## Drones never touch a spring; a Lobber thrown off its perch lands, gets up and climbs again.
+func launchable() -> bool:
+	return not aerial and super.launchable()
+
+
+func _on_landed_from_launch() -> void:
+	travel = Travel.APPROACH
+	_climb_stage = 0
+
+
+## Back on the ground it walks to its wall and climbs again. If the throw only knocked it along the roof (a
+## ridge perch), it walks back up to the top instead: there's no navmesh up there.
+func _on_recovered_from_launch() -> void:
+	super._on_recovered_from_launch()
+	ai_state = AiState.SEEK
+	var floor_y := GameState.silo.global_position.y if GameState.silo != null else 0.0
+	if _roof_index >= 0 and global_position.y - floor_y > 1.5:
+		travel = Travel.CLIMB
+		collision_mask = 0
+		_climb_stage = 2
+		_climb_target = _roof_top
+	else:
+		travel = Travel.APPROACH
 
 
 func _begin_climb() -> void:

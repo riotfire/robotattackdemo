@@ -33,6 +33,9 @@ var armor: float = 0.0
 var max_armor: float = 0.0
 ## Where the model turns to. Components set it while climbing, ziplining or repairing.
 var facing_yaw: float = 0.0
+## On while placing a defense (ConstructionManager): Interact and Fire build instead of using a weapon,
+## repairing or using an interactable.
+var building: bool = false
 
 var _combat_facing_left: float = 0.0
 var _hurt_flash_left: float = 0.0
@@ -116,7 +119,8 @@ func _physics_process(delta: float) -> void:
 
 
 func can_use_weapons() -> bool:
-	return state in [State.GROUNDED, State.AIRBORNE, State.JETPACKING, State.ZIPLINING] and not repair.is_repairing
+	return state in [State.GROUNDED, State.AIRBORNE, State.JETPACKING, State.ZIPLINING] and not repair.is_repairing \
+			and not building
 
 
 ## Turns the model to the camera for `seconds`, so swings and shots go where the crosshair is.

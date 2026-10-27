@@ -33,6 +33,11 @@ const CUES: Dictionary = {
 	&"wrench": "res://assets/audio/wrench.wav",
 	&"robot_pop": "res://assets/audio/robot_pop.wav",
 	&"silo_alarm": "res://assets/audio/silo_alarm.wav",
+	# The Rung Runner's metal climbing rhythm (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md slice 2).
+	&"climb_clank": "res://assets/audio/climb_clank.wav",
+	&"spring_boing": "res://assets/audio/spring_boing.wav",
+	# One crisp relief sound when a crack is sealed (FIRST_FIVE_WAVES_FUN_PLAN.md).
+	&"leak_sealed": "res://assets/audio/leak_sealed.wav",
 }
 
 var music_state: StringName = &""
@@ -118,7 +123,7 @@ static func state_for_phase(phase: int, wave: int) -> StringName:
 		WaveDirector.Phase.SIREN:
 			return SIREN_STATE
 		WaveDirector.Phase.SPAWNING, WaveDirector.Phase.MOP_UP:
-			return &"boss" if wave > 0 and wave % 5 == 0 else &"combat"
+			return &"boss" if GameState.is_big_haul(wave) else &"combat"
 		WaveDirector.Phase.GAME_OVER:
 			return &"game_over"
 	return &"intermission"

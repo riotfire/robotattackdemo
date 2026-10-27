@@ -24,7 +24,33 @@ func test_tables_read_without_errors() -> void:
 	tables.themes(tables.palettes())
 	tables.traits()
 	tables.attacks()
+	tables.opening_waves()
+	tables.defenses()
 	assert_true(tables.errors.is_empty(), "table errors:\n" + "\n".join(tables.errors))
+
+
+func test_opening_waves_match_the_tables() -> void:
+	var waves := ContentTables.new().opening_waves()
+	assert_eq(waves.size(), 6, "the authored opening covers waves 1-6")
+	for opening in waves:
+		_assert_matches_file(opening, ContentTables.opening_path(opening.wave), "build_opening_waves.gd")
+
+
+func test_defenses_match_the_tables() -> void:
+	var definitions := ContentTables.new().defenses()
+	assert_eq(definitions.size(), 3, "spring trap, decoy and barricade")
+	for definition in definitions:
+		_assert_matches_file(definition, ContentTables.defense_path(definition.id), "build_defense_data.gd")
+		assert_true(StatService.catalog.values().any(func(node: UpgradeNode) -> bool:
+				return node.effects.any(func(effect: StatModifier) -> bool: return effect.stat == definition.recipe_flag)),
+				"a pegboard node grants the %s recipe" % definition.id)
+
+
+func test_the_tools_roof_list_matches_the_lobbers() -> void:
+	var roofs := PackedStringArray()
+	for site in VerticalRobot.ROOF_SITES:
+		roofs.append(String(site["path"]))
+	assert_eq(roofs, ContentTables.ROOF_PATHS, "tools/content_tables.gd lists the same roofs as VerticalRobot")
 
 
 func test_upgrade_catalog_matches_the_tables() -> void:

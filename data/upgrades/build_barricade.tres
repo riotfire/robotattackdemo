@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_pf7hi"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_nn8u3"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_gau47"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_g5fxw"]
+
+[sub_resource type="Resource" id="Resource_erpg1"]
+script = ExtResource("1_pf7hi")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(20)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_kw0i1"]
+script = ExtResource("2_nn8u3")
+stat = &"defense.scrap_barricade"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_i4yqx"]
+script = ExtResource("3_gau47")
+node_id = &"build.spring_trap"
+
+[resource]
+script = ExtResource("4_g5fxw")
+id = &"build.barricade"
+branch = 5
+display_name = "Scrap Barricade"
+description = "Recipe: a scrap wall robots must smash before going on (8 Al a copy). On the catwalk it turns climbers the other way."
+prerequisites = Array[ExtResource("3_gau47")]([SubResource("Resource_i4yqx")])
+cost_curve = SubResource("Resource_erpg1")
+effects = Array[ExtResource("2_nn8u3")]([SubResource("Resource_kw0i1")])
+board_position = Vector2i(2, 0)

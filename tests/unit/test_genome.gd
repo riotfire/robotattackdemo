@@ -54,8 +54,8 @@ func test_novelty_rules_hold_over_a_run() -> void:
 
 
 func test_trait_count_follows_the_curve() -> void:
-	assert_eq(RobotGenome.from_code("AAAAAA", 3, lib, curve).traits.size(), 0)
-	assert_eq(RobotGenome.from_code("AAAAAA", 6, lib, curve).traits.size(), 1)
+	assert_eq(RobotGenome.from_code("AAAAAA", 6, lib, curve).traits.size(), 0, "the opening rolls no traits")
+	assert_eq(RobotGenome.from_code("AAAAAA", 7, lib, curve).traits.size(), 1)
 	assert_eq(RobotGenome.from_code("AAAAAA", 20, lib, curve).traits.size(), 2)
 
 

@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_4etbh"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_akyay"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_u7225"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_u5a3l"]
+
+[sub_resource type="Resource" id="Resource_5sq0x"]
+script = ExtResource("1_4etbh")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(15)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(2)
+
+[sub_resource type="Resource" id="Resource_0gc50"]
+script = ExtResource("2_akyay")
+stat = &"defense.build_rate"
+value = 0.25
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_4ldcn"]
+script = ExtResource("3_u7225")
+node_id = &"build.spring_trap"
+
+[resource]
+script = ExtResource("4_u5a3l")
+id = &"build.quick_assembly"
+branch = 5
+display_name = "Quick Assembly"
+description = "+25% construction speed per level: a 10 s spring builds in 8 s."
+max_level = 2
+prerequisites = Array[ExtResource("3_u7225")]([SubResource("Resource_4ldcn")])
+cost_curve = SubResource("Resource_5sq0x")
+effects = Array[ExtResource("2_akyay")]([SubResource("Resource_0gc50")])
+board_position = Vector2i(0, 1)

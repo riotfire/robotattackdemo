@@ -8,6 +8,7 @@ id = &"shotgun"
 display_name = "Barn Blaster"
 slot = 3
 unlock_flag = &"shotgun.unlocked"
+usable_on_zipline = true
 damage_stat = &"shotgun.damage"
 max_range = 16.0
 knockback = 3.0

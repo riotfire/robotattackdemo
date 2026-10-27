@@ -35,17 +35,20 @@ func test_four_weathers_with_roll_weights() -> void:
 
 
 func test_time_advances_one_step_per_phase() -> void:
+	# Phases are 3 waves (PHASE_CHECKPOINT_PROGRESSION_PLAN.md), so a full day takes 18 waves.
 	for start in 6:
-		for wave in range(1, 6):
+		for wave in range(1, 4):
 			assert_eq(table.preset_index(start, wave), start, "phase 1 keeps the starting preset")
-		assert_eq(table.preset_index(start, 6), (start + 1) % 6, "wave 6 starts phase 2")
-		assert_eq(table.preset_index(start, 10), (start + 1) % 6)
-		assert_eq(table.preset_index(start, 30), (start + 5) % 6)
-		assert_eq(table.preset_index(start, 31), start, "Moonlit Night wraps back to Dawn after six phases")
-	# Start-phase checkpoints (GDD 14.2): the run opens on its rolled preset, whatever the first wave is.
-	assert_eq(table.preset_index(2, 11, 11), 2)
-	assert_eq(table.preset_index(2, 16, 11), 3)
-	assert_eq(table.preset_index(5, 16, 11), 0)
+		assert_eq(table.preset_index(start, 4), (start + 1) % 6, "wave 4 starts phase 2")
+		assert_eq(table.preset_index(start, 6), (start + 1) % 6)
+		assert_eq(table.preset_index(start, 18), (start + 5) % 6)
+		assert_eq(table.preset_index(start, 19), start, "Moonlit Night wraps back to Dawn after six phases")
+	# A run that starts at a later checkpoint counts its steps from wave 1 (TimeOfDay passes 1), so a phase 4
+	# retry opens at phase 4's time of day rather than resetting to the run's first preset.
+	assert_eq(table.preset_index(2, 10, 1), 5)
+	assert_eq(table.preset_index(2, 13, 1), 0)
+	# Counting from a later first wave is still supported.
+	assert_eq(table.preset_index(2, 10, 10), 2)
 
 
 func test_same_seed_gives_the_same_sky() -> void:

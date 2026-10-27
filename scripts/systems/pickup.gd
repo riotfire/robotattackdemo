@@ -70,7 +70,8 @@ static func spawn_grain(context: Node, at: Vector3, bushels: float) -> Pickup:
 
 
 static func _add(context: Node, pickup: Pickup, at: Vector3) -> void:
-	var parent := context.get_tree().current_scene
+	var tree := context.get_tree()
+	var parent: Node = tree.current_scene if tree.current_scene != null else tree.root
 	parent.add_child(pickup)
 	pickup.global_position = at
 	pickup.reset_physics_interpolation()

@@ -18,6 +18,9 @@
 [ext_resource type="Resource" path="res://data/robots/gene_library.tres" id="13_genes"]
 [ext_resource type="Script" uid="uid://c4frj8vedthcc" path="res://scripts/ui/pegboard_ui.gd" id="14_pegboard"]
 [ext_resource type="Script" uid="uid://c3e06yt7nmnft" path="res://scripts/ui/pause_menu.gd" id="15_pause"]
+[ext_resource type="Resource" path="res://data/robots/archetypes/rung_runner.tres" id="19_rung_runner"]
+[ext_resource type="Script" path="res://scripts/systems/construction/construction_manager.gd" id="20_construction"]
+[ext_resource type="Script" path="res://scripts/systems/well_heal.gd" id="21_well_heal"]
 
 [node name="Main" type="Node3D" unique_id=2011713188]
 script = ExtResource("1_main")
@@ -36,11 +39,18 @@ players_parent = NodePath("../Players")
 [node name="WaveDirector" type="Node" parent="." unique_id=1635651726 node_paths=PackedStringArray("robots_parent")]
 script = ExtResource("5_director")
 curve = ExtResource("6_curve")
-archetypes = Array[ExtResource("7_archetype")]([ExtResource("8_nibbler"), ExtResource("11_clanker"), ExtResource("12_thumper"), ExtResource("16_roof_lobber"), ExtResource("17_drone")])
+archetypes = Array[ExtResource("7_archetype")]([ExtResource("8_nibbler"), ExtResource("11_clanker"), ExtResource("12_thumper"), ExtResource("16_roof_lobber"), ExtResource("17_drone"), ExtResource("19_rung_runner")])
 foreman_archetype = ExtResource("12_thumper")
 spitter_archetype = ExtResource("18_spitter")
 gene_library = ExtResource("13_genes")
 robots_parent = NodePath("../Robots")
+
+[node name="Construction" type="Node" parent="." node_paths=PackedStringArray("director")]
+script = ExtResource("20_construction")
+director = NodePath("../WaveDirector")
+
+[node name="WellHeal" type="Node" parent="."]
+script = ExtResource("21_well_heal")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1283997605 node_paths=PackedStringArray("director")]
 script = ExtResource("9_hud")

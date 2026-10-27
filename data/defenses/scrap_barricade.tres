@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DefenseDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/construction/defense_definition.gd" id="1_fy6c0"]
+
+[resource]
+script = ExtResource("1_fy6c0")
+id = &"scrap_barricade"
+display_name = "Scrap Barricade"
+kind = 2
+description = "Robots that reach it must smash it first. You can walk through. On the catwalk it sends climbers the other way round."
+recipe_flag = &"defense.scrap_barricade"
+cost_al = 8
+capacity = 2
+max_hp = 160.0
+site_kinds = Array[StringName]([&"ground", &"catwalk"])

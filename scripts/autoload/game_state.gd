@@ -10,7 +10,9 @@ const PART_NAMES: Dictionary[StringName, String] = {
 	&"au": "Gold",
 	&"pc": "Power Cells",
 }
-const WAVES_PER_PHASE: int = 5
+## The difficulty curve whose waves_per_phase sets the phase length (PHASE_CHECKPOINT_PROGRESSION_PLAN.md
+## step 1). The WaveDirector hands over its own at run start; until then the default curve is used.
+const DEFAULT_CURVE_PATH := "res://data/difficulty/default_difficulty.tres"
 
 var run_seed: int = 0
 ## The wave currently being fought, or the next one during an intermission.
@@ -18,6 +20,11 @@ var wave: int = 0
 var waves_survived: int = 0
 ## Wave the run started at (checkpoint starts, GDD 14.2). Runs from wave 1 count as Full Harvest.
 var start_wave: int = 1
+## This attempt is a retry of a lost phase (Retry Phase). A retry never counts as a Full Harvest, even
+## a phase 1 retry that starts at wave 1.
+var retried: bool = false
+## Attempts at the current phase in this streak of retries: 1 for a fresh start, 2 after the first retry.
+var attempt: int = 1
 var is_game_over: bool = false
 var game_over_reason: StringName = &""
 
@@ -34,6 +41,11 @@ var god_mode: bool = false
 
 var silo: Silo = null
 var players: Array[Node3D] = []
+var curve: DifficultyCurve = null:
+	get:
+		if curve == null:
+			curve = load(DEFAULT_CURVE_PATH) as DifficultyCurve
+		return curve
 
 
 func start_run(seed_value: int = -1) -> void:
@@ -48,12 +60,22 @@ func start_run(seed_value: int = -1) -> void:
 	EventBus.run_started.emit(run_seed)
 
 
-static func phase_of(wave_number: int) -> int:
-	return floori(float(wave_number - 1) / WAVES_PER_PHASE) + 1
+## Phase of a wave: 1 for waves 1-3, 2 for 4-6 (DifficultyCurve.waves_per_phase).
+func phase_of(wave_number: int) -> int:
+	return curve.phase_of(wave_number)
 
 
-static func wave_in_phase(wave_number: int) -> int:
-	return posmod(wave_number - 1, WAVES_PER_PHASE) + 1
+func wave_in_phase(wave_number: int) -> int:
+	return curve.wave_in_phase(wave_number)
+
+
+## First wave of the phase `wave_number` is in: where a lost attempt retries from.
+func phase_first_wave(wave_number: int) -> int:
+	return curve.phase_first_wave(wave_number)
+
+
+func is_big_haul(wave_number: int) -> bool:
+	return curve.is_big_haul(wave_number)
 
 
 func register_player(player: Node3D) -> void:

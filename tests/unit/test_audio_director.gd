@@ -31,8 +31,9 @@ func test_every_wave_phase_has_a_loaded_music_state() -> void:
 			assert_not_null(load(AudioDirector.MUSIC[state]), "phase %d stem loads" % phase)
 		EventBus.wave_phase_changed.emit(phase, 1)
 		assert_eq(AudioDirector.music_state, state, "phase %d switches live music" % phase)
-	assert_eq(AudioDirector.state_for_phase(WaveDirector.Phase.SPAWNING, 5), &"boss")
-	assert_eq(AudioDirector.state_for_phase(WaveDirector.Phase.MOP_UP, 10), &"boss")
+	assert_eq(AudioDirector.state_for_phase(WaveDirector.Phase.SPAWNING, 3), &"boss", "every third wave is a Big Haul")
+	assert_eq(AudioDirector.state_for_phase(WaveDirector.Phase.MOP_UP, 6), &"boss")
+	assert_eq(AudioDirector.state_for_phase(WaveDirector.Phase.SPAWNING, 5), &"combat")
 
 
 func test_field_theme_between_waves_attack_theme_while_robots_attack_and_silence_at_the_siren() -> void:

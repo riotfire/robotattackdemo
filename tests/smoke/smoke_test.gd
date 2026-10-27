@@ -1,10 +1,11 @@
 extends Node
-## End-to-end smoke test: plays the real main scene headless in fixed-step time and checks M0 and M1:
-## wave 1 -> intermission -> wave 2, navmesh paths after the prop rebake, families and name cards,
-## spawning mixes and Clanker squads, cracks and repair, theft and grain sacks, weapons, pickups and the
-## Scrap Vac, the pegboard and save round-trip, the dinner bell, jetpack, ladder, zipline, the Foreman's
-## slam and shockwave, the weapon wheel and mod hooks, debug keys, time of day and weather, and all three
-## game-over conditions.
+## End-to-end smoke test: plays the real main scene headless in fixed-step time and checks M0 and M1 on the
+## authored opening: wave 1 -> intermission -> wave 2, navmesh paths after the prop rebake, families and name
+## cards, Clanker squads, cracks and repair, theft and grain sacks, weapons, the bought pistol, pickups and the
+## Scrap Vac, the pegboard and save round-trip, the dinner bell, the wave-9 jetpack milestone, jetpack, ladder,
+## zipline, the first Foreman's slam and shockwave, the weapon wheel and mod hooks, debug keys, time of day and
+## weather, and all three game-over conditions with the phase checkpoint. tests/smoke/opening_test.gd covers
+## the authored waves themselves and construction.
 ## Uses its own fresh profile in the system temp directory, never the player's.
 ## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
 ## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
@@ -68,12 +69,9 @@ func _run() -> void:
 	_check(silo != null, "silo registered")
 	_check(_director.phase == WaveDirector.Phase.INTERMISSION and _director.wave == 1, "starts in the wave 1 intermission")
 	_check(absf(_director.time_left - 90.0) < 0.5, "intermission is 90 s (%.2f left)" % _director.time_left)
-	# The rest of this test was written around a 30 s intermission, so run it at 30 s; the default is checked above.
-	_director.intermission_time = 30.0
-	_director.time_left = 30.0
 	_check(not GameState.jetpack_unlocked, "fresh profile: jetpack locked")
 	_check(_farmer.weapons.current == _wrench() and not _pistol().is_available(),
-			"fresh profile: wrench only, the pistol must be bought")
+			"fresh profile: wrench only, the pistol is bought at the shed")
 	var props := (_main.get_node(^"Farm/NavRegion/Props") as PropScatter).placed
 	_check(props.size() >= 8, "seeded prop scatter placed %d props" % props.size())
 	var region := _main.get_node(^"Farm/NavRegion") as NavigationRegion3D
@@ -84,9 +82,9 @@ func _run() -> void:
 
 	_section("Wave 1")
 	var siren_due := _director.time_left - _director.siren_lead_time
-	var t := await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SIREN, 40.0)
-	_check(absf(t - siren_due) < 0.5, "siren starts at T-%d (%.2f s left of the 30 s intermission)" % [roundi(_director.siren_lead_time), _director.time_left])
-	_check(_director.active_lanes.size() == 2, "wave 1 uses 2 lanes %s" % [_director.active_lanes])
+	var t := await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SIREN, 100.0)
+	_check(absf(t - siren_due) < 0.5, "siren starts at T-%d (%.2f s left of the 90 s intermission)" % [roundi(_director.siren_lead_time), _director.time_left])
+	_check(_director.active_lanes.size() == 1, "the authored wave 1 opens one lane %s" % [_director.active_lanes])
 	var family := _director.genome
 	_check(family != null and family.family_name.begins_with("The ") and family.family_code.length() == 6,
 			"wave family rolled: %s (%s)" % [family.family_name if family else "-", family.family_code if family else "-"])
@@ -94,11 +92,8 @@ func _run() -> void:
 			"family logged in the Almanac")
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
 	_check(absf(t - _director.siren_lead_time) < 0.5, "spawning starts after the siren (%.2f s)" % t)
-	var wave_one_robots := 0
-	for event: WaveDirector.SpawnEvent in _director.get("_events"):
-		wave_one_robots += event.robot_count()
-	_check(wave_one_robots == 9, "wave 1 buys 9 Nibblers with budget 18, solo or in trios (got %d in %d groups)"
-			% [wave_one_robots, _director.spawns_total])
+	_check(_director.opening != null and _director.opening.robot_count() == 6 and _director.spawns_total == 3,
+			"wave 1 sends 6 Nibblers in 3 groups (%d groups)" % _director.spawns_total)
 	var first := await _first_robot(20.0)
 	if first != null:
 		var kit := first.get_node(^"Model/Pose/Kit")
@@ -132,8 +127,8 @@ func _run() -> void:
 	_check(t >= 0.0, "a crack opens after 10%% Structure lost (structure %.0f)" % silo.structure)
 	await _test_theft()
 	await _test_wrench_and_pickups()
-	await _wait_until(func() -> bool: return _director.spawns_done >= _director.spawns_total, 60.0)
 	await _wait_until(func() -> bool: return silo.get_cracks().size() >= 3, 25.0)
+	await _release_everything(90.0)
 	var grain_before := silo.grain
 	var parts_before := GameState.parts[&"al"]
 	var intermission_loot := Pickup.new()
@@ -149,6 +144,7 @@ func _run() -> void:
 	_check(GameState.parts[&"al"] >= parts_before, "collected parts remain banked (%d -> %d Al)" % [parts_before, GameState.parts[&"al"]])
 	_check(is_instance_valid(intermission_loot) and not intermission_loot.is_queued_for_deletion(),
 			"wave clear leaves uncollected parts available for intermission")
+	_check(not _pistol().is_available(), "clearing wave 1 hands over no pistol kit")
 	_al_from_wave_1 = GameState.parts[&"al"]
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(t >= 0.0 and _director.wave == 2, "back to intermission, now for wave 2")
@@ -156,8 +152,8 @@ func _run() -> void:
 	# Away from the leaking silo, so the warning shows whether or not a robot hit it in the last moments.
 	_farmer.teleport_to(Vector3(-30.0, 0.3, 29.0))
 	await _frames(3)
-	_check("pistol" in hud._tutorial_lesson.text.to_lower() and hud._silo_alert.visible and not hud._tutorial_lesson.visible,
-		"the repair warning takes priority over the first build choice")
+	_check("shed" in hud._tutorial_lesson.text.to_lower() and hud._silo_alert.visible and not hud._tutorial_lesson.visible,
+		"the repair warning takes priority over the shed hint")
 	await _frames(360)
 	_check(hud._silo_alert.visible and hud._silo_alert_title.text == "SILO LEAKING GRAIN",
 		"the warning stays as a quieter repair reminder while cracks leak")
@@ -167,7 +163,7 @@ func _run() -> void:
 	_patch_up_silo()
 	await _frames(2)
 	_check(not hud._silo_alert.visible, "the silo warning clears after the leaks are repaired")
-	_check(hud._tutorial_lesson.visible, "the build choice returns once the silo is safe")
+	_check(hud._tutorial_lesson.visible, "the shed hint returns once the silo is safe")
 
 	_section("Pegboard and save")
 	await _test_pegboard_and_save()
@@ -181,12 +177,12 @@ func _run() -> void:
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
 	await _frames(1)
 	_check(not is_instance_valid(intermission_loot), "the next battle sweeps the previous round's parts")
-	_check_spawn_mix(2)
+	_check(_director.opening != null and _director.opening.title == "Take the High Ground", "wave 2 is the authored Take the High Ground")
 	_check(_director.genome != family, "wave 2 rolls a new family: %s" % _director.genome.family_name)
 	_check(_director.genome.theme != family.theme, "no theme repeats back to back (%s -> %s)" % [family.theme.theme_word, _director.genome.theme.theme_word])
 	await _test_squads()
 	await _test_pistol()
-	await _wait_until(func() -> bool: return _director.spawns_done >= _director.spawns_total, 70.0)
+	await _release_everything(90.0)
 	var al_before_clear := GameState.parts[&"al"]
 	var cells_before_clear := GameState.parts[&"pc"]
 	_kill_all_robots()
@@ -197,6 +193,8 @@ func _run() -> void:
 	_check(not GameState.jetpack_unlocked, "the jetpack is still a later build choice after wave 2")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.INTERMISSION, 5.0)
 	_check(_director.wave == 3, "intermission for wave 3")
+	_check(not StatService.has_flag(&"shotgun.unlocked") and not StatService.has_flag(&"maul.unlocked"),
+			"clearing wave 2 hands over no free tool")
 	_patch_up_silo()
 	var jetpack_cost := StatService.next_cost(&"travel.jetpack")
 	var jetpack_parts: Dictionary = {}
@@ -206,7 +204,9 @@ func _run() -> void:
 			jetpack_parts[part] = missing
 	if not jetpack_parts.is_empty():
 		GameState.add_parts(jetpack_parts)
-	_check(_pegboard.buy(&"travel.jetpack"), "the jetpack can be built from wave 3")
+	_check(not _pegboard.buy(&"travel.jetpack"), "the jetpack waits for its milestone: clearing wave 9")
+	SaveManager.records["best_wave"] = maxi(int(SaveManager.records.get("best_wave", 0)), StatService.JETPACK_MILESTONE_WAVE)
+	_check(_pegboard.buy(&"travel.jetpack"), "a profile that has cleared wave 9 can build it in any later run")
 	_check(GameState.jetpack_unlocked, "building the jetpack unlocks traversal")
 
 	_section("Traversal")
@@ -243,6 +243,8 @@ func _run() -> void:
 	_check(get_tree().paused, "game pauses on game over")
 	_check(_director.phase == WaveDirector.Phase.GAME_OVER, "director stops")
 	_check(int(SaveManager.records.get("best_wave", 0)) >= 8, "best wave recorded (%d)" % int(SaveManager.records.get("best_wave", 0)))
+	_check(SaveManager.resume_wave == GameState.phase_first_wave(_director.wave),
+			"losing in wave %d keeps the checkpoint at its phase's first wave (%d)" % [_director.wave, SaveManager.resume_wave])
 	get_tree().paused = false
 	GameState.is_game_over = false
 	GameState.god_mode = false
@@ -287,19 +289,6 @@ func _check_lane_paths() -> void:
 		var path := NavigationServer3D.map_get_path(map, start, goal, true)
 		var reached := not path.is_empty() and path[path.size() - 1].distance_to(goal) < 1.5
 		_check(reached, "navmesh path from lane %d to the silo (%d points)" % [lane.lane_index, path.size()])
-
-
-func _check_spawn_mix(wave: int) -> void:
-	var budget := _director.curve.threat_budget(wave)
-	var spent := 0.0
-	var robots := 0
-	var kinds := PackedStringArray()
-	for event: WaveDirector.SpawnEvent in _director.get("_events"):
-		spent += event.threat_cost()
-		robots += event.robot_count()
-		kinds.append(String(event.archetype.id) + (" x3" if event.robot_count() == 3 else ""))
-	_check(spent <= budget + 0.01 and budget - spent < 2.0,
-			"wave %d spends %.0f of its %.1f threat budget on %d robots (%s)" % [wave, spent, budget, robots, ", ".join(kinds)])
 
 
 func _test_theft() -> void:
@@ -418,14 +407,14 @@ func _test_squads() -> void:
 			break
 	var squad := clanker.squad
 	var base_hp := clanker.archetype.base_hp
-	_check(squad.members.size() == 3, "%ss arrive as a trio" % clanker.archetype.display_name)
+	_check(squad.members.size() == 2, "%ss arrive as a pair in the opening" % clanker.archetype.display_name)
 	_check(is_equal_approx(clanker.health.max_health, base_hp * 1.072 * _trait_hp(clanker)),
 			"%s HP %.0f x wave 2 scaling (%.1f)" % [clanker.archetype.display_name, base_hp, clanker.health.max_health])
 	_check(squad.members.all(func(r: Robot) -> bool: return r.targeting == squad.targeting),
-			"the trio shares one set of rolls")
+			"the pair shares one set of rolls")
 	if squad.heist_leader == null:
 		var targets := squad.members.map(func(r: Robot) -> int: return r.target_kind)
-		_check(targets.count(targets[0]) == 3, "the trio shares one target")
+		_check(targets.count(targets[0]) == targets.size(), "the pair shares one target")
 
 
 func _test_repair() -> void:
@@ -466,14 +455,17 @@ func _test_pegboard_and_save() -> void:
 	await _frames(2)
 	_check(_pegboard.is_open, "Interact at the shed opens the pegboard during the intermission")
 	_check(not _farmer.input.enabled, "the farmer stops taking input while the pegboard is open")
-	var short := 20 + 12 - GameState.parts[&"al"]
+	var short := 12 + 20 + 15 - GameState.parts[&"al"]
 	if short > 0:
 		GameState.add_parts({&"al": short})
 	_check(_pegboard.buy(&"travel.comfy_boots"), "Comfy Boots can be the first build choice")
 	_check(is_equal_approx(StatService.get_stat(&"player.run_speed", 7.0), 7.21), "run speed 7.0 -> %.2f m/s" % StatService.get_stat(&"player.run_speed", 7.0))
 	_check(not (_main.get_node(^"HUD") as Hud)._tutorial_lesson.visible, "the build guidance clears after a choice")
-	_check(_pegboard.buy(&"attack.pistol"), "build the Rivet Pistol later for 20 Al")
-	_check(_pistol().is_available() and _farmer.weapons.current == _pistol(), "the pistol is now equipped")
+	_check(not _pegboard.buy(&"attack.pistol"), "no pistol before the first Roof Lobber (wave 2) is beaten")
+	# The rest of this test uses the pistol in wave 2, so it hangs one on the board directly (raising the best
+	# wave instead would switch off the Early Bird check below). The opening test covers the real unlock.
+	StatService.grant(&"attack.pistol")
+	_check(_pegboard.buy(&"attack.pistol_damage"), "then Pistol Damage")
 	_check(not _pegboard.buy(&"attack.pistol"), "an unlock can't be bought twice")
 	_check(not _pegboard.buy(&"travel.fuel_tank"), "Fuel Tank stays locked until the jetpack is unlocked")
 	_pegboard.close()
@@ -606,9 +598,9 @@ func _test_zipline() -> void:
 
 
 func _test_foreman() -> void:
-	(_main.get_node(^"DebugCheats") as DebugCheats).call(&"_on_console_submitted", "wave 5")
+	(_main.get_node(^"DebugCheats") as DebugCheats).call(&"_on_console_submitted", "wave 3")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
-	_check(_director.curve.is_big_haul(5), "wave 5 is a Big Haul")
+	_check(_director.curve.is_big_haul(3), "wave 3 is the Big Haul")
 	var foreman: Robot = null
 	var has_foreman := func() -> bool:
 		for node in get_tree().get_nodes_in_group(Robot.GROUP):
@@ -622,11 +614,9 @@ func _test_foreman() -> void:
 	for node in get_tree().get_nodes_in_group(Robot.GROUP):
 		if (node as Robot).is_foreman:
 			foreman = node as Robot
-	var expected_hp := 400.0 * _director.curve.hp_multiplier(5) * 3.0 * _trait_hp(foreman)
-	_check(foreman is HeavyRobot and is_equal_approx(foreman.health.max_health, expected_hp),
-			"the Foreman is a Thumper with 3x HP (%.0f) and a bonus trait (%s)" % [foreman.health.max_health,
-			", ".join(PackedStringArray(foreman.extra_traits.map(func(r: RobotTrait) -> String: return r.display_name)))])
-	_check(foreman.roll_drops() == Robot.FOREMAN_DROPS, "Foreman drops are guaranteed: 10 Al, 6 Cu, 2 Au, 3 PC")
+	_check(foreman is HeavyRobot and is_equal_approx(foreman.health.max_health, 450.0) and foreman.extra_traits.is_empty(),
+			"the first Foreman is a Thumper with the authored 450 HP (%.0f) and no bonus trait" % foreman.health.max_health)
+	_check(foreman.roll_drops() == Robot.FOREMAN_DROPS, "its first kill on a profile pays 10 Al, 6 Cu, 1 Au, 2 PC")
 	# Put it next to the silo with the farmer nearby on the ground, and let it slam.
 	_kill_all_robots(foreman)
 	var silo := GameState.silo
@@ -652,7 +642,7 @@ func _test_foreman() -> void:
 
 
 ## Time of day and weather (GDD 4.6, 11.2): the run's sky comes from its seed, the preset steps once per phase
-## (the Debug keys section left the run in wave 9, phase 2), the Morning Fog range hook, and every preset and
+## (the Debug keys section left the run in wave 9, phase 3), the Morning Fog range hook, and every preset and
 ## weather on the real farm, headless.
 func _test_time_and_weather() -> void:
 	var time_of_day := _main.get_node(^"Farm/TimeOfDay") as TimeOfDay
@@ -676,15 +666,15 @@ func _test_time_and_weather() -> void:
 			"the run's sky comes from its seed: starts at %s, weather %s" % [start.display_name, rolled.display_name])
 	_check(Weather.current == rolled and time_of_day.current_weather() == rolled, "the weather is %s for the whole run" % rolled.display_name)
 	await _wait_until(func() -> bool: return not time_of_day.is_transitioning(), time_of_day.transition_time + 1.0)
-	_check(time_of_day.preset_index == (expected.start_index + 1) % count,
-			"wave 9 (phase 2) is one step on: %s" % time_of_day.current_preset().display_name)
+	_check(time_of_day.preset_index == (expected.start_index + 2) % count,
+			"wave 9 (phase 3) is two steps on: %s" % time_of_day.current_preset().display_name)
 
 	var changes: Array[StringName] = []
 	var on_change := func(id: StringName, _index: int) -> void: changes.append(id)
 	EventBus.time_of_day_changed.connect(on_change)
 	(_main.get_node(^"DebugCheats") as DebugCheats).call(&"_on_console_submitted", "wave 11")
-	var next := table.presets[(expected.start_index + 2) % count]
-	_check(changes == [next.id] and time_of_day.is_transitioning(), "phase 3 steps to %s and blends in (%s)" % [next.display_name, changes])
+	var next := table.presets[(expected.start_index + 3) % count]
+	_check(changes == [next.id] and time_of_day.is_transitioning(), "phase 4 steps to %s and blends in (%s)" % [next.display_name, changes])
 	var t := await _wait_until(func() -> bool: return not time_of_day.is_transitioning(), time_of_day.transition_time + 1.0)
 	var target := AtmosphereLook.compose(next, rolled, expected)
 	_check(t >= 0.0 and sun.light_color.is_equal_approx(target.sun_color) and is_equal_approx(env.tonemap_exposure, target.exposure),
@@ -709,7 +699,7 @@ func _test_time_and_weather() -> void:
 				"%s works with all %d presets (%d drops, %d puddles, corn %s)" % [type.display_name, count, weather.rain_drop_count(),
 				weather.puddle_count(), "swaying" if weather.corn_is_swaying() else "still"])
 	time_of_day.set_weather_index(expected.weather_index)
-	time_of_day.show_preset((expected.start_index + 2) % count, false)
+	time_of_day.show_preset((expected.start_index + 3) % count, false)
 	_check(Weather.current == rolled, "back to the run's own weather")
 
 
@@ -809,6 +799,15 @@ func _first_robot(timeout: float, exclude: Robot = null, attacking_silo: bool = 
 		return false
 	await _wait_until(look, timeout)
 	return found[0]
+
+
+## Authored waves hold groups back while their live cap is full: pop whatever is alive until every group is out.
+func _release_everything(timeout: float) -> void:
+	var waited := 0.0
+	while _director.spawns_done < _director.spawns_total and waited < timeout:
+		_kill_all_robots()
+		await _frames(30)
+		waited += 0.5
 
 
 func _kill_all_robots(spare: Robot = null) -> void:

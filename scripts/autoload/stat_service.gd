@@ -6,6 +6,16 @@ extends Node
 signal stats_changed
 
 const UPGRADE_DIR := "res://data/upgrades"
+const JETPACK_ID: StringName = &"travel.jetpack"
+const JETPACK_MILESTONE_WAVE: int = 9
+const PISTOL_ID: StringName = &"attack.pistol"
+## The wave of the first Roof Lobber (the authored opening's wave 2). Until it has been cleared the farmer
+## has only melee, so the first Lobber has to be reached by climbing the tool shed (playtest feedback
+## 2026-10-26). Every gun needs the pistol first, so this gates them all.
+const PISTOL_MILESTONE_WAVE: int = 2
+## Pegboard nodes that can't be bought until the profile has ever cleared the given wave. Clearing it opens
+## them for building; it never hands them over (MilestoneRewards).
+const MILESTONE_GATES: Dictionary[StringName, int] = {PISTOL_ID: PISTOL_MILESTONE_WAVE, JETPACK_ID: JETPACK_MILESTONE_WAVE}
 
 var catalog: Dictionary[StringName, UpgradeNode] = {}
 ## Purchased level per node id.
@@ -76,9 +86,28 @@ func can_afford(cost: Dictionary[StringName, int]) -> bool:
 
 
 func can_purchase(id: StringName) -> bool:
-	if id == &"travel.jetpack" and GameState.wave < 3:
+	if not milestone_met(id):
 		return false
-	return catalog.has(id) and not is_maxed(id) and prerequisites_met(id) and can_afford(next_cost(id))
+	# A node without a cost is a debug grant, never bought.
+	return catalog.has(id) and catalog[id].cost_curve != null and not is_maxed(id) and prerequisites_met(id) \
+			and can_afford(next_cost(id))
+
+
+## The wave whose first clear opens `id` for building (MILESTONE_GATES), or 0 when it isn't gated.
+func milestone_wave(id: StringName) -> int:
+	return MILESTONE_GATES.get(id, 0)
+
+
+## Gated nodes are profile milestones, not in-run waves: buildable once their wave has ever been cleared,
+## from any later run (PHASE_CHECKPOINT_PROGRESSION_PLAN.md, P-D4).
+## The run in progress counts as soon as its wave clears (the profile's best only updates at the intermission).
+func milestone_met(id: StringName) -> bool:
+	return maxi(int(SaveManager.records.get("best_wave", 0)), GameState.waves_survived) >= milestone_wave(id)
+
+
+## The jetpack: buildable once wave JETPACK_MILESTONE_WAVE (the phase 3 Big Haul) has ever been cleared.
+func jetpack_available() -> bool:
+	return milestone_met(JETPACK_ID)
 
 
 ## Buys the next level of `id`, spending parts from the bank. Returns true on success.

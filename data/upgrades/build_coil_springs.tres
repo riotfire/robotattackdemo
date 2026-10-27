@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_twoyl"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_upeoc"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_plxkr"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_dt2yk"]
+
+[sub_resource type="Resource" id="Resource_25dmg"]
+script = ExtResource("1_twoyl")
+parts = Array[StringName]([&"al", &"au"])
+bases = PackedFloat32Array(18, 1)
+first_levels = PackedInt32Array(1, 3)
+last_levels = PackedInt32Array(3, 3)
+
+[sub_resource type="Resource" id="Resource_nfl1a"]
+script = ExtResource("2_upeoc")
+stat = &"defense.spring_power"
+value = 0.15
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_lterq"]
+script = ExtResource("2_upeoc")
+stat = &"defense.spring_reset"
+value = -0.12
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_6qyop"]
+script = ExtResource("3_plxkr")
+node_id = &"build.spring_trap"
+
+[resource]
+script = ExtResource("4_dt2yk")
+id = &"build.coil_springs"
+branch = 5
+display_name = "Coil Springs"
+description = "+15% launch power and -12% reset time per level."
+max_level = 3
+prerequisites = Array[ExtResource("3_plxkr")]([SubResource("Resource_6qyop")])
+cost_curve = SubResource("Resource_25dmg")
+effects = Array[ExtResource("2_upeoc")]([SubResource("Resource_nfl1a"), SubResource("Resource_lterq")])
+board_position = Vector2i(0, 2)

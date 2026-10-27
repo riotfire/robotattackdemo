@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_j61dq"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="1_s6v6d"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="2_j61dq"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="3_6weqo"]
+
+[sub_resource type="Resource" id="Resource_6weqo"]
+script = ExtResource("1_j61dq")
+parts = Array[StringName]([&"al"])
+bases = PackedFloat32Array(15)
+first_levels = PackedInt32Array(1)
+last_levels = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Resource_que1x"]
+script = ExtResource("1_s6v6d")
+stat = &"defense.spring_trap"
+kind = 4
+value = 1.0
+per_level = PackedFloat32Array()
+
+[resource]
+script = ExtResource("3_6weqo")
+id = &"build.spring_trap"
+branch = 5
+display_name = "Spring Trap"
+description = "Recipe: a spring that throws small robots up and back (12 Al a copy). On the catwalk the fall hurts. Press Tab in an intermission to build one where you stand."
+cost_curve = SubResource("Resource_6weqo")
+effects = Array[ExtResource("1_s6v6d")]([SubResource("Resource_que1x")])

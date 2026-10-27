@@ -323,8 +323,8 @@ func test_attack_tokens_track_holders() -> void:
 func test_farmer_tokens_by_phase() -> void:
 	var curve := load("res://data/difficulty/default_difficulty.tres") as DifficultyCurve
 	assert_eq(curve.farmer_attack_tokens(1), 2, "2 in the opening")
-	assert_eq(curve.farmer_attack_tokens(5), 2)
-	assert_eq(curve.farmer_attack_tokens(6), 3, "3 from wave 6")
+	assert_eq(curve.farmer_attack_tokens(6), 2, "through the six-wave opening")
+	assert_eq(curve.farmer_attack_tokens(7), 3, "3 from wave 7")
 	assert_eq(curve.farmer_attack_tokens(16), 4, "4 from wave 16")
 	assert_eq(curve.farmer_attack_tokens(31), 5, "5 from wave 31")
 

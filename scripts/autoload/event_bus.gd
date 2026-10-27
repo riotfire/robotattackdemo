@@ -10,9 +10,19 @@ signal player_unregistered(player: Node3D)
 
 signal robot_spawned(robot: Node3D)
 signal robot_destroyed(robot: Node3D, killer: Node)
+## A boss took a shot: `harmed` is false when it ricocheted (blocked, no damage).
+signal boss_hit(robot: Node3D, harmed: bool)
 ## A robot started charging a shot at a farmer (M2-B7): it lands in about `impact_time` seconds.
 ## `off_screen` when the shooter is outside the camera's view, for the HUD's incoming-shot pip (M2-H5).
 signal robot_shot_incoming(robot: Node3D, farmer: Node3D, impact_time: float, off_screen: bool)
+
+## A Rung Runner started up the silo ladder (`climbing` true) or left it and the catwalk (false), for the
+## HUD's climbing warning (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md: a directional climbing tell).
+signal climber_alert(robot: Node3D, climbing: bool)
+## Construction changed: a job queued, progressed a step, finished or was cancelled; a defense broke.
+signal construction_changed
+## A first-completion reward or a milestone was settled (MilestoneRewards); `text` is its announcement.
+signal reward_granted(text: String)
 
 signal silo_damaged(amount: float, at_position: Vector3)
 signal crack_opened(crack: Node3D)

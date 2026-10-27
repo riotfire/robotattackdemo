@@ -1,0 +1,41 @@
+wave,group,release,after,lane,members,roof,intro,announce,note
+1,0,0,,0,nibbler 2,,,,"A Nibbler pair in view of the silo, to learn the two-hit swing"
+1,1,6,,0,nibbler 1,,,,"Then a steady drip of singles and pairs, never a long empty gap"
+1,2,11,,0,nibbler 2,,,,
+1,3,16,,0,nibbler 1,,,,
+1,4,20,,0,nibbler 1,,,,
+1,5,25,,0,nibbler 2,,,,
+1,6,30,,0,nibbler 1,,,,
+1,7,35,,0,nibbler 2,,,,
+1,8,40,,0,nibbler 1,,,,
+1,9,45,,0,nibbler 2,,,,
+2,0,0,,0,roof_lobber 1,ToolShed,roof_lobber,,"The first Lobber, on the tool shed, before any gun: the farmer has to climb to it"
+2,1,10,,0,nibbler 1,,,,"Ground pressure to come back down for: singles and pairs that keep coming"
+2,2,16,,0,nibbler 2,,,,
+2,3,22,,0,nibbler 1,,,,
+2,4,28,,0,roof_lobber 1,ToolShed,,,"A second climber on the same roof: the climb is a habit, not a one-off"
+2,5,32,,0,nibbler 2,,,,
+2,6,38,,0,nibbler 1,,,,
+2,7,44,,0,nibbler 2,,,,
+2,8,50,,0,nibbler 1,,,,
+2,9,56,,0,nibbler 2,,,,
+3,0,0,,0,thumper 1 foreman,,foreman,,"The Foreman enters alone: one readable slam before any adds"
+3,1,22,,1,nibbler 2,,,,
+3,2,38,,0,nibbler 2,,,,
+4,0,0,,0,nibbler 2,,,,"A warm-up pair before anything new"
+4,1,10,,1,clanker 2,,clanker,,"A Clanker pair: the pistol's first real job"
+4,2,,1+6,0,nibbler 1 thief,,thief,,"Exactly one teaching thief, after a short respite once the pair is down"
+4,3,24,,1,roof_lobber 1,Barn,,,"A Lobber on the barn roof, at the end of the silo dome's cable"
+4,4,38,,0,nibbler 3,,,,
+5,0,0,,0,rung_runner 1,,rung_runner,,"The first Rung Runner, from the ladder side"
+5,1,4,,2,clanker 2; nibbler 2,,,true,"At the same time a raid hits the far side: the farmer can't cover both, a spring at the ladder top can"
+5,2,22,,0,nibbler 3,,,,
+5,3,36,,0,rung_runner 1,,,,"The second climb"
+5,4,40,,2,clanker 2; nibbler 1 thief,,,true,"Again the far side, while it climbs; one thief at most"
+5,5,56,,1,nibbler 3,,,,
+6,0,0,,2,thumper 1 foreman,,foreman_throws,,"The second Foreman, from the far side, 900 HP, no random trait"
+6,1,12,,0,rung_runner 1,,,,"A climber on the ladder side while the Foreman holds the far wall"
+6,2,24,,2,nibbler 3,,,,
+6,3,30,,1,roof_lobber 1,ToolShed,,,
+6,4,40,,0,rung_runner 1,,,,
+6,5,48,,2,clanker 2,,,,

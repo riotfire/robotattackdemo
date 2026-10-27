@@ -1,5 +1,6 @@
 extends SceneTree
-## Reproducible composition and economy model; this is not a player-difficulty test.
+## Reproducible composition and economy model; this is not a player-difficulty test. Waves 1-6 use the authored
+## opening's fixed rosters (OpeningWave); later waves use the real seeded roster generator.
 ## Run: <godot> --headless --path . --script res://tools/economy_probe.gd
 ## Optional user args: -- --probe-seeds=256 --probe-last-wave=6
 ## All sampled robots are assumed legitimately killed and every sampled wave cleared.
@@ -158,10 +159,12 @@ func _sample_wave(director, wave_number: int, foreman_drops: Dictionary, bounty:
 		var rng_service := root.get_node(^"RngService")
 		director.set(&"_wave_rng", rng_service.make_rng([seed_value, wave_number, &"spawns"]))
 		director.call(&"_pick_lanes", director.curve.lane_count(wave_number))
-		var events: Array = director.call(&"_build_spawn_events", wave_number)
+		var authored = director.authored_wave(wave_number)
+		var events: Array = _authored_events(director, authored) if authored != null \
+				else director.call(&"_build_spawn_events", wave_number)
 		var sample_count := 0
-		# _enter_spawning appends the bonus Foreman after _build_spawn_events.
-		if director.curve.is_big_haul(wave_number) and director.foreman_archetype != null:
+		# _enter_spawning appends the bonus Foreman after _build_spawn_events; authored waves list theirs.
+		if authored == null and director.curve.is_big_haul(wave_number) and director.foreman_archetype != null:
 			sample_count += 1
 			counts[&"foreman"] = int(counts.get(&"foreman", 0)) + 1
 			_add_parts(physical, foreman_drops)
@@ -174,7 +177,7 @@ func _sample_wave(director, wave_number: int, foreman_drops: Dictionary, bounty:
 			var id: StringName = &"foreman" if event.foreman else event.archetype.id
 			counts[id] = int(counts.get(id, 0)) + count
 			sample_count += count
-			if event.archetype.id == &"roof_lobber":
+			if event.archetype.id in [&"roof_lobber", &"rung_runner"]:
 				sample_climbers += count
 			elif event.archetype.id == &"drone":
 				sample_drones += count
@@ -220,6 +223,18 @@ func _sample_wave(director, wave_number: int, foreman_drops: Dictionary, bounty:
 		"full_collection": _rounded_parts(full),
 		"vac_only_50_percent": _rounded_parts(vac),
 	}
+
+
+## The authored wave's members as the director's own spawn events (a trio is one event of three).
+func _authored_events(director, authored) -> Array:
+	var events: Array = []
+	var event_script = director.get_script().get_script_constant_map().get("SpawnEvent")
+	for group in authored.groups:
+		for i in group.archetype_ids.size():
+			var archetype = director.archetype_by_id(group.archetype_ids[i])
+			if archetype != null:
+				events.append(event_script.new(archetype, group.roles[i] == &"foreman", group.counts[i]))
+	return events
 
 
 func _expected_drops(archetype, curve, wave_number: int) -> Dictionary:

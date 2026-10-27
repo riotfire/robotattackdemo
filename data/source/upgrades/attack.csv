@@ -11,8 +11,8 @@ attack.shotgun_damage,attack,2,1,Shotgun Damage,10,attack.shotgun,al_to_pc 15,sh
 attack.rifle,attack,3,0,Longneck Rifle,1,attack.pistol,al 45; cu 3,rifle.unlocked flag,Slow precise shots reach across the farm and punch through a second robot.
 attack.rifle_damage,attack,3,1,Rifle Damage,10,attack.rifle,al_to_pc 18,rifle.damage add_pct 0.12,+12% rifle damage per level.
 attack.rifle_pierce,attack,3,2,Punch-Through,2,attack.rifle,cu 12; au 2 2-2,rifle.pierce flat 1,Each level lets a rifle round pass through one more robot.
-#attack.grenade,attack,4,0,Boiler Grenades,1,attack.pistol,al 60; cu 8,grenade.unlocked flag,Lob a shell onto the crosshair that bursts across a group of tough robots.
-#attack.grenade_damage,attack,4,1,Grenade Damage,10,attack.grenade,al_to_pc 20,grenade.damage add_pct 0.12,+12% blast damage per level.
-#attack.grenade_blast,attack,4,2,Bigger Boiler,3,attack.grenade,al_cu 20,grenade.blast_radius add_pct 0.15,+15% blast radius per level.
-#attack.maul,attack,0,3,Haymaker Maul,1,,al 30,maul.unlocked flag,A slow front-facing swing that crushes everything in front of you and shoves it back.
-#attack.scythe,attack,2,3,Harvest Scythe,1,,al 40; cu 5,scythe.unlocked flag,A 360-degree sweep that clears robots surrounding you.
+attack.grenade,attack,4,0,Boiler Grenades,1,attack.pistol,al 60; cu 8,grenade.unlocked flag,Lob a shell onto the crosshair that bursts across a group of tough robots.
+attack.grenade_damage,attack,4,1,Grenade Damage,10,attack.grenade,al_to_pc 20,grenade.damage add_pct 0.12,+12% blast damage per level.
+attack.grenade_blast,attack,4,2,Bigger Boiler,3,attack.grenade,al_cu 20,grenade.blast_radius add_pct 0.15,+15% blast radius per level.
+attack.maul,attack,0,3,Haymaker Maul,1,,al 30,maul.unlocked flag,A slow front-facing swing that crushes everything in front of you and shoves it back.
+attack.scythe,attack,2,3,Harvest Scythe,1,,al 40; cu 5,scythe.unlocked flag,A 360-degree sweep that clears robots surrounding you.

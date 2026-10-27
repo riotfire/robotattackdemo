@@ -1,6 +1,6 @@
 class_name ToolShed
 extends Interactable
-## The tool shed door (GDD 3.5, 13.1): opens the pegboard during intermissions. Shuttered during waves:
+## The tool shed door (GDD 3.5, 13.1): opens the pegboard during intermissions. Shuttered from the siren on:
 ## a roll-down steel shutter drops over the door whenever the shed is closed, so the rule is visible
 ## without a sign. Level 0 opens it briefly for the first wrench purchase.
 
@@ -34,8 +34,9 @@ func is_open() -> bool:
 	if tutorial_locked or _slam_left > 0.0:
 		return false
 	var director := get_tree().get_first_node_in_group(WaveDirector.GROUP) as WaveDirector
-	return director == null or director.phase in [WaveDirector.Phase.INTERMISSION, WaveDirector.Phase.SIREN,
-			WaveDirector.Phase.CLEARED, WaveDirector.Phase.TUTORIAL]
+	# Shuttered from the siren on: the siren commits the plan (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md).
+	return director == null or director.phase in [WaveDirector.Phase.INTERMISSION, WaveDirector.Phase.CLEARED,
+			WaveDirector.Phase.TUTORIAL]
 
 
 ## The shutter crashes down for `seconds` and then rolls back up.

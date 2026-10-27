@@ -2,6 +2,9 @@ class_name DifficultyCurve
 extends Resource
 ## Wave length, threat budget and endless scaling (GDD 11.3-11.6, Appendix A).
 ## Pure functions of the wave number so they can be unit-tested (tests/test_difficulty_curve.gd).
+## Phases are 3 waves (PHASE_CHECKPOINT_PROGRESSION_PLAN.md): Lesson, Twist, Big Haul. Every scaling step
+## below starts on a phase's first wave (waves 1, 4, 7, 10, ...), so a retry of a phase always plays by the
+## same rules; the third and fourth lanes are the deliberate exceptions (announced twist-wave raids).
 
 @export_group("Spawn window (11.3)")
 @export var window_base: float = 45.0
@@ -12,8 +15,13 @@ extends Resource
 @export var budget_base: float = 12.0
 @export var budget_scale: float = 6.0
 @export var budget_exponent: float = 1.3
-@export var waves_per_phase: int = 5
+## Waves per phase. The last wave of every phase is the Big Haul, with the Foreman.
+@export var waves_per_phase: int = 3
 @export var big_haul_multiplier: float = 1.3
+## Budget multipliers for the first generated waves after the authored opening (waves 7, 8, 9), so the count
+## steps up from the opening's 15-20 robots instead of jumping to the curve's 33 (the playtest simulation's
+## finding 3: "a cliff, not a step"). Every later wave keeps the plain curve (the phase plan's P-D6).
+@export var opening_handoff: PackedFloat32Array = [0.7, 0.8, 0.85]
 
 @export_group("Stat scaling (11.5)")
 @export var hp_linear: float = 0.07
@@ -24,8 +32,13 @@ extends Resource
 
 @export_group("Spawn lanes (11.6)")
 ## Waves at which the active lane count steps up; lane count = lanes_base + number of thresholds reached.
-@export var lane_thresholds: PackedInt32Array = [5, 15, 30]
+## 5 and 14 are twist waves (the late third and fourth lanes); 31 starts the late phase.
+@export var lane_thresholds: PackedInt32Array = [5, 14, 31]
 @export var lanes_base: int = 2
+
+@export_group("Family traits (10.3)")
+## Waves at which wave families roll one more trait: 0 traits before the first, 1 from it, and so on.
+@export var trait_thresholds: PackedInt32Array = [7, 16, 31]
 
 @export_group("Thieves (11.7)")
 ## Share of spawns that are thieves (scouts that grab a grain sack) in wave 1, then up by thief_share_per_wave.
@@ -39,18 +52,23 @@ extends Resource
 @export_group("Groups (9.6)")
 ## An archetype with a later trio chance (RobotArchetype.trio_chance_late) keeps its trio_chance until
 ## this wave, jumps trio_step_share of the way to the later value here, then climbs to it by trio_full_wave.
-@export var trio_step_wave: int = 3
+@export var trio_step_wave: int = 4
 @export_range(0.0, 1.0) var trio_step_share: float = 0.6667
-@export var trio_full_wave: int = 15
+@export var trio_full_wave: int = 16
 
 @export_group("Vertical threats")
-## Keep the first two melee teaching waves; then reserve roughly one climber per three other robots.
-@export var climber_first_wave: int = 3
+## Phase 1 stays on the ground; from phase 2's Lesson, reserve roughly one climber per three other robots.
+@export var climber_first_wave: int = 4
 @export_range(0.0, 0.5) var climber_target_share: float = 0.25
+## Generated waves give this share of the reserved climbers to the silo-ladder climber (Rung Runner) instead
+## of the Roof Lobber, from ladder_climber_first_wave. It takes part of the same allocation, never a second one.
+@export var ladder_climber_first_wave: int = 7
+@export_range(0.0, 1.0) var ladder_climber_share: float = 0.35
 
 @export_group("Attack scaling (9.6, M2-B10)")
-## The authored opening (waves 1 to this) keeps the M1 values of every knob below; scaling starts after it.
-@export var opening_last_wave: int = 5
+## The authored opening (waves 1 to this, OpeningWave resources) keeps the M1 values of every knob below;
+## scaling starts after it.
+@export var opening_last_wave: int = 6
 ## First waves of the middle and late phases. The early phase runs from opening_last_wave + 1.
 @export var mid_first_wave: int = 16
 @export var late_first_wave: int = 31
@@ -64,10 +82,10 @@ extends Resource
 @export var aim_lead_first_wave: int = 10
 ## Shots per attack for Drones and Spitters in a trio: 1 until volley_two_wave, 2 until volley_three_wave, then 3.
 @export var volley_two_wave: int = 16
-@export var volley_three_wave: int = 24
+@export var volley_three_wave: int = 25
 ## Share of small ground melee spawns that come as Spitters: spitter_share_base at spitter_first_wave, then
 ## up spitter_share_per_wave each wave, to spitter_share_cap.
-@export var spitter_first_wave: int = 7
+@export var spitter_first_wave: int = 13
 @export var spitter_share_base: float = 0.10
 @export var spitter_share_per_wave: float = 0.02
 @export var spitter_share_cap: float = 0.4
@@ -76,10 +94,11 @@ extends Resource
 @export var column_weights_early: PackedFloat32Array = [0.60, 0.28, 0.12]
 @export var column_weights_mid: PackedFloat32Array = [0.52, 0.30, 0.18]
 @export var column_weights_late: PackedFloat32Array = [0.45, 0.33, 0.22]
-## Melee robots with on_unreachable = throw throw at an out-of-reach farmer from this wave (M2-B9).
-@export var unreachable_throw_first_wave: int = 7
-## The Clanker's front arm guard is up from this wave (M2-B9); the opening keeps the M1 Clanker.
-@export var arm_guard_first_wave: int = 6
+## Melee robots with on_unreachable = throw throw at an out-of-reach farmer from this wave (M2-B9). Phase 5,
+## "the robots fight back", teaches it together with the Spitter and the arm guard.
+@export var unreachable_throw_first_wave: int = 13
+## The Clanker's front arm guard is up from this wave (M2-B9); until then it is the M1 Clanker.
+@export var arm_guard_first_wave: int = 13
 
 @export_group("Spawn pacing (11.4)")
 ## Relative spawn intensity over the window: ramp, peak, short lull, bigger peak. Never even.
@@ -103,11 +122,32 @@ func base_threat_budget(wave: int) -> float:
 
 
 func is_big_haul(wave: int) -> bool:
-	return wave > 0 and wave % waves_per_phase == 0
+	return wave > 0 and wave % maxi(1, waves_per_phase) == 0
+
+
+## 1 for waves 1-3, 2 for 4-6, ...
+func phase_of(wave: int) -> int:
+	return floori(float(maxi(1, wave) - 1) / maxi(1, waves_per_phase)) + 1
+
+
+## 1, 2 or 3: the Lesson, Twist or Big Haul of its phase.
+func wave_in_phase(wave: int) -> int:
+	return posmod(maxi(1, wave) - 1, maxi(1, waves_per_phase)) + 1
+
+
+## The first wave of the phase `wave` is in (1, 4, 7, ...): where a lost attempt starts again.
+func phase_first_wave(wave: int) -> int:
+	return (phase_of(wave) - 1) * maxi(1, waves_per_phase) + 1
 
 
 func threat_budget(wave: int) -> float:
-	return base_threat_budget(wave) * (big_haul_multiplier if is_big_haul(wave) else 1.0)
+	return base_threat_budget(wave) * (big_haul_multiplier if is_big_haul(wave) else 1.0) * handoff_multiplier(wave)
+
+
+## The opening_handoff multiplier for `wave`, or 1.
+func handoff_multiplier(wave: int) -> float:
+	var index := wave - opening_last_wave - 1
+	return opening_handoff[index] if index >= 0 and index < opening_handoff.size() else 1.0
 
 
 func hp_multiplier(wave: int) -> float:
@@ -124,18 +164,16 @@ func drop_multiplier(wave: int) -> float:
 	return 1.0 + drop_linear * float(wave - 1)
 
 
-## GDD 10.3: 0 (waves 1-5), 1 (6-15), 2 (16-30), 3 (31+).
+## GDD 10.3: 0 (waves 1-6, the authored opening), 1 (7-15), 2 (16-30), 3 (31+).
 func trait_count(wave: int) -> int:
-	if wave <= 5:
-		return 0
-	if wave <= 15:
-		return 1
-	if wave <= 30:
-		return 2
-	return 3
+	var count := 0
+	for threshold in trait_thresholds:
+		if wave >= threshold:
+			count += 1
+	return count
 
 
-## GDD 11.6: 2 lanes (1-4), 3 (5-14), 4 (15-29), 5 (30+).
+## GDD 11.6: 2 lanes (1-4), 3 (5-13), 4 (14-30), 5 (31+).
 func lane_count(wave: int) -> int:
 	var count := lanes_base
 	for threshold in lane_thresholds:
@@ -159,7 +197,7 @@ func thief_chance(wave: int, silo_focus: float, thieving: bool = false) -> float
 	return thief_share(wave, thieving) / maxf(0.01, silo_focus)
 
 
-## 0 for the opening (waves 1-5), 1 early (6-15), 2 middle (16-30), 3 late (31+).
+## 0 for the opening (waves 1-6), 1 early (7-15), 2 middle (16-30), 3 late (31+).
 func attack_phase(wave: int) -> int:
 	if wave <= opening_last_wave:
 		return 0
@@ -187,14 +225,14 @@ func aim_lead(wave: int) -> float:
 	return aim_lead_by_phase[mini(attack_phase(wave), aim_lead_by_phase.size() - 1)]
 
 
-## Shots per attack for Drones and Spitter trios in this wave: 1, then 2 from wave 16, 3 from wave 24.
+## Shots per attack for Drones and Spitter trios in this wave: 1, then 2 from wave 16, 3 from wave 25.
 func volley_size(wave: int) -> int:
 	if wave >= volley_three_wave:
 		return 3
 	return 2 if wave >= volley_two_wave else 1
 
 
-## Share of small ground melee spawns that come as Spitters: 10% at wave 7, +2 points a wave, up to 40%.
+## Share of small ground melee spawns that come as Spitters: 10% at wave 13, +2 points a wave, up to 40%.
 func spitter_share(wave: int) -> float:
 	if wave < spitter_first_wave:
 		return 0.0
@@ -243,6 +281,17 @@ func climber_count(wave: int, other_robots: int) -> int:
 	if wave < climber_first_wave or climber_target_share <= 0.0:
 		return 0
 	return roundi(float(other_robots) * climber_target_share / maxf(0.01, 1.0 - climber_target_share))
+
+
+## How many of `climbers` reserved climbers climb the silo ladder (Rung Runners) instead of a roof. At least
+## one once they're in generated waves and there are two or more climbers, so both routes stay in play.
+func ladder_climber_count(wave: int, climbers: int) -> int:
+	if wave < ladder_climber_first_wave or climbers <= 0 or ladder_climber_share <= 0.0:
+		return 0
+	var count := roundi(float(climbers) * ladder_climber_share)
+	if climbers >= 2:
+		count = maxi(1, count)
+	return mini(count, climbers)
 
 
 ## Relative spawn intensity at normalized time t in [0, 1].

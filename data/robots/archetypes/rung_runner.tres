@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="RobotArchetype" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/robot_archetype.gd" id="1_arch"]
+[ext_resource type="PackedScene" path="res://scenes/robots/rung_runner.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_arch")
+id = &"rung_runner"
+display_name = "Rung Runner"
+robot_type = 0
+robot_class = 0
+scene = ExtResource("2_scene")
+unlock_wave = 5
+spawn_weight = 0.55
+body_radius = 0.35
+base_hp = 34.0
+move_speed = 6.5
+attack_range = 1.6
+attack_interval = 1.1
+attack_windup = 0.35
+damage_vs_farmer = 5.0
+damage_vs_silo = 8.0
+silo_focus = 1.0
+steal_chance = 0.0
+trio_chance = 0.0
+trio_chance_late = -1.0
+distractibility = 0.5
+distract_triggers = Array[StringName]([&"hurt", &"near"])
+distract_range = 6.0
+commit_time = 2.0
+chase_time = 6.0
+leash_range = 0.0
+give_up_time = 3.0
+on_unreachable = 0
+tells = Array[StringName]([&"climb_hooks"])
+drop_al_min = 2
+drop_al_max = 3
+drop_al_class_bonus = 1
+drop_cu_chance = 0.6
+drop_au_chance = 0.08
+drop_pc_chance = 0.05

@@ -14,10 +14,21 @@ const PALETTES := "robots/palettes"
 const THEMES := "robots/themes"
 const TRAITS := "robots/traits"
 const ATTACKS := "robots/attacks"
+const OPENING_WAVES := "opening/waves"
+const OPENING_GROUPS := "opening/groups"
+const DEFENSES := "defenses"
 
 const UPGRADE_DIR := "res://data/upgrades"
 const ROBOT_DIR := "res://data/robots"
 const GENE_LIBRARY_PATH := "res://data/robots/gene_library.tres"
+const OPENING_DIR := "res://data/opening"
+const DEFENSE_DIR := "res://data/defenses"
+const OPENING_GROUP_COLUMNS: PackedStringArray = ["wave", "group", "release", "after", "lane", "members", "roof", "intro",
+		"announce", "note"]
+const OPENING_ROLES: Array[StringName] = [&"", &"thief", &"foreman", &"calm"]
+## The roofs Lobbers can climb (VerticalRobot.ROOF_SITES paths; test_content_tables.gd keeps the two in step).
+## Listed here so the tools never load robot scripts, which need the game's autoloads.
+const ROOF_PATHS: PackedStringArray = ["ToolShed", "Barn", "Stables", "ChickenHouse"]
 
 const UPGRADE_COLUMNS: PackedStringArray = ["id", "branch", "board_col", "board_row", "display_name", "max_level",
 		"prerequisites", "cost", "effects", "description"]
@@ -474,6 +485,118 @@ func _unique_rows(folder: String) -> Array[Dictionary]:
 		where_by_id[id] = cell(row, WHERE)
 		rows.append(row)
 	return rows
+
+
+# --- Authored opening (OpeningWave) ------------------------------------------------------------------
+
+static func opening_path(wave: int) -> String:
+	return OPENING_DIR.path_join("wave_%d.tres" % wave)
+
+
+## The authored opening: one OpeningWave per row of opening/waves.csv, holding its rows of opening/groups.csv.
+## Reports unknown archetypes and roofs, gaps in the group numbers and "after" rules that point forward.
+func opening_waves() -> Array[OpeningWave]:
+	var archetype_ids: Array[String] = []
+	for row in archetype_rows():
+		archetype_ids.append(cell(row, "id"))
+	var by_wave: Dictionary[int, OpeningWave] = {}
+	var waves: Array[OpeningWave] = []
+	for row in read_table(OPENING_WAVES):
+		var opening := OpeningWave.new()
+		fill(opening, row, ["lane_pool"])
+		for lane in cell(row, "lane_pool").split(" ", false):
+			if lane.is_valid_int():
+				opening.lane_pool.append(int(lane))
+			else:
+				_error(row, "lane_pool should list lane numbers, not \"%s\"" % lane)
+		if by_wave.has(opening.wave):
+			_error(row, "wave %d is already defined" % opening.wave)
+			continue
+		by_wave[opening.wave] = opening
+		waves.append(opening)
+	var roofs := ROOF_PATHS
+	for row in read_table(OPENING_GROUPS):
+		_check_columns(row, OPENING_GROUP_COLUMNS)
+		var wave := _int(row, "wave", 0)
+		if not by_wave.has(wave):
+			_error(row, "wave %d isn't in %s" % [wave, OPENING_WAVES])
+			continue
+		var opening := by_wave[wave]
+		var index := _int(row, "group", -1)
+		if index != opening.groups.size():
+			_error(row, "groups of wave %d should be numbered 0, 1, 2, ... in order (expected %d)" % [wave, opening.groups.size()])
+			continue
+		var group := OpeningGroup.new()
+		group.resource_scene_unique_id = "group_%d" % index
+		group.lane_slot = _int(row, "lane", 0)
+		if group.lane_slot < 0 or group.lane_slot > 2:
+			_error(row, "lane should be 0 or 1 (the main lanes) or 2 (a third direction)")
+		var after := cell(row, "after")
+		if after.is_empty():
+			var release := cell(row, "release")
+			if not release.is_valid_float():
+				_error(row, "release should be the seconds after the siren, or set \"after\" (\"<group>+<seconds>\")")
+			group.release_time = float(release) if release.is_valid_float() else 0.0
+		else:
+			var parts := after.split("+")
+			if parts.size() != 2 or not parts[0].is_valid_int() or not parts[1].is_valid_float() or int(parts[0]) >= index:
+				_error(row, "after \"%s\" should be \"<an earlier group>+<seconds>\"" % after)
+			else:
+				group.after_group = int(parts[0])
+				group.after_delay = float(parts[1])
+		for member in _items(cell(row, "members")):
+			var words := member.split(" ", false)
+			if words.size() < 2 or words.size() > 3 or not words[1].is_valid_int() or int(words[1]) < 1:
+				_error(row, "member \"%s\" should be \"<archetype> <count> [thief|foreman|calm]\"" % member)
+				continue
+			if words[0] not in archetype_ids:
+				_error(row, "archetype \"%s\" isn't in data/source/%s" % [words[0], ARCHETYPES])
+			var role := StringName(words[2]) if words.size() == 3 else &""
+			if role not in OPENING_ROLES:
+				_error(row, "member \"%s\": the role should be thief, foreman or calm" % member)
+			group.archetype_ids.append(StringName(words[0]))
+			group.counts.append(int(words[1]))
+			group.roles.append(role)
+		if group.archetype_ids.is_empty():
+			_error(row, "a group needs at least one member")
+		group.roof = StringName(cell(row, "roof"))
+		if not group.roof.is_empty() and String(group.roof) not in roofs:
+			_error(row, "roof \"%s\" should be one of %s" % [group.roof, ", ".join(roofs)])
+		group.intro = StringName(cell(row, "intro"))
+		group.announce = cell(row, "announce").to_lower() == "true"
+		opening.groups.append(group)
+	for opening in waves:
+		if opening.groups.is_empty():
+			errors.append("%s: wave %d has no groups in %s" % [OPENING_WAVES, opening.wave, OPENING_GROUPS])
+	waves.sort_custom(func(a: OpeningWave, b: OpeningWave) -> bool: return a.wave < b.wave)
+	for i in waves.size():
+		if waves[i].wave != i + 1:
+			errors.append("%s: the opening should cover waves 1-%d without gaps" % [OPENING_WAVES, waves.size()])
+			break
+	return waves
+
+
+# --- Defenses (DefenseDefinition) -------------------------------------------------------------------
+
+static func defense_path(id: StringName) -> String:
+	return DEFENSE_DIR.path_join("%s.tres" % id)
+
+
+## The buildable defenses: one column per DefenseDefinition property. Reports site kinds that don't exist.
+func defenses() -> Array[DefenseDefinition]:
+	var result: Array[DefenseDefinition] = []
+	for row in _unique_rows(DEFENSES.path_join("items")):
+		var definition := DefenseDefinition.new()
+		fill(definition, row)
+		for kind in definition.site_kinds:
+			if kind not in DefenseDefinition.SITE_KINDS:
+				_error(row, "site_kinds: \"%s\" should be one of %s" % [kind, ", ".join(DefenseDefinition.SITE_KINDS)])
+		if definition.cost_al < 1:
+			_error(row, "cost_al should be at least 1 (every copy costs parts)")
+		if definition.assembly_time <= 0.0:
+			_error(row, "assembly_time should be above 0 (no perk may skip construction)")
+		result.append(definition)
+	return result
 
 
 # --- Writing ----------------------------------------------------------------------------------------

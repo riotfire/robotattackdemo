@@ -135,14 +135,14 @@ func physics_step(delta: float) -> void:
 		current.reload()
 
 
-## While ziplining only weapons marked usable_on_zipline work (the pistol), unless Zipline Grip 2 is
-## owned (GDD 13.4).
+## While ziplining only weapons marked usable_on_zipline work: every gun, not the melee tools. Shooting from a
+## cable is part of basic riding now that the paid Zipline Grip track is retired (RetiredUpgrades).
 func usable_now(weapon: Weapon) -> bool:
 	if not weapon.is_available():
 		return false
 	if farmer.state != Farmer.State.ZIPLINING:
 		return true
-	return weapon.data.usable_on_zipline or StatService.has_flag(&"zipline.any_weapon")
+	return weapon.data.usable_on_zipline
 
 
 # --- Weapon wheel ---------------------------------------------------------------------------------

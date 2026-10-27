@@ -34,8 +34,8 @@ var _stagger_left: float = 0.0
 
 func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyCurve, rng: RandomNumberGenerator,
 		family: RobotGenome = null, foreman: bool = false, bonus_traits: Array[RobotTrait] = [],
-		robot_squad: RobotSquad = null) -> void:
-	super.setup(robot_archetype, wave_number, curve, rng, family, foreman, bonus_traits, robot_squad)
+		robot_squad: RobotSquad = null, role: StringName = &"", foreman_hp: float = 0.0) -> void:
+	super.setup(robot_archetype, wave_number, curve, rng, family, foreman, bonus_traits, robot_squad, role, foreman_hp)
 	var own := RandomNumberGenerator.new()
 	own.seed = rng.randi()
 	stand_distance = own.randf_range(stand_min, stand_max)
@@ -64,6 +64,9 @@ func _physics_process(delta: float) -> void:
 		_die(null, false)
 		return
 	_hit_pop_left = maxf(0.0, _hit_pop_left - delta)
+	if _process_launch(delta):
+		ranged.cancel()
+		return
 	if is_on_floor():
 		_vertical_velocity = -1.0
 	else:

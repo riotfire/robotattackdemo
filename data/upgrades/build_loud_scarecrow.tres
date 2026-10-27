@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/upgrades/cost_curve.gd" id="1_i5jpx"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/stat_modifier.gd" id="2_rq4a7"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_requirement.gd" id="3_or7gl"]
+[ext_resource type="Script" path="res://scripts/systems/upgrades/upgrade_node.gd" id="4_3x6xw"]
+
+[sub_resource type="Resource" id="Resource_dp1ok"]
+script = ExtResource("1_i5jpx")
+parts = Array[StringName]([&"al", &"cu", &"au"])
+bases = PackedFloat32Array(20, 3, 1)
+first_levels = PackedInt32Array(1, 1, 2)
+last_levels = PackedInt32Array(2, 2, 2)
+
+[sub_resource type="Resource" id="Resource_77xus"]
+script = ExtResource("2_rq4a7")
+stat = &"defense.decoy_radius"
+value = 0.2
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_ujh1n"]
+script = ExtResource("2_rq4a7")
+stat = &"defense.decoy_lure"
+kind = 0
+value = 1.0
+per_level = PackedFloat32Array()
+
+[sub_resource type="Resource" id="Resource_ere7n"]
+script = ExtResource("3_or7gl")
+node_id = &"build.decoy"
+
+[resource]
+script = ExtResource("4_3x6xw")
+id = &"build.loud_scarecrow"
+branch = 5
+display_name = "Loud Scarecrow"
+description = "+20% lure radius and one more robot held per level."
+max_level = 2
+prerequisites = Array[ExtResource("3_or7gl")]([SubResource("Resource_ere7n")])
+cost_curve = SubResource("Resource_dp1ok")
+effects = Array[ExtResource("2_rq4a7")]([SubResource("Resource_77xus"), SubResource("Resource_ujh1n")])
+board_position = Vector2i(1, 1)
