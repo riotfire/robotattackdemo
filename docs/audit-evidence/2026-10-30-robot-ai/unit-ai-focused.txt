@@ -1,0 +1,47 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+---  GUT  ---
+[INFO]:  using [~/Library/Application Support/Godot/app_userdata/Robot Attack!] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+
+
+res://tests/unit/test_robot_ai.gd
+* test_every_melee_robot_runs_the_melee_tree<parameterized>
+    - params[0](res://data/robots/archetypes/nibbler.tres)
+    - params[1](res://data/robots/archetypes/clanker.tres)
+    - params[2](res://data/robots/archetypes/thumper.tres)
+* test_squad_members_share_the_squad_blackboard
+* test_a_clanker_squad_lands_its_first_hits_clank_clank_clank
+    --- Awaiting 200 physics frames  ---
+* test_followers_keep_formation_only_while_the_leader_is_far_from_the_target
+* test_perched_out_of_reach
+* test_robots_wait_at_the_foot_of_a_perch_then_give_up<parameterized>
+    - params[0]([(10.0, 5.0, 10.0), (1.0, 5.0, 2.0), (-9.0, 0.0, 9.0)])
+    --- Awaiting 168 physics frames  ---
+    - params[1]([(24.0, 3.0, 24.0), (0.0, 3.0, 0.0), (-15.0, 0.0, 8.0)])
+    --- Awaiting 168 physics frames  ---
+* test_authored_foreman_keeps_its_telegraph_and_punish_window
+* test_launch_interrupts_a_windup_and_recovery_starts_a_fresh_attack
+8/8 passed.
+
+
+
+
+==============================================
+= Run Summary
+==============================================
+
+Totals
+------
+Scripts               1
+Tests                 8
+Passing Tests         8
+Asserts              73
+Time              10.453s
+
+
+Ran Scripts matching "test_robot_ai.gd"
+---- All tests passed! ----

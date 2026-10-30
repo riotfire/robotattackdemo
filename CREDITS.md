@@ -8,6 +8,8 @@ attribution is optional.
 
 | Name | Version | Author | License | Where | Used for |
 |---|---|---|---|---|---|
+| LimboAI | 1.8.1 | Serhii Snitsaruk and contributors | MIT ([addons/limboai/LICENSE.md](addons/limboai/LICENSE.md)) | `addons/limboai/` | Melee behavior trees and squad blackboards |
+| LimboAI logo | — | Aleksandra Snitsaruk | CC BY 4.0 ([addons/limboai/LOGO_LICENSE.md](addons/limboai/LOGO_LICENSE.md)) | `addons/limboai/icons/` | Addon editor icons |
 | GUT (Godot Unit Test) | 9.7.1 | Tom "Butch" Wesley and contributors | MIT ([addons/gut/LICENSE.md](addons/gut/LICENSE.md)) | `addons/gut/` | Unit tests (dev only) |
 
 ## Art, audio and fonts
@@ -27,7 +29,6 @@ models in `assets/models/`.
 
 | Name | License | Planned for |
 |---|---|---|
-| LimboAI v1.8.1 (GDExtension) | MIT | Robot AI, M2-A3 (verified on Godot 4.7.2) |
 | Quaternius crops, nature, animations (farm buildings now in use) | CC0 | Art track, M2-J |
 | Kenney Blaster kit; audio packs (Survival and Nature kits now in use) | CC0 | Weapons, SFX |
 | KayKit Space Base Bits, Prototype Bits, Adventurers | CC0 | Robot parts, prototyping, farmer base |

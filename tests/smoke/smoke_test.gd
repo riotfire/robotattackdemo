@@ -92,8 +92,8 @@ func _run() -> void:
 			"family logged in the Almanac")
 	t = await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
 	_check(absf(t - _director.siren_lead_time) < 0.5, "spawning starts after the siren (%.2f s)" % t)
-	_check(_director.opening != null and _director.opening.robot_count() == 6 and _director.spawns_total == 3,
-			"wave 1 sends 6 Nibblers in 3 groups (%d groups)" % _director.spawns_total)
+	_check(_director.opening != null and _director.opening.robot_count() == 15 and _director.spawns_total == 10,
+			"wave 1 sends 15 Nibblers in 10 groups (%d groups)" % _director.spawns_total)
 	var first := await _first_robot(20.0)
 	if first != null:
 		var kit := first.get_node(^"Model/Pose/Kit")
@@ -213,6 +213,9 @@ func _run() -> void:
 	await _test_jetpack()
 	await _test_ladder()
 	await _test_zipline()
+
+	_section("Robot behavior trees")
+	await _test_robot_ai()
 
 	_section("Big Haul")
 	await _test_foreman()
@@ -597,6 +600,46 @@ func _test_zipline() -> void:
 	_check(at.y > 12.0 and at.x < -25.0, "lands on the barn roof (%.1f, %.1f, %.1f)" % [at.x, at.y, at.z])
 
 
+## Real-farm integration of the melee tree, squad scope and perched-target give-up.
+func _test_robot_ai() -> void:
+	_director.time_left = maxf(_director.time_left, 40.0)
+	var farmer_at := _farmer.global_position
+	_farmer.teleport_to(GameState.silo.global_position + Vector3(0.0, 8.1, 0.0))
+	_farmer.set_physics_process(false)
+	var squad := RobotSquad.new()
+	var clankers: Array[Robot] = []
+	for i in 3:
+		var robot := _director._spawn_robot(load("res://data/robots/archetypes/clanker.tres") as RobotArchetype,
+				GameState.silo.global_position + Vector3(-14.0, 0.0, 6.0) + RobotSquad.formation_offset(i, 1.75),
+				false, [], squad, &"calm")
+		clankers.append(robot)
+	var nibbler := _director._spawn_robot(load("res://data/robots/archetypes/nibbler.tres") as RobotArchetype,
+			GameState.silo.global_position + Vector3(10.0, 0.0, 0.0), false, [], null, &"calm")
+	nibbler.target_player = _farmer
+	nibbler.targeting.switch_to_farmer(_farmer)
+	nibbler.target_kind = Robot.TargetKind.PLAYER
+	await _frames(2)
+	_check(nibbler.bt_player.get_bt_instance() != null
+			and nibbler.bt_player.behavior_tree.resource_path == "res://data/robots/behaviors/melee.tres",
+			"a robot spawned by the director runs the melee behavior tree")
+	_check(clankers.all(func(r: Robot) -> bool: return r.bt_player.blackboard.get_parent() == squad.blackboard),
+			"squad behavior trees share the squad blackboard")
+	clankers[0].kill()
+	_check(squad.blackboard.get_var(&"squad_leader") == clankers[1], "the next living squad member takes the lead")
+	_check(nibbler.bt_player.blackboard.get_var(&"target_perched"), "the tree recognizes a farmer above melee reach")
+	var t := await _wait_until(func() -> bool: return nibbler.target_kind == Robot.TargetKind.SILO,
+			nibbler.archetype.give_up_time + 1.0)
+	_check(t >= 0.0 and nibbler.targeting.last_return == RobotTargeting.Return.UNREACHABLE,
+			"the tree preserves the current targeting system's unreachable return rule")
+	for i in range(1, clankers.size()):
+		if is_instance_valid(clankers[i]):
+			clankers[i].kill()
+	nibbler.kill()
+	_farmer.teleport_to(farmer_at)
+	_farmer.set_physics_process(true)
+	await _frames(20)
+
+
 func _test_foreman() -> void:
 	(_main.get_node(^"DebugCheats") as DebugCheats).call(&"_on_console_submitted", "wave 3")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 15.0)
@@ -614,8 +657,8 @@ func _test_foreman() -> void:
 	for node in get_tree().get_nodes_in_group(Robot.GROUP):
 		if (node as Robot).is_foreman:
 			foreman = node as Robot
-	_check(foreman is HeavyRobot and is_equal_approx(foreman.health.max_health, 450.0) and foreman.extra_traits.is_empty(),
-			"the first Foreman is a Thumper with the authored 450 HP (%.0f) and no bonus trait" % foreman.health.max_health)
+	_check(foreman is HeavyRobot and is_equal_approx(foreman.health.max_health, 350.0) and foreman.extra_traits.is_empty(),
+			"the first Foreman is a Thumper with the authored 350 HP (%.0f) and no bonus trait" % foreman.health.max_health)
 	_check(foreman.roll_drops() == Robot.FOREMAN_DROPS, "its first kill on a profile pays 10 Al, 6 Cu, 1 Au, 2 PC")
 	# Put it next to the silo with the farmer nearby on the ground, and let it slam.
 	_kill_all_robots(foreman)

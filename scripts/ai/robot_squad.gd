@@ -7,6 +7,9 @@ extends RefCounted
 ## Heist crew: in a thief trio only the leader carries a sack; the other two escort it and fight anyone who
 ## chases it. If the thief is destroyed the escorts become an ordinary pair; if it escapes, they slip away too.
 
+const BEATS: int = 3
+
+var blackboard: Blackboard = Blackboard.new()
 var members: Array[Robot] = []
 var targeting: RobotTargeting = null
 ## The sack carrier of a heist crew, or null.
@@ -15,9 +18,20 @@ var heist_leader: Robot = null
 var heist_escaped: bool = false
 
 
+func _init() -> void:
+	blackboard.set_var(&"squad_leader", null)
+	blackboard.set_var(&"squad_beats", BEATS)
+
+
+func _on_member_destroyed(_robot: Robot, _killer: Node) -> void:
+	blackboard.set_var(&"squad_leader", leader())
+
+
 ## Adds a member and returns its slot index (0 = leader).
 func join(robot: Robot) -> int:
 	members.append(robot)
+	robot.destroyed.connect(_on_member_destroyed)
+	blackboard.set_var(&"squad_leader", leader())
 	return members.size() - 1
 
 

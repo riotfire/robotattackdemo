@@ -1,0 +1,48 @@
+[gd_resource type="BehaviorTree" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/tasks/track_target.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/windup.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/recover.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/grab_sack.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/flee_to_corn.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/begin_attack.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/approach.gd" id="7"]
+
+[sub_resource type="BTAction" id="Task_track_target"]
+custom_name = "Track Target"
+script = ExtResource("1")
+
+[sub_resource type="BTAction" id="Task_windup"]
+custom_name = "Windup"
+script = ExtResource("2")
+
+[sub_resource type="BTAction" id="Task_recover"]
+custom_name = "Recover"
+script = ExtResource("3")
+
+[sub_resource type="BTAction" id="Task_grab_sack"]
+custom_name = "Grab Sack"
+script = ExtResource("4")
+
+[sub_resource type="BTAction" id="Task_flee_to_corn"]
+custom_name = "Flee To Corn"
+script = ExtResource("5")
+
+[sub_resource type="BTAction" id="Task_begin_attack"]
+custom_name = "Begin Attack"
+script = ExtResource("6")
+
+[sub_resource type="BTAction" id="Task_approach"]
+custom_name = "Approach"
+script = ExtResource("7")
+
+[sub_resource type="BTDynamicSelector" id="Decide"]
+custom_name = "Committed action, theft, or approach"
+children = [SubResource("Task_flee_to_corn"), SubResource("Task_grab_sack"), SubResource("Task_recover"), SubResource("Task_windup"), SubResource("Task_begin_attack"), SubResource("Task_approach")]
+
+[sub_resource type="BTDynamicSequence" id="Root"]
+children = [SubResource("Task_track_target"), SubResource("Decide")]
+
+[resource]
+description = "Melee decisions for Nibblers, Clankers, Thumpers and Rung Runners. Targeting, sidearm throws and launch/stun handling run once in Robot physics before this manually ticked tree. Stateless tasks resume from the body state after interruptions; timers preserve attack cadence and authored boss hooks."
+root_task = SubResource("Root")

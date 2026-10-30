@@ -4,6 +4,8 @@
 [ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="2_hurtbox"]
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
 
+[ext_resource type="BehaviorTree" path="res://data/robots/behaviors/melee.tres" id="4_melee"]
+
 [sub_resource type="CapsuleShape3D" id="Shape_body"]
 radius = 0.35
 height = 0.9
@@ -79,3 +81,7 @@ max_speed = 8.0
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_health")
 max_health = 30.0
+
+[node name="BTPlayer" type="BTPlayer" parent="."]
+behavior_tree = ExtResource("4_melee")
+update_mode = 2

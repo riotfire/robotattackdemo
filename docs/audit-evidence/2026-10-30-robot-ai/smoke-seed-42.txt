@@ -1,0 +1,176 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+Robot Attack! run seed: 42
+
+== Start ==
+  PASS  silo registered
+  PASS  starts in the wave 1 intermission
+  PASS  intermission is 90 s (89.83 left)
+  PASS  fresh profile: jetpack locked
+  PASS  fresh profile: wrench only, the pistol is bought at the shed
+  PASS  seeded prop scatter placed 17 props
+  PASS  navmesh rebaked at run start around the props
+  PASS  navmesh path from lane 1 to the silo (18 points)
+  PASS  navmesh path from lane 2 to the silo (23 points)
+  PASS  navmesh path from lane 3 to the silo (24 points)
+  PASS  navmesh path from lane 4 to the silo (24 points)
+  PASS  navmesh path from lane 5 to the silo (26 points)
+  PASS  navmesh path from lane 6 to the silo (26 points)
+  PASS  navmesh path from lane 7 to the silo (27 points)
+  PASS  navmesh path from lane 8 to the silo (21 points)
+
+== Wave 1 ==
+  PASS  siren starts at T-3 (2.98 s left of the 90 s intermission)
+  PASS  the authored wave 1 opens one lane [2]
+  PASS  wave family rolled: The Grape Disco Toasters (7P5B4H)
+  PASS  family logged in the Almanac
+  PASS  spawning starts after the siren (3.00 s)
+  PASS  wave 1 sends 15 Nibblers in 10 groups (10 groups)
+  PASS  robots are kit-bashed from the family genome (26 parts)
+  PASS  the farmer is away from the silo when the first hit lands
+  PASS  Nibblers reach and damage the silo (first hit after 6.1 s)
+  PASS  an off-site hit raises a prominent silo warning
+  PASS  the warning gives distance and remaining Structure
+  PASS  the first remote hit sounds a distinct alarm
+  PASS  more hits in the same attack do not spam the alarm
+  PASS  a crack opens after 10% Structure lost (structure 898)
+  NOTE  no thief holds a sack yet (0 rolled so far); sending a silo attacker to the chute
+  PASS  a Nibbler thief grabs a 20-bushel sack and runs for the corn
+  PASS  destroying the thief drops the grain sack
+  PASS  walking over the sack returns its 20 bushels (+20; grain 977 -> 997)
+  PASS  wrench bonk does 25 to a Nibbler (30 -> 5 HP)
+  PASS  a hit from up close arms the Nibbler's hurt trigger (now after the silo)
+  PASS  its parts burst out, magnetize and bank (2 -> 5)
+  PASS  wave 1 cleared after the last robot
+  PASS  harvest bonus adds grain (911.8 -> 950.0)
+  PASS  collected parts remain banked (5 -> 5 Al)
+  PASS  wave clear leaves uncollected parts available for intermission
+  PASS  clearing wave 1 hands over no pistol kit
+  PASS  back to intermission, now for wave 2
+  PASS  autosaved at the intermission start
+  PASS  the repair warning takes priority over the shed hint
+  PASS  the warning stays as a quieter repair reminder while cracks leak
+
+== Repair ==
+  PASS  standing next to a Large crack (ground) puts it in reach
+  PASS  holding repair closes the crack (5.7 s for 100 Structure)
+  PASS  its leak stops (3.8 -> 1.8 bu/s)
+  PASS  repair restores Structure (700 -> 800)
+  NOTE  patched up the silo between sections: 2 cracks sealed, Structure 800 -> 1000, grain 902 -> 1000
+  PASS  the silo warning clears after the leaks are repaired
+  PASS  the shed hint returns once the silo is safe
+
+== Pegboard and save ==
+  PASS  the shed door is in reach
+  PASS  Interact at the shed opens the pegboard during the intermission
+  PASS  the farmer stops taking input while the pegboard is open
+  PASS  Comfy Boots can be the first build choice
+  PASS  run speed 7.0 -> 7.21 m/s
+  PASS  the build guidance clears after a choice
+  PASS  no pistol before the first Roof Lobber (wave 2) is beaten
+  PASS  then Pistol Damage
+  PASS  an unlock can't be bought twice
+  PASS  Fuel Tank stays locked until the jetpack is unlocked
+  PASS  closing the pegboard gives control back
+  PASS  purchases autosave to the profile
+  PASS  loading the profile restores the pegboard
+
+== Weapon wheel ==
+  PASS  the farmer carries seven shed weapons in wheel order
+  PASS  1 equips the wrench
+  PASS  tapping Q / (Y) swaps back to the last weapon
+  PASS  holding Q / (Y) opens the weapon wheel
+  PASS  pushing the left stick up points the wheel at slot 1, the wrench
+  PASS  the camera holds still while the wheel takes the stick
+  PASS  the choice sticks when the stick springs back
+  PASS  letting go equips the wrench and gives the camera back
+  PASS  2 equips the pistol
+
+== Wave 2 ==
+  PASS  the dinner bell is in reach
+  PASS  holding Interact for 1 s rings the bell and starts the siren (1.00 s)
+  PASS  ringing the bell defers its reward until the wave clears
+  PASS  old parts survive until the next battle, including the siren
+  PASS  the next battle sweeps the previous round's parts
+  PASS  wave 2 is the authored Take the High Ground
+  PASS  wave 2 rolls a new family: The Teal Pirate Tin Cans
+  PASS  no theme repeats back to back (Disco -> Pirate)
+  PASS  Nibblers arrive as a pair in the opening
+  PASS  Nibbler HP 30 x wave 2 scaling (32.2)
+  PASS  the pair shares one set of rolls
+  PASS  the pair shares one target
+  PASS  the pistol takes one mod (1 slot)
+  PASS  pistol uses a round (10 -> 9)
+  PASS  pistol hitscan from the camera-center ray hits a Nibbler (32 -> 19 HP)
+  PASS  the shot runs the mod's on_fire and on_hit hooks (1, 1)
+  PASS  wave 2 cleared
+  PASS  Early Bird is paid after earning the clear
+  PASS  wave two guarantees a banked Power Cell
+  PASS  the jetpack is still a later build choice after wave 2
+  PASS  intermission for wave 3
+  PASS  clearing wave 2 hands over no free tool
+  NOTE  patched up the silo between sections: 0 cracks sealed, Structure 994 -> 994, grain 1000 -> 1000
+  PASS  the jetpack waits for its milestone: clearing wave 9
+  PASS  a profile that has cleared wave 9 can build it in any later run
+  PASS  building the jetpack unlocks traversal
+
+== Traversal ==
+  PASS  standing jump + full thrust reaches ~8.5 m (8.51 m)
+  PASS  1.2 s of fuel is used up
+  PASS  no recharge during the 0.5 s delay
+  PASS  fuel refills on the ground in ~2 s after the delay (2.17 s)
+  PASS  walking into the silo ladder starts a climb
+  PASS  climbs at 4 m/s (8 m in 2.03 s)
+  PASS  the HUD can offer stepping onto catwalk 1
+  PASS  stepped off onto the 8 m catwalk (y = 8.00)
+  PASS  Z1 start is reachable on the silo dome (y = 23.97)
+  PASS  Interact grabs the zipline
+  PASS  rides 39 m at 12 m/s (3.53 s, expected ~3.25)
+  PASS  lands on the barn roof (-31.1, 12.6, -23.1)
+
+== Robot behavior trees ==
+  PASS  a robot spawned by the director runs the melee behavior tree
+  PASS  squad behavior trees share the squad blackboard
+  PASS  the next living squad member takes the lead
+  PASS  the tree recognizes a farmer above melee reach
+  PASS  the tree preserves the current targeting system's unreachable return rule
+
+== Big Haul ==
+  PASS  wave 3 is the Big Haul
+  PASS  a Foreman spawns during the Big Haul (after 0.0 s)
+  PASS  the first Foreman is a Thumper with the authored 350 HP (350) and no bonus trait
+  PASS  its first kill on a profile pays 10 Al, 6 Cu, 1 Au, 2 PC
+  PASS  the Foreman slams the silo for 65
+  PASS  its shockwave ring hits a farmer standing on the ground (100 -> 89 HP)
+
+== Debug keys ==
+  PASS  F3 gives parts (23 -> 123 Al)
+  PASS  F5 skips to wave 4's siren
+  PASS  console 'wave 9' jumps to wave 9
+
+== Time and weather ==
+  PASS  the run's sky comes from its seed: starts at Dawn, weather Clear
+  PASS  the weather is Clear for the whole run
+  PASS  wave 9 (phase 3) is two steps on: Noon
+  PASS  phase 4 steps to Golden Hour and blends in ([&"golden_hour"])
+  PASS  the blend lands on Golden Hour after 6.0 s
+  PASS  long-range robots get x1.00 range in Clear, melee x1
+  PASS  Clear works with all 6 presets (0 drops, 0 puddles, corn still)
+  PASS  Breezy works with all 6 presets (0 drops, 0 puddles, corn swaying)
+  PASS  Drizzle works with all 6 presets (1800 drops, 20 puddles, corn swaying)
+  PASS  Morning Fog works with all 6 presets (0 drops, 0 puddles, corn still)
+  PASS  back to the run's own weather
+
+== Game over ==
+  PASS  grain at 0 ends the run (reason grain)
+  PASS  game pauses on game over
+  PASS  director stops
+  PASS  best wave recorded (10)
+  PASS  losing in wave 11 keeps the checkpoint at its phase's first wave (10)
+  PASS  farmer at 0 HP ends the run (reason farmer)
+  PASS  silo at 0 Structure ends the run (reason silo)
+
+Economy note: 5 Al banked by the end of wave 1 (pistol costs 20).
+SMOKE TEST PASSED (141 checks)

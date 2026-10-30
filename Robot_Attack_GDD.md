@@ -581,6 +581,8 @@ Heavies debut as a Foreman, then join regular spawns from the next wave. From wa
 
 Each class runs one behavior tree (built with LimboAI, see 18.4), parameterized by type stats and family traits:
 
+**Built, October 30, 2026 (M2-A3):** the melee tree drives Nibblers, Clankers, Thumpers and the Rung Runner through shared body hooks. Squad blackboards hold leadership and attack rhythm; perch approach points stay outside walls rather than selecting disconnected roof islands. Current targeting/distraction rules, sidearm throws, boss recovery windows and defenses are retained. The Spitter, Roof Lobber and Drone still use their existing controllers; separate ranged/flight trees and the proposed reduced distant thinking rates remain future work. See `docs/ROBOT_AI.md`.
+
 - **Melee:** Approach the target → circle-strafe if blocked → attack → retarget on aggro. Nibblers may branch into *Steal grain → Flee to lane*.
 - **Short-range:** Approach to 6–8 m → strafe and spray → back off if the farmer closes to melee range (except Boilers).
 - **Long-range:** Find a firing position (perch-aware: prefers line of sight to rooftops) → telegraph → fire → reposition every 2–3 shots. Buzzers use 3D steering, not the navmesh.

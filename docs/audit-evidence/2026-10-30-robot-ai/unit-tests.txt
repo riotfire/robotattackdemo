@@ -1,0 +1,704 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+---  GUT  ---
+[INFO]:  using [~/Library/Application Support/Godot/app_userdata/Robot Attack!] for temporary output.
+Godot version:  4.7.2
+GUT version:  9.7.1
+
+
+res://tests/unit/test_arsenal.gd
+* test_shotgun_fires_a_short_cone_in_one_shell
+* test_radial_blast_hits_each_robot_once_even_with_multiple_hurtboxes
+* test_rifle_reaches_a_target_beyond_pistol_range
+* test_shotgun_pattern_has_an_inner_ring
+* test_rifle_round_punches_through_one_robot_and_counts_each_robot_once
+* test_semi_auto_press_during_cooldown_is_buffered
+* test_grenade_lob_lands_on_the_aim_point
+* test_lobbed_grenade_detonates_when_its_fuse_expires
+* test_maul_hits_front_and_scythe_clears_full_circle
+* test_jetpack_unlocks_air_dash_and_ground_pound_actions
+10/10 passed.
+
+
+res://tests/unit/test_audio_director.gd
+* test_every_wave_phase_has_a_loaded_music_state
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] _on_wave_phase_changed (res://scripts/autoload/save_manager.gd:215)
+         [2] test_every_wave_phase_has_a_loaded_music_state (res://tests/unit/test_audio_director.gd:32)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] _test_the_scripts (res://addons/gut/gut.gd:835)
+         [5] _run_test (res://addons/gut/gut.gd:650)
+         [6] test_maul_hits_front_and_scythe_clears_full_circle (res://tests/unit/test_arsenal.gd:145)
+         [7] _end_wait (res://addons/gut/awaiter.gd:126)
+         [8] _on_tree_physics_frame (res://addons/gut/awaiter.gd:78)
+* test_field_theme_between_waves_attack_theme_while_robots_attack_and_silence_at_the_siren
+* test_wave_event_switches_music_and_siren_event_plays_cue
+* test_ringing_the_bell_cuts_the_field_theme_for_the_siren_then_the_attack_theme_fades_in
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] _on_wave_phase_changed (res://scripts/autoload/save_manager.gd:215)
+         [2] test_ringing_the_bell_cuts_the_field_theme_for_the_siren_then_the_attack_theme_fades_in (res://tests/unit/test_audio_director.gd:67)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] _test_the_scripts (res://addons/gut/gut.gd:835)
+         [5] _run_test (res://addons/gut/gut.gd:650)
+         [6] test_maul_hits_front_and_scythe_clears_full_circle (res://tests/unit/test_arsenal.gd:145)
+         [7] _end_wait (res://addons/gut/awaiter.gd:126)
+         [8] _on_tree_physics_frame (res://addons/gut/awaiter.gd:78)
+* test_field_theme_fades_out_with_the_intermission_countdown_before_the_siren
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] _on_wave_phase_changed (res://scripts/autoload/save_manager.gd:215)
+         [2] test_field_theme_fades_out_with_the_intermission_countdown_before_the_siren (res://tests/unit/test_audio_director.gd:94)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] _test_the_scripts (res://addons/gut/gut.gd:835)
+         [5] _run_test (res://addons/gut/gut.gd:650)
+         [6] test_maul_hits_front_and_scythe_clears_full_circle (res://tests/unit/test_arsenal.gd:145)
+         [7] _end_wait (res://addons/gut/awaiter.gd:126)
+         [8] _on_tree_physics_frame (res://addons/gut/awaiter.gd:78)
+* test_a_cleared_wave_crossfades_the_attack_theme_into_the_field_theme
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] _on_wave_phase_changed (res://scripts/autoload/save_manager.gd:215)
+         [2] test_a_cleared_wave_crossfades_the_attack_theme_into_the_field_theme (res://tests/unit/test_audio_director.gd:124)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] _test_the_scripts (res://addons/gut/gut.gd:835)
+         [5] _run_test (res://addons/gut/gut.gd:650)
+         [6] test_maul_hits_front_and_scythe_clears_full_circle (res://tests/unit/test_arsenal.gd:145)
+         [7] _end_wait (res://addons/gut/awaiter.gd:126)
+         [8] _on_tree_physics_frame (res://addons/gut/awaiter.gd:78)
+* test_core_cues_and_bus_layout_are_available
+7/7 passed.
+
+
+res://tests/unit/test_checkpoints.gd
+* test_phase_one_is_the_wrench_and_the_roofs
+* test_phase_two_splits_the_pressure
+* test_the_opening_saves_drones_spitters_and_heavies_for_later
+* test_clearing_waves_never_hands_over_an_item
+* test_no_gun_before_the_first_roof_lobber_is_beaten
+* test_the_jetpack_is_a_wave_nine_milestone
+* test_the_checkpoint_and_its_records_round_trip
+* test_a_full_harvest_needs_no_retries
+* test_the_shotgun_inner_ring_lands_on_a_small_robot_at_six_metres
+* test_an_authored_foreman_shrugs_off_ranged_hits_but_not_the_open_vent
+10/10 passed.
+
+
+res://tests/unit/test_content_tables.gd
+* test_tables_read_without_errors
+* test_opening_waves_match_the_tables
+* test_defenses_match_the_tables
+* test_the_tools_roof_list_matches_the_lobbers
+* test_upgrade_catalog_matches_the_tables
+* test_robot_data_matches_the_tables
+* test_every_upgrade_stat_is_read_by_a_system
+* test_tables_report_bad_cells
+* test_cost_recipes_keep_common_materials_useful_and_rare_costs_bounded
+9/9 passed.
+
+
+res://tests/unit/test_defenses.gd
+* test_the_starter_defenses_match_the_plan
+* test_a_copy_goes_anywhere_with_floor_that_nothing_occupies
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_copy_goes_anywhere_with_floor_that_nothing_occupies (res://tests/unit/test_defenses.gd:121)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] settle_run_end (res://scripts/systems/construction/construction_manager.gd:551)
+         [2] after_each (res://tests/unit/test_defenses.gd:60)
+         [3] _run_test (res://addons/gut/gut.gd:636)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+* test_the_catwalk_is_the_ring_the_climbers_walk
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_the_catwalk_is_the_ring_the_climbers_walk (res://tests/unit/test_defenses.gd:137)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] settle_run_end (res://scripts/systems/construction/construction_manager.gd:551)
+         [2] after_each (res://tests/unit/test_defenses.gd:60)
+         [3] _run_test (res://addons/gut/gut.gd:636)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+* test_a_blueprint_reserves_its_cost_and_one_job_works_at_a_time
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_blueprint_reserves_its_cost_and_one_job_works_at_a_time (res://tests/unit/test_defenses.gd:144)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_blueprint_reserves_its_cost_and_one_job_works_at_a_time (res://tests/unit/test_defenses.gd:146)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] settle_run_end (res://scripts/systems/construction/construction_manager.gd:551)
+         [2] after_each (res://tests/unit/test_defenses.gd:60)
+         [3] _run_test (res://addons/gut/gut.gd:636)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+* test_capacity_and_the_queue_limit_refuse_more
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_capacity_and_the_queue_limit_refuse_more (res://tests/unit/test_defenses.gd:158)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_capacity_and_the_queue_limit_refuse_more (res://tests/unit/test_defenses.gd:158)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_capacity_and_the_queue_limit_refuse_more (res://tests/unit/test_defenses.gd:158)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_capacity_and_the_queue_limit_refuse_more (res://tests/unit/test_defenses.gd:162)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_capacity_and_the_queue_limit_refuse_more (res://tests/unit/test_defenses.gd:163)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+* test_cancelling_refunds_only_the_unbuilt_share
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_cancelling_refunds_only_the_unbuilt_share (res://tests/unit/test_defenses.gd:171)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] cancel (res://scripts/systems/construction/construction_manager.gd:440)
+         [2] test_cancelling_refunds_only_the_unbuilt_share (res://tests/unit/test_defenses.gd:172)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_cancelling_refunds_only_the_unbuilt_share (res://tests/unit/test_defenses.gd:176)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] cancel (res://scripts/systems/construction/construction_manager.gd:440)
+         [2] test_cancelling_refunds_only_the_unbuilt_share (res://tests/unit/test_defenses.gd:178)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+* test_nothing_is_free
+* test_the_siren_freezes_unfinished_work_until_the_next_intermission
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_the_siren_freezes_unfinished_work_until_the_next_intermission (res://tests/unit/test_defenses.gd:195)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+* test_the_run_end_refunds_unfinished_work_once
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_the_run_end_refunds_unfinished_work_once (res://tests/unit/test_defenses.gd:210)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] settle_run_end (res://scripts/systems/construction/construction_manager.gd:551)
+         [2] test_the_run_end_refunds_unfinished_work_once (res://tests/unit/test_defenses.gd:212)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+* test_a_finished_copy_moves_without_parts_and_snaps_back_at_the_siren
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_finished_copy_moves_without_parts_and_snaps_back_at_the_siren (res://tests/unit/test_defenses.gd:219)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+    10 Orphans
+        * [Look:<Node3D#328766327730>] + 9
+* test_cancelling_a_move_puts_the_copy_back
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_cancelling_a_move_puts_the_copy_back (res://tests/unit/test_defenses.gd:240)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] cancel (res://scripts/systems/construction/construction_manager.gd:440)
+         [2] test_cancelling_a_move_puts_the_copy_back (res://tests/unit/test_defenses.gd:245)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+    20 Orphans
+        * [Look:<Node3D#334302809018>] + 9
+        * [Look:<Node3D#334772571314>] + 9
+* test_dismantling_and_repairing_never_pay_or_heal_for_free
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_dismantling_and_repairing_never_pay_or_heal_for_free (res://tests/unit/test_defenses.gd:251)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] repair (res://scripts/systems/construction/construction_manager.gd:532)
+         [2] test_dismantling_and_repairing_never_pay_or_heal_for_free (res://tests/unit/test_defenses.gd:257)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] dismantle (res://scripts/systems/construction/construction_manager.gd:507)
+         [2] test_dismantling_and_repairing_never_pay_or_heal_for_free (res://tests/unit/test_defenses.gd:259)
+         [3] _run_test (res://addons/gut/gut.gd:622)
+         [4] before_each (res://tests/unit/test_defenses.gd:56)
+* test_a_broken_copy_stays_spent_and_frees_its_capacity
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_broken_copy_stays_spent_and_frees_its_capacity (res://tests/unit/test_defenses.gd:265)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+* test_a_ground_barricade_blocks_the_way_to_the_silo
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_ground_barricade_blocks_the_way_to_the_silo (res://tests/unit/test_defenses.gd:277)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+* test_a_ground_decoy_lures_a_few_but_never_thieves_or_foremen
+WARNING: Could not save profile to user://profile.json: Can't open file
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] save_profile (res://scripts/autoload/save_manager.gd:75)
+         [1] place (res://scripts/systems/construction/construction_manager.gd:418)
+         [2] _place (res://tests/unit/test_defenses.gd:98)
+         [3] test_a_ground_decoy_lures_a_few_but_never_thieves_or_foremen (res://tests/unit/test_defenses.gd:288)
+         [4] _run_test (res://addons/gut/gut.gd:622)
+         [5] before_each (res://tests/unit/test_defenses.gd:56)
+15/15 passed.
+
+
+res://tests/unit/test_difficulty_curve.gd
+* test_spawn_window_matches_gdd_table
+* test_base_threat_budget_matches_gdd_table
+* test_big_haul_every_third_wave_multiplies_budget
+* test_the_first_generated_phase_steps_up_from_the_opening
+* test_phases_are_three_waves
+* test_every_threshold_lands_on_a_phase_start
+* test_hp_multiplier_matches_gdd_table
+* test_damage_multiplier_matches_gdd_table
+* test_drop_multiplier
+* test_trait_count_steps
+* test_lane_count_steps
+* test_spawn_schedule_is_sorted_and_inside_the_window
+* test_spawn_schedule_opens_with_a_spawn_right_away
+* test_spawn_schedule_is_wave_shaped_not_even
+* test_nibbler_costs_two_threat
+* test_thief_share_starts_at_ten_percent_and_creeps_up
+* test_thief_chance_hits_the_share_after_the_silo_focus_roll
+* test_thieving_family_raises_the_share_up_to_its_cap
+* test_archetype_costs_follow_size_and_attack_style
+* test_small_ground_trio_chance_steps_up_then_climbs
+* test_large_robots_flyers_and_foremen_never_form_trios
+* test_climber_share_starts_at_wave_four_and_counts_individual_robots
+* test_rung_runners_take_part_of_the_climber_share
+* test_the_six_opening_waves_keep_every_attack_knob_at_its_m1_value
+* test_attack_phases_follow_the_waves_per_phase_steps
+* test_farmer_tokens_are_three_four_five_by_phase
+* test_charge_multiplier_shrinks_by_phase_but_never_under_the_floor
+* test_aim_lead_waits_for_wave_ten
+* test_volley_size_grows_from_wave_sixteen
+* test_spitter_share_starts_at_wave_thirteen_and_caps_at_forty_percent
+* test_column_weights_by_phase
+* test_the_director_gives_each_column_its_share
+* test_waves_before_thirteen_build_the_same_spawns_with_or_without_spitters
+* test_throws_and_the_arm_guard_from_wave_thirteen
+34/34 passed.
+
+
+res://tests/unit/test_economy.gd
+* test_earned_rare_progress_starts_before_the_foreman_and_settles_once
+* test_bell_rewards_require_a_clear_and_do_not_scale_with_skipped_time
+* test_foreman_rare_bounty_is_banked_without_duplicating_physical_loot
+* test_the_foreman_bounty_pays_once_per_foreman_wave_on_a_profile
+* test_ordinary_robot_loot_still_requires_collection
+* test_parts_survive_a_long_battle_but_grain_keeps_its_objective_timer
+* test_clear_preserves_parts_and_next_battle_sweeps_only_the_old_pickups
+7/7 passed.
+
+
+res://tests/unit/test_foreman_melee.gd
+* test_a_close_hit_from_behind_is_a_vent_hit_while_it_glows
+* test_the_first_foreman_falls_to_the_wrench_in_two_punish_windows
+2/2 passed.
+
+
+res://tests/unit/test_genome.gd
+* test_same_code_rebuilds_the_same_family
+* test_same_seed_and_wave_roll_the_same_family
+* test_family_codes_use_the_safe_alphabet
+* test_novelty_rules_hold_over_a_run
+* test_trait_count_follows_the_curve
+* test_every_palette_contrasts_with_the_farm
+* test_factory_keeps_the_readability_locks
+7/7 passed.
+
+
+res://tests/unit/test_ladder_climber.gd
+* test_the_rung_runner_matches_the_plan
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_it_climbs_the_ladder_and_bashes_the_silo_at_catwalk_height
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_two_climb_at_once_and_the_rest_wait_beside_the_foot
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_a_catwalk_barricade_turns_it_the_other_way
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_a_catwalk_decoy_pulls_it_and_a_spring_on_the_way_throws_it
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_a_spring_never_throws_a_heavy_but_takes_its_stomp
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_fall_damage_is_capped_and_a_short_hop_is_free
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_a_fatal_landing_is_one_kill_for_the_trap_owner
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+* test_loot_never_lands_outside_the_farm
+ERROR: Condition "p_scene && p_scene->get_parent() != root" is true.
+   at: set_current_scene (scene/main/scene_tree.cpp:1665)
+   GDScript backtrace (most recent call first):
+       [0] before_each (res://tests/unit/test_ladder_climber.gd:29)
+       [1] _run_test (res://addons/gut/gut.gd:612)
+       [2] _test_the_scripts (res://addons/gut/gut.gd:835)
+9/9 passed.
+
+
+res://tests/unit/test_overcharged.gd
+* test_overcharged_doubles_the_power_cell_chance_and_sizes_its_blast
+* test_a_kill_chains_through_a_pack_one_fuse_at_a_time
+    --- Awaiting 1.68 seconds  ---
+* test_chain_kills_credit_the_farmer_who_started_it
+* test_the_blast_hurts_farmers_in_range_and_pushes_them_away
+* test_escaping_or_cleared_overcharged_robots_do_not_blow_up
+5/5 passed.
+
+
+res://tests/unit/test_ranged_attack.gd
+* test_drone_and_lobber_profiles_keep_their_m1_numbers
+* test_lobber_finds_and_climbs_a_roof_when_gameplay_is_nested_under_another_scene
+* test_lobber_retains_standalone_scene_roof_lookup_without_a_registered_silo
+* test_launch_matches_the_m1_trajectory
+* test_charge_then_fire_then_recover_on_m1_timing
+* test_a_test_robot_fires_every_profile_with_its_telegraph
+* test_the_wave_three_lobber_shows_where_it_will_land
+* test_charge_time_never_drops_under_the_floor
+* test_tokens_cap_how_many_robots_shoot_the_farmer
+* test_tokens_come_back_once_the_shot_is_done
+    --- Awaiting 2.5 seconds  ---
+* test_no_new_shot_while_the_sky_is_full
+* test_a_shot_at_the_farmer_announces_itself
+* test_attack_tokens_track_holders
+* test_farmer_tokens_by_phase
+* test_the_wave_sets_charge_lead_tokens_and_volley
+* test_charge_multiplier_shortens_the_charge
+* test_straight_shots_lead_a_moving_farmer_and_lobs_never_do
+* test_a_volley_fires_several_shots_per_attack
+18/18 passed.
+
+
+res://tests/unit/test_robot_ai.gd
+* test_every_melee_robot_runs_the_melee_tree<parameterized>
+    - params[0](res://data/robots/archetypes/nibbler.tres)
+    - params[1](res://data/robots/archetypes/clanker.tres)
+    - params[2](res://data/robots/archetypes/thumper.tres)
+* test_squad_members_share_the_squad_blackboard
+* test_a_clanker_squad_lands_its_first_hits_clank_clank_clank
+    --- Awaiting 200 physics frames  ---
+* test_followers_keep_formation_only_while_the_leader_is_far_from_the_target
+* test_perched_out_of_reach
+* test_robots_wait_at_the_foot_of_a_perch_then_give_up<parameterized>
+    - params[0]([(10.0, 5.0, 10.0), (1.0, 5.0, 2.0), (-9.0, 0.0, 9.0)])
+    --- Awaiting 168 physics frames  ---
+    - params[1]([(24.0, 3.0, 24.0), (0.0, 3.0, 0.0), (-15.0, 0.0, 8.0)])
+    --- Awaiting 168 physics frames  ---
+* test_authored_foreman_keeps_its_telegraph_and_punish_window
+* test_launch_interrupts_a_windup_and_recovery_starts_a_fresh_attack
+8/8 passed.
+
+
+res://tests/unit/test_robot_explosion.gd
+* test_a_kill_bursts_the_robot_into_its_own_parts_which_land_and_clean_up
+    --- Awaiting 1.6 seconds  ---
+    --- Awaiting 2.4 seconds  ---
+* test_robots_that_escape_or_are_cleared_do_not_explode
+* test_a_grenade_blast_cleans_up_without_robot_parts
+    --- Awaiting 2.6 seconds  ---
+* test_a_freeze_frame_restores_time_and_never_fools_the_weapon_wheel
+* test_camera_shake_decays_to_a_still_lens
+5/5 passed.
+
+
+res://tests/unit/test_robot_movement.gd
+* test_robots_slide_round_a_building_corner_they_clip<parameterized>
+    - params[0](res://data/robots/archetypes/nibbler.tres)
+    - params[1](res://data/robots/archetypes/clanker.tres)
+    - params[2](res://data/robots/archetypes/thumper.tres)
+* test_robots_follow_the_farm_navmesh_past_the_porch
+2/2 passed.
+
+
+res://tests/unit/test_robot_targeting.gd
+* test_near_trigger_switches_on_the_once_a_second_roll
+* test_distractibility_sets_the_chance_per_roll
+* test_triggers_only_count_when_listed_and_in_range
+* test_hurt_rolls_at_once_but_only_from_within_range
+* test_commit_time_stops_flip_flopping
+* test_thieves_and_unreachable_farmers_are_never_distracted
+* test_returns_when_the_farmer_goes_down
+* test_returns_after_chase_time_once_engaged
+* test_returns_when_led_past_the_leash
+* test_returns_when_the_farmer_stays_out_of_reach
+* test_hunters_roll_from_silo_focus
+* test_m1_values_behave_as_before
+* test_trio_rates_over_a_thousand_seeds
+* test_large_robots_flyers_and_foremen_are_always_solo
+* test_a_trio_only_forms_when_the_budget_covers_three
+* test_trio_followers_share_the_leaders_rolls
+* test_a_thief_trio_is_a_heist_crew
+* test_the_thief_share_counts_groups_not_robots
+18/18 passed.
+
+
+res://tests/unit/test_save_and_waves.gd
+* test_migrates_a_v0_profile
+* test_current_profile_is_left_alone
+* test_a_v1_profile_continues_at_the_phase_of_its_next_wave
+* test_profile_round_trip
+* test_heavy_cap_steps_on_phase_starts
+* test_spawn_buying_spends_the_budget_within_the_rules
+* test_climbers_replace_ground_budget_and_make_one_quarter_of_individual_robots
+* test_climber_composition_is_deterministic_and_not_a_single_wave_end_cluster
+* test_live_climber_cap_defers_climbers_but_allows_due_ground_events
+* test_tutorial_flag_defaults_by_history
+* test_tutorial_phase_keeps_the_other_phase_numbers
+11/11 passed.
+
+
+res://tests/unit/test_sidearms.gd
+* test_the_spitter_matches_the_plan
+* test_small_melee_spawns_become_spitters_by_the_curve_share
+* test_spitters_appear_in_built_waves_from_wave_thirteen
+* test_a_spitter_stands_off_shoots_and_hops_every_three_shots
+* test_a_spitter_backs_off_once
+* test_a_spitter_trio_fires_a_staggered_three_beat_volley
+* test_a_spitter_can_shoot_a_farmer_up_high
+* test_a_clanker_throws_two_telegraphed_bolts_then_goes_back_to_the_silo
+* test_a_thumper_lobs_clods_with_splash
+* test_throwing_starts_at_wave_thirteen
+* test_no_free_token_means_no_throw
+* test_a_hovering_farmer_is_neither_immune_nor_a_lure
+* test_the_clanker_arm_guard_halves_damage_from_the_front
+* test_the_arm_guard_waits_for_wave_thirteen_and_is_the_clankers_alone
+14/14 passed.
+
+
+res://tests/unit/test_silo_cracks.gd
+* test_bands_are_measured_from_the_sockets
+* test_ground_hits_crack_low_and_high_hits_crack_high
+* test_waves_one_and_two_never_open_a_catwalk_crack
+* test_a_full_ground_band_folds_damage_into_a_crack_early_on
+4/4 passed.
+
+
+res://tests/unit/test_time_and_weather.gd
+* test_six_presets_in_gdd_order
+* test_four_weathers_with_roll_weights
+* test_time_advances_one_step_per_phase
+* test_same_seed_gives_the_same_sky
+* test_seeds_cover_every_preset_and_weather
+* test_environment_roll_leaves_other_streams_alone
+* test_morning_fog_shortens_only_long_range
+* test_no_weather_is_neutral
+* test_every_preset_and_weather_composes_and_applies
+* test_fog_always_hides_the_spawn_ring
+* test_morning_fog_boosts_eye_glow
+* test_run_variation_shifts_the_sky
+* test_blend_goes_from_one_look_to_the_next
+13/13 passed.
+
+
+res://tests/unit/test_upgrades.gd
+* test_pistol_damage_uses_aluminium_throughout_with_reachable_rare_finishers
+* test_modifier_kinds
+* test_fuel_tank_compounds_like_gdd_table
+* test_stacks_add_multiply_and_take_max
+* test_flags_respect_their_level
+* test_retired_ranks_are_refunded_once
+* test_the_spring_trap_recipe_is_bought_at_the_shed
+* test_purchase_spends_parts_and_checks_prerequisites
+* test_catalog_is_complete_and_consistent
+9/9 passed.
+
+
+res://tests/unit/test_weapons.gd
+* test_weapon_data_matches_the_gdd_arsenal
+* test_wheel_slots_go_clockwise_from_the_top
+* test_holder_switches_and_equips_new_unlocks
+* test_shots_and_swings_play_their_cue_only_when_they_happen
+* test_mod_hooks_run_in_order_and_report_kills
+* test_projectile_shots_hit_through_the_pool
+* test_pool_recycles_projectiles_and_lets_them_pierce
+7/7 passed.
+
+
+
+
+==============================================
+= Run Summary
+==============================================
+
+Totals
+------
+Scripts              22
+Tests               224
+Passing Tests       224
+Asserts           14064
+Time              47.405s
+
+
+---- All tests passed! ----

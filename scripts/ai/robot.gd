@@ -15,7 +15,7 @@ extends CharacterBody3D
 ## owner); a Scarecrow Decoy pulls a robot onto itself for a while (lure_to()); a Scrap Barricade in its way
 ## is smashed before it goes on. All three are TargetKind.DEFENSE targets for the usual windup and hit.
 ## The look is kit-bashed by RobotFactory from the wave's RobotGenome. Poses step at 12 fps (GDD 15.4).
-## This state machine is replaced by LimboAI behavior trees later (GDD 18.4).
+## Melee decisions run through LimboAI tasks; targeting and body/attack hooks stay shared with ranged robots.
 
 signal destroyed(robot: Robot, killer: Node)
 
@@ -120,6 +120,8 @@ var spawn_role: StringName = &""
 var foreman_hp_override: float = 0.0
 ## Who threw it with a spring trap, for the kill credit of a fatal landing.
 var launched_by: Node = null
+## Flat velocity requested by this physics tick's behavior tree.
+var desired_velocity: Vector3 = Vector3.ZERO
 var look: RobotFactory.Look
 ## True from the moment a destroyed robot starts its RobotExplosion; the explosion plays the pop sound.
 var exploding: bool = false
@@ -155,6 +157,7 @@ var _stun_left: float = 0.0
 var _lure_left: float = 0.0
 var _lure_cooldown: float = 0.0
 
+@onready var bt_player: BTPlayer = get_node_or_null(^"BTPlayer") as BTPlayer
 @onready var health: HealthComponent = $Health
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
 @onready var model: Node3D = $Model
@@ -270,6 +273,15 @@ func _ready() -> void:
 	elif is_thief:
 		_set_marker("$", Color(1.0, 0.85, 0.3), StatService.has_flag(&"grain.sack_tracker"), 0.6)
 	StopMotionClock.tick_12.connect(_on_tick_12)
+	if bt_player != null:
+		var board := bt_player.blackboard
+		if squad != null:
+			board.set_parent(squad.blackboard)
+		board.bind_var_to_property(&"target_kind", self, &"target_kind", true)
+		board.bind_var_to_property(&"target_player", self, &"target_player", true)
+		board.bind_var_to_property(&"squad_index", self, &"squad_index", true)
+		board.bind_var_to_property(&"ai_state", self, &"ai_state", true)
+		update_ai_blackboard()
 	EventBus.robot_spawned.emit(self)
 
 
@@ -333,51 +345,25 @@ func _physics_process(delta: float) -> void:
 	agent.velocity = _ai_step(delta)
 
 
-## The melee state machine for one frame. Returns the flat velocity it wants to move at.
+## Ticks the melee behavior tree in physics order; subclasses retain their movement and attack hooks.
 func _ai_step(delta: float) -> Vector3:
-	var desired := Vector3.ZERO
-	match ai_state:
-		AiState.SEEK:
-			if _target_in_range():
-				if target_kind == TargetKind.CHUTE:
-					ai_state = AiState.STEALING
-					_steal_timer = 0.6
-				else:
-					ai_state = AiState.WINDUP
-					_attack_timer = windup_time()
-					if _first_attack and squad != null:
-						# Squads hit in a 3-beat rhythm: clank-clank-CLANK (GDD 9.6).
-						_attack_timer += squad_index * archetype.attack_interval / 3.0
-					_first_attack = false
-					_on_windup_started()
-			else:
-				desired = _seek_velocity(delta)
-		AiState.WINDUP:
-			_face(_target_position())
-			_attack_timer -= delta
-			if _attack_timer <= 0.0:
-				if _target_in_range(0.5):
-					_deal_hit()
-				ai_state = AiState.RECOVER
-				_attack_timer = recover_time()
-				_on_recover_started()
-		AiState.RECOVER:
-			_attack_timer -= delta
-			if _attack_timer <= 0.0:
-				ai_state = AiState.SEEK
-		AiState.STEALING:
-			_face(_target_position())
-			_steal_timer -= delta
-			if _steal_timer <= 0.0:
-				_grab_sack()
-		AiState.FLEEING:
-			var flat := global_position - _silo_center()
-			flat.y = 0.0
-			if flat.length() >= ESCAPE_RADIUS:
-				_escape()
-				return Vector3.ZERO
-			desired = _navigate(delta, _escape_point)
-	return desired
+	desired_velocity = Vector3.ZERO
+	if bt_player.active:
+		bt_player.update(delta)
+	return desired_velocity
+
+
+## The tree reads current targeting without rolling another decision or advancing its clocks.
+func update_ai_blackboard(delta: float = 0.0) -> void:
+	var perched := target_kind == TargetKind.PLAYER and is_instance_valid(target_player) \
+			and PerchQuery.is_perched(global_position, target_player.global_position)
+	var board := bt_player.blackboard
+	var was_perched: bool = board.get_var(&"target_perched", false, false)
+	board.set_var(&"target_perched", perched)
+	if not perched:
+		board.set_var(&"perch_stand", global_position)
+	elif not was_perched or _repath_timer <= delta:
+		board.set_var(&"perch_stand", PerchQuery.reachable_stand(self, target_player.global_position))
 
 
 ## How it closes in on its target while seeking: the navmesh, toward _goal_position().
@@ -561,9 +547,12 @@ func _target_position() -> Vector3:
 func _goal_position() -> Vector3:
 	var goal := _target_position()
 	if squad != null and squad_index > 0 and target_kind != TargetKind.ESCORT:
-		var leader := squad.leader()
-		if leader != null and leader != self and leader.global_position.distance_to(goal) > 8.0:
+		var leader := squad.blackboard.get_var(&"squad_leader", null) as Robot
+		if is_instance_valid(leader) and leader != self and leader.global_position.distance_to(goal) > 8.0:
 			return leader.global_position + Basis(Vector3.UP, leader.model.rotation.y) * RobotSquad.formation_offset(squad_index, type_scale())
+	if target_kind == TargetKind.PLAYER and is_instance_valid(target_player) \
+			and PerchQuery.is_perched(global_position, target_player.global_position):
+		return bt_player.blackboard.get_var(&"perch_stand", PerchQuery.stand_spot(goal, global_position.y))
 	return goal
 
 
