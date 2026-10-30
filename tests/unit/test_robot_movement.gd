@@ -41,10 +41,9 @@ func test_robots_slide_round_a_building_corner_they_clip(params: String = use_pa
 	var robot := archetype.scene.instantiate() as Robot
 	robot.setup(archetype, 1, DifficultyCurve.new(), RandomNumberGenerator.new())
 	world.add_child(robot)
-	# Drive it by hand: no navmesh or avoidance here, and RECOVER keeps the state machine from steering.
+	# Drive it by hand: no navmesh or avoidance here, and its behavior tree is switched off so it doesn't steer.
 	robot.agent.avoidance_enabled = false
-	robot.ai_state = Robot.AiState.RECOVER
-	robot.set(&"_attack_timer", 999.0)
+	robot.bt_player.active = false
 	var radius := ((robot.get_node(^"CollisionShape3D") as CollisionShape3D).shape as CapsuleShape3D).radius
 	robot.global_position = Vector3(0.19, 0.0, -radius - 0.02)
 	robot.reset_physics_interpolation()
@@ -83,8 +82,7 @@ func test_robots_follow_the_farm_navmesh_past_the_porch() -> void:
 			nav.add_child(robot)
 			# Steer by hand as in the corner test, but along the agent's path.
 			robot.agent.avoidance_enabled = false
-			robot.ai_state = Robot.AiState.RECOVER
-			robot.set(&"_attack_timer", 999.0)
+			robot.bt_player.active = false
 			robot.global_position = route[0]
 			robot.reset_physics_interpolation()
 			robot.agent.target_position = route[1]

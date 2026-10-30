@@ -2,15 +2,16 @@ class_name HeavyRobot
 extends Robot
 ## A Heavy melee robot, the Thumper (GDD 9.3): rears up, then slams. The slam hits its target and sends
 ## a shockwave ring along the ground that the farmer can jump over. Weak point: the back vent (x2).
-## Knockback doesn't move it.
+## Knockback doesn't move it. It runs the same melee behavior tree as the other types; only these attack
+## hooks differ.
 
 
-func _on_windup_started() -> void:
+func begin_windup() -> void:
 	Fx.puff(self, global_position + Vector3.UP * 0.2, Color(0.8, 0.75, 0.65), 0.6, 0.3)
 
 
-func _deal_hit() -> void:
-	super._deal_hit()
+func strike() -> void:
+	super.strike()
 	if archetype.shockwave_damage > 0.0:
 		var ground := global_position
 		var wave_ring := Shockwave.new()

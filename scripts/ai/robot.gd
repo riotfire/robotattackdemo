@@ -3,14 +3,21 @@ extends CharacterBody3D
 ## A ground robot (GDD 9). M1 has the melee class in all three types: the Nibbler (Scout), Clankers
 ## (Grunt squads of 3, see RobotSquad) and the Thumper (Heavy, see HeavyRobot).
 ##
-## Melee AI (GDD 9.6): walk the navmesh to the silo (70%) or the nearest farmer (30%), bash it, and switch
-## to the farmer when hurt from within aggro range. Nibblers (and any melee robot in a Thieving family) may
-## instead grab a 20-bushel grain sack at the chute and run for the corn (GDD 3.3).
+## This script is the robot's body: stats, damage and death, drops, walking the navmesh and the 12 fps
+## poses. What it does each physics frame comes from its class's LimboAI behavior tree (GDD 9.6, 18.4),
+## run by the BTPlayer child and ticked from _physics_process: data/robots/behaviors/melee.tres for the
+## melee class. The tree's tasks (scripts/ai/tasks) drive the robot through the agent API below and say
+## what it's doing in ai_state.
+##
+## Melee (GDD 9.6): walk to the silo (70%) or the nearest farmer (30%), bash it, and switch to the farmer
+## when hurt from within aggro range. Nibblers (and any melee robot in a Thieving family) may instead grab
+## a 20-bushel grain sack at the chute and run for the corn (GDD 3.3). A farmer perched out of reach is
+## waited for at the foot of the perch, then given up on (PerchQuery).
 ## The look is kit-bashed by RobotFactory from the wave's RobotGenome. Poses step at 12 fps (GDD 15.4).
-## This state machine is replaced by LimboAI behavior trees later (GDD 18.4).
 
 signal destroyed(robot: Robot, killer: Node)
 
+## What the robot is doing, as set by its behavior tree's tasks. Poses and facing read it.
 enum AiState { SEEK, WINDUP, RECOVER, STEALING, FLEEING, DEAD }
 enum TargetKind { SILO, PLAYER, CHUTE }
 
@@ -23,6 +30,11 @@ const FOREMAN_DROPS: Dictionary[StringName, int] = {&"al": 10, &"cu": 6, &"au": 
 ## Distance from the silo at which a fleeing thief is gone into the corn.
 const ESCAPE_RADIUS: float = 102.0
 const GENE_LIBRARY_PATH := "res://data/robots/gene_library.tres"
+## Seconds between navmesh path updates. Each robot starts at a random point in the cycle (setup()), so
+## repaths are staggered across the wave.
+const REPATH_INTERVAL: float = 0.25
+## Robot properties the behavior tree reads and writes as blackboard variables of the same name.
+const BOUND_VARS: Array[StringName] = [&"target_kind", &"target_player", &"squad_index"]
 
 ## Every antenna bulb in the wave blinks together (Factory DNA). The WaveDirector shortens the period
 ## (in 12 fps frames) when the wave is almost over.
@@ -50,14 +62,12 @@ var speed_multiplier: float = 1.0
 var target_kind: TargetKind = TargetKind.SILO
 var target_player: Node3D = null
 var ai_state: AiState = AiState.SEEK
+## Where the behavior tree wants to walk this frame. Reset before each tick and handed to the agent's
+## avoidance after it.
+var desired_velocity: Vector3 = Vector3.ZERO
 var look: RobotFactory.Look
 
-var _attack_timer: float = 0.0
-var _first_attack: bool = true
 var _repath_timer: float = 0.0
-var _unreachable_time: float = 0.0
-var _steal_timer: float = 0.0
-var _escape_point: Vector3 = Vector3.ZERO
 var _vertical_velocity: float = 0.0
 var _knockback: Vector3 = Vector3.ZERO
 var _last_attacker: Node = null
@@ -68,10 +78,14 @@ var _marker: Label3D = null
 @onready var health: HealthComponent = $Health
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
 @onready var model: Node3D = $Model
+## Runs the class's behavior tree. Ticked by hand (update mode MANUAL) so it thinks in step with the body;
+## set `active` to false to drive the robot from a test.
+@onready var bt_player: BTPlayer = $BTPlayer
 @onready var _pose: Node3D = $Model/Pose
 
 
 ## Call before adding to the tree. `rng` is the wave's spawn stream, so targeting is deterministic.
+## Spawn robots through RobotFactory.spawn(), which calls this.
 func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyCurve, rng: RandomNumberGenerator,
 		family: RobotGenome = null, foreman: bool = false, bonus_traits: Array[RobotTrait] = [],
 		robot_squad: RobotSquad = null) -> void:
@@ -110,7 +124,7 @@ func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyC
 		squad_index = squad.join(self)
 		if squad_index > 0:
 			target_kind = squad.leader().target_kind
-	_repath_timer = rng.randf() * 0.25
+	_repath_timer = rng.randf() * REPATH_INTERVAL
 
 
 func _ready() -> void:
@@ -131,6 +145,7 @@ func _ready() -> void:
 	# waypoint about 1 m before a corner, so they clip building corners a few degrees off head-on; below the
 	# default 15° move_and_slide() stops them dead there (tests/unit/test_robot_movement.gd).
 	wall_min_slide_angle = 0.0
+	_bind_blackboard()
 	look = RobotFactory.build(_pose, genome, archetype, RngService.stream(RngService.STREAM_COSMETIC), is_foreman, extra_traits)
 	if is_foreman:
 		_set_marker(foreman_title, Color(1.0, 0.82, 0.3), false, 1.0)
@@ -138,6 +153,20 @@ func _ready() -> void:
 		_set_marker("$", Color(1.0, 0.85, 0.3), StatService.has_flag(&"grain.sack_tracker"), 0.6)
 	StopMotionClock.tick_12.connect(_on_tick_12)
 	EventBus.robot_spawned.emit(self)
+
+
+## Gives the behavior tree its blackboard: the tree's plan, the robot properties in BOUND_VARS, and for a
+## squad member the squad's blackboard as parent scope, so squad vars (leader, rhythm) read like its own.
+func _bind_blackboard() -> void:
+	var board := bt_player.blackboard
+	var tree := bt_player.behavior_tree
+	if tree != null and tree.blackboard_plan != null:
+		# Without overwriting: the BTPlayer may already have filled in its own (derived) plan.
+		tree.blackboard_plan.populate_blackboard(board, false, self, self)
+	for property in BOUND_VARS:
+		board.bind_var_to_property(property, self, property, true)
+	if squad != null:
+		board.set_parent(squad.blackboard)
 
 
 func all_traits() -> Array[RobotTrait]:
@@ -174,51 +203,13 @@ func _physics_process(delta: float) -> void:
 		_vertical_velocity = -1.0
 	else:
 		_vertical_velocity -= gravity * delta
-	_validate_target(delta)
-
-	var desired := Vector3.ZERO
-	match ai_state:
-		AiState.SEEK:
-			if _target_in_range():
-				if target_kind == TargetKind.CHUTE:
-					ai_state = AiState.STEALING
-					_steal_timer = 0.6
-				else:
-					ai_state = AiState.WINDUP
-					_attack_timer = archetype.attack_windup
-					if _first_attack and squad != null:
-						# Squads hit in a 3-beat rhythm: clank-clank-CLANK (GDD 9.6).
-						_attack_timer += squad_index * archetype.attack_interval / 3.0
-					_first_attack = false
-					_on_windup_started()
-			else:
-				desired = _navigate(delta, _goal_position())
-		AiState.WINDUP:
-			_face(_target_position())
-			_attack_timer -= delta
-			if _attack_timer <= 0.0:
-				if _target_in_range(0.5):
-					_deal_hit()
-				ai_state = AiState.RECOVER
-				_attack_timer = maxf(0.0, archetype.attack_interval - archetype.attack_windup)
-		AiState.RECOVER:
-			_attack_timer -= delta
-			if _attack_timer <= 0.0:
-				ai_state = AiState.SEEK
-		AiState.STEALING:
-			_face(_target_position())
-			_steal_timer -= delta
-			if _steal_timer <= 0.0:
-				_grab_sack()
-		AiState.FLEEING:
-			var flat := global_position - _silo_center()
-			flat.y = 0.0
-			if flat.length() >= ESCAPE_RADIUS:
-				_escape()
-				return
-			desired = _navigate(delta, _escape_point)
+	desired_velocity = Vector3.ZERO
+	if bt_player.active:
+		bt_player.update(delta)
+	if ai_state == AiState.DEAD:
+		return  # Escaped into the corn during the tick.
 	# Movement happens in _on_velocity_computed once avoidance has adjusted this.
-	agent.velocity = desired
+	agent.velocity = desired_velocity
 
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
@@ -229,36 +220,18 @@ func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	_knockback = _knockback.move_toward(Vector3.ZERO, 25.0 * get_physics_process_delta_time())
 	var flat := Vector3(velocity.x, 0.0, velocity.z)
 	if flat.length() > 0.5 and ai_state in [AiState.SEEK, AiState.FLEEING]:
-		_face(global_position + flat)
+		face(global_position + flat)
 
 
-# --- Targeting ------------------------------------------------------------------------------------
+# --- Agent API (called by the behavior tree's tasks) ----------------------------------------------
 
-func _validate_target(delta: float) -> void:
-	if target_kind != TargetKind.PLAYER:
-		return
-	if target_player == null or not is_instance_valid(target_player) \
-			or (target_player.has_method("is_alive") and not target_player.call("is_alive")):
-		target_player = GameState.get_nearest_player(global_position)
-		if target_player == null:
-			target_kind = TargetKind.SILO
-			return
-	# Robots can't climb (GDD 4.5): give up on a farmer camping out of reach.
-	if target_player.global_position.y - global_position.y > 2.5:
-		_unreachable_time += delta
-		if _unreachable_time >= archetype.unreachable_give_up_time:
-			target_kind = TargetKind.SILO
-			target_player = null
-			_unreachable_time = 0.0
-	else:
-		_unreachable_time = 0.0
-
-
-func _silo_center() -> Vector3:
+func silo_center() -> Vector3:
 	return GameState.silo.global_position if GameState.silo != null else Vector3.ZERO
 
 
-func _target_position() -> Vector3:
+## The point the current target is attacked at: the farmer, the silo wall facing the robot, or the
+## thieves' spot at the grain chute.
+func target_position() -> Vector3:
 	var silo := GameState.silo
 	match target_kind:
 		TargetKind.PLAYER:
@@ -273,17 +246,8 @@ func _target_position() -> Vector3:
 	return wall + (wall - silo.global_position).normalized() * (0.5 + archetype.body_radius)
 
 
-## Where to walk: squad followers keep formation behind their leader until they're close.
-func _goal_position() -> Vector3:
-	var goal := _target_position()
-	if squad != null and squad_index > 0:
-		var leader := squad.leader()
-		if leader != null and leader != self and leader.global_position.distance_to(goal) > 8.0:
-			return leader.global_position + Basis(Vector3.UP, leader.model.rotation.y) * RobotSquad.formation_offset(squad_index, type_scale())
-	return goal
-
-
-func _target_in_range(extra: float = 0.0) -> bool:
+## Whether the target is within attack range (plus `extra`), or the chute within grabbing distance.
+func target_in_reach(extra: float = 0.0) -> bool:
 	var reach := archetype.attack_range + extra
 	match target_kind:
 		TargetKind.PLAYER:
@@ -292,39 +256,46 @@ func _target_in_range(extra: float = 0.0) -> bool:
 				return absf(offset.y) < 2.0 * type_scale() and Vector2(offset.x, offset.z).length() <= reach
 			return false
 		TargetKind.CHUTE:
-			var chute := _target_position()
+			var chute := target_position()
 			return Vector2(chute.x - global_position.x, chute.z - global_position.z).length() <= 1.2
 	var silo := GameState.silo
 	return silo != null and silo.distance_to_wall(global_position) <= reach
 
 
-func _navigate(delta: float, goal: Vector3) -> Vector3:
+## Walks the navmesh toward `goal` this frame. The path is refreshed every REPATH_INTERVAL seconds.
+func walk_to(delta: float, goal: Vector3) -> void:
+	desired_velocity = Vector3.ZERO
 	_repath_timer -= delta
 	if _repath_timer <= 0.0:
-		_repath_timer = 0.25
+		_repath_timer = REPATH_INTERVAL
 		agent.target_position = goal
 	if NavigationServer3D.map_get_iteration_id(agent.get_navigation_map()) == 0 or agent.is_navigation_finished():
-		return Vector3.ZERO
+		return
 	var to_next := agent.get_next_path_position() - global_position
 	to_next.y = 0.0
 	if to_next.length() < 0.05:
-		return Vector3.ZERO
-	return to_next.normalized() * move_speed()
+		return
+	desired_velocity = to_next.normalized() * move_speed()
 
 
-func _face(point: Vector3) -> void:
+## Takes a fresh path on the next walk_to() instead of waiting for the repath timer.
+func repath_now() -> void:
+	_repath_timer = 0.0
+
+
+func face(point: Vector3) -> void:
 	var dir := point - global_position
 	if Vector2(dir.x, dir.z).length() > 0.01:
 		model.rotation.y = atan2(-dir.x, -dir.z)
 
 
-# --- Attacks (overridden by HeavyRobot) -----------------------------------------------------------
-
-func _on_windup_started() -> void:
+## Anticipation starts (the telegraph before a hit). HeavyRobot adds a dust puff.
+func begin_windup() -> void:
 	pass
 
 
-func _deal_hit() -> void:
+## The hit lands. HeavyRobot adds the shockwave.
+func strike() -> void:
 	if target_kind == TargetKind.PLAYER and target_player != null and is_instance_valid(target_player):
 		if target_player.has_method("take_damage"):
 			var packet := DamagePacket.create(archetype.damage_vs_farmer * damage_multiplier, self, target_player.global_position)
@@ -340,15 +311,19 @@ func _deal_hit() -> void:
 
 # --- Grain theft (GDD 3.3) ------------------------------------------------------------------------
 
-func _grab_sack() -> void:
+## Takes a sack from the silo and starts running. Returns the bushels taken.
+func grab_sack() -> float:
 	var silo := GameState.silo
 	sack_amount = silo.steal_grain(SACK_SIZE) if silo != null else 0.0
 	ai_state = AiState.FLEEING
-	if sack_amount <= 0.0:
-		return
-	EventBus.grain_stolen.emit(sack_amount, self)
-	RobotFactory.attach_sack(_pose.get_node(^"Kit") as Node3D)
-	# Run for the nearest corn lane.
+	if sack_amount > 0.0:
+		EventBus.grain_stolen.emit(sack_amount, self)
+		RobotFactory.attach_sack(_pose.get_node(^"Kit") as Node3D)
+	return sack_amount
+
+
+## Where a fleeing thief leaves the farm: past ESCAPE_RADIUS, out along the nearest corn lane.
+func escape_point() -> Vector3:
 	var best := Vector3.ZERO
 	var best_distance := INF
 	for node in get_tree().get_nodes_in_group(LaneMarker.GROUP):
@@ -357,13 +332,19 @@ func _grab_sack() -> void:
 		if d < best_distance:
 			best_distance = d
 			best = lane.global_position
-	var out := best - _silo_center()
+	var out := best - silo_center()
 	out.y = 0.0
-	_escape_point = _silo_center() + out.normalized() * (ESCAPE_RADIUS + 4.0)
-	_repath_timer = 0.0
+	return silo_center() + out.normalized() * (ESCAPE_RADIUS + 4.0)
 
 
-func _escape() -> void:
+## Whether a fleeing thief is far enough out to be gone into the corn.
+func has_escaped() -> bool:
+	var flat := global_position - silo_center()
+	flat.y = 0.0
+	return flat.length() >= ESCAPE_RADIUS
+
+
+func escape() -> void:
 	if sack_amount > 0.0:
 		EventBus.hud_message.emit("A thief got away with %d bushels!" % roundi(sack_amount), 2.5)
 	sack_amount = 0.0
@@ -380,12 +361,14 @@ func take_damage(packet: DamagePacket) -> void:
 	if packet.knockback != Vector3.ZERO and archetype.robot_type != RobotArchetype.RobotType.HEAVY:
 		_knockback = packet.knockback
 		_vertical_velocity = maxf(_vertical_velocity, packet.knockback.y)
+	# Retarget on aggro (GDD 9.2): a farmer who hurts a silo attacker from up close becomes its target.
+	# This happens on the hit, not on the next tick, so the switch is immediate.
 	var attacker := packet.source as Node3D
 	if attacker != null and attacker.is_in_group(&"players") and target_kind == TargetKind.SILO \
 			and global_position.distance_to(attacker.global_position) <= archetype.aggro_range:
 		target_kind = TargetKind.PLAYER
 		target_player = attacker
-		_repath_timer = 0.0
+		repath_now()
 	health.apply_damage(packet.amount)
 
 

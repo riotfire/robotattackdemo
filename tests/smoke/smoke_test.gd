@@ -3,7 +3,8 @@ extends Node
 ## wave 1 -> intermission -> wave 2, navmesh paths after the prop rebake, families and name cards,
 ## spawning mixes and Clanker squads, cracks and repair, theft and grain sacks, weapons, pickups and the
 ## Scrap Vac, the pegboard and save round-trip, the dinner bell, jetpack, ladder, zipline, the Foreman's
-## slam and shockwave, debug keys and all three game-over conditions.
+## slam and shockwave, robot behavior trees (squad blackboard, waiting under a perch), debug keys and all
+## three game-over conditions.
 ## Uses its own fresh profile (user://smoke_test_profile_<pid>.json), never the player's.
 ## The farmer has god mode but doesn't defend the silo, and wave 1's Nibblers alone take it from full to 0
 ## in about 40 s. So nothing waits on a seed-dependent event while robots bash the silo, the test reseals it
@@ -149,6 +150,9 @@ func _run() -> void:
 	await _test_jetpack()
 	await _test_ladder()
 	await _test_zipline()
+
+	_section("Robot AI")
+	await _test_robot_ai()
 
 	_section("Big Haul")
 	await _test_foreman()
@@ -526,6 +530,66 @@ func _test_foreman() -> void:
 	_check(_farmer.health.current < hp, "its shockwave ring hits a farmer standing on the ground (%.0f -> %.0f HP)" % [hp, _farmer.health.current])
 	GameState.god_mode = true
 	_silo_floor = 0.25
+
+
+## Robot AI on LimboAI behavior trees (M2-A3). Runs in the wave 3 intermission, with the farmer still on the
+## barn roof after the zipline ride: robots spawned through RobotFactory run their class's tree, a squad
+## shares one blackboard, and a Nibbler after the perched farmer waits at the foot of the barn, then gives up.
+func _test_robot_ai() -> void:
+	# Hold the intermission so no wave spawns join in.
+	_director.time_left = maxf(_director.time_left, 40.0)
+	var parent := _director.robots_parent
+	var curve := _director.curve
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	var farmer_at := _farmer.global_position
+	if farmer_at.y < 4.0:
+		# The zipline check didn't leave the farmer up high: use the silo's 8 m catwalk instead.
+		var silo_out := Vector3(1.0, 0.0, 0.3).normalized()
+		_farmer.teleport_to(GameState.silo.global_position + silo_out * (GameState.silo.radius + 0.9) + Vector3.UP * 8.1)
+		await _frames(10)
+		farmer_at = _farmer.global_position
+	var toward_silo := GameState.silo.global_position - farmer_at
+	toward_silo.y = 0.0
+	var start := Vector3(farmer_at.x, 0.0, farmer_at.z) + toward_silo.normalized() * minf(10.0, toward_silo.length() * 0.5)
+	var nibbler := RobotFactory.spawn(load("res://data/robots/archetypes/nibbler.tres") as RobotArchetype, parent, start,
+			_director.wave, curve, rng, _director.genome)
+	nibbler.target_kind = Robot.TargetKind.PLAYER
+	nibbler.target_player = _farmer
+	var squad := RobotSquad.new()
+	var clankers: Array[Robot] = []
+	for i in 3:
+		var spot := GameState.silo.global_position + Vector3(-14.0, 0.0, 6.0) + RobotSquad.formation_offset(i, 1.75)
+		clankers.append(RobotFactory.spawn(load("res://data/robots/archetypes/clanker.tres") as RobotArchetype, parent,
+				spot, _director.wave, curve, rng, _director.genome, false, [], squad))
+	await _frames(2)
+
+	var robots := get_tree().get_nodes_in_group(Robot.GROUP)
+	var melee := 0
+	for robot: Robot in robots:
+		if robot.bt_player.get_bt_instance() != null \
+				and robot.bt_player.behavior_tree.resource_path == "res://data/robots/behaviors/melee.tres":
+			melee += 1
+	_check(robots.size() == 4 and melee == 4, "robots from RobotFactory.spawn run the melee behavior tree (%d of %d)" % [melee, robots.size()])
+	_check(clankers.all(func(r: Robot) -> bool: return r.bt_player.blackboard.get_parent() == squad.blackboard)
+			and clankers[2].bt_player.blackboard.get_var(&"squad_leader") == clankers[0],
+			"a Clanker squad shares one blackboard, led by its first member")
+	clankers[0].kill()
+	_check(clankers[2].bt_player.blackboard.get_var(&"squad_leader") == clankers[1], "when the leader falls, the next Clanker leads")
+
+	var from := Vector2(start.x - farmer_at.x, start.z - farmer_at.z).length()
+	await _frames(roundi(2.5 * Engine.physics_ticks_per_second))
+	var at := nibbler.global_position
+	var flat := Vector2(at.x - farmer_at.x, at.z - farmer_at.z).length()
+	_check(nibbler.target_kind == Robot.TargetKind.PLAYER and nibbler.bt_player.blackboard.get_var(&"target_perched")
+			and at.y < farmer_at.y - PerchQuery.CLIMB_REACH and flat < from
+			and Vector2(nibbler.velocity.x, nibbler.velocity.z).length() < 0.5,
+			"a Nibbler after the farmer %.0f m up waits at the foot of the perch (%.1f m out, was %.1f m)" % [farmer_at.y - at.y, flat, from])
+	var t := await _wait_until(func() -> bool: return nibbler.target_kind == Robot.TargetKind.SILO, 1.5)
+	_check(t >= 0.0, "it gives up after %.0f s and goes back to the silo" % nibbler.archetype.unreachable_give_up_time)
+	for robot: Robot in [nibbler, clankers[1], clankers[2]]:
+		robot.kill()
+	await _frames(20)
 
 
 # --- Helpers --------------------------------------------------------------------------------------

@@ -8,6 +8,7 @@ extends RefCounted
 ## the weapon arm, eye glow color and chest icon; weak points get hazard trim and a glow. Every robot
 ## carries the Factory DNA: the BOLT Co. cog on its chest and an antenna bulb that blinks with its wave.
 ## Parts are authored at Scout size; the kit node is scaled per type.
+## spawn() is the single entry point that puts a robot in the world.
 
 ## Eye glow by class: melee red, short-range amber, long-range blue.
 const CLASS_EYE_COLORS: Array[Color] = [Color(1.0, 0.16, 0.1), Color(1.0, 0.62, 0.1), Color(0.3, 0.6, 1.0)]
@@ -36,6 +37,25 @@ const CHEST := Vector3(0.0, 0.6, -0.31)
 const BACK := Vector3(0.0, 0.58, 0.31)
 
 static var _meshes: Dictionary[String, Mesh] = {}
+
+
+## Spawns one robot of `archetype` at `where` (global, snapped to the navmesh once it's baked) under
+## `parent`: instances its scene, rolls its targeting from `rng` (the wave's spawn stream) and adds it.
+## Its look is built in Robot._ready(). This is the one place robots come from, so a network spawner
+## can wrap it later (ROADMAP 7, co-op readiness).
+static func spawn(archetype: RobotArchetype, parent: Node3D, where: Vector3, wave: int, curve: DifficultyCurve,
+		rng: RandomNumberGenerator, family: RobotGenome = null, foreman: bool = false,
+		bonus_traits: Array[RobotTrait] = [], squad: RobotSquad = null) -> Robot:
+	var map := parent.get_world_3d().navigation_map
+	# A synced map without regions would snap every spawn to the origin.
+	if NavigationServer3D.map_get_iteration_id(map) > 0 and not NavigationServer3D.map_get_regions(map).is_empty():
+		where = NavigationServer3D.map_get_closest_point(map, where)
+	var robot := archetype.scene.instantiate() as Robot
+	robot.setup(archetype, wave, curve, rng, family, foreman, bonus_traits, squad)
+	robot.position = parent.to_local(where) + Vector3.UP * 0.1
+	parent.add_child(robot)
+	robot.reset_physics_interpolation()
+	return robot
 
 
 ## What the robot script animates after the build.

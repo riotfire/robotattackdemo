@@ -1,0 +1,122 @@
+[gd_resource type="BehaviorTree" format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/tasks/track_target.gd" id="1_jsc2m"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/in_reach.gd" id="2_5teka"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/windup.gd" id="3_68t1i"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/strike.gd" id="4_g6w3j"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/recover.gd" id="5_vo4uj"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/grab_sack.gd" id="6_682nd"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/flee_to_corn.gd" id="7_x8pxp"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/leader_ahead.gd" id="8_2ppbx"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/follow_leader.gd" id="9_1ixxd"]
+[ext_resource type="Script" path="res://scripts/ai/tasks/approach.gd" id="10_5vnrv"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_1ynov"]
+var/target_kind/name = &"target_kind"
+var/target_kind/type = 2
+var/target_kind/value = 0
+var/target_kind/hint = 2
+var/target_kind/hint_string = "SILO,PLAYER,CHUTE"
+var/target_player/name = &"target_player"
+var/target_player/type = 24
+var/target_player/hint = 34
+var/target_player/hint_string = "Node3D"
+var/squad_index/name = &"squad_index"
+var/squad_index/type = 2
+var/squad_index/value = 0
+var/squad_index/hint = 0
+var/squad_index/hint_string = ""
+var/target_perched/name = &"target_perched"
+var/target_perched/type = 1
+var/target_perched/value = false
+var/target_perched/hint = 0
+var/target_perched/hint_string = ""
+var/perch_stand/name = &"perch_stand"
+var/perch_stand/type = 9
+var/perch_stand/value = Vector3(0, 0, 0)
+var/perch_stand/hint = 0
+var/perch_stand/hint_string = ""
+var/first_attack/name = &"first_attack"
+var/first_attack/type = 1
+var/first_attack/value = true
+var/first_attack/hint = 0
+var/first_attack/hint_string = ""
+
+[sub_resource type="BTAction" id="BTAction_2c3dw"]
+script = ExtResource("1_jsc2m")
+
+[sub_resource type="BBVariant" id="BBVariant_25v11"]
+type = 2
+saved_value = 2
+resource_name = "2"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_tqb57"]
+variable = &"target_kind"
+check_type = 5
+value = SubResource("BBVariant_25v11")
+custom_name = "Target isn't the chute"
+
+[sub_resource type="BTCondition" id="BTCondition_v8kjc"]
+script = ExtResource("2_5teka")
+
+[sub_resource type="BTAction" id="BTAction_s02pg"]
+script = ExtResource("3_68t1i")
+
+[sub_resource type="BTAction" id="BTAction_1vkwi"]
+script = ExtResource("4_g6w3j")
+
+[sub_resource type="BTAction" id="BTAction_q80k7"]
+script = ExtResource("5_vo4uj")
+
+[sub_resource type="BTSequence" id="BTSequence_dk2l3"]
+custom_name = "Bash the target"
+children = [SubResource("BTCheckVar_tqb57"), SubResource("BTCondition_v8kjc"), SubResource("BTAction_s02pg"), SubResource("BTAction_1vkwi"), SubResource("BTAction_q80k7")]
+
+[sub_resource type="BBVariant" id="BBVariant_imxdt"]
+type = 2
+saved_value = 2
+resource_name = "2"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_hkfyi"]
+variable = &"target_kind"
+value = SubResource("BBVariant_imxdt")
+custom_name = "Target is the chute"
+
+[sub_resource type="BTCondition" id="BTCondition_qr72m"]
+script = ExtResource("2_5teka")
+
+[sub_resource type="BTAction" id="BTAction_vbul0"]
+script = ExtResource("6_682nd")
+
+[sub_resource type="BTAction" id="BTAction_f2phu"]
+script = ExtResource("7_x8pxp")
+
+[sub_resource type="BTSequence" id="BTSequence_v4poj"]
+custom_name = "Steal grain (thieves, GDD 3.3)"
+children = [SubResource("BTCheckVar_hkfyi"), SubResource("BTCondition_qr72m"), SubResource("BTAction_vbul0"), SubResource("BTAction_f2phu")]
+
+[sub_resource type="BTCondition" id="BTCondition_pqoea"]
+script = ExtResource("8_2ppbx")
+
+[sub_resource type="BTAction" id="BTAction_sqc2i"]
+script = ExtResource("9_1ixxd")
+
+[sub_resource type="BTDynamicSequence" id="BTDynamicSequence_hml1n"]
+custom_name = "Keep squad formation (GDD 9.6)"
+children = [SubResource("BTCondition_pqoea"), SubResource("BTAction_sqc2i")]
+
+[sub_resource type="BTAction" id="BTAction_pukqq"]
+script = ExtResource("10_5vnrv")
+
+[sub_resource type="BTDynamicSelector" id="BTDynamicSelector_hs57f"]
+custom_name = "Pick what to do"
+children = [SubResource("BTSequence_dk2l3"), SubResource("BTSequence_v4poj"), SubResource("BTDynamicSequence_hml1n"), SubResource("BTAction_pukqq")]
+
+[sub_resource type="BTDynamicSequence" id="BTDynamicSequence_eh71b"]
+custom_name = "Melee"
+children = [SubResource("BTAction_2c3dw"), SubResource("BTDynamicSelector_hs57f")]
+
+[resource]
+description = "Melee class (GDD 9.6): the Nibbler, Clanker and Thumper. Every tick, [b]TrackTarget[/b] keeps the farmer target current, gives up on a farmer perched out of reach, and marks where to wait for one. Then the first branch that can run takes over: a hit (windup, strike, recovery) on the silo or the farmer once in reach; a thief's sack grab at the chute and its run for the corn; a squad follower keeping its slot in the triangle while the leader is far from the target; otherwise walking to the target. A started hit or theft always plays out: its branch comes first and is a plain sequence, so nothing interrupts it. The formation branch is a dynamic sequence: followers break formation the moment the leader nears the target."
+blackboard_plan = SubResource("BlackboardPlan_1ynov")
+root_task = SubResource("BTDynamicSequence_eh71b")
