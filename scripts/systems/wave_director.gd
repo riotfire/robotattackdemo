@@ -97,6 +97,10 @@ var mop_up_time: float = 0.0
 var active_lanes: PackedInt32Array = PackedInt32Array()
 ## This wave's robot family; rolled at the siren.
 var genome: RobotGenome = null
+## The wave's battle plans (M2-B11); empty before wave 8 and in authored waves.
+var plans: Array[BattlePlan] = []
+var plan_library: Array[BattlePlan] = []
+var _plan_history: Dictionary = {}
 var genome_history: Array[RobotGenome] = []
 ## The authored wave being played, or null for a generated one.
 var opening: OpeningWave = null
@@ -161,6 +165,7 @@ func _ready() -> void:
 	add_to_group(GROUP)
 	EventBus.game_over.connect(_on_game_over)
 	EventBus.robot_destroyed.connect(_on_robot_destroyed)
+	_load_plan_library()
 
 
 ## `tutorial` opens with Level 0 instead of the first intermission. `start_wave` is the phase checkpoint the
@@ -271,6 +276,9 @@ func _enter_siren(remaining: float) -> void:
 		_pick_opening_lanes()
 	else:
 		active_lanes = _pick_lanes(curve.lane_count(wave))
+	_roll_plans()
+	if _plans_pair_lanes():
+		active_lanes = _paired_lanes(active_lanes)
 	_roll_family()
 	_set_lanes_active(true)
 	_set_phase(Phase.SIREN)
@@ -279,7 +287,79 @@ func _enter_siren(remaining: float) -> void:
 	for lane in active_lanes:
 		names.append(lane_name(lane))
 	var haul := "  BIG HAUL!" if curve.is_big_haul(wave) else ""
-	EventBus.hud_message.emit("INCOMING! Wave %d from %s%s" % [wave, " and ".join(names), haul], 4.0)
+	var plan_text := "  %s!" % plan_title().trim_suffix("!") if not plans.is_empty() else ""
+	EventBus.hud_message.emit("INCOMING! Wave %d from %s%s%s" % [wave, " and ".join(names), haul, plan_text], 4.0)
+
+
+func _load_plan_library() -> void:
+	plan_library.clear()
+	var dir := "res://data/robots/battle_plans"
+	for file_name in DirAccess.get_files_at(dir):
+		if file_name.get_extension() == "tres":
+			var plan := ResourceLoader.load(dir.path_join(file_name)) as BattlePlan
+			if plan != null:
+				plan_library.append(plan)
+	plan_library.sort_custom(func(a: BattlePlan, b: BattlePlan) -> bool: return a.first_wave < b.first_wave or (a.first_wave == b.first_wave and a.id < b.id))
+
+
+## Rolls the wave's plans from its spawn stream (the same on every peer). Authored waves have none.
+func _roll_plans() -> void:
+	plans.clear()
+	if opening == null:
+		plans.assign(BattlePlan.choose(plan_library, wave, _plan_history, _archetype_ids(), _wave_rng))
+	var ids: Array[StringName] = []
+	for plan in plans:
+		ids.append(plan.id)
+	_plan_history[wave] = ids
+
+
+func _archetype_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for archetype in archetypes:
+		if archetype != null:
+			ids.append(archetype.id)
+	return ids
+
+
+## "Barrage! + Pincer", or "" with no plan.
+func plan_title() -> String:
+	var names := PackedStringArray()
+	for plan in plans:
+		names.append(plan.display_name)
+	return " + ".join(names)
+
+
+func _plans_pair_lanes() -> bool:
+	return plans.any(func(plan: BattlePlan) -> bool: return plan.paired_lanes)
+
+
+## Pincer: the first picked lane and the one facing it across the farm.
+func _paired_lanes(picked: PackedInt32Array) -> PackedInt32Array:
+	if picked.is_empty() or _lanes.size() < 2 or not _lanes.has(picked[0]):
+		return picked
+	var from := _lanes[picked[0]].global_position
+	from.y = 0.0
+	var best := picked[0]
+	var best_dot := 2.0
+	for index in _lanes:
+		if index == picked[0]:
+			continue
+		var to := (_lanes[index] as LaneMarker).global_position
+		to.y = 0.0
+		var d := from.normalized().dot(to.normalized())
+		if d < best_dot:
+			best_dot = d
+			best = index
+	var pair := PackedInt32Array([picked[0], best])
+	pair.sort()
+	return pair
+
+
+func _plan_product(getter: Callable) -> float:
+	var product := 1.0
+	for plan in plans:
+		product *= getter.call(plan)
+	return product
 
 
 ## The wave's family name card (GDD 10.2): rolled once per wave, logged in the Almanac.
@@ -634,12 +714,15 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 			climber = archetype
 		elif archetype.scene != null and archetype.id == &"rung_runner":
 			ladder = archetype
+		elif plans.any(func(plan: BattlePlan) -> bool: return plan.small_only) \
+				and archetype.robot_type != RobotArchetype.RobotType.SCOUT:
+			continue
 		else:
 			available.append(archetype)
 	if wave_number < curve.ladder_climber_first_wave:
 		ladder = null
 	var events: Array[SpawnEvent] = []
-	var budget := curve.threat_budget(wave_number)
+	var budget := curve.threat_budget(wave_number) * _plan_product(func(plan: BattlePlan) -> float: return plan.count_multiplier)
 	var heavies := 0
 	var heavy_cap := heavy_cap_for(wave_number)
 	var drone_count := 0
@@ -658,7 +741,7 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 		var single_budget := budget - _climber_reserve(wave_number, other_robots + 1, climber)
 		for archetype in available:
 			var is_heavy := archetype.robot_type == RobotArchetype.RobotType.HEAVY
-			var at_cap := archetype.id == &"drone" and drone_count >= drone_cap_for(wave_number)
+			var at_cap := archetype.id == &"drone" and drone_count >= drone_cap_for(wave_number) + _plan_drone_bonus()
 			if archetype.threat_cost() <= single_budget + 0.001 and not (is_heavy and heavies >= heavy_cap) and not at_cap:
 				options.append(archetype)
 		if options.is_empty():
@@ -684,14 +767,34 @@ func _build_spawn_events(wave_number: int) -> Array[SpawnEvent]:
 		if pick.id == &"drone":
 			drone_count += event.robot_count()
 	if climber != null:
-		var count := mini(maxi(1, curve.climber_count(wave_number, other_robots)), floori(budget / climber.threat_cost()))
+		var count := mini(maxi(1, _climber_count(wave_number, other_robots)), floori(budget / climber.threat_cost()))
 		var ladders := curve.ladder_climber_count(wave_number, count) if ladder != null else 0
 		events = _interleave_climbers(events, climber, count - ladders, ladder, ladders)
 	return events
 
 
 func _climber_reserve(wave_number: int, other_robots: int, climber: RobotArchetype) -> float:
-	return 0.0 if climber == null else float(maxi(1, curve.climber_count(wave_number, other_robots))) * climber.threat_cost()
+	return 0.0 if climber == null else float(maxi(1, _climber_count(wave_number, other_robots))) * climber.threat_cost()
+
+
+## Reserved climbers, scaled by the plans (Rooftop).
+func _climber_count(wave_number: int, other_robots: int) -> int:
+	var base := curve.climber_count(wave_number, other_robots)
+	return roundi(float(base) * _plan_product(func(plan: BattlePlan) -> float: return plan.climber_multiplier))
+
+
+func _plan_drone_bonus() -> int:
+	var bonus := 0
+	for plan in plans:
+		bonus += plan.drone_cap_bonus
+	return bonus
+
+
+func _plan_rooftop_cap(base: int) -> int:
+	var cap := base
+	for plan in plans:
+		cap = maxi(cap, plan.rooftop_cap)
+	return cap
 
 
 ## Spread solo climbers over the existing attack rather than putting a new cluster at its start or end.
@@ -737,7 +840,12 @@ func option_weights(options: Array[RobotArchetype], wave_number: int) -> PackedF
 		column_totals[int(archetype.robot_class)] += weight
 	var shares := curve.column_weights(wave_number)
 	if shares.size() < 3:
+		for i in options.size():
+			weights[i] *= _plan_column_factor(int(options[i].robot_class))
 		return weights
+	shares = shares.duplicate()
+	for column in 3:
+		shares[column] *= _plan_column_factor(column)
 	var present := 0.0
 	for column in 3:
 		if column_totals[column] > 0.0:
@@ -750,6 +858,10 @@ func option_weights(options: Array[RobotArchetype], wave_number: int) -> PackedF
 	return weights
 
 
+func _plan_column_factor(robot_class: int) -> float:
+	return _plan_product(func(plan: BattlePlan) -> float: return plan.column_weight(robot_class))
+
+
 ## A small ground melee pick becomes a Spitter with chance DifficultyCurve.spitter_share (from wave 13), if
 ## the budget covers one. Rolled from the wave's spawn stream only when the share is above 0, so earlier
 ## waves build the same spawns as before.
@@ -758,6 +870,8 @@ func roll_role(wave_number: int, pick: RobotArchetype, budget: float) -> RobotAr
 			or pick.robot_class != RobotArchetype.RobotClass.MELEE:
 		return pick
 	var share := curve.spitter_share(wave_number)
+	for plan in plans:
+		share += plan.spitter_share_bonus
 	if share <= 0.0 or _wave_rng.randf() >= share or spitter_archetype.threat_cost() > budget + 0.001:
 		return pick
 	return spitter_archetype
@@ -849,7 +963,7 @@ func _next_due_event_index(rooftop_live: int, ladder_live: int = 0) -> int:
 		if _schedule[i] > spawn_clock:
 			break
 		var id := _events[i].archetype.id
-		if id == &"roof_lobber" and rooftop_live >= rooftop_live_cap_for(wave):
+		if id == &"roof_lobber" and rooftop_live >= _plan_rooftop_cap(rooftop_live_cap_for(wave)):
 			continue
 		if id == &"rung_runner" and ladder_live >= ladder_live_cap_for(wave):
 			continue
@@ -861,7 +975,10 @@ func _next_due_event_index(rooftop_live: int, ladder_live: int = 0) -> int:
 func _spawn_event(event: SpawnEvent) -> void:
 	if active_lanes.is_empty() or robots_parent == null:
 		return
-	var lane := _lanes[active_lanes[_wave_rng.randi_range(0, active_lanes.size() - 1)]]
+	var lane_pick := _wave_rng.randi_range(0, active_lanes.size() - 1)
+	if _plans_pair_lanes():
+		lane_pick = spawns_done % active_lanes.size()
+	var lane := _lanes[active_lanes[lane_pick]]
 	var center := lane.spawn_position(_wave_rng.randf_range(-1.0, 1.0))
 	var count := event.robot_count()
 	var squad := RobotSquad.new() if count > 1 else null
@@ -882,6 +999,8 @@ func _spawn_robot(archetype: RobotArchetype, where: Vector3, foreman: bool, bonu
 	if NavigationServer3D.map_get_iteration_id(map) > 0:
 		where = NavigationServer3D.map_get_closest_point(map, where)
 	var robot := archetype.scene.instantiate() as Robot
+	robot.plan_thief_multiplier = _plan_product(func(plan: BattlePlan) -> float: return plan.thief_share_multiplier)
+	robot.plan_hp_multiplier = _plan_product(func(plan: BattlePlan) -> float: return plan.hp_multiplier)
 	robot.setup(archetype, wave, curve, _wave_rng, genome, foreman, bonus, squad, role, foreman_hp)
 	if robot is VerticalRobot and not roof.is_empty():
 		(robot as VerticalRobot).forced_roof = roof

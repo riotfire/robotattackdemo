@@ -1,0 +1,9 @@
+id,display_name,description,first_wave,melee_weight,ranged_weight,flight_weight,rooftop_cap,climber_multiplier,drone_cap_bonus,thief_share_multiplier,spitter_share_bonus,small_only,count_multiplier,hp_multiplier,paired_lanes,requires_archetype
+rush,Rush,Mostly melee.,8,2.5,0.3,0.3,,,,,,,,,,
+rooftop,Rooftop,Up to three Roof Lobbers on the roofs.,8,,,,3,1.6,,,,,,,,
+heist,Heist,More thieves; Spitters guard the chute.,8,,,,,,,1.5,0.15,,,,,
+sky_raid,Sky Raid,More Drones and fewer ground robots.,8,0.6,0.8,3,,,2,,,,,,,
+barrage,Barrage!,Ranged-heavy.,9,0.6,2.5,0.5,,,,,,,,,,
+swarm,Swarm,Small robots only: more of them with less HP.,11,,,,,,,,,true,1.4,0.7,,
+pincer,Pincer,Opposite lanes spawn together.,12,,,,,,,,,,,,true,
+siege,Siege,Longnecks with a screen of escorts.,16,,,,,,,,,,,,,longneck

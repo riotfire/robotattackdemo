@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BattlePlan" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/battle_plan.gd" id="1_wvgmt"]
+
+[resource]
+script = ExtResource("1_wvgmt")
+id = &"rush"
+display_name = "Rush"
+description = "Mostly melee."
+melee_weight = 2.5
+ranged_weight = 0.3
+flight_weight = 0.3

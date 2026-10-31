@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BattlePlan" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/battle_plan.gd" id="1_5x870"]
+
+[resource]
+script = ExtResource("1_5x870")
+id = &"barrage"
+display_name = "Barrage!"
+description = "Ranged-heavy."
+first_wave = 9
+melee_weight = 0.6
+ranged_weight = 2.5
+flight_weight = 0.5

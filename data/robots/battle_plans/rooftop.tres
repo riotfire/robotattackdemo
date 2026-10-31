@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattlePlan" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/battle_plan.gd" id="1_sq04c"]
+
+[resource]
+script = ExtResource("1_sq04c")
+id = &"rooftop"
+display_name = "Rooftop"
+description = "Up to three Roof Lobbers on the roofs."
+rooftop_cap = 3
+climber_multiplier = 1.6

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattlePlan" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/battle_plan.gd" id="1_rslui"]
+
+[resource]
+script = ExtResource("1_rslui")
+id = &"pincer"
+display_name = "Pincer"
+description = "Opposite lanes spawn together."
+first_wave = 12
+paired_lanes = true

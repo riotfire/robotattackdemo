@@ -14,6 +14,7 @@ const PALETTES := "robots/palettes"
 const THEMES := "robots/themes"
 const TRAITS := "robots/traits"
 const ATTACKS := "robots/attacks"
+const BATTLE_PLANS := "robots/battle_plans"
 const OPENING_WAVES := "opening/waves"
 const OPENING_GROUPS := "opening/groups"
 const DEFENSES := "defenses"
@@ -468,6 +469,16 @@ func traits() -> Array[RobotTrait]:
 		var robot_trait := RobotTrait.new()
 		fill(robot_trait, row)
 		result.append(robot_trait)
+	return result
+
+
+## Battle plans (M2-B11): one column per BattlePlan property.
+func battle_plans() -> Array[BattlePlan]:
+	var result: Array[BattlePlan] = []
+	for row in _unique_rows(BATTLE_PLANS):
+		var plan := BattlePlan.new()
+		fill(plan, row)
+		result.append(plan)
 	return result
 
 

@@ -312,6 +312,8 @@ func _update_wave() -> void:
 	_robots_label.add_theme_color_override(&"font_color", Color(1.0, 0.55, 0.45) if thieves > 0 else INK)
 	var in_fight := director.phase in [WaveDirector.Phase.SIREN, WaveDirector.Phase.SPAWNING, WaveDirector.Phase.MOP_UP]
 	_family_label.text = director.genome.family_name if director.genome != null and in_fight else ""
+	if not _family_label.text.is_empty() and not director.plans.is_empty():
+		_family_label.text += " - " + director.plan_title().trim_suffix("!") + "!"
 	_family_label.visible = not _family_label.text.is_empty()
 	var preparing := director.phase in [WaveDirector.Phase.INTERMISSION, WaveDirector.Phase.SIREN]
 
@@ -667,6 +669,8 @@ func _on_family_revealed(genome: Resource) -> void:
 	if family == null:
 		return
 	_name_card_title.text = family.family_name.to_upper()
+	if director != null and not director.plans.is_empty():
+		_name_card_title.text += " - " + director.plan_title().trim_suffix("!").to_upper() + "!"
 	var traits := family.trait_names()
 	_name_card_detail.text = "Family code %s   ·   %s   ·   %s" % [family.family_code,
 			"Traits: " + ", ".join(traits) if not traits.is_empty() else "No traits",

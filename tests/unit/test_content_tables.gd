@@ -24,6 +24,7 @@ func test_tables_read_without_errors() -> void:
 	tables.themes(tables.palettes())
 	tables.traits()
 	tables.attacks()
+	tables.battle_plans()
 	tables.opening_waves()
 	tables.defenses()
 	assert_true(tables.errors.is_empty(), "table errors:\n" + "\n".join(tables.errors))
@@ -78,6 +79,8 @@ func test_robot_data_matches_the_tables() -> void:
 			return ContentTables.robot_path("themes", theme.id)), "the gene library lists every theme, in table order")
 	for profile in tables.attacks():
 		_assert_matches_file(profile, ContentTables.robot_path("attacks", profile.id), "build_robot_data.gd")
+	for plan in tables.battle_plans():
+		_assert_matches_file(plan, ContentTables.robot_path("battle_plans", plan.id), "build_robot_data.gd")
 	for archetype in tables.archetypes():
 		if archetype.robot_class != RobotArchetype.RobotClass.MELEE:
 			assert_not_null(archetype.ranged_attack(), "%s names an attack profile that exists" % archetype.id)

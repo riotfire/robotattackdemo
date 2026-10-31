@@ -26,6 +26,7 @@ func _initialize() -> void:
 	tables.themes(palettes) # Only to check the rows; the saved themes are built below.
 	var traits := tables.traits()
 	var attacks := tables.attacks()
+	var plans := tables.battle_plans()
 	if not tables.errors.is_empty():
 		for message in tables.errors:
 			printerr(message)
@@ -33,10 +34,10 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	for kind in ["palettes", "themes", "traits", "archetypes", "attacks"]:
+	for kind in ["palettes", "themes", "traits", "archetypes", "attacks", "battle_plans"]:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(ContentTables.ROBOT_DIR.path_join(kind)))
 	# Loading the old files tells every resource they reference its ext_resource id for that file.
-	for kind in ["palettes", "themes", "traits", "attacks"]:
+	for kind in ["palettes", "themes", "traits", "attacks", "battle_plans"]:
 		var dir := ContentTables.ROBOT_DIR.path_join(kind)
 		for file_name in DirAccess.get_files_at(dir):
 			if file_name.get_extension() == "tres":
@@ -59,6 +60,10 @@ func _initialize() -> void:
 	for profile in attacks:
 		_save(profile, ContentTables.robot_path("attacks", profile.id))
 		attack_ids.append(profile.id)
+	var plan_ids: Array[StringName] = []
+	for plan in plans:
+		_save(plan, ContentTables.robot_path("battle_plans", plan.id))
+		plan_ids.append(plan.id)
 	library.themes = saved_themes
 	library.traits = saved_traits
 	_save(library, ContentTables.GENE_LIBRARY_PATH)
@@ -73,11 +78,12 @@ func _initialize() -> void:
 	_remove_stale("themes", saved_themes.map(func(theme: FamilyTheme) -> StringName: return theme.id))
 	_remove_stale("traits", saved_traits.map(func(robot_trait: RobotTrait) -> StringName: return robot_trait.id))
 	_remove_stale("attacks", attack_ids)
+	_remove_stale("battle_plans", plan_ids)
 	var removed := ContentTables.remove_stale(ContentTables.ROBOT_DIR.path_join("archetypes"), archetype_files)
 	if not removed.is_empty():
 		print("Removed archetypes/%s" % ", archetypes/".join(removed))
-	print("Wrote %d archetypes, %d attacks, %d palettes, %d themes, %d traits and the gene library to %s" % [
-			archetype_files.size(), attacks.size(), saved_palettes.size(), saved_themes.size(), saved_traits.size(),
+	print("Wrote %d archetypes, %d battle plans, %d attacks, %d palettes, %d themes, %d traits and the gene library to %s" % [
+			archetype_files.size(), plans.size(), attacks.size(), saved_palettes.size(), saved_themes.size(), saved_traits.size(),
 			ContentTables.ROBOT_DIR])
 	quit(0)
 

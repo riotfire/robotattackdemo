@@ -20,6 +20,7 @@ Then run the unit tests (`godot --headless --path . -s addons/gut/gut_cmdln.gd`)
 | `robots/themes/` | `data/robots/themes/<id>.tres` | `build_robot_data.gd` |
 | `robots/traits/` | `data/robots/traits/<id>.tres` and the gene library's lists | `build_robot_data.gd` |
 | `robots/attacks/` | `data/robots/attacks/<id>.tres` | `build_robot_data.gd` |
+| `robots/battle_plans/` | `data/robots/battle_plans/<id>.tres` | `build_robot_data.gd` |
 
 ## How the tables work
 

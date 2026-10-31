@@ -72,6 +72,9 @@ var genome: RobotGenome
 var family_code: String = ""
 var wave: int = 1
 var is_foreman: bool = false
+## Battle plan modifiers, set by the director before setup().
+var plan_thief_multiplier: float = 1.0
+var plan_hp_multiplier: float = 1.0
 var foreman_title: String = ""
 ## Traits on top of the family's (the Foreman's bonus trait).
 var extra_traits: Array[RobotTrait] = []
@@ -178,7 +181,7 @@ func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyC
 	family_code = family.family_code if family != null else ""
 	is_foreman = foreman
 	extra_traits = bonus_traits
-	hp_multiplier = curve.hp_multiplier(wave) * (FOREMAN_HP_MULTIPLIER if foreman else 1.0)
+	hp_multiplier = curve.hp_multiplier(wave) * (FOREMAN_HP_MULTIPLIER if foreman else plan_hp_multiplier)
 	damage_multiplier = curve.damage_multiplier(wave)
 	attack_tokens = curve.farmer_attack_tokens(wave)
 	charge_multiplier = curve.charge_multiplier(wave)
@@ -217,7 +220,7 @@ func setup(robot_archetype: RobotArchetype, wave_number: int, curve: DifficultyC
 		if archetype.robot_class == RobotArchetype.RobotClass.MELEE \
 				and archetype.robot_type == RobotArchetype.RobotType.SCOUT:
 			var thieving := all_traits().any(func(t: RobotTrait) -> bool: return t.thieving)
-			steal_chance = curve.thief_chance(wave, archetype.silo_focus, thieving)
+			steal_chance = curve.thief_chance(wave, archetype.silo_focus, thieving) * plan_thief_multiplier
 		if spawn_role == &"thief" and not foreman:
 			# The authored teaching thief always goes for the chute.
 			targeting.hunter = false

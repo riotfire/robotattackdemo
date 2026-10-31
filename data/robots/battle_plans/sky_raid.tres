@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BattlePlan" format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/battle_plan.gd" id="1_e6v82"]
+
+[resource]
+script = ExtResource("1_e6v82")
+id = &"sky_raid"
+display_name = "Sky Raid"
+description = "More Drones and fewer ground robots."
+melee_weight = 0.6
+ranged_weight = 0.8
+flight_weight = 3.0
+drone_cap_bonus = 2
