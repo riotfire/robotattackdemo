@@ -16,11 +16,18 @@ var _silo: Silo
 var _silo_before: Silo
 var _director: WaveDirector
 var _manager: ConstructionManager
+var _workshop: DefenseWorkshop
+var _farmer: Farmer
+var _saved_intros: Array[String] = []
+var _saved_profile: String
 var _levels: Dictionary = {}
 var _parts: Dictionary = {}
 
 
 func before_each() -> void:
+	_saved_intros = SaveManager.seen_intros.duplicate()
+	_saved_profile = SaveManager.profile_path
+	SaveManager.profile_path = OS.get_temp_dir().path_join("gut_defenses_%d.json" % OS.get_process_id())
 	_silo_before = GameState.silo
 	_levels = StatService.levels.duplicate()
 	_parts = GameState.parts.duplicate()
@@ -45,6 +52,14 @@ func before_each() -> void:
 	_manager = ConstructionManager.new()
 	_manager.director = _director
 	_world.add_child(_manager)
+	_workshop = DefenseWorkshop.new()
+	_world.add_child(_workshop)
+	_workshop.position = Vector3(45.0, 0.0, 0.0)
+	_manager.workshop = _workshop
+	_farmer = (load("res://scenes/player/farmer.tscn") as PackedScene).instantiate() as Farmer
+	_world.add_child(_farmer)
+	_farmer.set_physics_process(false)
+	_farmer.global_position = Vector3(-80.0, 0.0, -80.0)
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	_manager.set_physics_process(false)
@@ -58,6 +73,9 @@ func before_each() -> void:
 
 func after_each() -> void:
 	_manager.settle_run_end()
+	DirAccess.remove_absolute(SaveManager.profile_path)
+	SaveManager.profile_path = _saved_profile
+	SaveManager.seen_intros = _saved_intros
 	StatService.set_levels(_levels)
 	for key: StringName in _parts:
 		GameState.parts[key] = _parts[key]
@@ -93,10 +111,25 @@ func _catwalk(definition: DefenseDefinition, degrees: float) -> ConstructionMana
 	return _manager.spot_at(at, Vector3.FORWARD, definition, at.y)
 
 
-## Places `definition` at `spot` and returns the site it stands on.
+## Queues a paid copy at the workbench, then walks away so assembly runs unassisted.
+func _queue(definition: DefenseDefinition) -> DefenseSite:
+	_farmer.global_position = _workshop.interaction_point()
+	assert_eq(_manager.craft(definition, _farmer), "", "%s queued at the stables" % definition.display_name)
+	var site := _manager.jobs[-1].site if not _manager.jobs.is_empty() else null
+	_farmer.global_position = Vector3(-80.0, 0.0, -80.0)
+	return site
+
+
+## Behavior fixtures go through the full workshop → pickup → deployment lifecycle.
 func _place(definition: DefenseDefinition, spot: ConstructionManager.Spot) -> DefenseSite:
-	assert_eq(_manager.place(definition, spot, null), "", "%s placed" % definition.display_name)
-	return _manager.jobs[-1].site if not _manager.jobs.is_empty() else null
+	var stock := _queue(definition)
+	_work(definition.assembly_time + 0.1)
+	_farmer.global_position = stock.global_position
+	assert_true(_manager.pick_up(stock, _farmer))
+	_manager._stop_placing()
+	assert_eq(_manager.put_down(spot), "", "%s deployed" % definition.display_name)
+	_farmer.global_position = Vector3(-80.0, 0.0, -80.0)
+	return _manager.sites[-1]
 
 
 func test_the_starter_defenses_match_the_plan() -> void:
@@ -141,26 +174,26 @@ func test_the_catwalk_is_the_ring_the_climbers_walk() -> void:
 
 
 func test_a_blueprint_reserves_its_cost_and_one_job_works_at_a_time() -> void:
-	var east := _place(_spring(), _catwalk(_spring(), 28.0))
+	var east := _queue(_spring())
 	assert_eq(GameState.parts[&"al"], 88, "the whole cost is reserved at once")
-	_place(_barricade(), _catwalk(_barricade(), -28.0))
+	_queue(_barricade())
 	assert_eq(_manager.capacity_used(), 4, "jobs reserve capacity too")
 	_work(5.0)
 	assert_almost_eq(_manager.jobs[0].fraction(), 0.5, 0.02, "the first job advances")
 	assert_eq(_manager.jobs[1].done, 0.0, "the one behind it waits")
 	_work(5.5)
-	assert_true(east.occupant.active, "a finished copy is live")
+	assert_true(east.occupant.ready_for_pickup and not east.occupant.active, "a finished copy waits inactive for pickup")
 	assert_eq(_manager.jobs.size(), 1, "the next job takes over")
 
 
 func test_capacity_and_the_queue_limit_refuse_more() -> void:
 	for i in 3:
-		_place(_decoy(), _ground(_decoy(), Vector3(20.0 + i * 3.0, 0.0, 0.0)))
+		_queue(_decoy())
 	assert_ne(_manager.placement_problem(_decoy(), _ground(_decoy(), Vector3(29.0, 0.0, 0.0))), "",
 			"one active job and two waiting at most")
 	_work(16.0)
-	_place(_spring(), _ground(_spring(), Vector3(29.0, 0.0, 0.0)))
-	_place(_spring(), _ground(_spring(), Vector3(32.0, 0.0, 0.0)))
+	_queue(_spring())
+	_queue(_spring())
 	_work(25.0)
 	assert_eq(_manager.capacity_used(), 7)
 	assert_string_contains(_manager.placement_problem(_spring(), _ground(_spring(), Vector3(40.0, 0.0, 10.0))), "capacity",
@@ -168,12 +201,12 @@ func test_capacity_and_the_queue_limit_refuse_more() -> void:
 
 
 func test_cancelling_refunds_only_the_unbuilt_share() -> void:
-	var site := _place(_spring(), _catwalk(_spring(), 28.0))
+	var site := _queue(_spring())
 	var refund := _manager.cancel(site)
 	assert_eq(refund.get(&"al", 0), 12, "nothing built yet: everything back")
 	assert_eq(GameState.parts[&"al"], 100)
 	assert_eq(_manager.sites.size(), 0, "and the spot is gone with it")
-	site = _place(_spring(), _catwalk(_spring(), 28.0))
+	site = _queue(_spring())
 	_work(5.0)
 	refund = _manager.cancel(site)
 	assert_eq(refund.get(&"al", 0), 6, "half built: the unbuilt half back, the work is lost")
@@ -188,11 +221,11 @@ func test_nothing_is_free() -> void:
 	StatService.set_levels({})
 	GameState.parts[&"al"] = 100
 	assert_string_contains(_manager.placement_problem(_spring(), _catwalk(_spring(), 28.0)), "recipe",
-			"and the recipe is bought at the shed first")
+			"and the recipe must be learned first")
 
 
 func test_the_siren_freezes_unfinished_work_until_the_next_intermission() -> void:
-	var east := _place(_spring(), _catwalk(_spring(), 28.0))
+	var east := _queue(_spring())
 	_work(4.0)
 	_director.phase = WaveDirector.Phase.SIREN
 	_manager._on_wave_phase_changed(WaveDirector.Phase.SIREN, 1)
@@ -203,11 +236,11 @@ func test_the_siren_freezes_unfinished_work_until_the_next_intermission() -> voi
 	assert_ne(_manager.placement_problem(_decoy(), _catwalk(_decoy(), -28.0)), "", "nothing new can be placed")
 	_director.phase = WaveDirector.Phase.INTERMISSION
 	_work(6.5)
-	assert_true(east.occupant.active, "it resumes and finishes in the next intermission")
+	assert_true(east.occupant.ready_for_pickup and not east.occupant.active, "it finishes at the pickup rack next intermission")
 
 
 func test_the_run_end_refunds_unfinished_work_once() -> void:
-	_place(_spring(), _catwalk(_spring(), 28.0))
+	_queue(_spring())
 	_work(2.5)
 	_manager.settle_run_end()
 	assert_eq(GameState.parts[&"al"], 88 + 9, "a quarter built: three quarters of 12 Al back")
@@ -312,3 +345,46 @@ func test_a_ground_decoy_lures_a_few_but_never_thieves_or_foremen() -> void:
 	robots[1]._update_defense_target(decoy.definition.lure_time + 0.1)
 	assert_ne(robots[1].target_defense, decoy, "each lure runs out")
 	assert_false(robots[1].can_be_lured_by(decoy), "and it ignores decoys for a while after")
+
+
+func test_crafting_and_pickup_require_a_visit_to_the_stables() -> void:
+	var al := GameState.parts[&"al"]
+	assert_string_contains(_manager.craft(_spring(), _farmer), "stables")
+	assert_eq(GameState.parts[&"al"], al, "remote attempts cost nothing")
+	assert_string_contains(_manager.place(_spring(), _catwalk(_spring(), 28.0), _farmer), "stables")
+	var stock := _queue(_spring())
+	assert_false(_manager.pick_up(stock, _farmer), "unfinished copies cannot be collected")
+	_work(10.1)
+	assert_false(_manager.pick_up(stock, _farmer), "finished copies cannot be collected remotely")
+	assert_eq(_manager.capacity_used(), 2, "ready stock still reserves capacity")
+	_farmer.global_position = stock.global_position
+	Input.action_press(&"interact")
+	assert_true(_manager.collect_stock(stock, _farmer))
+	_manager._update_placing()
+	assert_true(_manager.in_hand != null, "the pickup press cannot also confirm a placement")
+	Input.action_release(&"interact")
+	assert_true(_manager.is_placing() and _manager.in_hand != null, "pickup starts carrying and placement")
+	var blocked := _catwalk(_spring(), 28.0)
+	blocked.problem = "Something is in the way"
+	assert_ne(_manager.put_down(blocked), "")
+	assert_eq(_manager.capacity_used(), 2, "invalid placement doesn't duplicate capacity")
+	assert_eq(_manager.put_down(_catwalk(_spring(), 28.0)), "")
+	assert_eq(GameState.parts[&"al"], al - 12, "pay once at the workbench, never again on placement")
+	assert_true(_manager.jobs.is_empty(), "a finished kit needs no second assembly")
+	assert_true(_manager.sites[-1].occupant.active)
+
+
+func test_cancel_or_siren_returns_a_carried_kit_to_the_pickup_rack() -> void:
+	var stock := _queue(_spring())
+	_work(10.1)
+	_farmer.global_position = stock.global_position
+	assert_true(_manager.collect_stock(stock, _farmer))
+	_manager._cancel_placing()
+	assert_true(stock.occupant.ready_for_pickup and not stock.occupant.active)
+	assert_eq(_manager.capacity_used(), 2)
+	assert_true(_manager.collect_stock(stock, _farmer))
+	_director.phase = WaveDirector.Phase.SIREN
+	_manager._on_wave_phase_changed(WaveDirector.Phase.SIREN, 1)
+	assert_true(_manager.in_hand == null and stock.occupant.ready_for_pickup and not stock.occupant.active)
+	assert_false(_manager.is_placing())
+	assert_eq(GameState.parts[&"al"], 88, "returning a finished kit creates no refund")

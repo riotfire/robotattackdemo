@@ -8,6 +8,8 @@ extends Interactable
 const GROUP_SITES: StringName = &"defense_sites"
 const KINDS: Array[StringName] = DefenseDefinition.SITE_KINDS
 
+## Nonnegative for a copy assembling or waiting on the stables pickup rack.
+var workshop_slot: int = -1
 ## &"ground", &"catwalk" or &"roof".
 var kind: StringName = &"ground"
 var site_id: StringName = &""
@@ -55,12 +57,17 @@ func prompt_text(_farmer: Farmer) -> String:
 		return prompt
 	if not _manager.is_open():
 		return "%s · options at the intermission" % _occupant_text()
+	if workshop_slot >= 0 and _manager.job_at(self) == null:
+		return "%s · pick up and carry" % occupant.definition.display_name
 	return "%s · E: options" % _occupant_text()
 
 
 func interact(farmer: Farmer) -> void:
 	if _manager != null and not is_empty():
-		_manager.open_menu(self, farmer)
+		if workshop_slot >= 0 and _manager.job_at(self) == null:
+			_manager.collect_stock(self, farmer)
+		else:
+			_manager.open_menu(self, farmer)
 
 
 func _occupant_text() -> String:

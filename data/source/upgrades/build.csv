@@ -1,5 +1,5 @@
 id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,description
-build.spring_trap,build,0,0,Spring Trap,1,,al 15,defense.spring_trap flag,"Recipe: a spring that throws small robots up and back (12 Al a copy). On the catwalk the fall hurts. Press Tab in an intermission to build one where you stand."
+build.spring_trap,build,0,0,Spring Trap,1,,al 15,defense.spring_trap flag,"Recipe: a spring that throws small robots up and back (12 Al a copy). On the catwalk the fall hurts. Build each copy at the stables workshop then pick it up and carry it to a green placement spot."
 build.decoy,build,1,0,Scarecrow Decoy,1,build.spring_trap,al 15,defense.scarecrow_decoy flag,"Recipe: a scarecrow that pulls a few nearby robots off the silo (6 Al a copy). On the catwalk it pulls climbers; on a roof, Lobbers."
 build.barricade,build,2,0,Scrap Barricade,1,build.spring_trap,al 20,defense.scrap_barricade flag,"Recipe: a scrap wall robots must smash before going on (8 Al a copy). On the catwalk it turns climbers the other way."
 build.quick_assembly,build,0,1,Quick Assembly,2,build.spring_trap,al_cu 15,defense.build_rate add_pct 0.25,+25% construction speed per level: a 10 s spring builds in 8 s.

@@ -3,7 +3,7 @@ extends Resource
 ## One buildable defense (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md): its recipe flag, the price of
 ## each physical copy, the share of the farm's defense capacity it takes, its assembly time and durability,
 ## and the numbers its behavior reads. Generated into data/defenses/ from data/source/defenses/items by
-## tools/build_defense_data.gd. Owning the recipe is lasting progression (a pegboard node sets the flag);
+## tools/build_defense_data.gd. Owning the recipe is lasting progression (the workshop or a pegboard node sets the flag);
 ## every copy costs parts again, and a destroyed copy stays spent.
 
 enum Kind { SPRING_TRAP, DECOY, BARRICADE }

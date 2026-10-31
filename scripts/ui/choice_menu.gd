@@ -1,6 +1,6 @@
 class_name ChoiceMenu
 extends CanvasLayer
-## A small in-world menu: a title, a line of status and a short list of choices. The build menu (Tab) and a
+## A small in-world menu: a title, a line of status and a short list of choices. The stables workshop and a
 ## placed defense's options use it. The game keeps running while it is open (the intermission clock never
 ## stops for shopping or building); the farmer just stops taking input.
 ## W/S, the arrows, the D-pad or the left stick move the cursor; hold Interact, Enter or A (or the mouse on a
@@ -22,6 +22,7 @@ const PICK := Color(1.0, 0.8, 0.3)
 var close_actions: Array[StringName] = []
 var farmer: Farmer = null
 
+var _mouse_mode_before: int = Input.MOUSE_MODE_CAPTURED
 var _entries: Array[Dictionary] = []
 var _rows: Array[Label] = []
 var _cursor: int = 0
@@ -50,6 +51,8 @@ func is_open() -> bool:
 
 
 func open(owner_farmer: Farmer, title: String, entries: Array[Dictionary], anchor: Node3D = null) -> void:
+	_mouse_mode_before = Input.mouse_mode
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	farmer = owner_farmer
 	_anchor = anchor
 	_title.text = title
@@ -67,6 +70,7 @@ func close() -> void:
 	if not is_open():
 		return
 	_root.visible = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if GameState.is_game_over or get_tree().paused else _mouse_mode_before
 	_hold_bar.visible = false
 	if farmer != null and is_instance_valid(farmer):
 		farmer.input.enabled = true
@@ -81,6 +85,7 @@ func set_subtitle(text: String) -> void:
 
 ## Replaces the choices, keeping the cursor on the same row where it can.
 func set_entries(entries: Array[Dictionary]) -> void:
+	var previous_id: String = str(_entries[_cursor].get("id", "")) if not _entries.is_empty() else ""
 	_entries = entries
 	if _rows.size() != entries.size():
 		for row in _rows:
@@ -97,6 +102,10 @@ func set_entries(entries: Array[Dictionary]) -> void:
 			_list.add_child(row)
 			_rows.append(row)
 	_cursor = clampi(_cursor, 0, maxi(0, entries.size() - 1))
+	var current_id: String = str(_entries[_cursor].get("id", "")) if not _entries.is_empty() else ""
+	if previous_id != current_id:
+		_hold = 0.0
+		_needs_release = true
 	_restyle()
 
 
@@ -218,7 +227,7 @@ func _build() -> void:
 	_hold_bar.visible = false
 	box.add_child(_hold_bar)
 	var hint := _label(box, 13, INK_DIM)
-	hint.text = "W/S choose   ·   hold E / (A) or click to pick   ·   Esc / (B) close   ·   the clock keeps running"
+	hint.text = "W/S choose   ·   hold E / (A) / left click   ·   Esc / (B) close   ·   the clock keeps running"
 
 
 func _label(parent: Control, font_size: int, color: Color) -> Label:

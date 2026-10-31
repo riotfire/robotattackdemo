@@ -40,6 +40,8 @@
 [ext_resource type="Script" uid="uid://duu1sntgqjsmr" path="res://scripts/systems/time_of_day.gd" id="39_tday1"]
 [ext_resource type="Resource" path="res://data/environment/environment_table.tres" id="40_envt1"]
 
+[ext_resource type="Script" path="res://scripts/systems/construction/defense_workshop.gd" id="workshop_script"]
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_rbgwc"]
 seed = 7
 frequency = 0.008
@@ -5063,3 +5065,7 @@ table = ExtResource("40_envt1")
 world_environment = NodePath("../WorldEnvironment")
 sun = NodePath("../Sun")
 weather = NodePath("../Weather")
+
+[node name="DefenseWorkshop" type="Node3D" parent="NavRegion/Stables"]
+position = Vector3(0, 0, 7)
+script = ExtResource("workshop_script")

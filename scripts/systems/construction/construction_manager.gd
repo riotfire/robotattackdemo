@@ -1,30 +1,10 @@
 class_name ConstructionManager
 extends Node
-## Intermission construction (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md slices 3-5). Run-scoped:
-## the copies, jobs and placements live in the scene and a new run starts empty. Recipes are lasting
-## progression (pegboard flags, bought at the tool shed); every copy costs parts. Nothing is ever free.
-##
-## Placement is free-form (playtest feedback 2026-10-26: no marked spots). During an intermission the farmer
-## presses Build (Tab / Back) wherever they are, picks a recipe, and a ghost of it stands PLACE_DISTANCE in
-## front of them. It shows green where it fits and red where it would overlap a building, the silo, a robot or
-## another defense, or where there is no floor. Interact or Fire builds it there; Build again cancels. The
-## camera's facing sets the way a spring throws and the way a barricade faces; on the silo's first catwalk
-## both follow the ring instead (springs throw off the edge, barricades close the walkway).
-##
-## The rules, as the proposal sets them:
-##   * Only the intermission builds. The siren closes construction, placement, relocation, repairs and
-##     salvage; an unfinished job freezes, does nothing in battle (a ghost) and resumes next intermission.
-##   * Confirming a placement reserves its whole cost and its capacity at once. One job advances at a time
-##     while the farmer does anything else; at most MAX_WAITING more wait behind it. Standing next to the
-##     job lends a hand (ASSIST_RATE). Quick Assembly raises the work rate; nothing skips it.
-##   * Capacity (8, More Room adds) caps how much a wealthy profile can automate. Jobs reserve it too.
-##   * Cancelling refunds only the unbuilt share of what was reserved. The run's end refunds every
-##     unfinished job's unbuilt share, once.
-##   * A finished copy can be moved in a later intermission (no parts, relocate_share of the assembly time
-##     again), be repaired for Aluminium, or be dismantled for half its price times its condition, so selling
-##     and rebuilding never pays or heals for free.
-## Every copy stands on its own DefenseSite: an anchor made where it was placed, holding the spot's kind and
-## the way it faces, and the thing the farmer interacts with to move, repair or dismantle it.
+## Defenses are paid for and assembled at the stables workshop. Finished copies wait there, inactive,
+## until a farmer picks one up and carries it out for free placement. Recipes remain lasting progression;
+## copies, queue, pickup stock and deployed defenses are run-scoped. Existing relocation, repair, salvage,
+## capacity and siren cutoff rules still apply. Cancelling a carried copy or hearing the siren returns it
+## to its origin (the workshop rack for a new copy). Placement of an already assembled kit is instant.
 
 signal changed
 
@@ -60,6 +40,11 @@ const CATWALK_PLACE_DISTANCE: float = 1.6
 
 @export var director: WaveDirector
 
+const RECIPE_IDS: Dictionary[StringName, StringName] = {&"spring_trap": &"build.spring_trap",
+	&"scarecrow_decoy": &"build.decoy", &"scrap_barricade": &"build.barricade"}
+const WORKSHOP_LESSON := "defense_workshop_placed"
+
+var workshop: DefenseWorkshop = null
 var definitions: Array[DefenseDefinition] = []
 ## One per copy standing on the farm (finished or unfinished), plus the origin of a copy being moved.
 var sites: Array[DefenseSite] = []
@@ -70,18 +55,19 @@ var in_hand: Defense = null
 var _in_hand_from: DefenseSite = null
 var _menu: ChoiceMenu = null
 var _menu_site: DefenseSite = null
+var _at_workshop: bool = false
 var _settled: bool = false
 var _sites_root: Node3D
 var _menu_refresh_left: float = 0.0
 var _next_site: int = 0
-## Placement mode: the farmer placing, and what (a recipe, or the copy in hand when `_placing_definition`
-## is null). `last_spot` is the ghost's current spot, for the HUD.
+## The farmer carrying a finished copy. `last_spot` is the current preview spot, for the HUD.
 var _placer: Farmer = null
-var _placing_definition: DefenseDefinition = null
 var _preview: PlacementPreview = null
 var last_spot: Spot = null
 ## Holds the farmer's weapons and interaction off until the button that confirmed a placement is let go.
 var _release_wait: Farmer = null
+## Pickup uses Interact too: require its release before accepting a placement press.
+var _placement_needs_release: bool = false
 
 
 ## Unfinished work on a site. `ghost` is the inactive copy standing there.
@@ -128,6 +114,7 @@ func _ready() -> void:
 	_sites_root.name = "Defenses"
 	add_child(_sites_root)
 	EventBus.wave_phase_changed.connect(_on_wave_phase_changed)
+	_find_workshop.call_deferred()
 
 
 func _exit_tree() -> void:
@@ -398,26 +385,63 @@ func placement_problem(defense_definition: DefenseDefinition, spot: Spot = null)
 	return ""
 
 
-## Reserves the parts and capacity and queues the job at `spot`. Returns "" or why it couldn't.
-func place(defense_definition: DefenseDefinition, spot: Spot, farmer: Node) -> String:
-	var problem := placement_problem(defense_definition, spot)
+func _find_workshop() -> void:
+	if not is_instance_valid(workshop):
+		workshop = get_tree().get_first_node_in_group(DefenseWorkshop.GROUP_WORKSHOP) as DefenseWorkshop
+
+
+func at_workshop(farmer: Node3D) -> bool:
+	_find_workshop()
+	return is_instance_valid(workshop) and is_instance_valid(farmer) \
+			and farmer.global_position.distance_to(workshop.interaction_point()) <= workshop.interact_range
+
+
+## Physical copies can only enter the build queue at the stables, with the buyer present.
+func craft(defense_definition: DefenseDefinition, farmer: Node3D) -> String:
+	if not at_workshop(farmer):
+		return "Build defenses at the stables workshop"
+	var problem := placement_problem(defense_definition)
 	if not problem.is_empty():
 		return problem
+	var slot := 0
+	while sites.any(func(site: DefenseSite) -> bool: return site.workshop_slot == slot):
+		slot += 1
+	var spot := Spot.new()
+	spot.position = workshop.stock_position(slot)
 	var site := _add_site(spot, defense_definition)
+	site.workshop_slot = slot
 	var job := Job.new()
 	job.definition = defense_definition
 	job.site = site
 	job.work = defense_definition.assembly_time
 	job.reserved = defense_definition.cost()
-	var spend := {}
-	for part: StringName in job.reserved:
-		spend[part] = -job.reserved[part]
-	GameState.add_parts(spend)
+	GameState.add_parts({&"al": -defense_definition.cost_al})
 	job.ghost = _make_defense(defense_definition, site, farmer)
 	jobs.append(job)
 	SaveManager.save_profile()
 	_changed()
 	return ""
+
+
+## A placement consumes a physical copy already picked up; it cannot manufacture a remote copy.
+func place(defense_definition: DefenseDefinition, spot: Spot, _farmer: Node) -> String:
+	if in_hand == null or in_hand.definition != defense_definition:
+		return "Build and pick up a defense at the stables first"
+	return put_down(spot)
+
+
+func ready_stock() -> Array[DefenseSite]:
+	return sites.filter(func(site: DefenseSite) -> bool: return site.workshop_slot >= 0 \
+			and not site.is_empty() and job_at(site) == null)
+
+
+func collect_stock(site: DefenseSite, farmer: Farmer) -> bool:
+	if site == null or site.workshop_slot < 0 or not is_instance_valid(farmer):
+		return false
+	if not at_workshop(farmer) and farmer.global_position.distance_to(site.interaction_point()) > site.interact_range:
+		return false
+	close_menu()
+	return pick_up(site, farmer)
 
 
 ## Cancels the job on `site`, refunding its unbuilt share. A cancelled move puts the copy back where it stood.
@@ -444,16 +468,21 @@ func cancel(site: DefenseSite) -> Dictionary[StringName, int]:
 
 ## Picks a finished copy up to move it this intermission. `farmer`, if given, starts placing it.
 func pick_up(site: DefenseSite, farmer: Farmer = null) -> bool:
+	if site != null and site.workshop_slot >= 0:
+		if not is_instance_valid(farmer) or (not at_workshop(farmer)
+				and farmer.global_position.distance_to(site.interaction_point()) > site.interact_range):
+			return false
 	if not is_open() or site.is_empty() or job_at(site) != null or in_hand != null:
 		return false
 	var defense := site.occupant
 	site.occupant = null
 	in_hand = defense
 	_in_hand_from = site
+	defense.ready_for_pickup = false
 	defense.set_active(false)
 	defense.visible = false
 	if farmer != null:
-		_start_placing(farmer, null)
+		_start_placing(farmer)
 	_changed()
 	return true
 
@@ -473,6 +502,16 @@ func put_down(spot: Spot) -> String:
 		return ""
 	if not spot.problem.is_empty():
 		return spot.problem
+	if origin != null and origin.workshop_slot >= 0:
+		_clear_hand()
+		var site := _add_site(spot, defense.definition)
+		_settle_at(defense, site)
+		_free_site(origin)
+		if SaveManager.first_time(WORKSHOP_LESSON):
+			EventBus.hud_message.emit("Defense deployed! Build more at the stables between waves.", 4.0)
+			SaveManager.save_profile()
+		_changed()
+		return ""
 	if jobs.size() > MAX_WAITING:
 		return "The build queue is full (%d waiting)" % MAX_WAITING
 	_clear_hand()
@@ -553,7 +592,10 @@ func settle_run_end() -> void:
 
 func _physics_process(delta: float) -> void:
 	_menu_refresh_left -= delta
-	if _menu_site != null and _menu != null and _menu.is_open() and _menu_refresh_left <= 0.0:
+	if _at_workshop and _menu != null and _menu.is_open() and _menu_refresh_left <= 0.0:
+		_menu_refresh_left = 0.2
+		_refresh_workshop()
+	elif _menu_site != null and _menu != null and _menu.is_open() and _menu_refresh_left <= 0.0:
 		_menu_refresh_left = 0.2
 		_refresh_menu()
 	_update_input()
@@ -588,11 +630,13 @@ func assisted(job: Job) -> bool:
 
 func _complete(job: Job) -> void:
 	jobs.erase(job)
-	job.ghost.set_active(true)
+	job.ghost.ready_for_pickup = job.site.workshop_slot >= 0
+	job.ghost.set_active(not job.ghost.ready_for_pickup)
 	if job.moving and job.origin != null and is_instance_valid(job.origin):
 		_free_site(job.origin)
 	AudioDirector.play_cue(&"wrench", 1.3)
-	EventBus.hud_message.emit("%s ready" % job.definition.display_name, 2.0)
+	EventBus.hud_message.emit("%s ready: pick it up at the stables" % job.definition.display_name
+			if job.site.workshop_slot >= 0 else "%s ready" % job.definition.display_name, 3.0)
 	_changed()
 
 
@@ -632,43 +676,92 @@ func _update_input() -> void:
 	for player in GameState.players:
 		var farmer := player as Farmer
 		if farmer != null and is_instance_valid(farmer) and farmer.is_alive() and farmer.input.is_just_pressed(&"build"):
-			open_recipe_menu(farmer)
+			if at_workshop(farmer):
+				open_recipe_menu(farmer)
+			else:
+				EventBus.hud_message.emit("Build and pick up defenses at the STABLES. Follow the workshop sign.", 4.0)
 			return
 
 
-## The recipes this profile owns, each one starting placement mode.
+## The stables menu combines recipe learning, paid assembly, queue cancellation and physical pickup.
 func open_recipe_menu(farmer: Farmer) -> void:
+	if not is_open() or not at_workshop(farmer):
+		return
+	if in_hand != null:
+		_start_placing(farmer)
+		return
 	_ensure_menu()
 	_menu_site = null
+	_at_workshop = true
 	_menu.close_actions = [&"build"]
-	_menu.open(farmer, "BUILD", _recipe_entries(farmer))
-	_menu_subtitle("Capacity %d/%d%s" % [capacity_used(), capacity_total(),
-			"  ·  %d in the queue" % jobs.size() if not jobs.is_empty() else ""])
+	_menu.open(farmer, "STABLES · DEFENSE WORKSHOP", _recipe_entries(farmer), workshop)
+	_refresh_workshop()
+
+
+func _refresh_workshop() -> void:
+	if not _at_workshop or _menu == null or not _menu.is_open():
+		return
+	if not is_open() or not at_workshop(_menu.farmer):
+		close_menu()
+		return
+	_menu.set_entries(_recipe_entries(_menu.farmer))
+	_menu_subtitle("Build here → pick up → carry to a green spot → E / click to place\nCapacity %d/%d  ·  %d ready for pickup" % [
+			capacity_used(), capacity_total(), ready_stock().size()])
 
 
 func _recipe_entries(farmer: Farmer) -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
-	var owned := owned_definitions()
-	if owned.is_empty():
-		entries.append({"text": "No recipes yet: buy one on the BUILD board at the tool shed", "enabled": false})
-	for each in owned:
-		var problem := placement_problem(each)
-		entries.append({"text": "%s  ·  %d Al  ·  %d cap  ·  %.0f s" % [each.display_name, each.cost_al, each.capacity, each.assembly_time],
-				"detail": each.description, "enabled": problem.is_empty(), "reason": problem,
-				"action": _choose_recipe.bind(farmer, each)})
+	for site in ready_stock():
+		entries.append({"id": "pickup_%s" % site.site_id, "text": "PICK UP · %s" % site.occupant.definition.display_name,
+				"detail": "Already built and paid for. Carry it out and place it at a green spot.",
+				"enabled": in_hand == null, "action": collect_stock.bind(site, farmer)})
+	for job in jobs:
+		if job.site.workshop_slot >= 0:
+			entries.append({"id": "job_%s" % job.site.site_id, "text": "%s · %d%% · Cancel (+%d Al)" % [job.definition.display_name,
+					roundi(job.fraction() * 100.0), job.unbuilt_refund().get(&"al", 0)],
+					"enabled": true, "action": _cancel_workshop_job.bind(job.site)})
+	for each in definitions:
+		if not StatService.has_flag(each.recipe_flag):
+			var id: StringName = RECIPE_IDS[each.id]
+			var cost: int = int(StatService.next_cost(id).get(&"al", 0))
+			entries.append({"id": "learn_%s" % id, "text": "Learn %s recipe · %d Al" % [each.display_name, cost],
+					"detail": each.description + " Then build each copy here and collect it from the pickup area.",
+					"enabled": StatService.can_purchase(id), "reason": "Need %d Al and the Spring Trap recipe first" % cost
+						if not StatService.prerequisites_met(id) else "Need %d Al to learn this recipe" % cost,
+					"action": _learn_recipe.bind(id, farmer)})
+		else:
+			var problem := placement_problem(each)
+			entries.append({"id": "craft_%s" % each.id, "text": "BUILD · %s · %d Al · %.0f s" % [each.display_name, each.cost_al, each.assembly_time],
+					"detail": each.description + " Collect the finished copy here before placing it.",
+					"enabled": problem.is_empty(), "reason": problem, "action": _choose_recipe.bind(farmer, each)})
 	entries.append({"text": "Close", "enabled": true, "action": close_menu})
 	return entries
 
 
+func _learn_recipe(id: StringName, farmer: Farmer) -> void:
+	if is_open() and at_workshop(farmer):
+		StatService.purchase(id)
+	_refresh_workshop()
+
+
+func _cancel_workshop_job(site: DefenseSite) -> void:
+	cancel(site)
+	_refresh_workshop()
+
+
 func _choose_recipe(farmer: Farmer, defense_definition: DefenseDefinition) -> void:
-	close_menu()
-	_start_placing(farmer, defense_definition)
+	var problem := craft(defense_definition, farmer)
+	if not problem.is_empty():
+		EventBus.hud_message.emit(problem, 3.0)
+	_refresh_workshop()
 
 
-func _start_placing(farmer: Farmer, defense_definition: DefenseDefinition) -> void:
+func _start_placing(farmer: Farmer) -> void:
+	if in_hand == null:
+		return
 	_stop_placing()
 	_placer = farmer
-	_placing_definition = defense_definition
+	_placement_needs_release = true
 	farmer.building = true
 	_preview = PlacementPreview.new()
 	_preview.name = "PlacementPreview"
@@ -683,14 +776,11 @@ func _stop_placing() -> void:
 	if _placer != null and is_instance_valid(_placer) and _release_wait != _placer:
 		_placer.building = false
 	_placer = null
-	_placing_definition = null
 	last_spot = null
 
 
-## What's being placed: the recipe, or the copy in hand.
+## The physical copy currently carried for placement.
 func placing_definition() -> DefenseDefinition:
-	if _placing_definition != null:
-		return _placing_definition
 	return in_hand.definition if in_hand != null and is_instance_valid(in_hand) else null
 
 
@@ -702,20 +792,22 @@ func _update_placing() -> void:
 		return
 	if _menu != null and _menu.is_open():
 		return
-	var spot := spot_ahead(farmer, placing, in_hand if _placing_definition == null else null)
-	if _placing_definition != null and spot.problem.is_empty():
-		spot.problem = placement_problem(placing, spot)
-	elif _placing_definition == null and _in_hand_from != null \
+	var spot := spot_ahead(farmer, placing, in_hand)
+	if _in_hand_from != null \
 			and _flat_distance(spot.position, _in_hand_from.global_position) <= PUT_BACK_RANGE:
 		spot.problem = ""
 	last_spot = spot
 	_preview.show_spot(placing, spot)
+	if _placement_needs_release:
+		if not (farmer.input.is_pressed(&"interact") or farmer.input.is_pressed(&"fire") or farmer.input.is_pressed(&"build")):
+			_placement_needs_release = false
+		return
 	if farmer.input.is_just_pressed(&"build"):
 		_cancel_placing()
 		return
 	if not (farmer.input.is_just_pressed(&"interact") or farmer.input.is_just_pressed(&"fire")):
 		return
-	var result := place(placing, spot, farmer) if _placing_definition != null else put_down(spot)
+	var result := put_down(spot)
 	if not result.is_empty():
 		EventBus.hud_message.emit(result, 1.5)
 		return
@@ -725,7 +817,7 @@ func _update_placing() -> void:
 
 ## Build pressed again, or construction closed: drop the ghost. A copy in hand goes back where it stood.
 func _cancel_placing() -> void:
-	if _placing_definition == null and in_hand != null and is_instance_valid(in_hand) and _in_hand_from != null:
+	if in_hand != null and is_instance_valid(in_hand) and _in_hand_from != null:
 		var defense := in_hand
 		var origin := _in_hand_from
 		_clear_hand()
@@ -737,6 +829,7 @@ func _cancel_placing() -> void:
 # --- The options menu of a placed copy -----------------------------------------------------------
 
 func open_menu(site: DefenseSite, farmer: Farmer) -> void:
+	_at_workshop = false
 	if is_placing():
 		return
 	_ensure_menu()
@@ -746,6 +839,7 @@ func open_menu(site: DefenseSite, farmer: Farmer) -> void:
 
 
 func close_menu() -> void:
+	_at_workshop = false
 	if _menu != null and _menu.is_open():
 		_menu.close()
 	_menu_site = null
@@ -757,7 +851,9 @@ func _ensure_menu() -> void:
 	_menu = ChoiceMenu.new()
 	_menu.name = "BuildMenu"
 	add_child(_menu)
-	_menu.closed.connect(func() -> void: _menu_site = null)
+	_menu.closed.connect(func() -> void:
+		_menu_site = null
+		_at_workshop = false)
 
 
 func _refresh_menu() -> void:
@@ -841,7 +937,8 @@ func _settle_at(defense: Defense, site: DefenseSite) -> void:
 	defense.global_position = site.global_position
 	defense.relocated()
 	defense.visible = true
-	defense.set_active(true)
+	defense.ready_for_pickup = site.workshop_slot >= 0
+	defense.set_active(not defense.ready_for_pickup)
 
 
 func _clear_hand() -> void:

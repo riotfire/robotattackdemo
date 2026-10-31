@@ -50,6 +50,12 @@ func scatter() -> void:
 		var slot := child as Marker3D
 		if slot == null:
 			continue
+		# Keep the stables workbench, pickup area and its approach clear on every seed.
+		var stables := nav_region.get_node_or_null(^"Stables") as Node3D if nav_region != null else null
+		if stables != null:
+			var local := stables.to_local(slot.global_position)
+			if absf(local.x) < 10.0 and local.z > 4.0 and local.z < 20.0:
+				continue
 		var is_tutorial_tractor := tutorial_run and slot.name == TUTORIAL_TRACTOR_SLOT
 		if rng.randf() > fill_chance and not is_tutorial_tractor:
 			continue

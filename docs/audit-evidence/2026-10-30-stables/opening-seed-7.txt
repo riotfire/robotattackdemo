@@ -1,0 +1,123 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "ret != noErr" is true. Returning: ""
+   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)
+Robot Attack! run seed: 7
+
+== Start ==
+  PASS  a fresh profile starts in wave 1's intermission
+  PASS  the intermission is 90 s, siren included (89.5 left)
+  PASS  phases are 3 waves
+  PASS  wrench only; the jetpack waits for wave 9
+  PASS  no marked build spots on the farm
+  PASS  no quick-buy panel: shopping is at the tool shed
+  PASS  Tab cannot build defenses remotely
+  PASS  the stables workshop exists
+  PASS  Interact opens the stables workshop at the physical workbench
+  PASS  the workshop doesn't pause the intermission
+  PASS  closing it gives control back
+
+== Wave 1: First Bonks ==
+  PASS  wave 1 is the authored opening
+  PASS  one lane, the one facing the farmer's start ([2])
+  PASS  the first Nibblers burst out of the crops ~45 m out (45.0 m)
+  PASS  wave 1 clears (53 s)
+  PASS  15 Nibblers ([&"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler"])
+  PASS  never more than 4 alive (3)
+  PASS  no thieves in wave 1
+  PASS  clearing wave 1 hands over nothing, and the pistol can't be bought yet
+
+== Wave 2: Take the High Ground ==
+  PASS  wave 2's intermission
+  PASS  90 s again
+  PASS  the first Lobber, before any gun, sent to the tool shed
+  PASS  the farmer has only melee to reach it with
+  PASS  wave 2 clears (62 s)
+  PASS  two Lobbers and 12 Nibblers ([&"roof_lobber", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"roof_lobber", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler", &"nibbler"])
+  PASS  beating it announces the pistol blueprint (["Rivet Pistol blueprint! Buy it at the shed for 20 Al."])
+  PASS  which is bought at the shed, not handed over
+
+== Wave 3: the first Foreman ==
+  PASS  wave 3's intermission
+  PASS  the Rivet Pistol is bought for wave 3
+  PASS  wave 3 is the Big Haul
+  PASS  the Foreman has the authored 350 HP (350)
+  PASS  fixed behavior: no random trait, a 1.2 s slam tell, a vent glow
+  PASS  it enters alone
+  PASS  its plates blunt a rivet from 20 m (3.6 damage)
+  PASS  after a slam its back vent glows: the x3 punish window
+  PASS  its defeat calls off the adds still to come
+  PASS  the first Foreman kill banks its bounty (+2 PC)
+  PASS  and records it, so a retry can't farm it
+  PASS  wave 3 clears (17 s)
+  PASS  wave 4's intermission
+  PASS  clearing the Big Haul moves the checkpoint to wave 4 (4)
+  PASS  phase 1 cleared on the first attempt
+
+== Wave 4: Stop That Sack ==
+  PASS  two lanes
+  PASS  a Nibbler pair warms the wave up
+  PASS  then a Clanker pair, not a trio
+  PASS  the teaching thief waits while the pair stands
+  PASS  exactly one thief, 6.0 s after the pair is down (a short respite)
+  PASS  a Lobber takes the barn roof
+  PASS  wave 4 clears (43 s)
+  PASS  exactly one thief (1)
+  PASS  clearing wave 4 hands over no recipe
+
+== Construction ==
+  PASS  wave 5's intermission
+  PASS  before the first split wave the HUD asks for a Spring Trap at the ladder top
+  PASS  the Spring Trap recipe is learned at the stables
+  PASS  assembly charges 12 Al at the stables
+  PASS  an inactive copy assembles in the pickup area and reserves capacity
+  PASS  cancelling an unstarted workshop job returns its cost
+  PASS  finished defenses wait inactive for physical pickup
+  PASS  Interact at the rack picks up the finished trap
+  PASS  Tab cancels carrying and returns the paid copy to its rack
+  PASS  the returned copy can be collected again
+  PASS  the ladder top is a valid placement
+  PASS  the carried trap deploys at the ladder top
+  PASS  placement activates a finished copy immediately, with no second charge or assembly
+  PASS  the first build-pickup-placement completes the guided lesson
+  PASS  a barricade is built at the workshop
+  PASS  the barricade must also be picked up
+  PASS  the carried defense finds an open placement spot
+  PASS  the carried preview turns green
+  PASS  Interact places the carried barricade without another payment
+  PASS  a decoy queues at the stables
+  PASS  the siren freezes unfinished workshop assembly
+
+== Wave 5: Up the Ladder ==
+  PASS  the main lane is on the ladder's side (6)
+  PASS  a Rung Runner opens the wave
+  PASS  1.0 s in, a raid comes from the far side while it climbs (lane 2 vs 6)
+  PASS  it walks to the silo ladder and climbs (5.0 s)
+  PASS  the HUD warns: climber on the silo ladder
+  PASS  stepping onto the catwalk, the spring throws it off
+  PASS  the fall kills it, credited to the farmer who placed the trap
+  PASS  wave 5 clears (61 s)
+
+== Wave 6: the second Foreman ==
+  PASS  wave 6's intermission
+  PASS  next intermission the frozen decoy resumes and finishes (5.0 s)
+  PASS  the authored 900 HP (900) and the clod throw
+  PASS  it comes from the far side, away from the ladder ([5, 1])
+  PASS  at full health it already throws clods at a farmer who keeps away (1.0 s)
+  PASS  hurt, its clods come faster
+  PASS  wave 6 clears (1 s)
+  PASS  wave 7's intermission
+  PASS  phase 2 cleared: the checkpoint is wave 7
+
+== Wave 7: generated, with climbers ==
+  PASS  the curve takes over after the opening
+  PASS  its climber share holds both Lobbers (4) and Rung Runners (2)
+  PASS  the Drone debuts on wave 7
+
+== Loss and checkpoint ==
+  PASS  losing wave 7 keeps the checkpoint at its phase start
+  PASS  parts are kept
+  PASS  the attempt is recorded
+  PASS  the Harvest Report offers Retry Phase 3
+
+OPENING TEST PASSED (96 checks)

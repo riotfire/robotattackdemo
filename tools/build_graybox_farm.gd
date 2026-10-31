@@ -531,6 +531,11 @@ func _build_stables(nav: Node3D) -> void:
 		var h := float(i + 1)
 		_hay_column(stables, "HayStep%d" % i, Vector3(1.2, h, 1.2), Vector3(-13.4 + 1.2 * i, h * 0.5, 4.6))
 	_label(stables, "STABLES", Vector3(0.0, 7.5, 0.0))
+	var workshop := Node3D.new()
+	workshop.name = "DefenseWorkshop"
+	workshop.set_script(load("res://scripts/systems/construction/defense_workshop.gd"))
+	stables.add_child(workshop)
+	workshop.position = Vector3(0.0, 0.0, 7.0)
 
 
 func _build_chicken_house(nav: Node3D) -> void:

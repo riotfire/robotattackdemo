@@ -21,6 +21,8 @@ var placed_by: Node = null
 var max_hp: float = 1.0
 var hp: float = 0.0
 var active: bool = false
+## Finished stock is shown solid on the workshop rack, but never acts until placed.
+var ready_for_pickup: bool = false
 
 var _hp_label: Label3D
 
@@ -112,15 +114,16 @@ func _refresh_label() -> void:
 		return
 	var damaged := hp < max_hp - 0.5
 	_hp_label.visible = damaged or not active
-	_hp_label.text = ("%d%%" % roundi(condition() * 100.0)) if active else "unfinished"
-	_hp_label.modulate = Color(1.0, 0.75, 0.4) if not active else Color(1.0, 0.95, 0.85).lerp(Color(1.0, 0.35, 0.3), 1.0 - condition())
+	_hp_label.text = ("%d%%" % roundi(condition() * 100.0)) if active else ("READY · E: pick up" if ready_for_pickup else "assembling")
+	_hp_label.modulate = Color(1.0, 0.75, 0.4) if not active and not ready_for_pickup else Color(1.0, 0.95, 0.85).lerp(Color(1.0, 0.35, 0.3), 1.0 - condition())
 
 
 ## Called after the copy moved to another site, so it can face the new site's way.
 func relocated() -> void:
 	var look := get_node_or_null(^"Look")
 	if look != null:
-		remove_child(look)
+		look.name = "RetiredLook_%d" % look.get_instance_id()
+		(look as Node3D).visible = false
 		look.queue_free()
 	_build_look()
 	_on_active_changed()
@@ -136,4 +139,4 @@ func _on_active_changed() -> void:
 	if look != null:
 		# An unfinished copy is a pale, see-through ghost.
 		for mesh in look.find_children("*", "MeshInstance3D", true, false):
-			(mesh as MeshInstance3D).transparency = 0.0 if active else 0.55
+			(mesh as MeshInstance3D).transparency = 0.0 if active or ready_for_pickup else 0.55

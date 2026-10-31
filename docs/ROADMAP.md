@@ -347,6 +347,10 @@ B8 (hit-height cracks) only needs decision R-D3 and touches `silo.gd` alone, so 
 
 **Still open from these plans:** turrets (defense slice 7); the opening plan's camera, landmark compass and offscreen threat arrows (beyond the landmark lane names now used); the Hub's checkpoint list (M2-H3); and a normal-speed playtest: does a 30 s intermission leave time to build, does the catwalk spring make climbing worth it, and does the cable get used in wave 5.
 
+### Stables defense workshop (playtest follow-up, 2026-10-30)
+
+Defenses are now paid for and assembled at the stables, physically collected from the pickup area, then carried out for free placement. Deployment of an assembled copy is instant and never charges twice. From wave 2, a gold trail and persistent prompts teach the complete flow until the first deployment. The stables menu also teaches the existing recipes; previously purchased recipes remain valid. Tab cannot create remote copies. Cancellation and the siren return carried stock to its origin, and assembly/capacity/refund rules are retained. Workshop, menu and pickup area were checked in a rendered build; automated evidence is in `docs/audit-evidence/2026-10-30-stables/`.
+
 ### 4.12 M2 exit criteria
 
 - [ ] All 9 archetypes spawn on schedule and Foremen rotate. That means the attack variety plan's grid and Foreman order (melee → ranged → flight) if R-D1 is accepted, otherwise the GDD 9.5 schedule.

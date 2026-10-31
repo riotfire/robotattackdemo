@@ -3,8 +3,8 @@ extends Node
 ## in fixed-step time: 90 s intermissions, the authored six-wave opening (the wave 2 Lobber before any gun and
 ## the pistol it unlocks, live caps, the teaching thief, the plated 350 HP Foreman whose defeat calls off its
 ## adds, the Rung Runner on the silo ladder while a raid hits the far side, the second Foreman's clods at range),
-## no free items, 3-wave phases and the checkpoint, and construction (free placement with Tab, reserve,
-## assemble, cancel, the siren cutoff) with a catwalk spring that throws a climber off.
+## no free items, 3-wave phases and the checkpoint, and construction (the stables workshop, paid assembly, pickup, carrying,
+## free placement, cancellation and the siren cutoff) with a catwalk spring that throws a climber off.
 ## A scripted defender pops ground robots once they reach the silo, so waves clear on every seed; climbers
 ## are left to the spring. Uses its own fresh profile in the system temp directory, never the player's.
 ## Run from the project folder (add `-- --seed=1234` for a fixed run seed):
@@ -115,11 +115,16 @@ func _run() -> void:
 	_check(_construction.sites.is_empty(), "no marked build spots on the farm")
 	_check(_main.get_node_or_null(^"PrepPanel") == null, "no quick-buy panel: shopping is at the tool shed")
 	await _press_action(&"build")
-	_check(_construction._menu != null and _construction._menu.is_open() and not _farmer.input.enabled,
-			"Tab opens the build menu")
+	_check(_construction._menu == null or not _construction._menu.is_open(), "Tab cannot build defenses remotely")
+	_check(_construction.workshop != null, "the stables workshop exists")
 	var before := _director.time_left
+	_farmer.teleport_to(_construction.workshop.interaction_point() + Vector3.UP * 0.1)
+	await _frames(20)
+	await _press_action(&"interact")
+	_check(_construction._menu != null and _construction._menu.is_open() and not _farmer.input.enabled,
+			"Interact opens the stables workshop at the physical workbench")
 	await _frames(30)
-	_check(_director.time_left < before, "building doesn't pause the intermission")
+	_check(_director.time_left < before, "the workshop doesn't pause the intermission")
 	_construction.close_menu()
 	_check(_farmer.input.enabled, "closing it gives control back")
 
@@ -220,58 +225,79 @@ func _run() -> void:
 	_check(_hud._tutorial_lesson.text.contains("Spring Trap") and _hud._tutorial_lesson.text.contains("ladder"),
 			"before the first split wave the HUD asks for a Spring Trap at the ladder top")
 	GameState.add_parts({&"al": 100})
-	_check(StatService.purchase(&"build.spring_trap") and StatService.has_flag(&"defense.spring_trap"),
-			"the Spring Trap recipe is bought on the BUILD board")
+	var workshop := _construction.workshop
+	_farmer.teleport_to(workshop.interaction_point() + Vector3.UP * 0.1)
+	await _frames(20)
+	await _press_action(&"interact")
+	_construction._learn_recipe(&"build.spring_trap", _farmer)
+	_check(StatService.has_flag(&"defense.spring_trap"), "the Spring Trap recipe is learned at the stables")
 	var spring_def := _construction.definition(&"spring_trap")
-	# The spring goes where the ladder comes up, through the API: the camera can't be aimed headless.
-	var top := _ladder_top()
-	var top_spot := _construction.spot_at(top, Vector3.FORWARD, spring_def, top.y)
-	_check(top_spot.problem.is_empty() and top_spot.kind == &"catwalk",
-			"the catwalk at the ladder top is open floor (%s)" % top_spot.problem)
 	var al_before := GameState.parts[&"al"]
-	_check(_construction.place(spring_def, top_spot, _farmer).is_empty(), "a spring goes on the catwalk at the ladder top")
-	var placed_frame := Engine.get_physics_frames()
-	var ladder_top := _construction.jobs[0].site if not _construction.jobs.is_empty() else null
-	_check(GameState.parts[&"al"] == al_before - spring_def.cost_al, "it costs its 12 Al like every copy")
-	_check(ladder_top != null and not ladder_top.occupant.active and _construction.capacity_used() == 2,
-			"it reserves capacity and stands as an inactive ghost")
+	_construction._choose_recipe(_farmer, spring_def)
+	var stock := _construction.jobs[0].site
+	_check(GameState.parts[&"al"] == al_before - spring_def.cost_al, "assembly charges 12 Al at the stables")
+	_check(stock.workshop_slot >= 0 and not stock.occupant.active and _construction.capacity_used() == 2,
+			"an inactive copy assembles in the pickup area and reserves capacity")
 	StatService.grant(&"build.barricade")
 	StatService.grant(&"build.decoy")
 	var wall_def := _construction.definition(&"scrap_barricade")
-	# Free placement through the real controls: Tab, pick a recipe, then Interact where the ghost stands.
-	_check(await _find_open_stand(wall_def), "the farmer finds open ground to build on")
-	await _press_action(&"build")
-	_check(_construction._menu.is_open(), "Tab opens the build menu")
+	al_before = GameState.parts[&"al"]
 	_construction._choose_recipe(_farmer, wall_def)
+	var cancelled := _construction.jobs[-1].site
+	var refund := _construction.cancel(cancelled)
+	_check(GameState.parts[&"al"] == al_before and refund.get(&"al", 0) == wall_def.cost_al,
+			"cancelling an unstarted workshop job returns its cost")
+	_construction.close_menu()
+	await _wait_until(func() -> bool: return stock.occupant.ready_for_pickup, 15.0)
+	_check(stock.occupant.ready_for_pickup and not stock.occupant.active,
+			"finished defenses wait inactive for physical pickup")
+	_farmer.teleport_to(stock.global_position + Vector3.UP * 0.1)
+	await _frames(10)
+	await _press_action(&"interact")
+	_check(_construction.in_hand != null and _construction.is_placing(), "Interact at the rack picks up the finished trap")
+	await _press_action(&"build")
+	_check(_construction.in_hand == null and stock.occupant.ready_for_pickup,
+			"Tab cancels carrying and returns the paid copy to its rack")
+	_check(_construction.collect_stock(stock, _farmer), "the returned copy can be collected again")
+	var top := _ladder_top()
+	var top_spot := _construction.spot_at(top, Vector3.FORWARD, spring_def, top.y)
+	_check(top_spot.problem.is_empty() and top_spot.kind == &"catwalk", "the ladder top is a valid placement")
+	al_before = GameState.parts[&"al"]
+	_check(_construction.put_down(top_spot).is_empty(), "the carried trap deploys at the ladder top")
+	_construction._stop_placing()
+	var ladder_top := _construction.sites[-1]
+	_check(ladder_top.occupant.active and GameState.parts[&"al"] == al_before and _construction.jobs.is_empty(),
+			"placement activates a finished copy immediately, with no second charge or assembly")
+	_check(ConstructionManager.WORKSHOP_LESSON in SaveManager.seen_intros,
+			"the first build-pickup-placement completes the guided lesson")
+	# A carried barricade also uses the free-placement controls on the real farm.
+	_farmer.teleport_to(workshop.interaction_point() + Vector3.UP * 0.1)
+	await _frames(10)
+	_check(_construction.craft(wall_def, _farmer).is_empty(), "a barricade is built at the workshop")
+	var wall_stock := _construction.jobs[-1].site
+	await _wait_until(func() -> bool: return wall_stock.occupant.ready_for_pickup, 12.0)
+	_farmer.teleport_to(wall_stock.global_position + Vector3.UP * 0.1)
+	_check(_construction.collect_stock(wall_stock, _farmer), "the barricade must also be picked up")
+	_check(await _find_open_stand(wall_def), "the carried defense finds an open placement spot")
 	await _frames(3)
-	_check(_construction.is_placing() and _farmer.building and _construction.last_spot != null,
-			"choosing a recipe shows its ghost in front of the farmer")
-	_check(_construction.last_spot.problem.is_empty(), "green where it fits (%s)" % _construction.last_spot.problem)
+	_check(_construction.last_spot != null and _construction.last_spot.problem.is_empty(), "the carried preview turns green")
 	al_before = GameState.parts[&"al"]
 	await _press_action(&"interact")
-	var wall_site := _construction.jobs[-1].site if _construction.jobs.size() == 2 else null
-	_check(wall_site != null and GameState.parts[&"al"] == al_before - wall_def.cost_al and not _construction.is_placing(),
-			"Interact builds it there, reserving its 8 Al at once")
-	var refund := _construction.cancel(wall_site) if wall_site != null else {}
-	_check(GameState.parts[&"al"] == al_before and int(refund.get(&"al", 0)) == wall_def.cost_al, "cancelling unbuilt work refunds it all")
-	await _frames(30)
-	_check(not _farmer.building, "the farmer's hands are free again")
-	_construction._choose_recipe(_farmer, _construction.definition(&"scarecrow_decoy"))
+	var wall_site := _construction.sites[-1]
+	_check(not _construction.is_placing() and wall_site.occupant.active and GameState.parts[&"al"] == al_before,
+			"Interact places the carried barricade without another payment")
+	_construction.dismantle(wall_site)
 	await _frames(3)
-	await _press_action(&"build")
-	_check(not _construction.is_placing() and _construction.jobs.size() == 1, "Tab again puts the ghost away")
-	await _wait_until(func() -> bool: return ladder_top.occupant != null and ladder_top.occupant.active, 15.0)
-	var took := float(Engine.get_physics_frames() - placed_frame) / Engine.physics_ticks_per_second
-	_check(ladder_top.occupant.active and took > 9.0 and took < 12.5, "the spring assembles in about 10 s of intermission (%.1f s)" % took)
 	var decoy_def := _construction.definition(&"scarecrow_decoy")
-	_check(await _find_open_stand(decoy_def), "open ground for a decoy")
-	_check(_construction.place(decoy_def, _construction.spot_ahead(_farmer, decoy_def), _farmer).is_empty(), "a decoy queues")
+	_farmer.teleport_to(workshop.interaction_point() + Vector3.UP * 0.1)
+	await _frames(10)
+	_check(_construction.craft(decoy_def, _farmer).is_empty(), "a decoy queues at the stables")
 	var gate := _construction.jobs[-1].site
 	_director.ring_bell()
 	await _frames(2)
 	await _frames(int(Engine.physics_ticks_per_second * 4))
 	_check(gate.occupant != null and not gate.occupant.active and _construction.jobs.size() == 1,
-			"the siren freezes unfinished work: the decoy stays a ghost through the wave")
+			"the siren freezes unfinished workshop assembly")
 
 	_section("Wave 5: Up the Ladder")
 	await _wait_until(func() -> bool: return _director.phase == WaveDirector.Phase.SPAWNING, 6.0)
@@ -303,7 +329,7 @@ func _run() -> void:
 
 	_section("Wave 6: the second Foreman")
 	await _wait_for_intermission(6)
-	t = await _wait_until(func() -> bool: return gate.occupant != null and gate.occupant.active, 8.0)
+	t = await _wait_until(func() -> bool: return gate.occupant != null and gate.occupant.ready_for_pickup, 8.0)
 	_check(t >= 0.0, "next intermission the frozen decoy resumes and finishes (%.1f s)" % t)
 	await _start_wave()
 	t = await _wait_until(func() -> bool: return _foreman() != null, 5.0)

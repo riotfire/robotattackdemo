@@ -172,12 +172,12 @@ func _on_silo_damaged(_amount: float, _at_position: Vector3) -> void:
 func _on_wave_phase_changed(phase: int, wave: int) -> void:
 	if phase == WaveDirector.Phase.INTERMISSION and wave == 2 and not _build_choice_prompted:
 		_build_choice_prompted = true
-		set_tutorial_lesson("The shed is open. Walk over and spend robot parts on what you need:\na heavy melee swing, repairs/defense, or speed. Ring the dinner bell when you're ready.")
+		set_tutorial_lesson("The shed sells tools and upgrades. The STABLES workshop builds defenses.\nSpend your parts, then ring the dinner bell when you're ready.")
 		_banner_left = 0.0
 	elif phase == WaveDirector.Phase.INTERMISSION and wave == SPRING_LESSON_WAVE and not StatService.has_flag(&"defense.spring_trap"):
 		# Split pressure starts next wave: the first time defenses decide a wave (ROADMAP 4.13).
 		_build_choice_prompted = true
-		set_tutorial_lesson("Next wave splits up: a climber on the silo ladder AND a raid on the far side.\nBuy the Spring Trap on the shed's BUILD board, then press Tab to set it at the ladder top.")
+		set_tutorial_lesson("Next wave splits up: a climber on the silo ladder AND a raid on the far side.\nBuild a Spring Trap at the STABLES, pick it up, then carry it to the ladder top.")
 		_banner_left = 0.0
 	elif wave >= 2 and phase != WaveDirector.Phase.INTERMISSION and _build_choice_prompted and _banner_left <= 0.0:
 		set_tutorial_lesson("")
@@ -185,7 +185,7 @@ func _on_wave_phase_changed(phase: int, wave: int) -> void:
 
 func _on_upgrade_purchased(id: StringName, _level: int) -> void:
 	if id == &"build.spring_trap" and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
-		set_tutorial_lesson("Spring Trap recipe! Press Tab (Back), pick it, and set it where the silo ladder\nreaches the catwalk. A climber that steps on it gets thrown off.")
+		set_tutorial_lesson("Spring Trap recipe! Visit the STABLES workshop to build a copy and pick it up.\nCarry it to the ladder top. A climber that steps on it gets thrown off.")
 		_banner_left = 8.0
 		return
 	if _build_choice_prompted and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
@@ -488,12 +488,14 @@ func _update_build() -> void:
 		var placing := manager.placing_definition() if manager.is_placing() else null
 		if placing != null:
 			var spot := manager.last_spot
-			var verb := "PLACING" if manager.in_hand == null else "MOVING"
-			text = "%s %s: E or click to build here  ·  Tab to cancel" % [verb, placing.display_name]
+			var verb := "CARRYING"
+			text = "%s %s: E / click to place  ·  Tab to return" % [verb, placing.display_name]
 			if spot != null and not spot.problem.is_empty():
 				text += "\n" + spot.problem
+		elif not manager.ready_stock().is_empty():
+			text = "%d defense(s) READY: pick up at the STABLES" % manager.ready_stock().size()
 		elif job != null:
-			text = "BUILDING %s %d%%%s" % [job.definition.display_name, roundi(job.fraction() * 100.0),
+			text = "STABLES: BUILDING %s %d%%%s" % [job.definition.display_name, roundi(job.fraction() * 100.0),
 					"  (lending a hand x2)" if manager.assisted(job) else ""]
 			if manager.jobs.size() > 1:
 				text += "  ·  %d waiting" % (manager.jobs.size() - 1)
@@ -501,6 +503,8 @@ func _update_build() -> void:
 			text += ("  ·  " if not text.is_empty() else "") + "capacity %d/%d" % [manager.capacity_used(), manager.capacity_total()]
 	elif not manager.jobs.is_empty():
 		text = "%d unfinished: frozen until the intermission" % manager.jobs.size()
+	if manager.workshop != null and manager.workshop.lesson_active():
+		text += ("\n" if not text.is_empty() else "") + manager.workshop.lesson_text()
 	_build_label.text = text
 	_build_label.visible = not text.is_empty()
 
@@ -737,6 +741,8 @@ func _build() -> void:
 	_robots_label = _label(wave_card, 16)
 	_family_label = _label(wave_card, 14, Color(0.8, 0.88, 1.0))
 	_build_label = _label(wave_card, 14, Color(1.0, 0.78, 0.4))
+	_build_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_build_label.custom_minimum_size.x = 300.0
 	_build_label.visible = false
 
 	var silo_card := _card(top_left)
