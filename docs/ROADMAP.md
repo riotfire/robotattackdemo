@@ -347,9 +347,9 @@ B8 (hit-height cracks) only needs decision R-D3 and touches `silo.gd` alone, so 
 
 **Still open from these plans:** turrets (defense slice 7); the opening plan's camera, landmark compass and offscreen threat arrows (beyond the landmark lane names now used); the Hub's checkpoint list (M2-H3); and a normal-speed playtest: does a 30 s intermission leave time to build, does the catwalk spring make climbing worth it, and does the cable get used in wave 5.
 
-### Stables defense workshop (playtest follow-up, 2026-10-30)
+### Stables defense workshop (playtest follow-ups, 2026-10-30–31)
 
-Defenses are now paid for and assembled at the stables, physically collected from the pickup area, then carried out for free placement. Deployment of an assembled copy is instant and never charges twice. From wave 2, a gold trail and persistent prompts teach the complete flow until the first deployment. The stables menu also teaches the existing recipes; previously purchased recipes remain valid. Tab cannot create remote copies. Cancellation and the siren return carried stock to its origin, and assembly/capacity/refund rules are retained. Workshop, menu and pickup area were checked in a rendered build; automated evidence is in `docs/audit-evidence/2026-10-30-stables/`.
+Physical defenses are assembled and picked up at the stables, then carried out for free placement. The October 31 simplification removes the separate Learn/payment step: all three copies are directly buildable. Defense upgrades also move to the stables and the shed's BUILD board is removed, including its purchase path. Empty pickup pads, ground text and destination rings are removed; unfinished stock stays hidden and completed items identify themselves with a named READY prompt. The initial trail leads only to the workbench. Siren, raid and debut warnings are shortened to landmark-based spotter calls. See `docs/audit-evidence/2026-10-31-defense-clarity/` for validation and rendered views.
 
 ### 4.12 M2 exit criteria
 

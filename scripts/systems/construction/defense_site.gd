@@ -49,7 +49,7 @@ func is_empty() -> bool:
 
 
 func can_interact(_farmer: Farmer) -> bool:
-	return _manager != null and not is_empty()
+	return _manager != null and not is_empty() and not (workshop_slot >= 0 and _manager.job_at(self) != null)
 
 
 func prompt_text(_farmer: Farmer) -> String:

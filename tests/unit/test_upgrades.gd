@@ -86,13 +86,16 @@ func test_retired_ranks_are_refunded_once() -> void:
 			"they are off the pegboard")
 
 
-func test_the_spring_trap_recipe_is_bought_at_the_shed() -> void:
-	StatService.set_levels({})
+func test_the_tool_shed_has_no_defense_tools_or_upgrades() -> void:
+	var board := PegboardUI.new()
+	add_child_autofree(board)
 	GameState.parts[&"al"] = 500
-	assert_not_null(StatService.catalog[&"build.spring_trap"].cost_curve, "the Spring Trap recipe has a price")
-	assert_true(StatService.purchase(&"build.spring_trap"), "and is bought like any other peg")
-	assert_eq(GameState.parts[&"al"], 485, "for 15 Al")
-	assert_true(StatService.has_flag(&"defense.spring_trap"))
+	assert_false(board._tabs.has(UpgradeNode.Branch.BUILD))
+	for id: StringName in StatService.catalog:
+		if StatService.catalog[id].branch == UpgradeNode.Branch.BUILD:
+			assert_null(board.peg_button(id), "defense pegs are absent from the shed")
+			assert_false(board.buy(id), "the shed API also refuses defense purchases")
+	assert_eq(GameState.parts[&"al"], 500)
 
 
 func test_purchase_spends_parts_and_checks_prerequisites() -> void:

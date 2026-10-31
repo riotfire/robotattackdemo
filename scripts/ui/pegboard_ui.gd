@@ -16,7 +16,7 @@ signal closed
 const CELL := Vector2(236.0, 112.0)
 const PEG_SIZE := Vector2(212.0, 88.0)
 ## Tab order. One branch shows at a time, so every board fits without scrolling.
-const BRANCH_ORDER: Array[int] = [UpgradeNode.Branch.ATTACK, UpgradeNode.Branch.DEFEND, UpgradeNode.Branch.BUILD,
+const BRANCH_ORDER: Array[int] = [UpgradeNode.Branch.ATTACK, UpgradeNode.Branch.DEFEND,
 	UpgradeNode.Branch.REPAIR, UpgradeNode.Branch.TRAVEL, UpgradeNode.Branch.FARMHAND]
 const PART_SHORT: Dictionary[StringName, String] = {&"al": "Al", &"cu": "Cu", &"au": "Au", &"pc": "PC"}
 const CARDBOARD := Color(0.55, 0.41, 0.28)
@@ -253,6 +253,9 @@ func _on_wave_phase_changed(phase: int, _wave: int) -> void:
 
 ## Buys the next level of a node (also used by tests and the debug console). A refused purchase says why.
 func buy(id: StringName) -> bool:
+	if StatService.catalog.has(id) and StatService.catalog[id].branch == UpgradeNode.Branch.BUILD:
+		EventBus.hud_message.emit("Defenses are at the stables.", 2.0)
+		return false
 	if not StatService.purchase(id):
 		EventBus.hud_message.emit(_refusal_text(id), 2.0)
 		return false

@@ -1,5 +1,8 @@
 # Robot Attack! — intermission construction and vertical defense
 
+**October 31 simplification:** direct per-copy building replaces the Learn/recipe purchase step. The stables also sells all crafted-defense upgrades; the tool shed's BUILD board and purchase path are removed. No empty ground pads, pickup signs or destination rings appear, and unfinished stock is hidden. Only completed items appear with their name and READY/pickup prompt. The initial trail points to the workbench, without marking a future pickup position. This supersedes the recipe-learning and pickup-pad presentation in the October 30 follow-up below.
+
+
 **Playtest change, October 30, 2026:** physical defense copies are now assembled and picked up at a marked workshop in front of the stables. The workshop also sells recipe unlocks at their existing prices. Finished stock stays inactive until the player collects it with Interact, carries it to a green preview and deploys it without another charge or assembly. Tab and the siren return a carried copy to its origin. From wave 2 a gold trail and persistent lesson teach the first build–pickup–placement. Queue, capacity, assist, cancel/refund, damage, relocation and salvage rules otherwise remain. This replaces the earlier ability to queue a new copy remotely at its intended deployment site; free placement of a collected copy remains. Existing unlocked recipes migrate without changes.
 
 

@@ -1,7 +1,7 @@
 id,branch,board_col,board_row,display_name,max_level,prerequisites,cost,effects,description
-build.spring_trap,build,0,0,Spring Trap,1,,al 15,defense.spring_trap flag,"Recipe: a spring that throws small robots up and back (12 Al a copy). On the catwalk the fall hurts. Build each copy at the stables workshop then pick it up and carry it to a green placement spot."
-build.decoy,build,1,0,Scarecrow Decoy,1,build.spring_trap,al 15,defense.scarecrow_decoy flag,"Recipe: a scarecrow that pulls a few nearby robots off the silo (6 Al a copy). On the catwalk it pulls climbers; on a roof, Lobbers."
-build.barricade,build,2,0,Scrap Barricade,1,build.spring_trap,al 20,defense.scrap_barricade flag,"Recipe: a scrap wall robots must smash before going on (8 Al a copy). On the catwalk it turns climbers the other way."
+build.spring_trap,build,0,0,Spring Trap,1,,al 15,defense.spring_trap flag,"Throws small robots up and back. Build at the stables for 12 Al; pick up when ready."
+build.decoy,build,1,0,Scarecrow Decoy,1,build.spring_trap,al 15,defense.scarecrow_decoy flag,"Draws nearby robots off the silo. Build at the stables for 6 Al; pick up when ready."
+build.barricade,build,2,0,Scrap Barricade,1,build.spring_trap,al 20,defense.scrap_barricade flag,"Robots must smash through this wall. Build at the stables for 8 Al; pick up when ready."
 build.quick_assembly,build,0,1,Quick Assembly,2,build.spring_trap,al_cu 15,defense.build_rate add_pct 0.25,+25% construction speed per level: a 10 s spring builds in 8 s.
 build.coil_springs,build,0,2,Coil Springs,3,build.spring_trap,al_cu 18; au 1 3-3,defense.spring_power add_pct 0.15; defense.spring_reset add_pct -0.12,+15% launch power and -12% reset time per level.
 build.loud_scarecrow,build,1,1,Loud Scarecrow,2,build.decoy,al_cu_au 20,defense.decoy_radius add_pct 0.2; defense.decoy_lure flat 1,+20% lure radius and one more robot held per level.

@@ -24,6 +24,6 @@ script = ExtResource("3_6weqo")
 id = &"build.spring_trap"
 branch = 5
 display_name = "Spring Trap"
-description = "Recipe: a spring that throws small robots up and back (12 Al a copy). On the catwalk the fall hurts. Build each copy at the stables workshop then pick it up and carry it to a green placement spot."
+description = "Throws small robots up and back. Build at the stables for 12 Al; pick up when ready."
 cost_curve = SubResource("Resource_6weqo")
 effects = Array[ExtResource("1_s6v6d")]([SubResource("Resource_que1x")])

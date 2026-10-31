@@ -220,8 +220,8 @@ func test_nothing_is_free() -> void:
 			"every copy costs its parts, the first one too")
 	StatService.set_levels({})
 	GameState.parts[&"al"] = 100
-	assert_string_contains(_manager.placement_problem(_spring(), _catwalk(_spring(), 28.0)), "recipe",
-			"and the recipe must be learned first")
+	assert_eq(_manager.placement_problem(_spring(), _catwalk(_spring(), 28.0)), "",
+			"a new profile can build directly, without learning")
 
 
 func test_the_siren_freezes_unfinished_work_until_the_next_intermission() -> void:
@@ -388,3 +388,31 @@ func test_cancel_or_siren_returns_a_carried_kit_to_the_pickup_rack() -> void:
 	assert_true(_manager.in_hand == null and stock.occupant.ready_for_pickup and not stock.occupant.active)
 	assert_false(_manager.is_placing())
 	assert_eq(GameState.parts[&"al"], 88, "returning a finished kit creates no refund")
+
+
+func test_direct_building_has_no_learning_fee_and_only_ready_items_appear() -> void:
+	StatService.set_levels({})
+	var entries := _manager._recipe_entries(_farmer)
+	for entry in entries:
+		assert_false(String(entry.get("text", "")).contains("Learn"))
+	assert_eq(entries.filter(func(entry: Dictionary) -> bool: return String(entry.get("text", "")).begins_with("BUILD")).size(), 3)
+	var before := GameState.parts[&"al"]
+	var stock := _queue(_spring())
+	assert_eq(GameState.parts[&"al"], before - 12, "only the physical copy is paid for")
+	assert_false(stock.occupant.visible, "no pickup model is shown before assembly finishes")
+	assert_false(stock.can_interact(_farmer), "unfinished stock has no pickup prompt")
+	_work(10.1)
+	assert_true(stock.occupant.visible and stock.occupant.ready_for_pickup)
+	assert_string_contains(stock.occupant._hp_label.text, "Spring Trap READY")
+
+
+func test_defense_upgrades_are_bought_at_the_stables_only() -> void:
+	GameState.parts[&"cu"] = 100
+	_farmer.global_position = _workshop.interaction_point()
+	_manager._buy_workshop_upgrade(_farmer, &"build.coil_springs")
+	assert_eq(StatService.level_of(&"build.coil_springs"), 1)
+	_farmer.global_position = Vector3(-80.0, 0.0, -80.0)
+	var before := GameState.parts.duplicate()
+	_manager._buy_workshop_upgrade(_farmer, &"build.coil_springs")
+	assert_eq(StatService.level_of(&"build.coil_springs"), 1, "remote upgrades are refused")
+	assert_eq(GameState.parts, before)

@@ -114,7 +114,7 @@ func _refresh_label() -> void:
 		return
 	var damaged := hp < max_hp - 0.5
 	_hp_label.visible = damaged or not active
-	_hp_label.text = ("%d%%" % roundi(condition() * 100.0)) if active else ("READY · E: pick up" if ready_for_pickup else "assembling")
+	_hp_label.text = ("%d%%" % roundi(condition() * 100.0)) if active else ("%s READY\nE / X: pick up" % definition.display_name if ready_for_pickup else "assembling")
 	_hp_label.modulate = Color(1.0, 0.75, 0.4) if not active and not ready_for_pickup else Color(1.0, 0.95, 0.85).lerp(Color(1.0, 0.35, 0.3), 1.0 - condition())
 
 

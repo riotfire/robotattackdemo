@@ -229,8 +229,8 @@ func _run() -> void:
 	_farmer.teleport_to(workshop.interaction_point() + Vector3.UP * 0.1)
 	await _frames(20)
 	await _press_action(&"interact")
-	_construction._learn_recipe(&"build.spring_trap", _farmer)
-	_check(StatService.has_flag(&"defense.spring_trap"), "the Spring Trap recipe is learned at the stables")
+	_check(_construction._recipe_entries(_farmer).all(func(entry: Dictionary) -> bool: return not String(entry.get("text", "")).contains("Learn")),
+			"the workshop builds directly without a learning step")
 	var spring_def := _construction.definition(&"spring_trap")
 	var al_before := GameState.parts[&"al"]
 	_construction._choose_recipe(_farmer, spring_def)

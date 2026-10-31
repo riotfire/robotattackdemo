@@ -31,20 +31,19 @@ const PHASE_NAMES: PackedStringArray = ["Intermission", "Siren", "Attack", "Mop-
 ## Where each lane comes from, by the landmark beside it (FIRST_FIVE_WAVES_FUN_PLAN.md: bearings tied to
 ## visible landmarks rather than lane numbers).
 const LANE_NAMES: Dictionary[int, String] = {
-	1: "the north, by the barn", 2: "the north, by the stables", 3: "the east, by the chicken coop",
-	4: "the east, by the well", 5: "the south, by the water tower", 6: "the south, by the porch",
-	7: "the west, by the house", 8: "the west, by the tool shed",
+	1: "the barn", 2: "the stables", 3: "the chicken coop", 4: "the well",
+	5: "the water tower", 6: "the porch", 7: "the house", 8: "the tool shed",
 }
 ## Seconds before a raid group's release that its lane lights up and the HUD calls it.
 const RAID_WARNING: float = 3.0
 ## Debut captions, shown once per profile (SaveManager.first_time) when an authored group with that intro arrives.
 const INTROS: Dictionary[StringName, String] = {
-	&"clanker": "NEW: Clankers. Tough and slow, and they come in pairs. Keep swinging, or buy the Rivet Pistol at the shed to soften them up from range.",
-	&"thief": "A THIEF! The Nibbler with the $ is after a grain sack. Pop it before it reaches the corn.",
-	&"foreman": "THE FOREMAN! Its plates shrug off shots from range. Watch it rear up, step out of the slam, then whack the glowing vent on its back.",
-	&"roof_lobber": "NEW: a Roof Lobber is climbing the tool shed. Hop up the rain barrel and crates after it and bonk it.",
-	&"rung_runner": "NEW: a Rung Runner is climbing the SILO LADDER! Shoot it on the rungs, meet it on the catwalk, or let a spring throw it off.",
-	&"foreman_throws": "This Foreman throws dirt clods at anyone who keeps away, faster once it's hurt. Watch for the chalk circles and get in close.",
+	&"clanker": "Clankers spotted by %s!",
+	&"thief": "Thief by %s! Stop that sack!",
+	&"foreman": "Foreman by %s! Watch that slam!",
+	&"roof_lobber": "Robot climbing the tool shed!",
+	&"rung_runner": "Climber on the silo ladder!",
+	&"foreman_throws": "Foreman's throwing! Watch those clods!",
 }
 const OPENING_PATH := "res://data/opening/wave_%d.tres"
 
@@ -283,12 +282,23 @@ func _enter_siren(remaining: float) -> void:
 	_set_lanes_active(true)
 	_set_phase(Phase.SIREN)
 	EventBus.siren_started.emit(wave, active_lanes)
-	var names := PackedStringArray()
-	for lane in active_lanes:
-		names.append(lane_name(lane))
-	var haul := "  BIG HAUL!" if curve.is_big_haul(wave) else ""
-	var plan_text := "  %s!" % plan_title().trim_suffix("!") if not plans.is_empty() else ""
-	EventBus.hud_message.emit("INCOMING! Wave %d from %s%s%s" % [wave, " and ".join(names), haul, plan_text], 4.0)
+	EventBus.hud_message.emit(spotter_call(active_lanes), 4.0)
+
+
+## Short spoken-style bearings. Wave, boss and plan details already have their own HUD cards.
+static func spotter_call(lanes: PackedInt32Array, reinforcements: bool = false) -> String:
+	var landmarks := PackedStringArray()
+	for lane in lanes:
+		var landmark := lane_name(lane).trim_prefix("the ")
+		if landmark not in landmarks:
+			landmarks.append(landmark)
+	if landmarks.is_empty():
+		return "More robots coming!" if reinforcements else "Here they come!"
+	if landmarks.size() == 1:
+		return ("More coming by the %s!" if reinforcements else "They're coming in by the %s!") % landmarks[0]
+	var last := landmarks[landmarks.size() - 1]
+	landmarks.remove_at(landmarks.size() - 1)
+	return "Spotted by the %s and %s!" % [", ".join(landmarks), last]
 
 
 func _load_plan_library() -> void:
@@ -640,10 +650,13 @@ func _release_group(state: GroupState) -> void:
 				state.robots.append(robot)
 		slot += 1
 		if foreman:
-			EventBus.hud_message.emit("FOREMAN INCOMING: %s!" % _last_foreman_title(), 3.0)
+			EventBus.hud_message.emit("Foreman spotted!", 3.0)
 	Fx.puff(robots_parent, center + Vector3.UP * 0.6, Color(0.6, 0.45, 0.3), 1.2, 0.4)
 	if not group.intro.is_empty() and INTROS.has(group.intro) and SaveManager.first_time(String(group.intro)):
-		EventBus.hud_message.emit(INTROS[group.intro], 7.0)
+		var callout: String = INTROS[group.intro]
+		if callout.contains("%s"):
+			callout = callout % lane_name(lane_index)
+		EventBus.hud_message.emit(callout, 3.0)
 
 
 ## Authored arrivals burst out of the crop rows along their lane, `distance` from the silo (the corn sits
@@ -666,7 +679,7 @@ func _announce_raid(group: OpeningGroup) -> void:
 	if lane_index > 0 and lane_index not in active_lanes:
 		active_lanes.append(lane_index)
 		_set_lanes_active(true)
-	EventBus.hud_message.emit("RAID! More robots from %s!" % lane_name(lane_index), 3.0)
+	EventBus.hud_message.emit(spotter_call(PackedInt32Array([lane_index]), true), 3.0)
 
 
 func _on_robot_destroyed(robot: Node3D, _killer: Node) -> void:
@@ -990,7 +1003,7 @@ func _spawn_event(event: SpawnEvent) -> void:
 		var offset := lane.global_basis * RobotSquad.formation_offset(i, type_scale)
 		_spawn_robot(event.archetype, center + offset, event.foreman, bonus, squad)
 	if event.foreman:
-		EventBus.hud_message.emit("FOREMAN INCOMING: %s!" % _last_foreman_title(), 3.0)
+		EventBus.hud_message.emit("Foreman spotted!", 3.0)
 
 
 func _spawn_robot(archetype: RobotArchetype, where: Vector3, foreman: bool, bonus: Array[RobotTrait], squad: RobotSquad,

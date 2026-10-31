@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://docs/audit-evidence/2026-10-31-defense-clarity/preview.gd" id="1"]
+
+[node name="Preview" type="Node"]
+script = ExtResource("1")

@@ -1,7 +1,7 @@
 class_name DefenseWorkshop
 extends Interactable
 ## The stables' workbench and pickup rack. All physical defenses are assembled here between waves.
-## A persistent first-use lesson guides the farmer through recipe → assembly → pickup → placement.
+## A persistent first-use lesson guides the farmer through build → pickup → placement.
 
 const GROUP_WORKSHOP: StringName = &"defense_workshop"
 const GOLD := Color(1.0, 0.8, 0.28)
@@ -10,7 +10,6 @@ var _manager: ConstructionManager
 var _status: Label3D
 var _trail: TutorialTrail
 var _trail_farmer: Farmer
-var _marker: TutorialMarker
 var _refresh: float = 0.0
 
 
@@ -59,14 +58,12 @@ func lesson_text() -> String:
 	if not lesson_active():
 		return ""
 	if construction.in_hand != null:
-		return "Carry your defense to a green spot. E / click places it; Tab returns it to the pickup rack.\nTry a Spring Trap by the silo ladder to throw small robots away."
+		return "E / click: place at a green spot. Tab: return it."
 	if not construction.ready_stock().is_empty():
-		return "Your defense is ready at the STABLES pickup area. Walk over and press E to collect it.\nThen carry it to a green spot and press E / click to place it."
+		return "Ready at the STABLES! E: pick up, then carry it out."
 	if not construction.jobs.is_empty():
-		return "Your defense is assembling at the STABLES. Standing beside it builds twice as fast.\nWhen it says READY, pick it up and carry it out."
-	if not StatService.has_flag(&"defense.spring_trap"):
-		return "Visit the STABLES DEFENSE WORKSHOP: follow the gold trail and press E.\nLearn the Spring Trap recipe (15 Al), then build a copy (12 Al). Earn more parts in battle if needed."
-	return "Build a Spring Trap at the STABLES (12 Al), then pick up the finished trap.\nCarry it to the silo ladder or a robot lane and place it where the preview turns green."
+		return "Building at the STABLES. Stand by the workbench to help."
+	return "Build defenses at the STABLES. E opens the workbench."
 
 
 func _process(delta: float) -> void:
@@ -78,10 +75,10 @@ func _process(delta: float) -> void:
 	if construction == null:
 		return
 	var ready := construction.ready_stock().size()
-	_status.text = "DEFENSE WORKSHOP\n" + ("E: learn recipes / build" if construction.is_open() else "Opens between waves")
+	_status.text = "DEFENSE WORKSHOP\n" + ("E: build defenses" if construction.is_open() else "Opens between waves")
 	if ready > 0:
 		_status.text += "\n%d READY FOR PICKUP" % ready
-	var show_guide := lesson_active() and construction.in_hand == null
+	var show_guide := lesson_active() and construction.in_hand == null and ready == 0 and construction.jobs.is_empty()
 	if show_guide:
 		var farmer := GameState.get_nearest_player(global_position) as Farmer
 		if farmer == null:
@@ -96,19 +93,9 @@ func _process(delta: float) -> void:
 		if farmer != _trail_farmer:
 			_trail_farmer = farmer
 			_trail.setup(farmer)
-		var goal := interaction_point()
-		if ready > 0:
-			goal = construction.ready_stock()[0].global_position + Vector3(0.0, 0.0, 1.2)
-		_trail.set_goal(goal)
-		if _marker == null:
-			_marker = TutorialMarker.create(Vector3.ZERO, GOLD, 1.5)
-			add_child(_marker)
-		_marker.visible = true
-		_marker.global_position = goal
+		_trail.set_goal(interaction_point())
 	elif _trail != null:
 		_trail.clear_goal()
-		if _marker != null:
-			_marker.visible = false
 
 
 func _build_look() -> void:
@@ -134,21 +121,6 @@ func _build_look() -> void:
 	_status.outline_size = 7
 	_status.text = "DEFENSE WORKSHOP"
 	add_child(_status)
-	var pickup_sign := Label3D.new()
-	pickup_sign.position = Vector3(0.0, 0.08, 6.0)
-	pickup_sign.rotation_degrees.x = -90.0
-	pickup_sign.font_size = 48
-	pickup_sign.pixel_size = 0.012
-	pickup_sign.modulate = GOLD
-	pickup_sign.text = "PICK UP HERE"
-	add_child(pickup_sign)
-	for slot in 8:
-		var pad := CylinderMesh.new()
-		pad.top_radius = 0.85
-		pad.bottom_radius = 0.85
-		pad.height = 0.04
-		Clay.part(self, pad, Color(0.82, 0.66, 0.32), Transform3D(Basis(),
-				Vector3(-6.0 + (slot % 4) * 4.0, 0.025, 4.8 + floori(slot / 4.0) * 3.0)))
 
 
 func _box(size: Vector3, at: Vector3, color: Color) -> void:

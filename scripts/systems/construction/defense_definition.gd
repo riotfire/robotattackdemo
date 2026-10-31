@@ -3,8 +3,7 @@ extends Resource
 ## One buildable defense (DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md): its recipe flag, the price of
 ## each physical copy, the share of the farm's defense capacity it takes, its assembly time and durability,
 ## and the numbers its behavior reads. Generated into data/defenses/ from data/source/defenses/items by
-## tools/build_defense_data.gd. Owning the recipe is lasting progression (the workshop or a pegboard node sets the flag);
-## every copy costs parts again, and a destroyed copy stays spent.
+## tools/build_defense_data.gd. Every copy costs parts, and a destroyed copy stays spent. Defense upgrades are purchased at the stables.
 
 enum Kind { SPRING_TRAP, DECOY, BARRICADE }
 
@@ -15,7 +14,7 @@ const SITE_KINDS: Array[StringName] = [&"ground", &"catwalk", &"roof"]
 @export var display_name: String = ""
 @export var kind: Kind = Kind.SPRING_TRAP
 @export var description: String = ""
-## Stat flag that says this profile owns the recipe (StatService.has_flag).
+## Legacy save flag retained for compatibility; direct building does not require it.
 @export var recipe_flag: StringName = &""
 ## Aluminium per copy. Base copies cost only Aluminium so the first lesson never waits on a rare drop.
 @export var cost_al: int = 10

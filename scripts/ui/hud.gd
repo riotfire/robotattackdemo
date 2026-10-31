@@ -177,17 +177,13 @@ func _on_wave_phase_changed(phase: int, wave: int) -> void:
 	elif phase == WaveDirector.Phase.INTERMISSION and wave == SPRING_LESSON_WAVE and not StatService.has_flag(&"defense.spring_trap"):
 		# Split pressure starts next wave: the first time defenses decide a wave (ROADMAP 4.13).
 		_build_choice_prompted = true
-		set_tutorial_lesson("Next wave splits up: a climber on the silo ladder AND a raid on the far side.\nBuild a Spring Trap at the STABLES, pick it up, then carry it to the ladder top.")
+		set_tutorial_lesson("Build a Spring Trap at the stables. Try it at the silo ladder.")
 		_banner_left = 0.0
 	elif wave >= 2 and phase != WaveDirector.Phase.INTERMISSION and _build_choice_prompted and _banner_left <= 0.0:
 		set_tutorial_lesson("")
 
 
 func _on_upgrade_purchased(id: StringName, _level: int) -> void:
-	if id == &"build.spring_trap" and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
-		set_tutorial_lesson("Spring Trap recipe! Visit the STABLES workshop to build a copy and pick it up.\nCarry it to the ladder top. A climber that steps on it gets thrown off.")
-		_banner_left = 8.0
-		return
 	if _build_choice_prompted and director != null and director.phase == WaveDirector.Phase.INTERMISSION:
 		set_tutorial_lesson("")
 

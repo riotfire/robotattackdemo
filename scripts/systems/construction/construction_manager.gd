@@ -56,6 +56,7 @@ var _in_hand_from: DefenseSite = null
 var _menu: ChoiceMenu = null
 var _menu_site: DefenseSite = null
 var _at_workshop: bool = false
+var _workshop_upgrades: bool = false
 var _settled: bool = false
 var _sites_root: Node3D
 var _menu_refresh_left: float = 0.0
@@ -140,9 +141,9 @@ func definition(id: StringName) -> DefenseDefinition:
 	return null
 
 
-## Recipes this profile owns.
+## Every defense is directly buildable; saved recipe flags are only upgrade compatibility data.
 func owned_definitions() -> Array[DefenseDefinition]:
-	return definitions.filter(func(each: DefenseDefinition) -> bool: return StatService.has_flag(each.recipe_flag))
+	return definitions.duplicate()
 
 
 ## Construction runs only in the intermission, never during the siren or battle.
@@ -372,8 +373,6 @@ class Footprint:
 func placement_problem(defense_definition: DefenseDefinition, spot: Spot = null) -> String:
 	if not is_open():
 		return "Construction opens at the intermission"
-	if not StatService.has_flag(defense_definition.recipe_flag):
-		return "You don't have this recipe"
 	if jobs.size() > MAX_WAITING:
 		return "The build queue is full (%d waiting)" % MAX_WAITING
 	if capacity_used() + defense_definition.capacity > capacity_total():
@@ -416,7 +415,10 @@ func craft(defense_definition: DefenseDefinition, farmer: Node3D) -> String:
 	job.work = defense_definition.assembly_time
 	job.reserved = defense_definition.cost()
 	GameState.add_parts({&"al": -defense_definition.cost_al})
+	# Retain saved upgrade prerequisites internally; there is no recipe purchase or learning step.
+	StatService.grant(RECIPE_IDS[defense_definition.id])
 	job.ghost = _make_defense(defense_definition, site, farmer)
+	job.ghost.visible = false
 	jobs.append(job)
 	SaveManager.save_profile()
 	_changed()
@@ -623,7 +625,8 @@ func assisted(job: Job) -> bool:
 	for player in GameState.players:
 		var farmer := player as Farmer
 		if farmer != null and farmer.is_alive() and farmer.state == Farmer.State.GROUNDED \
-				and farmer.global_position.distance_to(job.site.global_position) <= ASSIST_RANGE:
+				and farmer.global_position.distance_to(workshop.interaction_point() if job.site.workshop_slot >= 0
+					and is_instance_valid(workshop) else job.site.global_position) <= ASSIST_RANGE:
 			return true
 	return false
 
@@ -631,6 +634,7 @@ func assisted(job: Job) -> bool:
 func _complete(job: Job) -> void:
 	jobs.erase(job)
 	job.ghost.ready_for_pickup = job.site.workshop_slot >= 0
+	job.ghost.visible = true
 	job.ghost.set_active(not job.ghost.ready_for_pickup)
 	if job.moving and job.origin != null and is_instance_valid(job.origin):
 		_free_site(job.origin)
@@ -683,7 +687,7 @@ func _update_input() -> void:
 			return
 
 
-## The stables menu combines recipe learning, paid assembly, queue cancellation and physical pickup.
+## Direct building and defense upgrades are available only at the stables.
 func open_recipe_menu(farmer: Farmer) -> void:
 	if not is_open() or not at_workshop(farmer):
 		return
@@ -693,6 +697,7 @@ func open_recipe_menu(farmer: Farmer) -> void:
 	_ensure_menu()
 	_menu_site = null
 	_at_workshop = true
+	_workshop_upgrades = false
 	_menu.close_actions = [&"build"]
 	_menu.open(farmer, "STABLES · DEFENSE WORKSHOP", _recipe_entries(farmer), workshop)
 	_refresh_workshop()
@@ -705,7 +710,7 @@ func _refresh_workshop() -> void:
 		close_menu()
 		return
 	_menu.set_entries(_recipe_entries(_menu.farmer))
-	_menu_subtitle("Build here → pick up → carry to a green spot → E / click to place\nCapacity %d/%d  ·  %d ready for pickup" % [
+	_menu_subtitle(("Defense upgrades" if _workshop_upgrades else "Build → pick up when ready → carry out and place") + "\nCapacity %d/%d  ·  %d ready for pickup" % [
 			capacity_used(), capacity_total(), ready_stock().size()])
 
 
@@ -720,26 +725,53 @@ func _recipe_entries(farmer: Farmer) -> Array[Dictionary]:
 			entries.append({"id": "job_%s" % job.site.site_id, "text": "%s · %d%% · Cancel (+%d Al)" % [job.definition.display_name,
 					roundi(job.fraction() * 100.0), job.unbuilt_refund().get(&"al", 0)],
 					"enabled": true, "action": _cancel_workshop_job.bind(job.site)})
+	if _workshop_upgrades:
+		return _upgrade_entries(farmer)
 	for each in definitions:
-		if not StatService.has_flag(each.recipe_flag):
-			var id: StringName = RECIPE_IDS[each.id]
-			var cost: int = int(StatService.next_cost(id).get(&"al", 0))
-			entries.append({"id": "learn_%s" % id, "text": "Learn %s recipe · %d Al" % [each.display_name, cost],
-					"detail": each.description + " Then build each copy here and collect it from the pickup area.",
-					"enabled": StatService.can_purchase(id), "reason": "Need %d Al and the Spring Trap recipe first" % cost
-						if not StatService.prerequisites_met(id) else "Need %d Al to learn this recipe" % cost,
-					"action": _learn_recipe.bind(id, farmer)})
-		else:
-			var problem := placement_problem(each)
-			entries.append({"id": "craft_%s" % each.id, "text": "BUILD · %s · %d Al · %.0f s" % [each.display_name, each.cost_al, each.assembly_time],
-					"detail": each.description + " Collect the finished copy here before placing it.",
-					"enabled": problem.is_empty(), "reason": problem, "action": _choose_recipe.bind(farmer, each)})
+		var problem := placement_problem(each)
+		entries.append({"id": "craft_%s" % each.id, "text": "BUILD · %s · %d Al · %.0f s" % [each.display_name, each.cost_al, each.assembly_time],
+				"detail": each.description, "enabled": problem.is_empty(), "reason": problem,
+				"action": _choose_recipe.bind(farmer, each)})
+	entries.append({"id": "upgrades", "text": "Improve defenses", "enabled": true,
+			"detail": "Stronger traps, sturdier walls, quicker building and more capacity.",
+			"action": _show_workshop_upgrades.bind(true)})
 	entries.append({"text": "Close", "enabled": true, "action": close_menu})
 	return entries
 
 
-func _learn_recipe(id: StringName, farmer: Farmer) -> void:
-	if is_open() and at_workshop(farmer):
+func _show_workshop_upgrades(show_upgrades: bool) -> void:
+	_workshop_upgrades = show_upgrades
+	_refresh_workshop()
+
+
+func _upgrade_entries(farmer: Farmer) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for id: StringName in StatService.catalog:
+		var node: UpgradeNode = StatService.catalog[id]
+		if node.branch != UpgradeNode.Branch.BUILD or id in RECIPE_IDS.values():
+			continue
+		var price := PackedStringArray()
+		for part: StringName in StatService.next_cost(id):
+			price.append("%d %s" % [StatService.next_cost(id)[part], String(part).capitalize()])
+		var reason := "Fully upgraded" if StatService.is_maxed(id) else "Need " + " / ".join(price)
+		if not StatService.prerequisites_met(id):
+			var required := PackedStringArray()
+			for prerequisite in node.prerequisites:
+				if StatService.level_of(prerequisite.node_id) < prerequisite.level:
+					required.append(StatService.catalog[prerequisite.node_id].display_name)
+			reason = "First build or upgrade: " + ", ".join(required)
+		entries.append({"id": String(id), "text": "%s %d/%d · %s" % [node.display_name, StatService.level_of(id),
+				node.max_level, " / ".join(price) if not price.is_empty() else "MAX"], "detail": node.description,
+				"enabled": StatService.can_purchase(id), "reason": reason,
+				"action": _buy_workshop_upgrade.bind(farmer, id)})
+	entries.append({"id": "back", "text": "Back to building", "enabled": true,
+			"action": _show_workshop_upgrades.bind(false)})
+	return entries
+
+
+func _buy_workshop_upgrade(farmer: Farmer, id: StringName) -> void:
+	if is_open() and at_workshop(farmer) and StatService.catalog.has(id) \
+			and StatService.catalog[id].branch == UpgradeNode.Branch.BUILD and id not in RECIPE_IDS.values():
 		StatService.purchase(id)
 	_refresh_workshop()
 

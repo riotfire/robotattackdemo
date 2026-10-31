@@ -353,7 +353,7 @@ A stubby clay farmer in patched overalls, a straw hat and welding goggles (worki
 | Eat pie | C | D-pad left |
 | Overdrive (jetpack capstone) | X | LB + RB |
 | Shoulder swap | Middle mouse | — |
-| Stables workbench: learn/build; pickup rack: collect; carrying: place | E; E or left click to place | X; X or RT to place |
+| Stables workbench: build/improve; pickup rack: collect; carrying: place | E; E or left click to place | X; X or RT to place |
 | Return a carried defense to its origin; open the workshop menu while at the workbench | Tab | View / Select / Back |
 | Pause | Esc | Start / Options |
 
@@ -494,11 +494,11 @@ DEFENSE_BUILDING_AND_COMBAT_PROGRESSION_PROPOSAL.md, first version. **Recipes** 
 
 | Defense | Copy | Capacity | Assembly | What it does |
 |---|---|---|---|---|
-| **Spring Trap** | 12 Al | 2 | 10 s | Throws a small robot up and out along its arrow; medium robots fly less far; large robots and Foremen stomp it instead. On the ground it delays; on the catwalk or a roof the landing hurts (no damage up to 2 m of fall, then 7 per metre, at most 60), with a 1 s recovery and kill credit to whoever placed it. Resets in 5 s. The recipe is 15 Al on the BUILD board; the wave 5 intermission asks for one at the ladder top. |
+| **Spring Trap** | 12 Al | 2 | 10 s | Throws a small robot up and out along its arrow; medium robots fly less far; large robots and Foremen stomp it instead. On the ground it delays; on the catwalk or a roof the landing hurts (no damage up to 2 m of fall, then 7 per metre, at most 60), with a 1 s recovery and kill credit to whoever placed it. Resets in 5 s. Available directly at the stables; the wave 5 intermission suggests one at the ladder top. |
 | **Scarecrow Decoy** | 6 Al | 1 | 5 s | Holds up to 3 eligible robots on itself for 10 s each, then lets them go (they ignore decoys for 6 s after). On the ground it pulls ground robots within 12 m; on the catwalk it pulls Rung Runners from anywhere on their route; on a roof it draws Lobbers within reach to that roof. Never thieves, heist crews, Foremen or a robot already after the farmer. |
 | **Scrap Barricade** | 8 Al | 2 | 8 s | Robots that reach it must smash it (160 durability) before going on; the farmer walks through. On the ground it stands across the way the farmer faced when placing it; on the catwalk it turns a Rung Runner the other way round. |
 
-- **Build and pick up at the stables** (playtest feedback 2026-10-30): the stables workbench teaches recipes and queues paid physical copies. A completed copy waits inactive and solid in the pickup area until collected with Interact. Recipes already learned on the BUILD board remain valid. From wave 2 a gold trail and persistent lesson guide the farmer through learning, building, pickup and first deployment; prices are unchanged. Capacity counts queued, ready, carried and deployed copies.
+- **Stables only; direct building** (playtest feedback 2026-10-31): all three crafted defenses are immediately buildable for their per-copy price, with no Learn/recipe payment. Their upgrades are sold under Improve defenses at the stables. The tool shed has no BUILD tab and cannot purchase these items. Old save flags remain compatible internally; they do not gate building. No ground pads, pickup signs or destination rings are drawn for stock. Unfinished copies stay hidden; completed copies appear solid, labeled by name and READY with an interaction prompt. Workbench assistance speeds assembly. Capacity still counts queued, ready, carried and deployed copies.
 - **Free placement after pickup, no marked deployment spots:** carry a finished defense to a green preview position, then Interact or Fire deploys it immediately without a second cost or assembly. The preview rejects overlaps and missing floor, follows camera facing and snaps to the first catwalk ring as before. Tab / Back returns a carried copy to its origin. Interaction with a deployed defense still offers moving, repair and dismantling.
 - **Only the intermission builds.** Ordering at the stables reserves cost and capacity at once. One job advances at a time, with two waiting; standing beside the assembling copy doubles speed. The siren freezes unfinished workshop jobs and returns carried copies to their origin. Finished stock stays inactive at the stables until collected and deployed.
 - **Capacity 8** (More Room adds up to 2) caps how much a wealthy profile can automate; jobs reserve it too.
@@ -1819,3 +1819,5 @@ Family name format: **"The {Palette adjective} {Theme word} {Body plural}"**
 | **Parts** | Currencies: Aluminium, Copper, Gold, Power Cells |
 | **Clayify** | The Blender pipeline that turns low-poly assets into soft clay forms |
 | **Boil** | Stop-motion surface jitter on clay materials |
+
+**Wave-call clarity (2026-10-31):** siren and reinforcement banners use short spoken-style landmark sightings, such as “They're coming in by the barn!” and “Spotted by the house and tool shed!” First enemy sightings are also short. Wave numbers, boss names and battle-plan details remain on their dedicated cards, rather than being appended to the warning.
