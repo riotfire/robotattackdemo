@@ -1,0 +1,363 @@
+{
+  "metadata": {
+    "adapter": "Apple M4 Pro (Apple9)",
+    "engine": "4.7.2-stable (official)",
+    "max_fps": 0,
+    "physics_hz": 60,
+    "refresh_hz": 120.0,
+    "render_scale": 0.5,
+    "seed": 42,
+    "viewport": "(1600.0, 900.0)",
+    "vsync": 0,
+    "window_pixels": "(1600, 900)",
+    "probe_mode": "small-bursts"
+  },
+  "samples": [
+    {
+      "draw_calls": {
+        "max": 725.0,
+        "p50": 725.0,
+        "p95": 725.0,
+        "p99": 725.0
+      },
+      "frames": 180,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 13,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 614955.0,
+        "p50": 614955.0,
+        "p95": 614955.0,
+        "p99": 614955.0
+      },
+      "render_cpu_ms": {
+        "max": 1.66499996185303,
+        "p50": 0.544000029563904,
+        "p95": 1.20500004291534,
+        "p99": 1.54700005054474
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "small_bursts_idle",
+      "wall_ms": {
+        "max": 33.115,
+        "p50": 16.636,
+        "p95": 25.223,
+        "p99": 26.834
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 477.239
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.874
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 842.0,
+        "p50": 823.0,
+        "p95": 842.0,
+        "p99": 842.0
+      },
+      "frames": 180,
+      "live_robots_end": 3,
+      "new_pipelines": 17,
+      "over_25ms": 11,
+      "over_33ms": 3,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 662566.0,
+        "p50": 653129.0,
+        "p95": 659456.0,
+        "p99": 662531.0
+      },
+      "render_cpu_ms": {
+        "max": 2.19600009918213,
+        "p50": 0.587000012397766,
+        "p95": 0.768999993801117,
+        "p99": 0.824999988079071
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "spawn_3_nibblers",
+      "wall_ms": {
+        "max": 37.477,
+        "p50": 16.605,
+        "p95": 25.096,
+        "p99": 35.493
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 69.142
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 1.843
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 894.0,
+        "p50": 839.0,
+        "p95": 881.0,
+        "p99": 891.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 18,
+      "over_33ms": 3,
+      "pickups_end": 6,
+      "primitives": {
+        "max": 670035.0,
+        "p50": 663499.0,
+        "p95": 669291.0,
+        "p99": 669839.0
+      },
+      "render_cpu_ms": {
+        "max": 1.31900000572205,
+        "p50": 0.58899998664856,
+        "p95": 0.925999999046326,
+        "p99": 1.23699998855591
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "kill_3_without_hitstop",
+      "wall_ms": {
+        "max": 37.491,
+        "p50": 16.669,
+        "p95": 25.245,
+        "p99": 35.79
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 34.711
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 13.45
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 827.0,
+        "p50": 792.0,
+        "p95": 820.0,
+        "p99": 827.0
+      },
+      "frames": 180,
+      "live_robots_end": 6,
+      "new_pipelines": 0,
+      "over_25ms": 10,
+      "over_33ms": 1,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 715167.0,
+        "p50": 679927.0,
+        "p95": 706035.0,
+        "p99": 712845.0
+      },
+      "render_cpu_ms": {
+        "max": 1.28199994564056,
+        "p50": 0.619000017642975,
+        "p95": 0.913999974727631,
+        "p99": 1.09399998188019
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "spawn_6_nibblers",
+      "wall_ms": {
+        "max": 36.618,
+        "p50": 16.629,
+        "p95": 25.031,
+        "p99": 28.456
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 34.235
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 1.996
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 881.0,
+        "p50": 795.0,
+        "p95": 867.0,
+        "p99": 880.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 34,
+      "over_33ms": 3,
+      "pickups_end": 17,
+      "primitives": {
+        "max": 698605.0,
+        "p50": 681381.0,
+        "p95": 697865.0,
+        "p99": 698445.0
+      },
+      "render_cpu_ms": {
+        "max": 1.67499995231628,
+        "p50": 0.611000001430511,
+        "p95": 0.825999975204468,
+        "p99": 1.16499996185303
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "kill_6_without_hitstop",
+      "wall_ms": {
+        "max": 35.974,
+        "p50": 16.653,
+        "p95": 26.888,
+        "p99": 35.178
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 34.626
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 3.555
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 856.0,
+        "p50": 845.0,
+        "p95": 852.0,
+        "p99": 854.0
+      },
+      "frames": 180,
+      "live_robots_end": 12,
+      "new_pipelines": 6,
+      "over_25ms": 25,
+      "over_33ms": 1,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 784704.0,
+        "p50": 758621.0,
+        "p95": 781861.0,
+        "p99": 784109.0
+      },
+      "render_cpu_ms": {
+        "max": 1.70299994945526,
+        "p50": 0.762000024318695,
+        "p95": 0.99099999666214,
+        "p99": 1.60800004005432
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "spawn_12_nibblers",
+      "wall_ms": {
+        "max": 34.618,
+        "p50": 16.696,
+        "p95": 27.268,
+        "p99": 29.875
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 31.443
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 3.704
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 1043.0,
+        "p50": 851.0,
+        "p95": 994.0,
+        "p99": 1029.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 27,
+      "over_33ms": 3,
+      "pickups_end": 26,
+      "primitives": {
+        "max": 787589.0,
+        "p50": 735877.0,
+        "p95": 772707.0,
+        "p99": 787589.0
+      },
+      "render_cpu_ms": {
+        "max": 2.19099998474121,
+        "p50": 0.748000025749207,
+        "p95": 1.07500004768372,
+        "p99": 1.19000005722046
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "kill_12_without_hitstop",
+      "wall_ms": {
+        "max": 34.845,
+        "p50": 16.636,
+        "p95": 27.384,
+        "p99": 33.416
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.228
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 27.865
+      }
+    },
+    {
+      "frames": 360,
+      "scenario": "farm_camera_360_sweep",
+      "wall_ms": {
+        "max": 29.657,
+        "p50": 16.638,
+        "p95": 25.154,
+        "p99": 25.941
+      }
+    }
+  ],
+  "small_burst_cpu": [
+    {
+      "count": 3,
+      "death_ms": 0.934,
+      "spawn_ms": 36.868,
+      "spawn_new_pipelines": 20
+    },
+    {
+      "count": 6,
+      "death_ms": 0.758,
+      "spawn_ms": 3.354,
+      "spawn_new_pipelines": 0
+    },
+    {
+      "count": 12,
+      "death_ms": 1.916,
+      "spawn_ms": 6.049,
+      "spawn_new_pipelines": 6
+    }
+  ],
+  "measurement_notes": "wall_ms measures real process_frame intervals, not physical display latency. Engine process/physics monitors are published one-second maxima, not individual frame samples. GPU timing is unavailable on this Metal backend. Synchronous spawn/kill calls are measured separately and excluded from frame intervals. Original monitor labels were clarified when archiving; numerical values are unchanged."
+}

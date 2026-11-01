@@ -196,14 +196,15 @@ func try_air_dash(wish: Vector3) -> bool:
 
 func try_ground_pound() -> bool:
 	if farmer.is_on_floor() or not StatService.has_flag(&"jetpack.ground_pound") \
-			or _height_above_floor() < 2.0:
+			or height_above_floor() < 2.0:
 		return false
 	_pounding = true
 	_dash_left = 0.0
 	return true
 
 
-func _height_above_floor() -> float:
+## How far the farmer is above the floor below her, up to 30 m (a ray against the world layer).
+func height_above_floor() -> float:
 	var from := farmer.global_position + Vector3.UP * 0.1
 	var query := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 30.0, 1, [farmer.get_rid()])
 	var hit := farmer.get_world_3d().direct_space_state.intersect_ray(query)
@@ -346,6 +347,11 @@ func _process_zipline(delta: float) -> void:
 		release(flat * speed * 0.8 + Vector3.UP * 3.0)
 	elif _zip_distance >= line.length():
 		release(flat * speed * 0.3 + Vector3.UP * 1.0)
+
+
+## The zipline being ridden, or null.
+func current_zipline() -> Zipline:
+	return _zipline
 
 
 func zipline_progress() -> float:

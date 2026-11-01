@@ -3,6 +3,9 @@ extends Weapon
 ## Grandpa's big red wrench (GDD 6.2): melee weapon and repair tool. 25 damage, every 3rd hit in a combo
 ## does x1.5 with knockback, 1.6 swings/s, 2.2 m reach (data/weapons/wrench.tres, a MeleeWeaponData).
 
+## How long the wrench stays out for a swing on the rigged model, matching MabelModel's slash.
+const RIG_SWING_TIME: float = 0.5
+
 var _cooldown: float = 0.0
 var _combo: int = 0
 var _since_last_swing: float = 99.0
@@ -69,8 +72,29 @@ func _animate(finisher: bool) -> void:
 	visible = true
 	if _swing_tween != null:
 		_swing_tween.kill()
-	_pivot.rotation = Vector3(deg_to_rad(70.0), 0.0, 0.0)
+	_pivot.rotation = Vector3.ZERO
 	_swing_tween = create_tween()
-	_swing_tween.tween_property(_pivot, ^"rotation:x", deg_to_rad(-100.0 if finisher else -70.0), 0.12)
-	_swing_tween.tween_property(_pivot, ^"rotation:x", 0.0, 0.2)
-	_swing_tween.tween_callback(func() -> void: visible = farmer != null and farmer.weapons.current == self)
+	if farmer.uses_rig():
+		# Her arm does the swing. A quick bonk with a gun equipped puts the gun away for it, since both share the hand.
+		var held := farmer.weapons.current
+		if held != null and held != self:
+			held.visible = false
+		if finisher:
+			_swing_tween.tween_property(_pivot, ^"rotation:x", deg_to_rad(-35.0), RIG_SWING_TIME * 0.3)
+			_swing_tween.tween_property(_pivot, ^"rotation:x", 0.0, RIG_SWING_TIME * 0.7)
+		else:
+			_swing_tween.tween_interval(RIG_SWING_TIME)
+	else:
+		_pivot.rotation.x = deg_to_rad(70.0)
+		_swing_tween.tween_property(_pivot, ^"rotation:x", deg_to_rad(-100.0 if finisher else -70.0), 0.12)
+		_swing_tween.tween_property(_pivot, ^"rotation:x", 0.0, 0.2)
+	_swing_tween.tween_callback(_end_swing)
+
+
+func _end_swing() -> void:
+	if farmer == null:
+		return
+	var held := farmer.weapons.current
+	visible = held == self
+	if held != null:
+		held.visible = true

@@ -4,6 +4,7 @@
 [ext_resource type="Resource" path="res://data/robots/palettes/rusty.tres" id="2_375d8"]
 [ext_resource type="Resource" path="res://data/robots/palettes/slate.tres" id="3_lg4pn"]
 [ext_resource type="Resource" path="res://data/robots/palettes/mustard.tres" id="4_rvbu6"]
+[ext_resource type="Resource" path="res://data/robots/palettes/classic.tres" id="5_375d8"]
 [ext_resource type="Script" path="res://scripts/ai/genome/family_theme.gd" id="5_mdexx"]
 
 [resource]
@@ -16,5 +17,5 @@ eye_styles = Array[StringName]([&"cyclops", &"monocle", &"led_grid"])
 antennas = Array[StringName]([&"spring", &"lightning_rod", &"whisk"])
 patterns = Array[StringName]([&"rust_patches", &"none", &"hazard_tape"])
 melee_arms = Array[StringName]([&"claw", &"hammer"])
-palettes = Array[ExtResource("1_ufywh")]([ExtResource("2_375d8"), ExtResource("3_lg4pn"), ExtResource("4_rvbu6")])
+palettes = Array[ExtResource("1_ufywh")]([ExtResource("2_375d8"), ExtResource("3_lg4pn"), ExtResource("4_rvbu6"), ExtResource("5_375d8")])
 accessories = Array[StringName]([&"tin_hat", &"exhaust_pipe"])

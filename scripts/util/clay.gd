@@ -5,10 +5,13 @@ extends RefCounted
 ## duplicated per robot (GDD 10.4). Scenes baked by tools use per-color copies via colored().
 
 const MATERIAL_PATH := "res://shaders/clay_material.tres"
+const ROBOT_SKIN_PATH := "res://assets/models/robots/parts/monowheel_skin.png"
+const ROBOT_MASK_PATH := "res://assets/models/robots/parts/monowheel_mask.png"
 
 static var _shared: ShaderMaterial
 static var _colored: Dictionary[Color, ShaderMaterial] = {}
 static var _vertex_colored: ShaderMaterial
+static var _robot_skin: ShaderMaterial
 
 
 static func shared() -> ShaderMaterial:
@@ -33,6 +36,19 @@ static func vertex_colored() -> ShaderMaterial:
 		_vertex_colored.set_shader_parameter(&"use_vertex_color", true)
 		_vertex_colored.set_shader_parameter(&"triplanar_prints", true)
 	return _vertex_colored
+
+
+## The clay material for the sculpted robot parts (RobotSkin): their painted texture, repainted per instance.
+static func robot_skin() -> ShaderMaterial:
+	if _robot_skin == null:
+		_robot_skin = shared().duplicate() as ShaderMaterial
+		_robot_skin.set_shader_parameter(&"use_robot_skin", true)
+		_robot_skin.set_shader_parameter(&"skin_tex", load(ROBOT_SKIN_PATH) as Texture2D)
+		_robot_skin.set_shader_parameter(&"skin_mask", load(ROBOT_MASK_PATH) as Texture2D)
+		# The sculpt already has its lumps; the clay's would only blur the rivets.
+		_robot_skin.set_shader_parameter(&"lump_strength", 0.004)
+		_robot_skin.set_shader_parameter(&"boil_strength", 0.002)
+	return _robot_skin
 
 
 ## Instances a clayified model scene under `parent` at `xform`, giving every mesh the vertex-colored clay

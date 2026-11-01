@@ -1,0 +1,302 @@
+{
+  "measurement_notes": "wall_ms is process_frame interval, not physical display latency. Engine process/physics monitors publish one-second maxima and can lag scenario boundaries. A zero GPU timer is unavailable, not free rendering. Synchronous spawn/kill calls are recorded separately and excluded from sample intervals. Pacing cases traverse the identical 360 camera angles at one angle per measured frame. Camera angular speed therefore differs by frame rate; these cases compare delivery cadence and view coverage, not equal-speed subjective animation.",
+  "metadata": {
+    "adapter": "Apple M4 Pro (Apple9)",
+    "engine": "4.7.2-stable (official)",
+    "low_processor_usage_mode": false,
+    "max_fps": 0,
+    "os_version": "15.7.7",
+    "physics_hz": 60,
+    "probe_mode": "pacing",
+    "refresh_hz": 120.0,
+    "render_scale": 0.5,
+    "seed": 42,
+    "viewport": "(1600.0, 900.0)",
+    "vsync": 0,
+    "window_pixels": "(1600, 900)"
+  },
+  "samples": [
+    {
+      "configuration": {
+        "cap": 0,
+        "label": "default_camera_motion",
+        "scale": 0.5,
+        "vsync": 0,
+        "camera_path": "360 equal angular steps"
+      },
+      "draw_calls": {
+        "max": 1341.0,
+        "p50": 669.0,
+        "p95": 1322.0,
+        "p99": 1333.0
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.803
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 28.825
+      },
+      "frames": 360,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 2,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 835632.0,
+        "p50": 590480.0,
+        "p95": 819748.0,
+        "p99": 834880.0
+      },
+      "render_cpu_ms": {
+        "max": 1.78199994564056,
+        "p50": 0.29899999499321,
+        "p95": 0.695999979972839,
+        "p99": 0.984000027179718
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "reported_vsync_mode": 0,
+      "scenario": "default_camera_motion",
+      "wall_ms": {
+        "max": 29.257,
+        "p50": 6.986,
+        "p95": 17.202,
+        "p99": 19.393
+      },
+      "window_focused": true,
+      "effective_callback_fps": 142.8752857505715,
+      "interval_sd_ms": 4.790669359272934
+    },
+    {
+      "configuration": {
+        "cap": 0,
+        "label": "vsync_camera_motion",
+        "scale": 0.5,
+        "vsync": 1,
+        "camera_path": "360 equal angular steps"
+      },
+      "draw_calls": {
+        "max": 1341.0,
+        "p50": 669.0,
+        "p95": 1322.0,
+        "p99": 1333.0
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.745
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 28.554
+      },
+      "frames": 360,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 0,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 835632.0,
+        "p50": 590480.0,
+        "p95": 819748.0,
+        "p99": 834880.0
+      },
+      "render_cpu_ms": {
+        "max": 1.06700003147125,
+        "p50": 0.314999997615814,
+        "p95": 0.586000025272369,
+        "p99": 0.957000017166138
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "reported_vsync_mode": 1,
+      "scenario": "vsync_camera_motion",
+      "wall_ms": {
+        "max": 10.21,
+        "p50": 8.2,
+        "p95": 9.849,
+        "p99": 10.112
+      },
+      "window_focused": true,
+      "effective_callback_fps": 120.0429753851879,
+      "interval_sd_ms": 0.9465518884350714
+    },
+    {
+      "configuration": {
+        "cap": 0,
+        "label": "default_camera_motion_repeat",
+        "scale": 0.5,
+        "vsync": 0,
+        "camera_path": "360 equal angular steps"
+      },
+      "draw_calls": {
+        "max": 1341.0,
+        "p50": 669.0,
+        "p95": 1322.0,
+        "p99": 1333.0
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.644
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 29.842
+      },
+      "frames": 360,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 1,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 835632.0,
+        "p50": 590480.0,
+        "p95": 819748.0,
+        "p99": 834880.0
+      },
+      "render_cpu_ms": {
+        "max": 2.23300004005432,
+        "p50": 0.335999995470047,
+        "p95": 0.522000014781952,
+        "p99": 0.902999997138977
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "reported_vsync_mode": 0,
+      "scenario": "default_camera_motion_repeat",
+      "wall_ms": {
+        "max": 30.655,
+        "p50": 5.072,
+        "p95": 15.886,
+        "p99": 18.917
+      },
+      "window_focused": true,
+      "effective_callback_fps": 166.67839588711797,
+      "interval_sd_ms": 4.371165892598596
+    },
+    {
+      "configuration": {
+        "cap": 60,
+        "label": "off_cap60_camera_motion",
+        "scale": 0.5,
+        "vsync": 0,
+        "camera_path": "360 equal angular steps"
+      },
+      "draw_calls": {
+        "max": 1341.0,
+        "p50": 669.0,
+        "p95": 1322.0,
+        "p99": 1333.0
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.681
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 16.23
+      },
+      "frames": 360,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 0,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 835628.0,
+        "p50": 590476.0,
+        "p95": 819744.0,
+        "p99": 834876.0
+      },
+      "render_cpu_ms": {
+        "max": 1.93700003623962,
+        "p50": 0.671999990940094,
+        "p95": 1.40100002288818,
+        "p99": 1.55400002002716
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "reported_vsync_mode": 0,
+      "scenario": "off_cap60_camera_motion",
+      "wall_ms": {
+        "max": 17.932,
+        "p50": 16.668,
+        "p95": 17.423,
+        "p99": 17.701
+      },
+      "window_focused": true,
+      "effective_callback_fps": 60.00029000140167,
+      "interval_sd_ms": 0.36205994489309035
+    },
+    {
+      "configuration": {
+        "cap": 0,
+        "disable_3d": true,
+        "label": "off_no_3d_camera_motion",
+        "scale": 0.5,
+        "vsync": 0,
+        "camera_path": "360 equal angular steps"
+      },
+      "draw_calls": {
+        "max": 69.0,
+        "p50": 69.0,
+        "p95": 69.0,
+        "p99": 69.0
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.75
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 24.976
+      },
+      "frames": 360,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 1,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 3982.0,
+        "p50": 3982.0,
+        "p95": 3982.0,
+        "p99": 3982.0
+      },
+      "render_cpu_ms": {
+        "max": 0.243000000715256,
+        "p50": 0.0469999983906746,
+        "p95": 0.144999995827675,
+        "p99": 0.184000000357628
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "reported_vsync_mode": 0,
+      "scenario": "off_no_3d_camera_motion",
+      "wall_ms": {
+        "max": 26.086,
+        "p50": 5.253,
+        "p95": 16.586,
+        "p99": 17.506
+      },
+      "window_focused": true,
+      "effective_callback_fps": 169.99197732307024,
+      "interval_sd_ms": 4.686393684517828
+    }
+  ],
+  "small_burst_cpu": []
+}

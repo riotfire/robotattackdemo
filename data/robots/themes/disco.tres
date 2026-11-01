@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://data/robots/palettes/grape.tres" id="3_v41j0"]
 [ext_resource type="Resource" path="res://data/robots/palettes/chrome.tres" id="4_c2ohq"]
 [ext_resource type="Script" path="res://scripts/ai/genome/family_theme.gd" id="5_v1kvq"]
+[ext_resource type="Resource" path="res://data/robots/palettes/classic.tres" id="5_vkkb1"]
 
 [resource]
 script = ExtResource("5_v1kvq")
@@ -16,5 +17,5 @@ eye_styles = Array[StringName]([&"visor", &"twin_goggles", &"led_grid"])
 antennas = Array[StringName]([&"bulb", &"propeller", &"spring"])
 patterns = Array[StringName]([&"stars", &"polka_dots", &"checker"])
 melee_arms = Array[StringName]([&"fist", &"claw"])
-palettes = Array[ExtResource("1_3oms2")]([ExtResource("2_vkkb1"), ExtResource("3_v41j0"), ExtResource("4_c2ohq")])
+palettes = Array[ExtResource("1_3oms2")]([ExtResource("2_vkkb1"), ExtResource("3_v41j0"), ExtResource("4_c2ohq"), ExtResource("5_vkkb1")])
 accessories = Array[StringName]([&"mirror_ball", &"star_glasses", &"afro"])

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bko5ssh4rdf4i"
-path="res://.godot/imported/player_farmer_rigged.glb-504f940b23813399ea4d9b9edafdd015.scn"
+uid="uid://ikwayixvt3te"
+path="res://.godot/imported/Mabel Annimation.glb-181aff28c860ca278c736c84fe37c315.scn"
 
 [deps]
 
-source_file="res://assets/models/player/player_farmer_rigged.glb"
-dest_files=["res://.godot/imported/player_farmer_rigged.glb-504f940b23813399ea4d9b9edafdd015.scn"]
+source_file="res://assets/Mabel Annimation.glb"
+dest_files=["res://.godot/imported/Mabel Annimation.glb-181aff28c860ca278c736c84fe37c315.scn"]
 
 [params]
 

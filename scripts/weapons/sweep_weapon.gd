@@ -3,6 +3,9 @@ extends Weapon
 ## Heavy maul or spinning scythe. A visible wind-up makes the high-damage sweep interruptible;
 ## the scythe covers the full circle while the maul only covers the front arc.
 
+## The wind-up began. The rigged model starts its swing here, so the blow lands when the wind-up ends.
+signal swing_started(weapon: SweepWeapon)
+
 @export_range(1.0, 360.0) var arc_degrees: float = 90.0
 @export var windup: float = 0.32
 @export var knockback: float = 12.0
@@ -29,9 +32,12 @@ func attack() -> bool:
 	_cooldown = attack_interval()
 	_swing_forward = farmer.aim_direction_flat(data.max_range + 4.0)
 	_windup_left = windup
+	swing_started.emit(self)
 	if _swing_tween != null:
 		_swing_tween.kill()
 	_pivot.rotation = Vector3(0.0, 0.0, 0.0)
+	if farmer.uses_rig():
+		return true
 	_swing_tween = create_tween()
 	if arc_degrees >= 359.0:
 		_swing_tween.tween_property(_pivot, ^"rotation:y", TAU, maxf(windup + 0.3, attack_interval() * 0.65))

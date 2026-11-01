@@ -30,6 +30,15 @@ uniform float rim_strength = 0.2;
 // multiply albedo by COLOR and project thumbprints in object space instead (Clay.vertex_colored()).
 uniform bool use_vertex_color = false;
 uniform bool triplanar_prints = false;
+// Robot skin (Clay.robot_skin()): the sculpted robot's painted texture, repainted per family. Its cream, red and
+// brass paint (told apart in skin_mask: R cream, G red, B rubber, none brass) become skin_primary, skin_secondary and
+// skin_trim, keeping the texture's scuffs and shading; the black rubber stays black.
+uniform bool use_robot_skin = false;
+uniform sampler2D skin_tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D skin_mask : hint_default_black, filter_linear_mipmap, repeat_enable;
+instance uniform vec4 skin_primary : source_color = vec4(0.53, 0.38, 0.24, 1.0);
+instance uniform vec4 skin_secondary : source_color = vec4(0.16, 0.025, 0.011, 1.0);
+instance uniform vec4 skin_trim : source_color = vec4(0.25, 0.14, 0.044, 1.0);
 
 varying vec3 local_pos;
 varying vec3 local_normal;
@@ -71,17 +80,36 @@ float pattern_mask(vec3 p) {
 	return 0.0;
 }
 
+// Repaints a skin texel. `primary_mask` says how much of it is primary paint, where the family's pattern may go.
+vec3 robot_skin(vec3 s, vec3 mask, out float primary_mask) {
+	// Each paint's shading is relative to that paint's usual brightness in the texture.
+	float luma = dot(s, vec3(0.3, 0.59, 0.11));
+	vec3 painted = skin_trim.rgb * luma / 0.145 * (1.0 - mask.r - mask.g - mask.b)
+			+ skin_primary.rgb * luma / 0.42 * mask.r
+			+ skin_secondary.rgb * luma / 0.062 * mask.g
+			+ s * mask.b;
+	primary_mask = mask.r;
+	return painted;
+}
+
 void fragment() {
 	float mottling = texture(noise_tex, local_pos.xy * 0.3 + local_pos.z * 0.1).r;
 	vec3 base = albedo_color.rgb * tint.rgb;
 	if (use_vertex_color) {
 		base *= COLOR.rgb;
 	}
-	base = mix(base, pattern_color.rgb, pattern_mask(local_pos));
+	float pattern_strength = 1.0;
+	float rust_strength = 0.7;
+	if (use_robot_skin) {
+		vec3 mask = texture(skin_mask, UV).rgb;
+		base *= robot_skin(texture(skin_tex, UV).rgb, mask, pattern_strength);
+		rust_strength *= 1.0 - mask.b;  // rubber doesn't rust
+	}
+	base = mix(base, pattern_color.rgb, pattern_mask(local_pos) * pattern_strength);
 	// Wear: scuffs darken and roughen the clay; heavy wear adds rusty blotches.
 	float rust = step(0.66, texture(noise_tex, local_pos.xz * 1.3 + local_pos.y).r) * step(0.6, wear);
 	base = mix(base, base * 0.82, wear * 0.4);
-	base = mix(base, vec3(0.55, 0.3, 0.16), rust * 0.7);
+	base = mix(base, vec3(0.55, 0.3, 0.16), rust * rust_strength);
 	ALBEDO = base * mix(0.88, 1.06, mottling);
 	ROUGHNESS = mix(roughness_value, 0.92, wear);
 	SPECULAR = 0.35;

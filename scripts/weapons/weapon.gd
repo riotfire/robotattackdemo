@@ -21,6 +21,10 @@ const PRESS_BUFFER: float = 0.15
 const MAX_RAY_HITS: int = 16
 
 @export var data: WeaponData
+## Mabel carries it upright beside her, whatever her hand is doing, instead of it following the hand (the scythe).
+@export var hold_upright: bool = false
+## Mabel aims it with both arms straight out instead of the two-handed long-gun pose (the pistol).
+@export var pistol_stance: bool = false
 
 var farmer: Farmer
 ## Installed mods, in the order their hooks run.

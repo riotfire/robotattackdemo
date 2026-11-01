@@ -123,6 +123,14 @@ var spawn_role: StringName = &""
 var foreman_hp_override: float = 0.0
 ## Who threw it with a spring trap, for the kill credit of a fatal landing.
 var launched_by: Node = null
+## Winding approach (see _winding_goal), in metres: where it gives up and heads straight in, how far each leg
+## reaches inward, the steady sideways drift (its sign is per robot) and the zigzag on top.
+const WIND_END_RADIUS: float = 24.0
+const WIND_LEG: float = 20.0
+const WIND_DRIFT: float = 12.0
+const WIND_WEAVE: float = 12.0
+const WIND_WEAVE_RATE: float = 0.8
+
 ## Flat velocity requested by this physics tick's behavior tree.
 var desired_velocity: Vector3 = Vector3.ZERO
 var look: RobotFactory.Look
@@ -556,7 +564,28 @@ func _goal_position() -> Vector3:
 	if target_kind == TargetKind.PLAYER and is_instance_valid(target_player) \
 			and PerchQuery.is_perched(global_position, target_player.global_position):
 		return bt_player.blackboard.get_var(&"perch_stand", PerchQuery.stand_spot(goal, global_position.y))
-	return goal
+	return _winding_goal(goal)
+
+
+## Robots out in the farm don't march straight at the silo: each leg aims a little nearer in and well off to one
+## side, the side drifting back and forth, so they zig and zag round the silo in a loose spiral. Inside
+## WIND_END_RADIUS they go straight in.
+func _winding_goal(goal: Vector3) -> Vector3:
+	if target_kind != TargetKind.SILO or is_thief or is_escort:
+		return goal
+	var center := _silo_center()
+	var off := global_position - center
+	off.y = 0.0
+	var r := off.length()
+	if r <= WIND_END_RADIUS + 2.0:
+		return goal
+	var id := get_instance_id()
+	var side := 1.0 if id % 2 == 0 else -1.0
+	var phase := float(id % 628) * 0.01
+	var sideways := side * WIND_DRIFT + WIND_WEAVE * sin(Time.get_ticks_msec() * 0.001 * WIND_WEAVE_RATE + phase)
+	var angle := atan2(off.z, off.x) + sideways / r
+	var leg_radius := maxf(WIND_END_RADIUS, r - WIND_LEG)
+	return center + Vector3(cos(angle), 0.0, sin(angle)) * leg_radius
 
 
 func _target_in_range(extra: float = 0.0) -> bool:

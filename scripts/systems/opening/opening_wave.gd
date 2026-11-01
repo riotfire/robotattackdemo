@@ -20,7 +20,7 @@ extends Resource
 ## Lanes the main lanes are picked from (empty: any). Wave 1's first lane faces the farmer's start.
 @export var lane_pool: PackedInt32Array = PackedInt32Array()
 ## Authored arrivals burst out of the crop rows this far from the silo, not the corn at ~110 m.
-@export var spawn_distance: float = 45.0
+@export var spawn_distance: float = 108.0
 ## The Foreman's HP; 0 uses the curve (Thumper x3 x the wave's HP multiplier).
 @export var foreman_hp: float = 0.0
 ## Below half health the Foreman throws dirt clods at a farmer out of slam range (M2-B14's ranged phase).

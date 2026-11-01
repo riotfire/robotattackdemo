@@ -1,0 +1,164 @@
+{
+  "attacks": {
+    "early_pistol_intervals_ms": [
+      266.666666666667
+    ],
+    "early_pistol_remaining_cooldown_ms": 100.0,
+    "early_pistol_total_fired_events": [
+      {
+        "physics_frame": 449,
+        "weapon": "pistol"
+      },
+      {
+        "physics_frame": 465,
+        "weapon": "pistol"
+      }
+    ],
+    "early_quick_melee_remaining_cooldown_ms": 91.6666666666664,
+    "early_quick_melee_total_fired_events": [
+      {
+        "physics_frame": 365,
+        "weapon": "wrench"
+      }
+    ],
+    "first_pistol_action_expected_physics_frame": 449,
+    "first_wrench_action_expected_physics_frame": 195,
+    "held_wrench_fired_events": [
+      {
+        "physics_frame": 195,
+        "weapon": "wrench"
+      },
+      {
+        "physics_frame": 233,
+        "weapon": "wrench"
+      },
+      {
+        "physics_frame": 271,
+        "weapon": "wrench"
+      },
+      {
+        "physics_frame": 309,
+        "weapon": "wrench"
+      }
+    ],
+    "held_wrench_intervals_ms": [
+      633.333333333333,
+      633.333333333333,
+      633.333333333333
+    ],
+    "pistol_attack_interval_ms": 250.0,
+    "quick_melee_after_ready_total_fired_events": [
+      {
+        "physics_frame": 365,
+        "weapon": "wrench"
+      },
+      {
+        "physics_frame": 448,
+        "weapon": "wrench"
+      }
+    ],
+    "wrench_attack_interval_ms": 625.0
+  },
+  "engine": "4.7.2-stable (official)",
+  "jump": {
+    "grounded_before": true,
+    "height_change_after_first_tick": 0.11994003597647,
+    "state_after_first_tick": "AIRBORNE",
+    "vertical_velocity_after_first_tick": 7.19640159606934
+  },
+  "movement": {
+    "acceleration_speed_by_tick": [
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      6.0,
+      7.0,
+      7.0,
+      7.0,
+      7.0
+    ],
+    "aim_change_speed_by_tick": [
+      6.0,
+      5.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+    ],
+    "aim_speed_mps": 4.0,
+    "aim_speed_ratio": 0.571428571428571,
+    "full_reversal_ticks": 14,
+    "full_speed_ticks": 7,
+    "ground_acceleration_mps2": 60.0,
+    "reversal_z_velocity_by_tick": [
+      -6.0,
+      -5.0,
+      -4.0,
+      -3.0,
+      -2.0,
+      -1.0,
+      0.0,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      6.0,
+      7.0,
+      7.0,
+      7.0
+    ],
+    "run_speed_mps": 7.0,
+    "stop_distance_m": 0.350000023841858,
+    "stop_ticks": 7,
+    "stopping_speed_by_tick": [
+      6.0,
+      5.0,
+      4.0,
+      3.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "nominal_tick_ms": 16.6666666666667,
+  "physics_ticks_per_second": 60,
+  "profile": "/private/tmp/input-latency-profile.json",
+  "scope": "Real player code on a generated floor; injected input, not hardware-to-display latency. Poses and hitstop disabled in memory.",
+  "turn": {
+    "error_degrees_by_tick": [
+      71.2700596869833,
+      56.4380170363554,
+      44.6926768905344,
+      35.3916633731749,
+      28.0262896081039,
+      22.1937264059997,
+      17.5749800269605,
+      13.9174436084963,
+      11.0210779852903,
+      8.72747655633795,
+      6.91119777489004,
+      5.47290550409204,
+      4.33393688215974,
+      3.43199930320216,
+      2.71776450070322,
+      2.15216934213916,
+      1.70428043436751,
+      1.34960194426027,
+      1.06873570768776,
+      0.846320682567493
+    ],
+    "initial_degrees": 90.0,
+    "ms_to_90_percent_turn": 166.666666666667,
+    "ticks_to_90_percent_turn": 10
+  }
+}

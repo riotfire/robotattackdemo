@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Metal 3.2 - Forward+ - Using Device #0: Apple - Apple M4 Pro (Apple9)
+
+PROBE boot ready pipelines=97
+PROBE kill=1 cpu_ms=0.47 worst_frame_ms=26.00 new_pipelines=0
+PROBE kill=2 cpu_ms=0.44 worst_frame_ms=26.62 new_pipelines=0
+FIRST KILL PROBE PASSED

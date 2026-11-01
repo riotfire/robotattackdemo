@@ -32,3 +32,6 @@ models in `assets/models/`.
 | Quaternius crops, nature, animations (farm buildings now in use) | CC0 | Art track, M2-J |
 | Kenney Blaster kit; audio packs (Survival and Nature kits now in use) | CC0 | Weapons, SFX |
 | KayKit Space Base Bits, Prototype Bits, Adventurers | CC0 | Robot parts, prototyping, farmer base |
+| Mabel (Mixamo-rigged character, twenty Mixamo clips) | Supplied by the project owner | Verify before release | `assets/Mabel Annimation.glb` (the earlier ten-clip `assets/models/player/mabel.glb` is no longer used) | Player character and animations |
+| Monowheel robot (sculpted, textured model) | Supplied by the project owner | Verify before release | `assets/Monowheel Robot Texture.glb`, split by `tools/split_monowheel.py` into `assets/models/robots/parts/` | Base of every robot's look |
+| Wrench, pistol, shotgun, scythe and jetpack (textured models) | Supplied by the project owner | Verify before release | `assets/Wrench.glb`, `Pistol.glb`, `Shotgun.glb`, `Scyth.glb`, `Jetpack.glb` | The farmer's held weapons and worn jetpack |

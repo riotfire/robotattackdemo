@@ -1,0 +1,425 @@
+{
+  "kill_60_cpu_ms": 8.715,
+  "metadata": {
+    "adapter": "Apple M4 Pro (Apple9)",
+    "engine": "4.7.2-stable (official)",
+    "max_fps": 0,
+    "physics_hz": 60,
+    "refresh_hz": 120.0,
+    "render_scale": 0.5,
+    "seed": 42,
+    "viewport": "(1600.0, 900.0)",
+    "vsync": 0,
+    "window_pixels": "(1600, 900)",
+    "probe_mode": "animation-and-stress"
+  },
+  "samples": [
+    {
+      "draw_calls": {
+        "max": 725.0,
+        "p50": 725.0,
+        "p95": 725.0,
+        "p99": 725.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 12,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 614955.0,
+        "p50": 614955.0,
+        "p95": 614955.0,
+        "p99": 614955.0
+      },
+      "render_cpu_ms": {
+        "max": 1.26699995994568,
+        "p50": 0.592000007629395,
+        "p95": 1.03600001335144,
+        "p99": 1.22699999809265
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "farm_mabel_idle",
+      "wall_ms": {
+        "max": 26.833,
+        "p50": 16.677,
+        "p95": 25.066,
+        "p99": 25.911
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 26.065
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 0.926
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 725.0,
+        "p50": 725.0,
+        "p95": 725.0,
+        "p99": 725.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 13,
+      "over_33ms": 2,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 614955.0,
+        "p50": 614955.0,
+        "p95": 614955.0,
+        "p99": 614955.0
+      },
+      "render_cpu_ms": {
+        "max": 2.08800005912781,
+        "p50": 0.616999983787537,
+        "p95": 1.13399994373322,
+        "p99": 1.60699999332428
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "farm_mabel_run_pose",
+      "wall_ms": {
+        "max": 34.471,
+        "p50": 16.65,
+        "p95": 25.277,
+        "p99": 26.369
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.102
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 1.245
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 725.0,
+        "p50": 725.0,
+        "p95": 725.0,
+        "p99": 725.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 17,
+      "over_33ms": 1,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 614955.0,
+        "p50": 614955.0,
+        "p95": 614955.0,
+        "p99": 614955.0
+      },
+      "render_cpu_ms": {
+        "max": 2.8970000743866,
+        "p50": 0.717999994754791,
+        "p95": 1.29700005054474,
+        "p99": 1.95799994468689
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "farm_mabel_pose_frozen",
+      "wall_ms": {
+        "max": 34.553,
+        "p50": 16.68,
+        "p95": 25.371,
+        "p99": 26.937
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 34.093
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 3.239
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 731.0,
+        "p50": 731.0,
+        "p95": 731.0,
+        "p99": 731.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 14,
+      "over_33ms": 2,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 612709.0,
+        "p50": 612709.0,
+        "p95": 612709.0,
+        "p99": 612709.0
+      },
+      "render_cpu_ms": {
+        "max": 3.20000004768372,
+        "p50": 0.725000023841858,
+        "p95": 1.22200000286102,
+        "p99": 2.34500002861023
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "farm_clay_pose_frozen",
+      "wall_ms": {
+        "max": 34.865,
+        "p50": 16.636,
+        "p95": 25.152,
+        "p99": 28.418
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.07
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 3.38
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 725.0,
+        "p50": 725.0,
+        "p95": 725.0,
+        "p99": 725.0
+      },
+      "frames": 240,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 26,
+      "over_33ms": 0,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 614955.0,
+        "p50": 614955.0,
+        "p95": 614955.0,
+        "p99": 614955.0
+      },
+      "render_cpu_ms": {
+        "max": 1.32000005245209,
+        "p50": 0.556999981403351,
+        "p95": 1.14300000667572,
+        "p99": 1.28199994564056
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "farm_mabel_idle_repeat",
+      "wall_ms": {
+        "max": 26.238,
+        "p50": 16.657,
+        "p95": 25.371,
+        "p99": 26.166
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.47
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 2.053
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 1216.0,
+        "p50": 1185.0,
+        "p95": 1208.0,
+        "p99": 1215.0
+      },
+      "frames": 300,
+      "live_robots_end": 60,
+      "new_pipelines": 0,
+      "over_25ms": 16,
+      "over_33ms": 1,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 1375694.0,
+        "p50": 1335541.0,
+        "p95": 1373200.0,
+        "p99": 1375304.0
+      },
+      "render_cpu_ms": {
+        "max": 1.24600005149841,
+        "p50": 1.02999997138977,
+        "p95": 1.13300001621246,
+        "p99": 1.17900002002716
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "sixty_mixed_robots",
+      "wall_ms": {
+        "max": 36.139,
+        "p50": 16.654,
+        "p95": 25.074,
+        "p99": 27.643
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.434
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 4.276
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 1266.0,
+        "p50": 1220.0,
+        "p95": 1260.0,
+        "p99": 1265.0
+      },
+      "frames": 240,
+      "live_robots_end": 60,
+      "new_pipelines": 0,
+      "over_25ms": 20,
+      "over_33ms": 1,
+      "pickups_end": 0,
+      "primitives": {
+        "max": 1491350.0,
+        "p50": 1406811.0,
+        "p95": 1485637.0,
+        "p99": 1490390.0
+      },
+      "render_cpu_ms": {
+        "max": 1.26400005817413,
+        "p50": 1.07700002193451,
+        "p95": 1.17700004577637,
+        "p99": 1.21099996566772
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "sixty_mixed_robots_player_pose_frozen",
+      "wall_ms": {
+        "max": 39.008,
+        "p50": 16.652,
+        "p95": 25.385,
+        "p99": 30.142
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.363
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 3.55
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 1953.0,
+        "p50": 875.0,
+        "p95": 999.0,
+        "p99": 1849.0
+      },
+      "frames": 300,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 34,
+      "over_33ms": 11,
+      "pickups_end": 270,
+      "primitives": {
+        "max": 1509441.0,
+        "p50": 727977.0,
+        "p95": 923027.0,
+        "p99": 1506625.0
+      },
+      "render_cpu_ms": {
+        "max": 7.84100008010864,
+        "p50": 1.10699999332428,
+        "p95": 1.58200001716614,
+        "p99": 6.32999992370605
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "death_burst_without_hitstop",
+      "wall_ms": {
+        "max": 102.366,
+        "p50": 16.665,
+        "p95": 28.565,
+        "p99": 49.093
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.363
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 50.128
+      }
+    },
+    {
+      "draw_calls": {
+        "max": 818.0,
+        "p50": 818.0,
+        "p95": 818.0,
+        "p99": 818.0
+      },
+      "frames": 180,
+      "live_robots_end": 0,
+      "new_pipelines": 0,
+      "over_25ms": 14,
+      "over_33ms": 3,
+      "pickups_end": 270,
+      "primitives": {
+        "max": 712009.0,
+        "p50": 712009.0,
+        "p95": 712009.0,
+        "p99": 712009.0
+      },
+      "render_cpu_ms": {
+        "max": 0.846000015735626,
+        "p50": 0.666000008583069,
+        "p95": 0.788999974727631,
+        "p99": 0.83899998664856
+      },
+      "render_gpu_ms": {
+        "max": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "scenario": "post_burst_recovered",
+      "wall_ms": {
+        "max": 37.218,
+        "p50": 16.637,
+        "p95": 26.588,
+        "p99": 37.076
+      },
+      "engine_1s_peak_process_ms": {
+        "max_observed": 33.731
+      },
+      "engine_1s_peak_physics_ms": {
+        "max_observed": 2.001
+      }
+    }
+  ],
+  "spawn_60_cpu_ms": 73.293,
+  "measurement_notes": "wall_ms measures real process_frame intervals, not physical display latency. Engine process/physics monitors are published one-second maxima, not individual frame samples. GPU timing is unavailable on this Metal backend. Synchronous spawn/kill calls are measured separately and excluded from frame intervals. Original monitor labels were clarified when archiving; numerical values are unchanged."
+}

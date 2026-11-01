@@ -22,8 +22,14 @@
 [ext_resource type="Resource" path="res://data/weapons/grenade.tres" id="20_grenade_data"]
 [ext_resource type="Resource" path="res://data/weapons/maul.tres" id="21_maul_data"]
 [ext_resource type="Resource" path="res://data/weapons/scythe.tres" id="22_scythe_data"]
-[ext_resource type="PackedScene" uid="uid://bko5ssh4rdf4i" path="res://assets/models/player/player_farmer_rigged.glb" id="23_rigged_model"]
-[ext_resource type="Script" path="res://scripts/player/rigged_farmer_model.gd" id="24_rigged_script"]
+[ext_resource type="PackedScene" uid="uid://ikwayixvt3te" path="res://assets/Mabel Annimation.glb" id="23_rigged_model"]
+[ext_resource type="Script" path="res://scripts/player/mabel_model.gd" id="24_rigged_script"]
+[ext_resource type="Script" path="res://scripts/player/jetpack_model.gd" id="25_jetpack_model"]
+[ext_resource type="PackedScene" path="res://assets/Jetpack.glb" id="26_jetpack_glb"]
+[ext_resource type="PackedScene" path="res://assets/Wrench.glb" id="27_wrench_glb"]
+[ext_resource type="PackedScene" path="res://assets/Pistol.glb" id="28_pistol_glb"]
+[ext_resource type="PackedScene" path="res://assets/Shotgun.glb" id="29_shotgun_glb"]
+[ext_resource type="PackedScene" path="res://assets/Scyth.glb" id="30_scythe_glb"]
 
 [sub_resource type="CapsuleShape3D" id="Shape_body"]
 radius = 0.4
@@ -70,50 +76,25 @@ top_radius = 0.22
 bottom_radius = 0.27
 height = 0.22
 
-[sub_resource type="StandardMaterial3D" id="Mat_can"]
-albedo_color = Color(0.78, 0.8, 0.84, 1)
-metallic = 0.6
-roughness = 0.4
-
-[sub_resource type="CylinderMesh" id="Mesh_can"]
-material = SubResource("Mat_can")
-top_radius = 0.17
-bottom_radius = 0.2
-height = 0.62
-
 [sub_resource type="StandardMaterial3D" id="Mat_flame"]
 shading_mode = 0
 albedo_color = Color(1, 0.6, 0.15, 1)
 
 [sub_resource type="CylinderMesh" id="Mesh_flame"]
 material = SubResource("Mat_flame")
-top_radius = 0.14
+top_radius = 0.1
 bottom_radius = 0.0
-height = 0.6
+height = 0.55
 
-[sub_resource type="StandardMaterial3D" id="Mat_wrench"]
-albedo_color = Color(0.85, 0.15, 0.12, 1)
-roughness = 0.7
+[sub_resource type="StandardMaterial3D" id="Mat_flame_core"]
+shading_mode = 0
+albedo_color = Color(1, 0.93, 0.62, 1)
 
-[sub_resource type="BoxMesh" id="Mesh_wrench_handle"]
-material = SubResource("Mat_wrench")
-size = Vector3(0.08, 0.08, 0.7)
-
-[sub_resource type="BoxMesh" id="Mesh_wrench_head"]
-material = SubResource("Mat_wrench")
-size = Vector3(0.24, 0.1, 0.16)
-
-[sub_resource type="StandardMaterial3D" id="Mat_pistol"]
-albedo_color = Color(0.35, 0.36, 0.4, 1)
-metallic = 0.5
-roughness = 0.5
-
-[sub_resource type="BoxMesh" id="Mesh_pistol"]
-material = SubResource("Mat_pistol")
-size = Vector3(0.12, 0.16, 0.42)
-
-[sub_resource type="BoxMesh" id="Mesh_shotgun"]
-size = Vector3(0.21, 0.18, 0.9)
+[sub_resource type="CylinderMesh" id="Mesh_flame_core"]
+material = SubResource("Mat_flame_core")
+top_radius = 0.07
+bottom_radius = 0.0
+height = 0.34
 
 [sub_resource type="BoxMesh" id="Mesh_rifle"]
 size = Vector3(0.14, 0.15, 1.2)
@@ -126,12 +107,6 @@ size = Vector3(0.1, 0.1, 1.1)
 
 [sub_resource type="BoxMesh" id="Mesh_maul_head"]
 size = Vector3(0.65, 0.25, 0.3)
-
-[sub_resource type="BoxMesh" id="Mesh_scythe_handle"]
-size = Vector3(0.09, 0.09, 1.25)
-
-[sub_resource type="BoxMesh" id="Mesh_scythe_blade"]
-size = Vector3(1.25, 0.1, 0.2)
 
 [sub_resource type="SphereShape3D" id="Shape_camera"]
 radius = 0.25
@@ -181,24 +156,49 @@ material_override = ExtResource("8_clay")
 instance_shader_parameters/tint = Color(0.93, 0.8, 0.45, 1)
 mesh = SubResource("Mesh_crown")
 
-[node name="RiggedFarmer" parent="Model/Pose" instance=ExtResource("23_rigged_model")]
-transform = Transform3D(-0.143, 0, 0, 0, 0.143, 0, 0, 0, -0.143, 0, 0, 0)
+[node name="Mabel" parent="Model/Pose" instance=ExtResource("23_rigged_model")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
 visible = false
 script = ExtResource("24_rigged_script")
+
 [node name="JetpackCan" type="Node3D" parent="Model" unique_id=1331171944]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.38)
 visible = false
+script = ExtResource("25_jetpack_model")
 
-[node name="Can" type="MeshInstance3D" parent="Model/JetpackCan" unique_id=1157207899]
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.78, 0.8, 0.84, 1)
-mesh = SubResource("Mesh_can")
+[node name="Pack" type="Node3D" parent="Model/JetpackCan"]
 
-[node name="Flame" type="MeshInstance3D" parent="Model/JetpackCan" unique_id=213233383]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+[node name="Model" parent="Model/JetpackCan/Pack" instance=ExtResource("26_jetpack_glb")]
+transform = Transform3D(0.62, 0, 0, 0, 0.62, 0, 0, 0, 0.62, 0, 0, 0)
+
+[node name="Flames" type="Node3D" parent="Model/JetpackCan/Pack"]
 visible = false
+
+[node name="Left" type="Node3D" parent="Model/JetpackCan/Pack/Flames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.198, -0.291, 0.03)
+
+[node name="Flame" type="MeshInstance3D" parent="Model/JetpackCan/Pack/Flames/Left"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.275, 0)
 cast_shadow = 0
 mesh = SubResource("Mesh_flame")
+
+[node name="Core" type="MeshInstance3D" parent="Model/JetpackCan/Pack/Flames/Left"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.17, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_flame_core")
+
+[node name="Right" type="Node3D" parent="Model/JetpackCan/Pack/Flames"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.198, -0.291, 0.03)
+
+[node name="Flame" type="MeshInstance3D" parent="Model/JetpackCan/Pack/Flames/Right"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.275, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_flame")
+
+[node name="Core" type="MeshInstance3D" parent="Model/JetpackCan/Pack/Flames/Right"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.17, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_flame_core")
 
 [node name="WeaponHolder" type="Node3D" parent="Model" unique_id=328672994]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1, -0.25)
@@ -210,43 +210,32 @@ data = ExtResource("13_wrench_data")
 
 [node name="Pivot" type="Node3D" parent="Model/WeaponHolder/Wrench" unique_id=751925712]
 
-[node name="Handle" type="MeshInstance3D" parent="Model/WeaponHolder/Wrench/Pivot" unique_id=784771878]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.85, 0.15, 0.12, 1)
-mesh = SubResource("Mesh_wrench_handle")
-
-[node name="Head" type="MeshInstance3D" parent="Model/WeaponHolder/Wrench/Pivot" unique_id=253321309]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.66)
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.85, 0.15, 0.12, 1)
-mesh = SubResource("Mesh_wrench_head")
+[node name="Body" parent="Model/WeaponHolder/Wrench/Pivot" instance=ExtResource("27_wrench_glb")]
+transform = Transform3D(0.85, 0, 0, 0, 0, 0.85, 0, -0.85, 0, 0, 0, -0.23)
 
 [node name="Pistol" type="Node3D" parent="Model/WeaponHolder" unique_id=89402330]
 script = ExtResource("7_pistol")
 data = ExtResource("14_pistol_data")
+pistol_stance = true
 
-[node name="Body" type="MeshInstance3D" parent="Model/WeaponHolder/Pistol" unique_id=1797413165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.35, 0.36, 0.4, 1)
-mesh = SubResource("Mesh_pistol")
+[node name="Body" parent="Model/WeaponHolder/Pistol" instance=ExtResource("28_pistol_glb")]
+transform = Transform3D(0, 0, -0.42, 0, 0.42, 0, 0.42, 0, 0, 0, 0.076, -0.113)
 
 [node name="Muzzle" type="Marker3D" parent="Model/WeaponHolder/Pistol" unique_id=634384161]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, -0.315)
 
 [node name="Shotgun" type="Node3D" parent="Model/WeaponHolder"]
 script = ExtResource("15_shotgun")
 data = ExtResource("18_shotgun_data")
+recoil_distance = 0.13
+recoil_degrees = 16.0
+recoil_settle = 0.3
 
-[node name="Body" type="MeshInstance3D" parent="Model/WeaponHolder/Shotgun"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.35)
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.58, 0.31, 0.15, 1)
-mesh = SubResource("Mesh_shotgun")
+[node name="Body" parent="Model/WeaponHolder/Shotgun" instance=ExtResource("29_shotgun_glb")]
+transform = Transform3D(0, 0, -1.1, 0, 1.1, 0, 1.1, 0, 0, 0, 0.033, -0.209)
 
 [node name="Muzzle" type="Marker3D" parent="Model/WeaponHolder/Shotgun"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.88)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.107, -0.737)
 
 [node name="Rifle" type="Node3D" parent="Model/WeaponHolder"]
 script = ExtResource("7_pistol")
@@ -298,23 +287,15 @@ mesh = SubResource("Mesh_maul_head")
 [node name="Scythe" type="Node3D" parent="Model/WeaponHolder"]
 script = ExtResource("17_sweep")
 data = ExtResource("22_scythe_data")
+hold_upright = true
 arc_degrees = 360.0
 windup = 0.18
 knockback = 7.0
 
 [node name="Pivot" type="Node3D" parent="Model/WeaponHolder/Scythe"]
 
-[node name="Handle" type="MeshInstance3D" parent="Model/WeaponHolder/Scythe/Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.37, 0.22, 0.13, 1)
-mesh = SubResource("Mesh_scythe_handle")
-
-[node name="Blade" type="MeshInstance3D" parent="Model/WeaponHolder/Scythe/Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0, -1.08)
-material_override = ExtResource("8_clay")
-instance_shader_parameters/tint = Color(0.74, 0.83, 0.82, 1)
-mesh = SubResource("Mesh_scythe_blade")
+[node name="Body" parent="Model/WeaponHolder/Scythe/Pivot" instance=ExtResource("30_scythe_glb")]
+transform = Transform3D(1.9, 0, 0, 0, 0, 1.9, 0, -1.9, 0, -0.342, 0, -0.19)
 
 [node name="InputRouter" type="Node" parent="." unique_id=1097285340]
 script = ExtResource("2_input")

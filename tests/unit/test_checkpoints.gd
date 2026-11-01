@@ -98,7 +98,7 @@ func test_the_opening_saves_drones_spitters_and_heavies_for_later() -> void:
 		assert_eq(opening.wave, wave)
 		assert_eq(_count(opening, &"drone") + _count(opening, &"spitter"), 0, "wave %d: no flyers or Spitters" % wave)
 		assert_eq(_count(opening, &"thumper") - _count(opening, &"thumper", &"foreman"), 0, "wave %d: no regular Heavies" % wave)
-		assert_eq(opening.spawn_distance, 45.0, "wave %d: arrivals burst out of the crops 45 m out" % wave)
+		assert_eq(opening.spawn_distance, 108.0, "wave %d: arrivals burst out of the crops 108 m out" % wave)
 
 
 func test_clearing_waves_never_hands_over_an_item() -> void:

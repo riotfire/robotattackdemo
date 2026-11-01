@@ -85,6 +85,8 @@ godot --headless --path . --fixed-fps 60 res://tests/smoke/tutorial_test.tscn --
 
 The genome gallery (`tests/tools/genome_gallery.tscn`, GDD 18.9) lines up four families' robots for art review. Press R to reroll and the arrow keys to orbit.
 
+Robots are built from the sculpted monowheel model. `tools/split_monowheel.py` (run with Blender) cuts `assets/Monowheel Robot Texture.glb` into the parts under `assets/models/robots/parts/`; rerun it if the model changes. `tests/tools/robot_sheet.tscn` writes QA contact sheets of the result.
+
 The pickup gallery (`tests/tools/pickup_gallery.tscn`) shows the aluminum gear, copper spring, gold ring and blue power-cell battery at actual size on grass and dirt. N toggles day/night and Space freezes the spin. Add `-- --out=/tmp/pickup-gallery` to save both lighting previews and exit. Robot loot uses small emissive silhouettes, a gentle ground hover, and one cached mesh per resource type with a shared material and no shadow passes.
 
 The rendered first-kill regression (`tests/tools/first_kill_probe.tscn`) runs the real boot warm-up, then destroys two robots with all four loot types. It reports death CPU time, the slowest frame, and pipeline compilation counts; it fails if either kill compiles a new pipeline. Run with graphics enabled (not `--headless` or `--skip-boot`) and `-- --profile=/tmp/first-kill-profile.json`. Loading renders the loot and explosion samples above the farm, with a floor for the scorch decal, so their first-use rendering work finishes before Play.

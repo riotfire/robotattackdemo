@@ -253,7 +253,10 @@ func _run() -> void:
 	GameState.god_mode = false
 	_farmer.armor = 0.0
 	_farmer.take_damage(DamagePacket.create(9999.0, null, _farmer.global_position))
-	_check(GameState.is_game_over and GameState.game_over_reason == &"farmer", "farmer at 0 HP ends the run (reason %s)" % GameState.game_over_reason)
+	# The stats wait for the death clip to play out in slow motion, so the run is not over yet.
+	_check(not GameState.is_game_over, "the stats wait while the farmer's death plays")
+	t = await _wait_until(func() -> bool: return GameState.is_game_over, 15.0)
+	_check(GameState.is_game_over and GameState.game_over_reason == &"farmer", "farmer at 0 HP ends the run after the death (reason %s)" % GameState.game_over_reason)
 	get_tree().paused = false
 	GameState.is_game_over = false
 	silo.take_damage(DamagePacket.create(99999.0, null, silo.wall_point_toward(Vector3.BACK, 1.0)))

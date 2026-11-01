@@ -20,6 +20,7 @@ func fire() -> bool:
 		return false
 	ammo -= 1
 	_cooldown = attack_interval()
+	kick()
 	var from := _muzzle.global_position
 	var forward := (farmer.get_aim_point(data.max_range) - from).normalized()
 	var camera_basis := farmer.camera_rig.camera.global_basis

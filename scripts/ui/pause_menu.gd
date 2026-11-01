@@ -210,7 +210,7 @@ func _build() -> void:
 	_fps_button.pressed.connect(_toggle_fps)
 	display_grid.add_child(_fps_button)
 	_refresh_fps_button()
-	_model_button = _button("", "Swap the clay farmer for the rigged Blender farmer (test)")
+	_model_button = _button("", "Swap Mabel for the clay farmer")
 	_model_button.pressed.connect(_toggle_rigged_model)
 	display_grid.add_child(_model_button)
 	_refresh_model_button()
@@ -398,15 +398,15 @@ func _refresh_fps_button() -> void:
 
 
 func _toggle_rigged_model() -> void:
-	SaveManager.settings["rigged_farmer"] = not bool(SaveManager.settings.get("rigged_farmer", false))
+	SaveManager.settings["mabel_model"] = not bool(SaveManager.settings.get("mabel_model", true))
 	SaveManager.save_settings()
 	for farmer in get_tree().get_nodes_in_group(&"players"):
-		(farmer as Farmer).set_rigged_model(bool(SaveManager.settings["rigged_farmer"]))
+		(farmer as Farmer).set_rigged_model(bool(SaveManager.settings["mabel_model"]))
 	_refresh_model_button()
 
 
 func _refresh_model_button() -> void:
-	_model_button.text = "Player model: %s" % ("Rigged farmer (test)" if SaveManager.settings.get("rigged_farmer", false) else "Clay farmer")
+	_model_button.text = "Player model: %s" % ("Mabel" if SaveManager.settings.get("mabel_model", true) else "Clay farmer")
 
 
 func _toggle_help() -> void:

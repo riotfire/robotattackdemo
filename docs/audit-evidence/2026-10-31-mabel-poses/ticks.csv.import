@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dfpiahhjqxbg3"
+
+[deps]
+
+files=["res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.tick.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.t.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.state.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.clip.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.speed.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.y.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.max.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.max.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.foot.translation"]
+
+source_file="res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.csv"
+dest_files=["res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.tick.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.t.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.state.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.clip.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.speed.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.y.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.max.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.max.translation", "res://docs/audit-evidence/2026-10-31-mabel-poses/ticks.foot.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

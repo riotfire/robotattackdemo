@@ -136,7 +136,7 @@ func _run() -> void:
 	await _wait_until(func() -> bool: return not _spawned.is_empty(), 5.0)
 	var first := _spawned[0] if not _spawned.is_empty() else null
 	var out := first.global_position.distance_to(GameState.silo.global_position) if first != null else 0.0
-	_check(first != null and out > 38.0 and out < 52.0, "the first Nibblers burst out of the crops ~45 m out (%.1f m)" % out)
+	_check(first != null and out > 100.0 and out < 118.0, "the first Nibblers burst out of the crops ~108 m out (%.1f m)" % out)
 	_defend = true
 	await _clear_wave(120.0)
 	var ids := _entered_ids()

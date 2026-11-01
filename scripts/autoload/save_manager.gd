@@ -28,7 +28,7 @@ var granted_rewards: Array[String] = []
 ## Set just before reloading the scene for a retry or a fresh start; main.gd reads and clears it. Never saved.
 var pending_start: Dictionary = {}
 var settings: Dictionary = {"mouse_sensitivity": 0.0022, "invert_y": false, "reduce_motion": false, "show_fps": false,
-		"rigged_farmer": false}
+		"mabel_model": true}
 
 
 func _ready() -> void:

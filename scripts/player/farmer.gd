@@ -14,6 +14,8 @@ signal hurt
 
 ## Collision layers the aim ray can hit: World, RobotHurtbox, Silo.
 const HURT_FLASH_SECONDS: float = 0.3
+## Real seconds the clay body lies dead before the stats show. The rigged model plays its own death clip instead.
+const CLAY_DEATH_SECONDS: float = 1.5
 const HURT_TINT := Color(1.0, 0.12, 0.1)
 ## Metres the model jitters at the start of a hit.
 const HURT_SHAKE: float = 0.12
@@ -42,6 +44,8 @@ var _hurt_flash_left: float = 0.0
 var _model_rest_position: Vector3
 var _rest_tints: Dictionary = {}
 var _clay_visible: Dictionary = {}
+## The textured weapons and jetpack, which flash from a hit the way Mabel does rather than through a clay tint.
+var _textured_meshes: Array[MeshInstance3D] = []
 var _since_damage: float = 99.0
 var _land_squash_left: float = 0.0
 var _pose_frame: int = 0
@@ -57,9 +61,9 @@ var _pose_frame: int = 0
 @onready var camera_rig: FarmerCamera = $CameraRig
 @onready var model: Node3D = $Model
 @onready var _pose: Node3D = $Model/Pose
-@onready var _rigged_model: RiggedFarmerModel = $Model/Pose/RiggedFarmer
-@onready var _jetpack_can: Node3D = $Model/JetpackCan
-@onready var _jet_flame: Node3D = $Model/JetpackCan/Flame
+@onready var _rigged_model: MabelModel = $Model/Pose/Mabel
+@onready var jetpack_model: JetpackModel = $Model/JetpackCan
+@onready var _jetpack_rest: Transform3D = jetpack_model.transform
 @onready var _body_mesh: MeshInstance3D = $Model/Pose/Body
 
 
@@ -70,11 +74,13 @@ func _ready() -> void:
 		var rest: Variant = mesh.get_instance_shader_parameter(&"tint")
 		if rest is Color:
 			_rest_tints[mesh] = rest
+		elif not _rigged_model.is_ancestor_of(mesh) and not jetpack_model.is_flame(mesh):
+			_textured_meshes.append(mesh)
 	add_to_group(&"players")
 	for part: Node3D in _pose.get_children():
 		if part != _rigged_model:
 			_clay_visible[part] = part.visible
-	set_rigged_model(bool(SaveManager.settings.get("rigged_farmer", false)))
+	set_rigged_model(bool(SaveManager.settings.get("mabel_model", true)))
 	movement.setup(self)
 	repair.setup(self)
 	interaction.setup(self)
@@ -241,8 +247,12 @@ func _on_died() -> void:
 	state = State.DEAD
 	jetpack.set_thrusting(false)
 	weapons.close_wheel(false)
-	model.rotation.x = deg_to_rad(-80.0)
-	GameState.trigger_game_over(&"farmer")
+	_rigged_model.set_hurt(false)
+	if not _rigged_model.visible:
+		model.rotation.x = deg_to_rad(-80.0)
+	# The stats (Harvest Report) wait until the death clip has played out in slow motion.
+	var hold := _rigged_model.death_seconds() if _rigged_model.visible else CLAY_DEATH_SECONDS
+	get_tree().create_timer(hold, false).timeout.connect(GameState.trigger_game_over.bind(&"farmer"))
 
 
 # --- Presentation ---------------------------------------------------------------------------------
@@ -254,17 +264,23 @@ func _update_model(delta: float, wish: Vector3) -> void:
 		elif Vector2(wish.x, wish.z).length() > 0.1:
 			facing_yaw = atan2(-wish.x, -wish.z)
 	model.rotation.y = lerp_angle(model.rotation.y, facing_yaw, 1.0 - exp(-turn_speed * delta))
-	_jetpack_can.visible = GameState.jetpack_unlocked
-	_jet_flame.visible = jetpack.is_thrusting
+	jetpack_model.visible = GameState.jetpack_unlocked
 	_update_hurt_feedback()
+
+
+## True while the rigged model's clips move the hands, so weapons leave the swinging to them.
+func uses_rig() -> bool:
+	return _rigged_model.visible
 
 
 ## Swaps the clay body for the rigged Blender farmer. The pause menu's player model option calls this on every farmer.
 func set_rigged_model(enabled: bool) -> void:
 	_rigged_model.visible = enabled
 	if not enabled:
+		weapons.visible = true
 		weapons.position = _weapons_rest_position
 		weapons.rotation = Vector3.ZERO
+		jetpack_model.transform = _jetpack_rest
 	for part: Node3D in _clay_visible:
 		part.visible = _clay_visible[part] and not enabled
 
@@ -275,6 +291,9 @@ func _update_hurt_feedback() -> void:
 	for mesh: MeshInstance3D in _rest_tints:
 		mesh.set_instance_shader_parameter(&"tint", HURT_TINT if hurt else _rest_tints[mesh])
 	_body_mesh.set_instance_shader_parameter(&"emission_strength", 0.7 if hurt else 0.0)
+	_rigged_model.set_hurt(hurt)
+	for mesh in _textured_meshes:
+		mesh.material_overlay = _rigged_model.hurt_overlay if hurt else null
 	if hurt:
 		var strength := HURT_SHAKE * _hurt_flash_left / HURT_FLASH_SECONDS
 		model.position = _model_rest_position + Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0)) * strength
@@ -290,8 +309,9 @@ func _on_landed(fall_speed: float) -> void:
 
 ## Squash, stretch and run bob are posed "on ones" at 24 fps (GDD 15.4); facing and the root stay smooth.
 func _on_tick_24(_frame: int) -> void:
-	if state == State.DEAD:
+	if state == State.DEAD and not _rigged_model.visible:
 		return
+	jetpack_model.step(jetpack.is_thrusting, jetpack.fuel_fraction())
 	_rigged_model.step_pose(self)
 	_pose_frame += 1
 	if _rigged_model.visible:
