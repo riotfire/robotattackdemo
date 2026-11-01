@@ -29,7 +29,11 @@ const AIM_MASK: int = 1 | (1 << 4) | (1 << 5)
 @export var armor_regen_rate: float = 10.0
 @export var armor_regen_delay: float = 4.0
 
-var state: State = State.GROUNDED
+## Dying is final: a landing can kill the farmer part way through a movement step, which then writes its own state.
+var state: State = State.GROUNDED:
+	set(value):
+		if state != State.DEAD:
+			state = value
 var is_aiming: bool = false
 var armor: float = 0.0
 var max_armor: float = 0.0
@@ -110,6 +114,7 @@ func _physics_process(delta: float) -> void:
 	_land_squash_left = maxf(0.0, _land_squash_left - delta)
 	if state == State.DEAD:
 		movement.fall(delta)
+		_update_hurt_feedback()
 		return
 	_update_armor(delta)
 
@@ -247,10 +252,9 @@ func _on_died() -> void:
 	state = State.DEAD
 	jetpack.set_thrusting(false)
 	weapons.close_wheel(false)
-	_rigged_model.set_hurt(false)
 	if not _rigged_model.visible:
 		model.rotation.x = deg_to_rad(-80.0)
-	# The stats (Harvest Report) wait until the death clip has played out in slow motion.
+	# The stats (Harvest Report) wait until the death clip has played out.
 	var hold := _rigged_model.death_seconds() if _rigged_model.visible else CLAY_DEATH_SECONDS
 	get_tree().create_timer(hold, false).timeout.connect(GameState.trigger_game_over.bind(&"farmer"))
 

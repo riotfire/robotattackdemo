@@ -105,9 +105,8 @@ const RELOAD: StringName = &"Standing_Reload"
 const AIM_POSE: String = "Walk_Forward_While_Shooting_inplace"
 ## Laid over her skin while she flashes from a hit, the way the clay body flashes through its tint.
 const HURT_OVERLAY_COLOR := Color(1.0, 0.1, 0.08, 0.55)
-## The death clip plays at this fraction of its speed, so the fall reads in slow motion. The stats wait for it.
+## The stats wait for this clip to finish.
 const DEATH: StringName = &"Dead"
-const DEATH_RATE: float = 0.5
 const HAND: String = "mixamorig_RightHand"
 const HIPS: String = "mixamorig_Hips"
 const HEAD_TOP: String = "mixamorig_HeadTop_End"
@@ -227,7 +226,7 @@ func step_pose(farmer: Farmer) -> void:
 	else:
 		match farmer.state:
 			Farmer.State.DEAD:
-				_play(DEATH, DEATH_RATE)
+				_play(DEATH, 1.0)
 			Farmer.State.ZIPLINING:
 				# She takes hold and is yanked into the swing, then hangs there for the rest of the ride.
 				_play(ROPE, 1.0, ZIPLINE_GRIP, &"rope_ride")
@@ -494,9 +493,9 @@ func _reload_time(farmer: Farmer) -> float:
 	return weapon.stat(weapon.data.reload_stat, weapon.data.reload_time)
 
 
-## Real seconds the death clip takes at DEATH_RATE, so the farmer's stats can wait for the fall to finish.
+## Seconds the death clip takes, so the farmer's stats can wait for the fall to finish.
 func death_seconds() -> float:
-	return _player.get_animation(DEATH).length / DEATH_RATE
+	return _player.get_animation(DEATH).length
 
 
 ## Plays `clip` at `speed` (negative runs it backward, zero holds it). A change of clip, or of `label`, which names a

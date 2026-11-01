@@ -252,8 +252,19 @@ func _run() -> void:
 	GameState.is_game_over = false
 	GameState.god_mode = false
 	_farmer.armor = 0.0
-	_farmer.take_damage(DamagePacket.create(9999.0, null, _farmer.global_position))
-	# The stats wait for the death clip to play out in slow motion, so the run is not over yet.
+	# The grain check above left the silo empty, and an empty silo ends the run on its own while the death plays.
+	silo.grain = silo.max_grain
+	silo.structure = silo.max_structure
+	# A lethal fall, because the landing kills the farmer part way through a movement step.
+	_farmer.teleport_to(_farmer.global_position + Vector3.UP * 80.0)
+	t = await _wait_until(func() -> bool: return not _farmer.health.current > 0.0, 15.0)
+	_check(t >= 0.0, "a lethal fall kills the farmer (%.1f s)" % t)
+	await _frames(30)
+	_check(_farmer.state == Farmer.State.DEAD, "the farmer stays dead after a fatal landing")
+	_check(_farmer._hurt_flash_left <= 0.0 and _farmer._textured_meshes.all(func(mesh: MeshInstance3D) -> bool: return mesh.material_overlay == null) \
+			and _farmer._rigged_model._meshes.all(func(mesh: MeshInstance3D) -> bool: return mesh.material_overlay == null),
+			"the hurt flash clears on a dead farmer")
+	# The stats wait for the death clip to play out, so the run is not over yet.
 	_check(not GameState.is_game_over, "the stats wait while the farmer's death plays")
 	t = await _wait_until(func() -> bool: return GameState.is_game_over, 15.0)
 	_check(GameState.is_game_over and GameState.game_over_reason == &"farmer", "farmer at 0 HP ends the run after the death (reason %s)" % GameState.game_over_reason)
